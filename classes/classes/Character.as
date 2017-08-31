@@ -697,6 +697,9 @@ import classes.GlobalFlags.kFLAGS;
 			if (findPerk(PerkLib.AscensionUnlockedPotential) >= 0) max += level * 20;
 			if (jewelryEffectId == JewelryLib.MODIFIER_HP) max += jewelryEffectMagnitude;
 			max *= 1 + (countCockSocks("green") * 0.02);
+			if (hasPerk(PerkLib.AuraPerk)) {	//all health above 100*newgamelevel reduced by 90%. Max soulforce increased by the same amount.
+				max = (100*(1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL])) + 0.1 * (max - 100*(1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));
+			}
 			max = Math.round(max);
 			if (max > 149999) max = 149999;
 			return max;
@@ -924,6 +927,12 @@ import classes.GlobalFlags.kFLAGS;
 			}
 			if (findPerk(PerkLib.UnlockMind2ndStage) >= 0) max += level * 5;
 			if (findPerk(PerkLib.AscensionUnlockedPotential2ndStage) >= 0) max += level * 6;
+			if (hasPerk(PerkLib.AuraPerk)) {	//all health above 100*newgamelevel reduced by 90%. Max soulforce increased by the same amount.
+				var healthreduction:Number = 9*(maxHP()-100*(1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));
+				max += healthreduction;
+				max *= (1+str/200);
+				max *= (1+spe/200);
+			}
 			max = Math.round(max);
 			if (max > 79999) max = 79999;
 			return max;

@@ -1541,6 +1541,24 @@ package classes
 		public static const Whispered:PerkType = mk("Whispered", "Whispered",
 				"Akbal's blessings grant limited telepathy that can induce fear.");
 				
+		//Custom-character-exclusive perks:	
+		//RWBY semblance perks are weaker than they appear because aura means soulforce = health, semblance soulforce costs are very large (and include a %), and soulforce regenerates slowly
+		public static const AuraPerk:PerkType = mk("Aura", "Aura",//Based off RWBY.
+				"Max health significantly reduced, physical stats increase max soulforce and soulforce regen, soulforce absorbs health damage.");
+		public static const SemblanceIBurn:PerkType = mk("Semblance: I Burn","Semblance: I Burn",
+				"Significantly increases wrath generation, passively generates wrath at low soulforce, automatically consumes wrath to boost melee attacks.");
+		public static const SemblanceRedLikeRoses:PerkType = mk("Semblance: Red Like Roses", "Semblance: Red Like Roses",
+				"Multi-attacks cost soulforce and fatigue instead of wrath");
+		//public static const SemblanceFromShadows:PerkType = mk("Semblance: From Shadows", "Semblance: From Shadows",
+		//		"When toggled on, dodge chance significantly increased but dodges cost soulforce.");
+		//public static const SemblanceGlyphs:PerkType = mk("Semblance: Glyphs", "Semblance: Glyphs",
+		//		"When toggled on, spells have additional max soulforce scaling but cost soulforce.");
+		public static const SemblancePolarity:PerkType = mk("Semblance: Polarity", "Semblance: Polarity",
+				"When toggled on, evade and resist additional damage from enemies with metal weapons, and accuracy and damage increased with metal weapons, with a constant soulforce cost.");
+		public static const GrimmCorruption:PerkType = mk("Grimm Corruption", "Grim Corruption",
+				"Massively increases minimum libido and corruption, increases max lust, and prevents humanizing transformatives.");
+
+
 		public static const ControlledBreath:ControlledBreathPerk = new ControlledBreathPerk();
 		public static const CleansingPalm:CleansingPalmPerk = new CleansingPalmPerk();
 		public static const Enlightened:EnlightenedPerk = new EnlightenedPerk();
