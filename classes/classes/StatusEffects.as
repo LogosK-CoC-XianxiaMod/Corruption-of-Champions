@@ -68,6 +68,9 @@ package classes
 		public static const FoundFactory:StatusEffectType                   = mk("Found Factory");
 		public static const FuckedMarble:StatusEffectType                   = mk("FuckedMarble");
 		public static const Fullness:StatusEffectType                       = mk("Fullness"); //Alternative to hunger
+		public static const GargoyleTFSettingTracker1:StatusEffectType      = mk("Gargoyle TF Setting Tracker 1");
+		public static const GargoyleTFSettingTracker2:StatusEffectType      = mk("Gargoyle TF Setting Tracker 2");
+		public static const GargoyleTFSettingTracker3:StatusEffectType      = mk("Gargoyle TF Setting Tracker 3");
 		public static const Goojob:StatusEffectType                         = mk("GOOJOB");
 		public static const GooStuffed:StatusEffectType                     = mk("gooStuffed");
 		public static const Groundpound:StatusEffectType                    = mk("Groundpound");
@@ -415,6 +418,7 @@ package classes
 		public static const Blind:CombatStatusEffect                     = mk2("Blind");
 		public static const Blink:CombatStatusEffect                     = mk2("Blink");
 		public static const Blizzard:CombatStatusEffect                  = mk2("Blizzard");
+		public static const Bloodlust:CombatStatusEffect                 = mk2("Bloodlust");
 		public static const Bound:CombatStatusEffect                     = mk2("Bound");
 		public static const BurnDoT:CombatStatusEffect                   = mk2("Burn DoT");
 		public static const CalledShot:CombatStatusEffect                = mk2("Called Shot");
@@ -446,6 +450,7 @@ package classes
 		public static const GooBind:CombatStatusEffect                   = mk2("GooBind");
 		public static const GoreBleed:CombatStatusEffect            	 = mk2("Gore Bleed");
 		public static const HarpyBind:CombatStatusEffect                 = mk2("HarpyBind");
+		public static const Hemorrhage:CombatStatusEffect                = mk2("Hemorrhage");
 		public static const HolliConstrict:CombatStatusEffect            = mk2("Holli Constrict");
 		public static const ImmolationDoT:CombatStatusEffect             = mk2("Immolation DoT");
 		public static const InfestAttempted:CombatStatusEffect           = mk2("infestAttempted");
@@ -471,6 +476,7 @@ package classes
 		public static const Rage:CombatStatusEffect                      = mk2("Rage");
 		public static const ResonanceVolley:CombatStatusEffect           = mk2("Resonance Volley");
 		public static const Sandstorm:CombatStatusEffect                 = mk2("sandstorm");
+		public static const ScyllaBind:CombatStatusEffect                = mk2("Scylla Bind");
 		public static const Sealed:CombatStatusEffect                    = mk2("Sealed");
 		public static const Sealed2:CombatStatusEffect                   = mk2("Sealed2");
 		public static const SharkBiteBleed:CombatStatusEffect            = mk2("Shark Bite Bleed");
@@ -487,6 +493,7 @@ package classes
 		public static const TwuWuv:CombatStatusEffect                    = mk2("Twu Wuv");
 		public static const UBERWEB:CombatStatusEffect                   = mk2("UBERWEB");
 		public static const UnderwaterCombatBoost:CombatStatusEffect     = mk2("UnderwaterCombatBoost");
+		public static const UnderwaterOutOfAir:CombatStatusEffect     	 = mk2("UnderwaterOutOfAir");
 		public static const VioletPupilTransformation:CombatStatusEffect = mk2("Violet Pupil Transformation");
 		public static const Web:CombatStatusEffect                       = mk2("Web");
 		public static const WebSilence:CombatStatusEffect                = mk2("Web-Silence");
