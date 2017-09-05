@@ -116,6 +116,7 @@ public static const TONGUE_DEMONIC:int                                          
 public static const TONGUE_DRACONIC:int                                             =   3;
 public static const TONGUE_ECHIDNA:int                                              =   4;
 public static const TONGUE_CAT:int                               	                =   5;
+public static const TONGUE_ELF:int                               	                =   6;
 
 // eyeType
 public static const EYES_HUMAN:int                                                  =   0;
@@ -174,6 +175,8 @@ public static const HORNS_RHINO:int                                             
 public static const HORNS_OAK:int													=	9;
 public static const HORNS_GARGOYLE:int												=  10;
 public static const HORNS_ORCHID:int												=  11;
+public static const HORNS_ONI_X2:int												=  12;
+public static const HORNS_ONI:int													=  13;
 
 // antennae
 public static const ANTENNAE_NONE:int                                               =   0;

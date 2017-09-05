@@ -338,6 +338,10 @@ package classes.Items {
 	public function setEyeType(eyeType:int):Boolean {
 		return setBodyPartType("eyeType", METAMORPH_EYES, eyeType);
 	}
+	public function setEyeTypeAndColor(eyeType:int, color:String):Boolean {
+		player.eyeColor = color;
+		return setBodyPartType("eyeType", METAMORPH_EYES, eyeType);
+	}
 	private const METAMORPH_EYES:Object = createMapFromPairs([
 		[EYES_BLACK_EYES_SAND_TRAP, null],
 		[EYES_CAT_SLITS, null],
@@ -440,6 +444,8 @@ package classes.Items {
 		[HORNS_GOAT, null],
 		[HORNS_NONE, null],
 		[HORNS_OAK, null],
+		[HORNS_ONI, null],
+		[HORNS_ONI_X2, null],
 		[HORNS_ORCHID, null],
 		[HORNS_RHINO, null],
 		[HORNS_UNICORN, null],
@@ -515,6 +521,7 @@ package classes.Items {
 		[TONGUE_DRACONIC, [StatusEffects.UnlockedDraconicTongue, "Draconic Tongue"]],
 		[TONGUE_ECHIDNA, [null, "Echidna Tongue"]],
 		[TONGUE_HUMAN, [null, "Human Tongue"]],
+		[TONGUE_ELF, [null, "Elf Tongue"]],
 		[TONGUE_SNAKE, [StatusEffects.UnlockedSnakeTongue, "Snake Tongue"]],
 	]);
 

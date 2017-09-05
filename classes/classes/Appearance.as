@@ -2198,7 +2198,7 @@
 		}
 		public static function eyesDescript(i_creature:Creature):String
 		{
-			return DEFAULT_EYES_NAMES[i_creature.eyeType] + " eyes";
+			return i_creature.eyeColor+ " "+DEFAULT_EYES_NAMES[i_creature.eyeType] + " eyes";
 		}
 
 /* All of these functions have been replaced with direct calls to the appropriate form of cockNoun().
@@ -2456,14 +2456,15 @@
 					[TONGUE_DEMONIC, "demonic"],
 					[TONGUE_DRACONIC, "draconic"],
 					[TONGUE_ECHIDNA, "echidna"],
-					[TONGUE_CAT, "cat"]
+					[TONGUE_CAT, "cat"],
+					[TONGUE_ELF, "elf"]
 				]
 		);
 		public static const DEFAULT_EYES_NAMES:Object = createMapFromPairs(
 				[
 					[EYES_HUMAN, "human"],
 					[EYES_FOUR_SPIDER_EYES, "4 spider"],
-					[EYES_BLACK_EYES_SAND_TRAP, "sandtrap black"],
+					[EYES_BLACK_EYES_SAND_TRAP, "sandtrap"],
 					[EYES_CAT_SLITS, "cat"],
 					[EYES_GORGON, "snake"],
 					[EYES_FENRIR, "fenrir"],
@@ -2520,7 +2521,9 @@
 					[HORNS_UNICORN, "unicorn"],
 					[HORNS_OAK, "oak"],
 					[HORNS_GARGOYLE, "gargoyle"],
-					[HORNS_ORCHID, "orchid"]
+					[HORNS_ORCHID, "orchid"],
+					[HORNS_ONI, "1 oni"],
+					[HORNS_ONI_X2, "2 oni"]
 				]
 		);
 		public static const DEFAULT_ANTENNAE_NAMES:Object = createMapFromPairs(

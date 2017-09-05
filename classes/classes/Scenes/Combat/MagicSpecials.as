@@ -88,12 +88,19 @@ public class MagicSpecials extends BaseCombatContent {
 		if (player.devilkinScore() >= 10) {
 			addButton(button++, "Infernal flare", infernalflare).hint("Use corrupted flames to burn your opponent. \n\nMana Cost: " + spellCost(40));
 		}
+		if (player.hasStatusEffect(StatusEffects.ShieldingSpell)) addButton(9, "Shielding", shieldingSpell);
+		if (player.hasStatusEffect(StatusEffects.ImmolationSpell)) addButton(9, "Immolation", immolationSpell);
+		if (player.hasStatusEffect(StatusEffects.IcePrisonSpell)) addButton(9, "Ice Prison", iceprisonSpell);
+		addButton(10, "Misc", specialsMisc);
 		addButton(11, "BreathAtk", specialsBreathAttacks);
 		addButton(12, "(De)Buffs", specialsBuffsDebuffs);
-		if (player.hasStatusEffect(StatusEffects.ShieldingSpell)) addButton(13, "Shielding", shieldingSpell);
-		if (player.hasStatusEffect(StatusEffects.ImmolationSpell)) addButton(13, "Immolation", immolationSpell);
-		if (player.hasStatusEffect(StatusEffects.IcePrisonSpell)) addButton(13, "Ice Prison", iceprisonSpell);
+		addButton(13, "E.Aspect", specialsElementalAspect);
 		addButton(14, "Back", combatMenu, false);
+	}
+
+	private function specialsMisc():void {
+		menu();
+		addButton(14, "Back", msMenu);
 	}
 
 	private function specialsBuffsDebuffs():void {
@@ -115,6 +122,9 @@ public class MagicSpecials extends BaseCombatContent {
 		}
 		if (player.devilkinScore() >= 10) {
 			addButton(3, "Maleficium", maleficium).hint("Infuse yourself with corrupt power empowering your magic but reducing your resistance to carnal assault.");
+		}
+		if (player.oniScore() >= 12) {
+			addButton(4, "Oni Rampage", startOniRampage).hint("Increase all damage done by a massive amount but silences you preventing using spells or magical oriented soulskills.");
 		}
 		if (player.eyeType == EYES_GORGON && player.hairType == HAIR_GORGON || player.findPerk(PerkLib.GorgonsEyes) >= 0) {
 			addButton(5, "Petrify", petrify).hint("Use your gaze to temporally turn your enemy into a stone. \n\nFatigue Cost: " + spellCost(100));
@@ -163,6 +173,21 @@ public class MagicSpecials extends BaseCombatContent {
 			}
 			else addButtonDisabled(9, "PhoenixFire", "You need more time before you can use Phoenix Fire again.");
 		}
+		addButton(14, "Back", msMenu);
+	}
+
+	private function specialsElementalAspect():void {
+		menu();
+		//if (player.hasStatusEffect(StatusEffects.SummonedElementalsAir)) addButton(0, "Air", ElementalAspectAir);
+		//if (player.hasStatusEffect(StatusEffects.SummonedElementalsEarth)) addButton(1, "Earth", );
+		//if (player.hasStatusEffect(StatusEffects.SummonedElementalsFire)) addButton(2, "Fire", ElementalAspectFire);
+		//if (player.hasStatusEffect(StatusEffects.SummonedElementalsWater)) addButton(3, "Water", );
+		//if (player.hasStatusEffect(StatusEffects.SummonedElementalsIce)) addButton(4, "Ice", ElementalAspectIce);
+		//if (player.hasStatusEffect(StatusEffects.SummonedElementalsLightning)) addButton(5, "Lightning", );
+		//if (player.hasStatusEffect(StatusEffects.SummonedElementalsDarkness)) addButton(6, "Darkness", );
+		//wood
+		//metal
+		//?lust/corruption?
 		addButton(14, "Back", msMenu);
 	}
 
@@ -486,6 +511,48 @@ public class MagicSpecials extends BaseCombatContent {
 			player.createStatusEffect(StatusEffects.ChanneledAttack, 1, 0, 0, 0);
 			player.createStatusEffect(StatusEffects.ChanneledAttackType, 1, 0, 0, 0);
 			outputText("\n\n");
+			enemyAI();
+		}
+	}
+
+	public function startOniRampage():void {
+		flags[kFLAGS.LAST_ATTACK_TYPE] = 2;
+		clearOutput();
+		if (player.statusEffectv1(StatusEffects.ChanneledAttack) == 1) {
+			outputText("A terrifying red aura of power shroud your body as you shout a loud thundering war cry and enter a murderous rampage.");
+			var onirampageDuration:Number = 6;
+			player.createStatusEffect(StatusEffects.OniRampage,onirampageDuration,0,0,0);
+			player.createStatusEffect(StatusEffects.CooldownOniRampage,10,0,0,0);
+			player.removeStatusEffect(StatusEffects.ChanneledAttack);
+			player.removeStatusEffect(StatusEffects.ChanneledAttackType);
+			outputText("\n\n");
+			if (monster is Lethice && (monster as Lethice).fightPhase == 3)
+			{
+				outputText("\n\n<i>“Ouch. Such arcane skills for one so uncouth,”</i> Lethice growls. With a snap of her fingers, a pearlescent dome surrounds her. <i>“How will you beat me without your magics?”</i>\n\n");
+				monster.createStatusEffect(StatusEffects.Shell, 2, 0, 0, 0);
+				enemyAI();
+			}
+			else enemyAI();
+		}
+		else {
+			if (player.findPerk(PerkLib.BloodMage) < 0 && player.fatigue + spellCost(50) > player.maxFatigue())
+			{
+				clearOutput();
+				outputText("You are too tired to start rampage.");
+				doNext(msMenu);
+				return;
+			}
+			if(player.hasStatusEffect(StatusEffects.OniRampage)) {
+				outputText("You already rampaging!");
+				doNext(msMenu);
+				return;
+			}
+//This is now automatic - newRound arg defaults to true:	menuLoc = 0;
+			fatigue(50, 1);
+			clearOutput();
+			outputText("That does it! You crouch and lift a leg then another in alternance, stomping the ground as you focus your anger.\n\n");
+			player.createStatusEffect(StatusEffects.ChanneledAttack, 1, 0, 0, 0);
+			player.createStatusEffect(StatusEffects.ChanneledAttackType, 2, 0, 0, 0);
 			enemyAI();
 		}
 	}
@@ -1396,6 +1463,7 @@ public class MagicSpecials extends BaseCombatContent {
 			if (player.inte <= 100) critChance += (player.inte - 50) / 50;
 			if (player.inte > 100) critChance += 10;
 		}
+		if (monster.isImmuneToCrits() && player.findPerk(PerkLib.EnableCriticals) < 0) critChance = 0;
 		if (rand(100) < critChance) {
 			crit = true;
 			temp *= 1.75;
@@ -1566,6 +1634,7 @@ public class MagicSpecials extends BaseCombatContent {
 			if (player.inte <= 100) critChance += (player.inte - 50) / 50;
 			if (player.inte > 100) critChance += 10;
 		}
+		if (monster.isImmuneToCrits() && player.findPerk(PerkLib.EnableCriticals) < 0) critChance = 0;
 		if (rand(100) < critChance) {
 			crit = true;
 			temp *= 1.75;
@@ -1681,6 +1750,7 @@ public class MagicSpecials extends BaseCombatContent {
 	 if (player.inte <= 100) critChance += (player.inte - 50) / 50;
 	 if (player.inte > 100) critChance += 10;
 	 }
+	 if (monster.isImmuneToCrits() && player.findPerk(PerkLib.EnableCriticals) < 0) critChance = 0;
 	 if (rand(100) < critChance) {
 	 crit = true;
 	 dmg *= 1.75;
@@ -1799,6 +1869,7 @@ public class MagicSpecials extends BaseCombatContent {
 			if (player.inte <= 100) critChance += (player.inte - 50) / 50;
 			if (player.inte > 100) critChance += 10;
 		}
+		if (monster.isImmuneToCrits() && player.findPerk(PerkLib.EnableCriticals) < 0) critChance = 0;
 		if (rand(100) < critChance) {
 			crit = true;
 			dmg *= 1.75;
@@ -1930,6 +2001,7 @@ public class MagicSpecials extends BaseCombatContent {
 			if (player.inte <= 100) critChance += (player.inte - 50) / 50;
 			if (player.inte > 100) critChance += 10;
 		}
+		if (monster.isImmuneToCrits() && player.findPerk(PerkLib.EnableCriticals) < 0) critChance = 0;
 		if (rand(100) < critChance) {
 			crit = true;
 			dmg *= 1.75;
@@ -2054,6 +2126,7 @@ public class MagicSpecials extends BaseCombatContent {
 			if (player.inte <= 100) critChance += (player.inte - 50) / 50;
 			if (player.inte > 100) critChance += 10;
 		}
+		if (monster.isImmuneToCrits() && player.findPerk(PerkLib.EnableCriticals) < 0) critChance = 0;
 		if (rand(100) < critChance) {
 			crit = true;
 			dmg *= 1.75;
@@ -2503,6 +2576,7 @@ public class MagicSpecials extends BaseCombatContent {
 		else enemyAI();
 		return;
 	}
+	
 	public function possess():void {
 		flags[kFLAGS.LAST_ATTACK_TYPE] = 3;
 		clearOutput();
@@ -2532,7 +2606,68 @@ public class MagicSpecials extends BaseCombatContent {
 		}
 		if(!combatRoundOver()) enemyAI();
 	}
+/*
+	public function ElementalAspectAir():void {
+		clearOutput();
+		flags[kFLAGS.LAST_ATTACK_TYPE] = 2;
+		enemyAI();
+	}
 
+	public function ElementalAspectEarth():void {
+		clearOutput();
+		flags[kFLAGS.LAST_ATTACK_TYPE] = 2;
+		enemyAI();
+	}
+*/
+	public function ElementalAspectFire():void {
+		clearOutput();
+		if (player.hasStatusEffect(StatusEffects.CooldownEAspectFire)) {
+			outputText("You already used fire elemental aspect in this fight.");
+			doNext(specialsElementalAspect);
+			return;
+		}
+		flags[kFLAGS.LAST_ATTACK_TYPE] = 2;
+		enemyAI();
+	}
+/*
+	public function ElementalAspectWater():void {
+		clearOutput();
+		enemyAI();
+	}
+*/
+	public function ElementalAspectIce():void {
+		clearOutput();
+		if (player.hasStatusEffect(StatusEffects.CooldownEAspectIce)) {
+			outputText("You already used ice elemental aspect in this fight.");
+			doNext(specialsElementalAspect);
+			return;
+		}
+		flags[kFLAGS.LAST_ATTACK_TYPE] = 2;
+		enemyAI();
+	}
+/*
+	public function ElementalAspectLightning():void {
+		clearOutput();
+		if (player.hasStatusEffect(StatusEffects.CooldownEAspectLightning)) {
+			outputText("You already used lightning elemental aspect in this fight.");
+			doNext(specialsElementalAspect);
+			return;
+		}
+		flags[kFLAGS.LAST_ATTACK_TYPE] = 2;
+		enemyAI();
+	}
+
+	public function ElementalAspectDarkness():void {
+		clearOutput();
+		if (player.hasStatusEffect(StatusEffects.CooldownEAspectDarkness)) {
+			outputText("You already used darkness elemental aspect in this fight.");
+			doNext(specialsElementalAspect);
+			return;
+		}
+		flags[kFLAGS.LAST_ATTACK_TYPE] = 2;
+		enemyAI();
+	}
+*/
 	//Arian's stuff
 //Using the Talisman in combat
 	public function immolationSpell():void {

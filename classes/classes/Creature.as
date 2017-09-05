@@ -151,10 +151,13 @@ package classes
 		public var sens:Number = 0;
 		public var cor:Number = 0;
 		public var fatigue:Number = 0;
+		public var mana:Number = 0;
+		public var soulforce:Number = 0;
 		
 		//Combat Stats
 		public var HP:Number = 0;
 		public var lust:Number = 0;
+		public var wrath:Number = 0;
 		
 		//Level Stats
 		public var XP:Number = 0;
@@ -320,6 +323,7 @@ package classes
 
 		//Eyetype
 		public var eyeType:Number = EYES_HUMAN;
+		public var eyeColor:String = "brown";
 
 		//TongueType
 		public var tongueType:Number = TONGUE_HUMAN;
@@ -459,7 +463,7 @@ package classes
 				// Allow weaponAttack to be negative as a penalty to strength-calculated damage
 				// Same with armorDef, bonusHP, additionalXP
 				"weaponValue", "armorValue",
-				"lust", "fatigue",
+				"lust", "fatigue", "soulforce", "mana", "wrath",
 				"level", "gems",
 				"tailCount", "tailVenom", "tailRecharge", "horns",
 				"HP", "XP"
@@ -467,7 +471,7 @@ package classes
 			// 2.2. non-empty String fields
 			error += Utils.validateNonEmptyStringFields(this,"Monster.validate",[
 				"short",
-				"skinDesc",
+				"skinDesc", "eyeColor",
 				"weaponName", "weaponVerb", "armorName"
 			]);
 			// 3. validate members
@@ -1754,7 +1758,7 @@ package classes
 			if(findPerk(PerkLib.FerasBoonSeeder) >= 0)
 				quantity += 1000;
 			if (findPerk(PerkLib.ProductivityDrugs) >= 0)
-				total += (perkv3(PerkLib.ProductivityDrugs));
+				quantity += (perkv3(PerkLib.ProductivityDrugs));
 			//if(hasPerk("Elven Bounty") >= 0) quantity += 250;;
 			quantity += perkv1(PerkLib.ElvenBounty);
 			if (findPerk(PerkLib.BroBody) >= 0)
@@ -2145,6 +2149,14 @@ package classes
 		{
 			if (game.player.armorName == "nothing" && game.player.upperGarmentName == "nothing" && game.player.lowerGarmentName == "nothing")
 				return true;
+			return false;
+		}
+
+		//Crit immunity
+		public function isImmuneToCrits():Boolean
+		{
+			if (game.monster.findPerk(PerkLib.EnemyConstructType) >= 0)
+				return true;//potem inne typy wrogów dodać tutaj: goo, żywiołaki, rośliny, nieumarli/duchy
 			return false;
 		}
 
@@ -3214,6 +3226,9 @@ package classes
 			//Black cat beer = 25% reduction!
 			if (statusEffectv1(StatusEffects.BlackCatBeer) > 0) {
 				mult *= 0.75;
+			}
+			if (statusEffectv1(StatusEffects.OniRampage) > 0) {
+				mult *= 0.8;
 			}
 			//Defend = 50-(99)% reduction
 			if (hasStatusEffect(StatusEffects.Defend)) {

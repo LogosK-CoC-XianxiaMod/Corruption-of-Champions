@@ -15,6 +15,7 @@
 		import classes.GlobalFlags.kGAMECLASS;
 		import classes.GlobalFlags.kACHIEVEMENTS;
 		public static const gooSkinColors:Array = ["green","purple","blue","cerulean","emerald"];
+		public static const oniEyeColors:Array = ["red", "orange", "yellow"];
 // import classes.ItemSlotClass;
 
 //const FOX_BAD_END_WARNING:int = 477;
@@ -5124,7 +5125,7 @@
 			//Lizard eyes
 			if (changes < changeLimit && rand(3) == 0 && player.lowerBody != LOWER_BODY_TYPE_GARGOYLE && player.eyeType == EYES_HUMAN) {
 				outputText("\n\nYou suddenly feel your vision shifting. It takes a moment for you to adapt to the weird sensory changes but once you recover you go to a puddle and notice your eyes now have a slitted pupil like that of a reptile taking on a yellow hue.  <b>You now have reptilian eyes!</b>");
-				setEyeType(EYES_REPTILIAN);
+				setEyeTypeAndColor(EYES_REPTILIAN, "yellow");
 				changes++;
 			}
 			//Remove odd eyes
@@ -5378,7 +5379,7 @@
 			//Lizard eyes
 			if (changes < changeLimit && rand(3) == 0 && player.lowerBody != LOWER_BODY_TYPE_GARGOYLE && player.eyeType == EYES_HUMAN) {
 				outputText("\n\nYou suddenly feel your vision shifting. It takes a moment for you to adapt to the weird sensory changes but once you recover you go to a puddle and notice your eyes now have a slitted pupil like that of a reptile taking on a yellow hue.  <b>You now have reptilian eyes!</b>");
-				setEyeType(EYES_REPTILIAN);
+				setEyeTypeAndColor(EYES_REPTILIAN, "ember");
 				changes++;
 			}
 			//Remove odd eyes
@@ -5683,7 +5684,7 @@
 			//Lizard eyes
 			if (changes < changeLimit && rand(4) == 0 && player.lowerBody != LOWER_BODY_TYPE_GARGOYLE && player.eyeType == EYES_HUMAN) {
 				outputText("\n\nYou suddenly feel your vision shifting. It takes a moment for you to adapt to the weird sensory changes but once you recover you go to a puddle and notice your eyes now have a slitted pupil like that of a reptile taking on a yellow hue.  <b>You now have reptilian eyes!</b>");
-				setEyeType(EYES_REPTILIAN);
+				setEyeTypeAndColor(EYES_REPTILIAN, "yellow");
 				changes++;
 			}
 			//Remove odd eyes
@@ -7212,17 +7213,23 @@
 			var changes:Number = 0;
 			var changeLimit:Number = 1;
 			if (rand(2) == 0) changeLimit++;
-			//if (rand(3) == 0) changeLimit++;
+			if (rand(3) == 0) changeLimit++;
 			if (player.findPerk(PerkLib.HistoryAlchemist) >= 0 || player.findPerk(PerkLib.PastLifeAlchemist) >= 0) changeLimit++;
 			if (player.findPerk(PerkLib.EzekielBlessing) >= 0) changeLimit++;
 			if (player.findPerk(PerkLib.TransformationResistance) >= 0) changeLimit--;
 			outputText("You really should’ve brought this to someone who knew about it first!  Your stomach grumbles, and you feel a short momentaneous pain in your head.  As you swallow you feel your body start to change into something else.");
 			//Stats
+			if (player.sens < 80 && rand(4) == 0 && changes < changeLimit) {
+				outputText("\n\nYour body becomes overwhelmed by stimuli for a moment making you shiver with a moan of pleasure at the mere caress of the wind. The excess sensation eventually dies down but leaves you more sensitive than before.");
+				dynStats("sen", 2);
+				if (player.sens < 40) dynStats("sen", 2);
+				changes++;
+			}
 			//Sexual
 			//Physical
 			if (player.lowerBody != LOWER_BODY_TYPE_ELF && player.lowerBody != LOWER_BODY_TYPE_GARGOYLE && changes < changeLimit && rand(3) == 0) {
 				if (player.lowerBody == LOWER_BODY_TYPE_HUMAN) {
-					outputText("Something shifts in your legs as you feel almost supernatural agility imbue your steps granting a nymph like grace to your stride. Your feet are no longer rough but delicate and agile like those of an elf. <b>You now have agile elven feet.</b>");
+					outputText("\n\nSomething shifts in your legs as you feel almost supernatural agility imbue your steps granting a nymph like grace to your stride. Your feet are no longer rough but delicate and agile like those of an elf. <b>You now have agile elven feet.</b>");
 					setLowerBody(LOWER_BODY_TYPE_ELF);
 				}
 				else humanizeLowerBody();
@@ -7230,7 +7237,7 @@
 			}
 			if (player.lowerBody == LOWER_BODY_TYPE_ELF && player.armType != ARM_TYPE_ELF && changes < changeLimit && rand(3) == 0) {
 				if (player.armType == ARM_TYPE_HUMAN) {
-					outputText("Something in your hands shift as they change taking on a more feminine fragile yet agile structure. You discover with surprise your dexterity has greatly increased allowing you to manipulate things in your delicate elven fingers with almost unreal precision. However your grip has become weaker as a result, weakening your ability to use raw force over finesse. <b>You now have delicate elven hands.</b>");
+					outputText("\n\nSomething in your hands shift as they change taking on a more feminine fragile yet agile structure. You discover with surprise your dexterity has greatly increased allowing you to manipulate things in your delicate elven fingers with almost unreal precision. However your grip has become weaker as a result, weakening your ability to use raw force over finesse. <b>You now have delicate elven hands.</b>");
 					setArmType(ARM_TYPE_ELF);
 				}
 				else humanizeArms();
@@ -7238,7 +7245,7 @@
 			}
 			if (player.armType == ARM_TYPE_ELF && player.earType != EARS_ELVEN && changes < changeLimit && rand(3) == 0) {
 				if (player.earType == EARS_HUMAN) {
-					outputText("Sounds become increasingly audible as a weird tingling runs through your scalp and your [hair] shifts slightly. You reach up to touch and bump <b>your new pointed elven ears.</b> The points are quite sensitive and you will have to get used to your new enhanced hearing ability.");
+					outputText("\n\nSounds become increasingly audible as a weird tingling runs through your scalp and your [hair] shifts slightly. You reach up to touch and bump <b>your new pointed elven ears.</b> The points are quite sensitive and you will have to get used to your new enhanced hearing ability.");
 					setEarType(EARS_ELVEN);
 				}
 				else humanizeEars();
@@ -7246,17 +7253,33 @@
 			}
 			if (player.earType == EARS_ELVEN && player.eyeType != EYES_ELF && changes < changeLimit && rand(3) == 0) {
 				if (player.eyeType == EYES_HUMAN) {
-					outputText("You blink and stumble, a wave of vertigo threatening to pull your feet out from under you. As you steady yourself and open your eyes, you realize something seems different. Your vision is changed somehow. Your pupils draw in light and the color and shapes seems more defined even at great distance. Your new eyes granting you better vision. You go to a puddle to check what happened to them and notice <b>your new pupils are like those of an elf’s with a vertical slit that reflects lights.</b>");
+					outputText("\n\nYou blink and stumble, a wave of vertigo threatening to pull your feet out from under you. As you steady yourself and open your eyes, you realize something seems different. Your vision is changed somehow. Your pupils draw in light and the color and shapes seems more defined even at great distance. Your new eyes granting you better vision. You go to a puddle to check what happened to them and notice <b>your new eyes are like those of an elf’s with a vertical slit that reflects lights.</b>");
 					setEyeType(EYES_ELF);
 				}
 				else humanizeEyes();
 				changes++;
 			}
 			//elven senses
+			if (player.tongueType == TONGUE_HUMAN && player.tongueType != TONGUE_ELF && changes < changeLimit && rand(3) == 0) {
+				outputText("\n\nYou throat starts to ache and your tongue tingle. You try to gasp for air your eyes opening wide in surprise as the voice that exits your throat entirely changed. Your words are notes, your sentence a melody. Your voice is like music to your ears and you realise it is because your body became closer to that of an elf, adapting even your tongue and voice.  <b>You now have the beautiful voice of the elves.</b>");
+				setTongueType(TONGUE_ELF);
+				changes++;
+			}
+			if (player.tongueType != TONGUE_HUMAN && player.tongueType != TONGUE_ELF && changes < changeLimit && rand(3) == 0) {
+				outputText("\n\nYou feel something strange inside your face as your tongue shrinks and recedes until it feels smooth and rounded.  <b>You realize your tongue has changed back into human tongue!</b>");
+				setTongueType(TONGUE_HUMAN);
+				changes++;
+			}
 			if (player.hairType != 10 && changes < changeLimit && rand(4) == 0) {
-				outputText("Something changes in your scalp and you pass a hand through to know what is going on. To your surprise your hair texture turned silky, feeling as if you had been tending it for years, the touch is so agreeable you can’t help but idly stroke it with your hand. <b>Your hair has taken on an almost silk-like texture, just like that of an elf!</b>");
+				outputText("\n\nSomething changes in your scalp and you pass a hand through to know what is going on. To your surprise your hair texture turned silky, feeling as if you had been tending it for years, the touch is so agreeable you can’t help but idly stroke it with your hand. <b>Your hair has taken on an almost silk-like texture, just like that of an elf!</b>");
 				setHairType(HAIR_SILKEN);
 				changes++;
+			}
+			//Hair Color
+			var elf_hair:Array = ["silver", "golden blonde", "leaf green", "black"];
+			if (!InCollection(player.hairColor, elf_hair) && player.lowerBody != LOWER_BODY_TYPE_GARGOYLE && changes < changeLimit && rand(3) == 0) {
+				player.hairColor = randomChoice(elf_hair);
+				outputText("\n\nYour scalp begins to tingle, and you gently grasp a strand of hair, pulling it out to check it.  Your hair has become [haircolor]!");
 			}
 			flags[kFLAGS.TIMES_TRANSFORMED] += changes;
 		}
@@ -7689,7 +7712,7 @@
 			}
 			//Fox Eyes
 			if (player.faceType == FACE_FOX && player.eyeType != EYES_FOX && changes < changeLimit && rand(4) == 0) {
-				outputText("\n\nYou blink for an instant as the light and darkness seems to shift within your vision. You head to a pool to check it up and notice your pupils shifted to look more fox-like in a fashion similar to the kitsunes.  <b>You now have fox pupils.</b>");
+				outputText("\n\nYou blink for an instant as the light and darkness seems to shift within your vision. You head to a pool to check it up and notice your eyes shifted to look more fox-like in a fashion similar to the kitsunes.  <b>You now have fox eyes.</b>");
 				setEyeType(EYES_FOX);
 				changes++;
 			}
@@ -8027,7 +8050,7 @@
 			});
 			//Fox Eyes
 			mutationStep(player.earType == EARS_FOX && player.eyeType != EYES_FOX, 3, function(): void {
-				outputText("\n\nYou blink for an instant as the light and darkness seems to shift within your vision. You head to a pool to check it up and notice your pupils shifted to look more fox-like in a fashion similar to the kitsunes.  <b>You now have fox pupils.</b>");
+				outputText("\n\nYou blink for an instant as the light and darkness seems to shift within your vision. You head to a pool to check it up and notice your eyes shifted to look more fox-like in a fashion similar to the kitsunes.  <b>You now have fox eyes.</b>");
 				setEyeType(EYES_FOX);
 			});
 			//Kitsune arms
@@ -8582,7 +8605,7 @@
 			}
 			//PC Trap Effects
 			if (player.eyeType != EYES_BLACK_EYES_SAND_TRAP && player.lowerBody != LOWER_BODY_TYPE_GARGOYLE && rand(4) == 0 && changes < changeLimit) {
-				setEyeType(EYES_BLACK_EYES_SAND_TRAP);
+				setEyeTypeAndColor(EYES_BLACK_EYES_SAND_TRAP,"black");
 				//Eyes Turn Black:
 				outputText("\n\nYou blink, and then blink again.  It feels like something is irritating your eyes.  Panic sets in as black suddenly blooms in the corner of your left eye and then your right, as if drops of ink were falling into them.  You calm yourself down with the thought that rubbing at your eyes will certainly make whatever is happening to them worse; through force of will you hold your hands behind your back and wait for the strange affliction to run its course.  The strange inky substance pools over your entire vision before slowly fading, thankfully taking the irritation with it.  As soon as it goes you stride quickly over to the stream and stare at your reflection.  <b>Your pupils, your irises, your entire eye has turned a liquid black</b>, leaving you looking vaguely like the many half insect creatures which inhabit these lands.  You find you are merely grateful the change apparently hasn't affected your vision.");
 				changes++;
@@ -10786,7 +10809,7 @@
 			//Eyes
 			if (rand(3) == 0 && changes < changeLimit && player.eyeType != EYES_DEVIL && player.faceType == FACE_DEVIL_FANGS) {
 				outputText("\n\nYour eyes feels like they are burning. You try to soothe them, but to no avail. You endure the agony for a few minutes before it finally fades. You look at yourself in the nearest reflective surface and notice your eyes have taken on a demonic appearance: the sclera is black and the pupils ember. Furthermore they seem to glow with a faint inner light. <b>You now have fiendish eyes!</b>");
-				setEyeType(EYES_DEVIL);
+				setEyeTypeAndColor(EYES_DEVIL,"ember");
 				changes++;
 			}
 			//Shrinkage!

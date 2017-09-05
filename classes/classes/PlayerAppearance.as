@@ -1290,6 +1290,14 @@ public class PlayerAppearance extends BaseContent {
 			if (player.horns > 0)
 				outputText("  A huge pair of orchids grows on each side of your head, their big long petals flopping gaily when you move.");
 		}
+		if (player.hornType == HORNS_ONI_X2) {
+			if (player.horns > 0)
+				outputText("  You have a pair of horns on your head warning anyone who looks that you are an oni and do mean serious business.");
+		}
+		if (player.hornType == HORNS_ONI) {
+			if (player.horns > 0)
+				outputText("  You have a single horn on your head warning anyone who looks that you are an oni and do mean serious business.");
+		}
 	}
 	public function describeTongue():void {
 //Tongue
@@ -1303,6 +1311,8 @@ public class PlayerAppearance extends BaseContent {
 			outputText("  A thin echidna tongue, at least a foot long, occasionally flits out from between your lips.");
 		else if (player.tongueType == TONGUE_CAT)
 			outputText("  Your tongue is rough like that of a cat. You sometime groom yourself with it.");
+		else if (player.tongueType == TONGUE_ELF)
+			outputText("  One could mistake you for a human but your voice is unnaturally beautiful and melodious giving you away as something else.");
 	}
 	public function describeBeard():void {
 //Beards!
@@ -1321,29 +1331,32 @@ public class PlayerAppearance extends BaseContent {
 	}
 	public function describeEyes():void {
 		if(player.eyeType == EYES_FOUR_SPIDER_EYES)
-			outputText("  In addition to your primary two eyes, you have a second, smaller pair on your forehead.");
+			outputText("  In addition to your primary two [eyecolor] eyes, you have a second, smaller pair on your forehead.");
 		else if(player.eyeType == EYES_BLACK_EYES_SAND_TRAP)
 			outputText("  Your eyes are solid spheres of inky, alien darkness.");
 		else if(player.eyeType == EYES_CAT_SLITS)
-			outputText("  Your eyes have vertically slit like those of cat.");
+			outputText("  Your [eyecolor] eyes have vertically slit like those of cat.");
 		else if(player.eyeType == EYES_GORGON)
-			outputText("  Your eyes are similar to those of snake-like gorgons with ability to temporally petrify.");
+			outputText("  Your [eyecolor] eyes are similar to those of snake-like gorgons with ability to temporally petrify.");
 		else if(player.eyeType == EYES_FENRIR)
 			outputText("  Your eyes glows with a freezing blue light icy smoke rising in the air around it.");
 		else if(player.eyeType == EYES_MANTICORE)
-			outputText("  Your eyes are similar to those of a cat but the red pupils dismiss any links to the regular felines in favor of something way more ominous.");
+			outputText("  Your eyes are similar to those of a cat but the [eyecolor] irises dismiss any links to the regular felines in favor of something way more ominous.");
 		else if(player.eyeType == EYES_FOX)
-			outputText("  Your pupils looks like those of a fox with a slit in the middle.");
+			outputText("  Your [eyecolor] eyes looks like those of a fox with a slit in the middle.");
 		else if(player.eyeType == EYES_REPTILIAN)
-			outputText("  Your eyes looks like those of a reptile with yellow pupils and a slit.");
+			outputText("  Your eyes looks like those of a reptile with [eyecolor] irises and a slit.");
 		else if(player.eyeType == EYES_SNAKE)
-			outputText("  Your eyes have slitted pupils like that of a snake.");
+			outputText("  Your [eyecolor] eyes have slitted pupils like that of a snake.");
 		else if(player.eyeType == EYES_DRAGON)
-			outputText("  Your eyes have slitted pupils like that of a dragon.");
+			outputText("  Your [eyecolor] eyes have slitted pupils like that of a dragon.");
 		else if(player.eyeType == EYES_DEVIL)
-			outputText("  Your eyes look fiendish with their black sclera and glowing ember pupils.");
+			outputText("  Your eyes look fiendish with their black sclera and glowing [eyecolor] irises.");
+		else if(player.eyeType == EYES_ONI)
+			outputText("  Your eyes look normal enough save for their fiendish [eyecolor] iris and slitted pupils.");
 		else if(player.eyeType == EYES_ELF)
-			outputText("  Your elven eyes looks somewhat human, save for their cat-like vertical slit which draws light right in, allowing you to see with perfect precision both at day and night time.");
+			outputText("  Your [eyecolor] elven eyes looks somewhat human, save for their cat-like vertical slit which draws light right in, allowing you to see with perfect precision both at day and night time.");
+		else outputText("  Your eyes are [eyecolor].");
 	}
 	public function describeHairAndEars():void {
 		//if bald
@@ -1858,10 +1871,16 @@ public function RacialScores():void {
 	else if (player.dragonScore() >= 1 && player.dragonScore() < 4) outputText("\n<font color=\"#008000\">Half-Dragon: " + player.dragonScore() + "</font>");
 	else if (player.dragonScore() < 1) outputText("\n<font color=\"#ff0000\">Half-Dragon: 0</font>");
 	outputText("\nDragonne: " + player.dragonneScore());
-	outputText("\nEchidna: " + player.echidnaScore());/*
-	if (player.elfScore() >= 11) outputText("\n<font color=\"#0000a0\">Elf: " + player.elfScore() + " (+" + (100 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL])) + " max Str, +" + (60 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL])) + " max Tou, -" + (20 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL])) + " max Int, +" + (40 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL])) + " max Wis)</font>");
-	else if (player.elfScore() >= 5 && player.elfScore() < 11) outputText("\n<font color=\"#0000a0\">Half Elf: " + player.elfScore() + " (+" + (50 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL])) + " max Str, +" + (30 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL])) + " max Tou, -" + (10 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL])) + " max Int, +" + (20 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL])) + " max Wis)</font>");
-	else */if (player.elfScore() >= 1/* && player.elfScore() < 5*/) outputText("\n<font color=\"#008000\">Half Elf: " + player.elfScore() + "</font>");
+	outputText("\nEchidna: " + player.echidnaScore());
+	if (player.elfScore() >= 11) {
+		outputText("\n<font color=\"#0000a0\">Elf: " + player.elfScore() + " (-" + (10 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL])) + " max Str, -" + (15 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL])) + " max Tou, +" + (80 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL])) + " max Spe, +" + (80 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL])) + " max Int, +" + (60 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL])) + " max Wis, ");
+		outputText("+" + (30 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL])) + " max Sens, +" + (30 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL])) + " min Sens)</font>");
+	}
+	else if (player.elfScore() >= 5 && player.elfScore() < 11) {
+		outputText("\n<font color=\"#0000a0\">Half Elf: " + player.elfScore() + " (-" + (10 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL])) + " max Str, -" + (10 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL])) + " max Tou, +" + (40 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL])) + " max Spe, +" + (40 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL])) + " max Int, +" + (30 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL])) + " max Wis, ");
+		outputText("+" + (15 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL])) + " max Sens, +" + (15 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL])) + " min Sens)</font>");
+	}
+	else if (player.elfScore() >= 1 && player.elfScore() < 5) outputText("\n<font color=\"#008000\">Half Elf: " + player.elfScore() + "</font>");
 	else if (player.elfScore() < 1) outputText("\n<font color=\"#ff0000\">Half Elf: 0</font>");
 	outputText("\nFerret-morph: " + player.ferretScore());
 	if (player.foxScore() >= 7) outputText("\n<font color=\"#0000a0\">Fox-morph: " + player.foxScore() + " (-" + (30 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL])) + " max Str, +" + (80 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL])) + " max Spe, +" + (55 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL])) + " max Int, +" + (20 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL])) + " max Fatigue)</font>");
