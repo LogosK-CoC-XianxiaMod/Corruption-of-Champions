@@ -275,6 +275,21 @@ public function checkAchievementDamage(damage:Number):void
 	if (damage >= 2500) kGAMECLASS.awardAchievement("Pulverize", kACHIEVEMENTS.COMBAT_PULVERIZE);
 	if (damage >= 5000) kGAMECLASS.awardAchievement("Erase", kACHIEVEMENTS.COMBAT_ERASE);
 }
+/*public function checkMinionsAchievementDamage(damage:Number):void
+{
+	flags[kFLAGS.ACHIEVEMENT_PROGRESS_TOTAL_DAMAGE] += damage;
+	if (flags[kFLAGS.ACHIEVEMENT_PROGRESS_TOTAL_DAMAGE] >= 50000) kGAMECLASS.awardAchievement("Bloodletter", kACHIEVEMENTS.COMBAT_BLOOD_LETTER);
+	if (flags[kFLAGS.ACHIEVEMENT_PROGRESS_TOTAL_DAMAGE] >= 200000) kGAMECLASS.awardAchievement("Reiterpallasch", kACHIEVEMENTS.COMBAT_REITERPALLASCH);
+	if (flags[kFLAGS.ACHIEVEMENT_PROGRESS_TOTAL_DAMAGE] >= 1000000) kGAMECLASS.awardAchievement("Uncanny Bloodletter", kACHIEVEMENTS.COMBAT_UNCANNY_BLOOD_LETTER);
+	if (flags[kFLAGS.ACHIEVEMENT_PROGRESS_TOTAL_DAMAGE] >= 5000000) kGAMECLASS.awardAchievement("Uncanny Reiterpallasch", kACHIEVEMENTS.COMBAT_UNCANNY_REITERPALLASCH);
+	if (damage >= 50) kGAMECLASS.awardAchievement("Pain", kACHIEVEMENTS.COMBAT_PAIN);
+	if (damage >= 100) kGAMECLASS.awardAchievement("Fractured Limbs", kACHIEVEMENTS.COMBAT_FRACTURED_LIMBS);
+	if (damage >= 250) kGAMECLASS.awardAchievement("Broken Bones", kACHIEVEMENTS.COMBAT_BROKEN_BONES);
+	if (damage >= 500) kGAMECLASS.awardAchievement("Overkill", kACHIEVEMENTS.COMBAT_OVERKILL);
+	if (damage >= 1000) kGAMECLASS.awardAchievement("Meat Pasty", kACHIEVEMENTS.COMBAT_MEAT_PASTY);
+	if (damage >= 2500) kGAMECLASS.awardAchievement("Pulverize", kACHIEVEMENTS.COMBAT_PULVERIZE);
+	if (damage >= 5000) kGAMECLASS.awardAchievement("Erase", kACHIEVEMENTS.COMBAT_ERASE);
+}*/
 public function approachAfterKnockback1():void
 {
 	clearOutput();
@@ -644,7 +659,9 @@ public function unarmedAttack():Number {
 	}
 	if (player.findPerk(PerkLib.HclassHeavenTribulationSurvivor) >= 0) unarmed += 12 * (1 + player.newGamePlusMod());
 	if (player.findPerk(PerkLib.GclassHeavenTribulationSurvivor) >= 0) unarmed += 18 * (1 + player.newGamePlusMod());
+//	if (findPerk(OneOfBeastWarriorPerks) >= 0) unarmed *= 1.05;
 //	if (player.jewelryName == "fox hairpin") unarmed += .2;
+	unarmed = Math.round(unarmed);
 	return unarmed;
 }
 
@@ -839,6 +856,9 @@ public function baseelementalattacks():void {
 		if (player.statusEffectv2(StatusEffects.SummonedElementalsAir) == 6 && manacostofelementalattacking > 80) manacostofelementalattacking = 80;
 		if (player.statusEffectv2(StatusEffects.SummonedElementalsAir) == 7 && manacostofelementalattacking > 120) manacostofelementalattacking = 120;
 		if (player.statusEffectv2(StatusEffects.SummonedElementalsAir) == 8 && manacostofelementalattacking > 160) manacostofelementalattacking = 160;
+		if (player.statusEffectv2(StatusEffects.SummonedElementalsAir) >= 4 && player.findPerk(PerkLib.StrongElementalBond) >= 0) manacostofelementalattacking -= 10;
+		if (player.statusEffectv2(StatusEffects.SummonedElementalsAir) >= 6 && player.findPerk(PerkLib.StrongerElementalBond) >= 0) manacostofelementalattacking -= 30;
+		if (player.statusEffectv2(StatusEffects.SummonedElementalsAir) >= 8 && player.findPerk(PerkLib.StrongestElementalBond) >= 0) manacostofelementalattacking -= 90;
 	}
 	if (flags[kFLAGS.ATTACKING_ELEMENTAL_TYPE] == 2) {
 		if (player.statusEffectv2(StatusEffects.SummonedElementalsEarth) == 1 && manacostofelementalattacking > 0) manacostofelementalattacking = 0;
@@ -849,6 +869,9 @@ public function baseelementalattacks():void {
 		if (player.statusEffectv2(StatusEffects.SummonedElementalsEarth) == 6 && manacostofelementalattacking > 80) manacostofelementalattacking = 80;
 		if (player.statusEffectv2(StatusEffects.SummonedElementalsEarth) == 7 && manacostofelementalattacking > 120) manacostofelementalattacking = 120;
 		if (player.statusEffectv2(StatusEffects.SummonedElementalsEarth) == 8 && manacostofelementalattacking > 160) manacostofelementalattacking = 160;
+		if (player.statusEffectv2(StatusEffects.SummonedElementalsEarth) >= 4 && player.findPerk(PerkLib.StrongElementalBond) >= 0) manacostofelementalattacking -= 10;
+		if (player.statusEffectv2(StatusEffects.SummonedElementalsEarth) >= 6 && player.findPerk(PerkLib.StrongerElementalBond) >= 0) manacostofelementalattacking -= 30;
+		if (player.statusEffectv2(StatusEffects.SummonedElementalsEarth) >= 8 && player.findPerk(PerkLib.StrongestElementalBond) >= 0) manacostofelementalattacking -= 90;
 	}
 	if (flags[kFLAGS.ATTACKING_ELEMENTAL_TYPE] == 3) {
 		if (player.statusEffectv2(StatusEffects.SummonedElementalsFire) == 1 && manacostofelementalattacking > 0) manacostofelementalattacking = 0;
@@ -859,6 +882,9 @@ public function baseelementalattacks():void {
 		if (player.statusEffectv2(StatusEffects.SummonedElementalsFire) == 6 && manacostofelementalattacking > 80) manacostofelementalattacking = 80;
 		if (player.statusEffectv2(StatusEffects.SummonedElementalsFire) == 7 && manacostofelementalattacking > 120) manacostofelementalattacking = 120;
 		if (player.statusEffectv2(StatusEffects.SummonedElementalsFire) == 8 && manacostofelementalattacking > 160) manacostofelementalattacking = 160;
+		if (player.statusEffectv2(StatusEffects.SummonedElementalsFire) >= 4 && player.findPerk(PerkLib.StrongElementalBond) >= 0) manacostofelementalattacking -= 10;
+		if (player.statusEffectv2(StatusEffects.SummonedElementalsFire) >= 6 && player.findPerk(PerkLib.StrongerElementalBond) >= 0) manacostofelementalattacking -= 30;
+		if (player.statusEffectv2(StatusEffects.SummonedElementalsFire) >= 8 && player.findPerk(PerkLib.StrongestElementalBond) >= 0) manacostofelementalattacking -= 90;
 	}
 	if (flags[kFLAGS.ATTACKING_ELEMENTAL_TYPE] == 4) {
 		if (player.statusEffectv2(StatusEffects.SummonedElementalsWater) == 1 && manacostofelementalattacking > 0) manacostofelementalattacking = 0;
@@ -869,6 +895,9 @@ public function baseelementalattacks():void {
 		if (player.statusEffectv2(StatusEffects.SummonedElementalsWater) == 6 && manacostofelementalattacking > 80) manacostofelementalattacking = 80;
 		if (player.statusEffectv2(StatusEffects.SummonedElementalsWater) == 7 && manacostofelementalattacking > 120) manacostofelementalattacking = 120;
 		if (player.statusEffectv2(StatusEffects.SummonedElementalsWater) == 8 && manacostofelementalattacking > 160) manacostofelementalattacking = 160;
+		if (player.statusEffectv2(StatusEffects.SummonedElementalsWater) >= 4 && player.findPerk(PerkLib.StrongElementalBond) >= 0) manacostofelementalattacking -= 10;
+		if (player.statusEffectv2(StatusEffects.SummonedElementalsWater) >= 6 && player.findPerk(PerkLib.StrongerElementalBond) >= 0) manacostofelementalattacking -= 30;
+		if (player.statusEffectv2(StatusEffects.SummonedElementalsWater) >= 8 && player.findPerk(PerkLib.StrongestElementalBond) >= 0) manacostofelementalattacking -= 90;
 	}
 	if (flags[kFLAGS.ATTACKING_ELEMENTAL_TYPE] == 5) {
 		if (player.statusEffectv2(StatusEffects.SummonedElementalsIce) == 1 && manacostofelementalattacking > 0) manacostofelementalattacking = 0;
@@ -879,6 +908,9 @@ public function baseelementalattacks():void {
 		if (player.statusEffectv2(StatusEffects.SummonedElementalsIce) == 6 && manacostofelementalattacking > 80) manacostofelementalattacking = 80;
 		if (player.statusEffectv2(StatusEffects.SummonedElementalsIce) == 7 && manacostofelementalattacking > 120) manacostofelementalattacking = 120;
 		if (player.statusEffectv2(StatusEffects.SummonedElementalsIce) == 8 && manacostofelementalattacking > 160) manacostofelementalattacking = 160;
+		if (player.statusEffectv2(StatusEffects.SummonedElementalsIce) >= 4 && player.findPerk(PerkLib.StrongElementalBond) >= 0) manacostofelementalattacking -= 10;
+		if (player.statusEffectv2(StatusEffects.SummonedElementalsIce) >= 6 && player.findPerk(PerkLib.StrongerElementalBond) >= 0) manacostofelementalattacking -= 30;
+		if (player.statusEffectv2(StatusEffects.SummonedElementalsIce) >= 8 && player.findPerk(PerkLib.StrongestElementalBond) >= 0) manacostofelementalattacking -= 90;
 	}
 	if (flags[kFLAGS.ATTACKING_ELEMENTAL_TYPE] == 6) {
 		if (player.statusEffectv2(StatusEffects.SummonedElementalsLightning) == 1 && manacostofelementalattacking > 0) manacostofelementalattacking = 0;
@@ -889,6 +921,9 @@ public function baseelementalattacks():void {
 		if (player.statusEffectv2(StatusEffects.SummonedElementalsLightning) == 6 && manacostofelementalattacking > 80) manacostofelementalattacking = 80;
 		if (player.statusEffectv2(StatusEffects.SummonedElementalsLightning) == 7 && manacostofelementalattacking > 120) manacostofelementalattacking = 120;
 		if (player.statusEffectv2(StatusEffects.SummonedElementalsLightning) == 8 && manacostofelementalattacking > 160) manacostofelementalattacking = 160;
+		if (player.statusEffectv2(StatusEffects.SummonedElementalsLightning) >= 4 && player.findPerk(PerkLib.StrongElementalBond) >= 0) manacostofelementalattacking -= 10;
+		if (player.statusEffectv2(StatusEffects.SummonedElementalsLightning) >= 6 && player.findPerk(PerkLib.StrongerElementalBond) >= 0) manacostofelementalattacking -= 30;
+		if (player.statusEffectv2(StatusEffects.SummonedElementalsLightning) >= 8 && player.findPerk(PerkLib.StrongestElementalBond) >= 0) manacostofelementalattacking -= 90;
 	}
 	if (flags[kFLAGS.ATTACKING_ELEMENTAL_TYPE] == 7) {
 		if (player.statusEffectv2(StatusEffects.SummonedElementalsDarkness) == 1 && manacostofelementalattacking > 0) manacostofelementalattacking = 0;
@@ -899,6 +934,9 @@ public function baseelementalattacks():void {
 		if (player.statusEffectv2(StatusEffects.SummonedElementalsDarkness) == 6 && manacostofelementalattacking > 80) manacostofelementalattacking = 80;
 		if (player.statusEffectv2(StatusEffects.SummonedElementalsDarkness) == 7 && manacostofelementalattacking > 120) manacostofelementalattacking = 120;
 		if (player.statusEffectv2(StatusEffects.SummonedElementalsDarkness) == 8 && manacostofelementalattacking > 160) manacostofelementalattacking = 160;
+		if (player.statusEffectv2(StatusEffects.SummonedElementalsDarkness) >= 4 && player.findPerk(PerkLib.StrongElementalBond) >= 0) manacostofelementalattacking -= 10;
+		if (player.statusEffectv2(StatusEffects.SummonedElementalsDarkness) >= 6 && player.findPerk(PerkLib.StrongerElementalBond) >= 0) manacostofelementalattacking -= 30;
+		if (player.statusEffectv2(StatusEffects.SummonedElementalsDarkness) >= 8 && player.findPerk(PerkLib.StrongestElementalBond) >= 0) manacostofelementalattacking -= 90;
 	}
 	if (player.mana < manacostofelementalattacking) {
 		outputText("Your mana is too low to fuel your elemental attack!\n\n");
@@ -999,6 +1037,7 @@ public function elementalattacks():void {
 	}
 	if (player.findPerk(PerkLib.ElementalConjurerResolve) >= 0) damageelemental *= (1 + (0.1 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));
 	if (player.findPerk(PerkLib.ElementalConjurerDedication) >= 0) damageelemental *= (1 + (0.2 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));
+	if (player.findPerk(PerkLib.ElementalConjurerSacrifice) >= 0) damageelemental *= (1 + (0.3 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));
 	//Determine if critical hit!
 	var crit:Boolean = false;
 	var critChance:int = 5;
@@ -1046,6 +1085,7 @@ public function elementalattacks():void {
 	}
 	outputText("<b>(<font color=\"#800000\">" + damageelemental + "</font>)</b>\n\n");
 	damageelemental = doDamage(damageelemental);
+	//checkMinionsAchievementDamage(damageelemental);
 	if(monster.HP >= 1 && monster.lust <= monster.eMaxLust()) {
 		fatigueRecovery();
 		manaregeneration();
@@ -2929,25 +2969,26 @@ public function attack():void {
 		//Selfcorrupting weapons
 		if (player.weapon == weapons.DEMSCYT && player.cor < 90) dynStats("cor", 0.3);
 		//Weapon Procs!
-		if(player.weapon == weapons.WARHAMR || player.weapon == weapons.D_WHAM_ || player.weapon == weapons.OTETSU || player.weapon == weapons.S_GAUNT || player.weapon == weapons.H_GAUNT) {
-			//10% chance
-			if(rand(10) == 0 && monster.findPerk(PerkLib.Resolute) < 0) {
-				outputText("\n" + monster.capitalA + monster.short + " reels from the brutal blow, stunned.");
-				if (!monster.hasStatusEffect(StatusEffects.Stunned)) monster.createStatusEffect(StatusEffects.Stunned,rand(2),0,0,0);
-			}
-			//50% Bleed chance
-			if (player.weapon == weapons.H_GAUNT && rand(2) == 0 && monster.armorDef < 10 && !monster.hasStatusEffect(StatusEffects.IzmaBleed))
-			{
+		//10% Stun chance
+		if ((player.weapon == weapons.WARHAMR || player.weapon == weapons.D_WHAM_ || player.weapon == weapons.OTETSU || player.weapon == weapons.S_GAUNT) && rand(10) == 0 && monster.findPerk(PerkLib.Resolute) < 0) {
+			outputText("\n" + monster.capitalA + monster.short + " reels from the brutal blow, stunned.");
+			if (!monster.hasStatusEffect(StatusEffects.Stunned)) monster.createStatusEffect(StatusEffects.Stunned,rand(2),0,0,0);
+		}
+		//50% Bleed chance
+		if ((player.weapon == weapons.H_GAUNT || player.weapon == weapons.CNTWHIP) && rand(2) == 0 && monster.armorDef < 10 && !monster.hasStatusEffect(StatusEffects.IzmaBleed))
+		{
+			if (monster.findPerk(PerkLib.EnemyConstructType) >= 0) {
 				if (monster is LivingStatue)
 				{
 					outputText("Despite the rents you've torn in its stony exterior, the statue does not bleed.");
 				}
-				else
-				{
-					monster.createStatusEffect(StatusEffects.IzmaBleed,3,0,0,0);
-					if(monster.plural) outputText("\n" + monster.capitalA + monster.short + " bleed profusely from the many bloody gashes your hooked gauntlets leave behind.");
-					else outputText("\n" + monster.capitalA + monster.short + " bleeds profusely from the many bloody gashes your hooked gauntlets leave behind.");
-				}
+				else outputText("Despite the rents you've torn in its exterior, " + monster.a + monster.short + " does not bleed.");
+			}
+			else
+			{
+				monster.createStatusEffect(StatusEffects.IzmaBleed,3,0,0,0);
+				if(monster.plural) outputText("\n" + monster.capitalA + monster.short + " bleed profusely from the many bloody gashes your [weapon] leave behind.");
+				else outputText("\n" + monster.capitalA + monster.short + " bleeds profusely from the many bloody gashes your [weapon] leave behind.");
 			}
 		}
 	}
@@ -4380,6 +4421,14 @@ if((player.hasStatusEffect(StatusEffects.NagaBind) || player.hasStatusEffect(Sta
 			player.addStatusValue(StatusEffects.CooldownOniRampage,1,-1);
 		}
 	}
+	//Elemental Aspect status effects
+	if (player.hasStatusEffect(StatusEffects.StoneSkin)) {
+		if (player.statusEffectv2(StatusEffects.StoneSkin) <= 0) {
+			player.removeStatusEffect(StatusEffects.StoneSkin);
+			outputText("<b>Stone Skin effect wore off!</b>\n\n");
+		}
+		else player.addStatusValue(StatusEffects.StoneSkin,2,-1);
+	}
 	if (player.hasStatusEffect(StatusEffects.BladeDance)) player.removeStatusEffect(StatusEffects.BladeDance);
 	if (player.hasStatusEffect(StatusEffects.ResonanceVolley)) player.removeStatusEffect(StatusEffects.ResonanceVolley);
 	if (player.hasStatusEffect(StatusEffects.Defend)) player.removeStatusEffect(StatusEffects.Defend);
@@ -4510,6 +4559,7 @@ public function manaregeneration(combat:Boolean = true):void {
 public function wrathregeneration(combat:Boolean = true):void {
 	var gainedwrath:Number = 0;
 	if (combat) {
+		if (player.findPerk(PerkLib.JobBeastWarrior) >= 0) gainedwrath += 2;
 		if (player.findPerk(PerkLib.Berzerker) >= 0) gainedwrath += 2;
 		if (player.findPerk(PerkLib.Lustzerker) >= 0) gainedwrath += 2;
 		if (player.findPerk(PerkLib.Rage) >= 0) gainedwrath += 2;
@@ -4521,6 +4571,7 @@ public function wrathregeneration(combat:Boolean = true):void {
 		kGAMECLASS.WrathChange(gainedwrath, false);
 	}
 	else {
+		if (player.findPerk(PerkLib.JobBeastWarrior) >= 0) gainedwrath += 1;
 		if (player.findPerk(PerkLib.Berzerker) >= 0) gainedwrath += 1;
 		if (player.findPerk(PerkLib.Lustzerker) >= 0) gainedwrath += 1;
 		if (player.findPerk(PerkLib.Rage) >= 0) gainedwrath += 1;
@@ -4615,15 +4666,6 @@ public function startCombatImpl(monster_:Monster, plotFight_:Boolean = false):vo
 	}
 	if (monster.findPerk(PerkLib.JobKnight) >= 0) monster.tou += (10 * (1 + player.newGamePlusMod()));
 	if (monster.findPerk(PerkLib.JobMonk) >= 0) monster.wis += (15 * (1 + player.newGamePlusMod()));
-	if (monster.findPerk(PerkLib.JobMunchkin) >= 0) {
-		monster.str += (25 * (1 + player.newGamePlusMod()));
-		monster.tou += (25 * (1 + player.newGamePlusMod()));
-		monster.spe += (25 * (1 + player.newGamePlusMod()));
-		monster.inte += (25 * (1 + player.newGamePlusMod()));
-		monster.wis += (25 * (1 + player.newGamePlusMod()));
-		monster.lib += (15 * (1 + player.newGamePlusMod()));
-		monster.sens += (15 * (1 + player.newGamePlusMod()));
-	}
 	if (monster.findPerk(PerkLib.JobRanger) >= 0) monster.spe += (5 * (1 + player.newGamePlusMod()));
 	if (monster.findPerk(PerkLib.JobSeducer) >= 0) monster.lib += (5 * (1 + player.newGamePlusMod()));
 	if (monster.findPerk(PerkLib.JobSorcerer) >= 0) monster.inte += (5 * (1 + player.newGamePlusMod()));
@@ -4649,6 +4691,15 @@ public function startCombatImpl(monster_:Monster, plotFight_:Boolean = false):vo
 	if (monster.findPerk(PerkLib.PrestigeJobSoulArtMaster) >= 0) {
 		monster.str += (40 * (1 + player.newGamePlusMod()));
 		monster.wis += (40 * (1 + player.newGamePlusMod()));
+	}
+	if (monster.findPerk(PerkLib.DeityJobMunchkin) >= 0) {
+		monster.str += (25 * (1 + player.newGamePlusMod()));
+		monster.tou += (25 * (1 + player.newGamePlusMod()));
+		monster.spe += (25 * (1 + player.newGamePlusMod()));
+		monster.inte += (25 * (1 + player.newGamePlusMod()));
+		monster.wis += (25 * (1 + player.newGamePlusMod()));
+		monster.lib += (15 * (1 + player.newGamePlusMod()));
+		monster.sens += (15 * (1 + player.newGamePlusMod()));
 	}
 	if (monster.findPerk(PerkLib.HclassHeavenTribulationSurvivor) >= 0) {
 		monster.str += (10 * (1 + player.newGamePlusMod()));
@@ -4846,26 +4897,26 @@ public function display():void {
 		if (player.findPerk(PerkLib.EyesOfTheHunterNovice) >= 0 && player.sens >= 25) {
 			outputText("\n----------------------------\n");
 			outputText("\nGeneral Type: ");
-			if (monster.hasPerk(PerkLib.EnemyBeastOrAnimalMorphType) >= 0) outputText("Beast or Animal-morph ");
-			if (monster.hasPerk(PerkLib.EnemyConstructType) >= 0) outputText("Construct ");
-			if (monster.hasPerk(PerkLib.EnemyGigantType) >= 0) outputText("Gigant ");
-			if (monster.hasPerk(PerkLib.EnemyGodType) >= 0) outputText("God ");
-			if (monster.hasPerk(PerkLib.EnemyGroupType) >= 0) outputText("Group ");
+			if (monster.hasPerk(PerkLib.EnemyBeastOrAnimalMorphType) >= 0) outputText("< Beast or Animal-morph > ");
+			if (monster.hasPerk(PerkLib.EnemyConstructType) >= 0) outputText("< Construct > ");
+			if (monster.hasPerk(PerkLib.EnemyGigantType) >= 0) outputText("< Gigant > ");
+			if (monster.hasPerk(PerkLib.EnemyGodType) >= 0) outputText("< God > ");
+			if (monster.hasPerk(PerkLib.EnemyGroupType) >= 0) outputText("< Group > ");
 			if (player.findPerk(PerkLib.EyesOfTheHunterAdept) >= 0 && player.sens >= 50) {
-				if (monster.hasPerk(PerkLib.EnemyBossType) >= 0) outputText("Boss ");
+				if (monster.hasPerk(PerkLib.EnemyBossType) >= 0) outputText("< Boss > ");
 				outputText("\nElemental Type: ");
-				if (monster.hasPerk(PerkLib.DarknessNature) >= 0) outputText("Darkness Nature ");
-				if (monster.hasPerk(PerkLib.FireNature) >= 0) outputText("Fire Nature ");
-				if (monster.hasPerk(PerkLib.IceNature) >= 0) outputText("Ice Nature ");
-				if (monster.hasPerk(PerkLib.LightningNature) >= 0) outputText("Lightning Nature ");
-				//if (player.findPerk(PerkLib.) >= 0 && player.sens >= 75) {
-					//if (monster.hasPerk(PerkLib) >= 0) outputText("Darkness Vulnerability ");
-					//if (monster.hasPerk(PerkLib) >= 0) outputText("Fire Vulnerability ");
-					//if (monster.hasPerk(PerkLib) >= 0) outputText("Ice Vulnerability ");
-					//if (monster.hasPerk(PerkLib) >= 0) outputText("Lightning Vulnerability ");
+				if (monster.hasPerk(PerkLib.DarknessNature) >= 0) outputText("< Darkness Nature > ");
+				if (monster.hasPerk(PerkLib.FireNature) >= 0) outputText("< Fire Nature > ");
+				if (monster.hasPerk(PerkLib.IceNature) >= 0) outputText("< Ice Nature > ");
+				if (monster.hasPerk(PerkLib.LightningNature) >= 0) outputText("< Lightning Nature > ");
+				if (player.findPerk(PerkLib.EyesOfTheHunterMaster) >= 0 && player.sens >= 75) {
+					if (monster.hasPerk(PerkLib.DarknessVulnerability) >= 0) outputText("< Darkness Vulnerability > ");
+					if (monster.hasPerk(PerkLib.FireVulnerability) >= 0) outputText("< Fire Vulnerability > ");
+					if (monster.hasPerk(PerkLib.IceVulnerability) >= 0) outputText("< Ice Vulnerability > ");
+					if (monster.hasPerk(PerkLib.LightningVulnerability) >= 0) outputText("< Lightning Vulnerability > ");
 					//if (monster.hasPerk(PerkLib) >= 0) outputText("");
 					//if (monster.hasPerk(PerkLib) >= 0) outputText("");
-				//}
+				}
 			}
 			outputText("\n");
 		}
@@ -5980,7 +6031,5 @@ public function wisdomscalingbonus():Number {
 	else wisdomscalingvalue += (player.wis/3 + rand(player.wis/2));
 	return wisdomscalingvalue;
 }
-
-
 }
 }

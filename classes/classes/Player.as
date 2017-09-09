@@ -393,14 +393,15 @@ use namespace kGAMECLASS;
 			if (findPerk(PerkLib.ChiReflowAttack) >= 0) armorDef *= UmasShop.NEEDLEWORK_ATTACK_DEFENSE_MULTI;
 			armorDef = Math.round(armorDef);
 			//Berzerking removes armor
-			if(hasStatusEffect(StatusEffects.Berzerking) && findPerk(PerkLib.ColdFury) < 1) {
+			if (hasStatusEffect(StatusEffects.Berzerking) && findPerk(PerkLib.ColdFury) < 1) {
 				armorDef = 0;
 			}
-			if(hasStatusEffect(StatusEffects.Lustzerking)) {
+			if (hasStatusEffect(StatusEffects.Lustzerking)) {
 				armorDef = Math.round(armorDef * 1.1);
 				armorDef += 1;
 			}
-			if(hasStatusEffect(StatusEffects.ChargeArmor) && !isNaked()) armorDef += Math.round(statusEffectv1(StatusEffects.ChargeArmor));
+			if (hasStatusEffect(StatusEffects.ChargeArmor) && !isNaked()) armorDef += Math.round(statusEffectv1(StatusEffects.ChargeArmor));
+			if (hasStatusEffect(StatusEffects.StoneSkin)) armorDef += Math.round(statusEffectv1(StatusEffects.StoneSkin));
 			if (kGAMECLASS.monster.hasStatusEffect(StatusEffects.TailWhip)) {
 				armorDef -= kGAMECLASS.monster.statusEffectv1(StatusEffects.TailWhip);
 				if(armorDef < 0) armorDef = 0;
@@ -483,7 +484,10 @@ use namespace kGAMECLASS;
 			}
 			if(hasStatusEffect(StatusEffects.Berzerking)) attack += (15 + (15 * (1 + newGamePlusMod)));
 			if(hasStatusEffect(StatusEffects.Lustzerking)) attack += (15 + (15 * (1 + newGamePlusMod)));
-			if(hasStatusEffect(StatusEffects.ChargeWeapon) && weaponName != "fists") attack += Math.round(statusEffectv1(StatusEffects.ChargeWeapon));//zrobić modyfikacje na przypadek single/dual weapon charged tj. 2x wiecej bonusu za dual ale też koszt rzucania powinien wzrosnąć 2x
+			if (hasStatusEffect(StatusEffects.ChargeWeapon)) {
+				if (weaponName != "fists" && weaponPerk != "Large" && weaponPerk != "Dual Large") attack += Math.round(statusEffectv1(StatusEffects.ChargeWeapon));
+				if (weaponPerk == "Large" || weaponPerk == "Dual Large") attack += Math.round(statusEffectv1(StatusEffects.ChargeWeapon));
+			}
 			attack = Math.round(attack);
 			return attack;
 		}
@@ -3688,7 +3692,7 @@ use namespace kGAMECLASS;
 				prestigeJobs--;
 			if (findPerk(PerkLib.PrestigeJobSoulArtMaster) >= 0)
 				prestigeJobs--;
-			if (findPerk(PerkLib.JobMunchkin) >= 0)
+			if (findPerk(PerkLib.DeityJobMunchkin) >= 0)
 				prestigeJobs++;
 		//	if (findPerk(PerkLib.TrachealSystemEvolved) >= 0)
 		//		prestigeJobs++;
@@ -5009,6 +5013,13 @@ use namespace kGAMECLASS;
 				maxSen += (6 * (1 + newGamePlusMod));
 			}
 			if (findPerk(PerkLib.JobBarbarian) >= 0) maxStr += (10 * (1 + newGamePlusMod));
+			if (findPerk(PerkLib.JobBeastWarrior) >= 0) {
+				maxStr += (5 * (1 + newGamePlusMod));
+				maxTou += (5 * (1 + newGamePlusMod));
+				maxSpe += (5 * (1 + newGamePlusMod));
+				maxInt -= (5 * (1 + newGamePlusMod));
+				maxWis -= (5 * (1 + newGamePlusMod));
+			}
 			if (findPerk(PerkLib.JobCourtesan) >= 0) maxLib += (15 * (1 + newGamePlusMod));
 			if (findPerk(PerkLib.JobBrawler) >= 0) maxStr += (10 * (1 + newGamePlusMod));
 			if (findPerk(PerkLib.JobDervish) >= 0) maxSpe += (10 * (1 + newGamePlusMod));
@@ -5030,15 +5041,6 @@ use namespace kGAMECLASS;
 			}
 			if (findPerk(PerkLib.JobKnight) >= 0) maxTou += (10 * (1 + newGamePlusMod));
 			if (findPerk(PerkLib.JobMonk) >= 0) maxWis += (15 * (1 + newGamePlusMod));
-			if (findPerk(PerkLib.JobMunchkin) >= 0) {
-				maxStr += (25 * (1 + newGamePlusMod));
-				maxTou += (25 * (1 + newGamePlusMod));
-				maxSpe += (25 * (1 + newGamePlusMod));
-				maxInt += (25 * (1 + newGamePlusMod));
-				maxWis += (25 * (1 + newGamePlusMod));
-				maxLib += (15 * (1 + newGamePlusMod));
-				maxSen += (15 * (1 + newGamePlusMod));
-			}
 			if (findPerk(PerkLib.JobRanger) >= 0) maxSpe += (5 * (1 + newGamePlusMod));
 			if (findPerk(PerkLib.JobSeducer) >= 0) maxLib += (5 * (1 + newGamePlusMod));
 			if (findPerk(PerkLib.JobSorcerer) >= 0) maxInt += (5 * (1 + newGamePlusMod));
@@ -5069,21 +5071,43 @@ use namespace kGAMECLASS;
 				maxStr += (40 * (1 + newGamePlusMod));
 				maxWis += (40 * (1 + newGamePlusMod));
 			}
+			if (findPerk(PerkLib.DeityJobMunchkin) >= 0) {
+				maxStr += (25 * (1 + newGamePlusMod));
+				maxTou += (25 * (1 + newGamePlusMod));
+				maxSpe += (25 * (1 + newGamePlusMod));
+				maxInt += (25 * (1 + newGamePlusMod));
+				maxWis += (25 * (1 + newGamePlusMod));
+				maxLib += (15 * (1 + newGamePlusMod));
+				maxSen += (15 * (1 + newGamePlusMod));
+			}
 			if (findPerk(PerkLib.WeaponMastery) >= 0) maxStr += (5 * (1 + newGamePlusMod));
 			if (findPerk(PerkLib.WeaponGrandMastery) >= 0) maxStr += (10 * (1 + newGamePlusMod));
 			if (findPerk(PerkLib.ElementalConjurerResolve) >= 0) {
-				maxStr -= (20 * (1 + newGamePlusMod));
-				maxTou -= (20 * (1 + newGamePlusMod));
-				maxSpe -= (20 * (1 + newGamePlusMod));
-				maxInt += (25 * (1 + newGamePlusMod));
-				maxWis += (50 * (1 + newGamePlusMod));
+				if (findPerk(PerkLib.ElementalConjurerMindAndBodyResolve) < 0) {
+					maxStr -= (15 * (1 + newGamePlusMod));
+					maxTou -= (15 * (1 + newGamePlusMod));
+					maxSpe -= (15 * (1 + newGamePlusMod));
+				}
+				maxInt += (20 * (1 + newGamePlusMod));
+				maxWis += (30 * (1 + newGamePlusMod));
 			}
 			if (findPerk(PerkLib.ElementalConjurerDedication) >= 0) {
-				maxStr -= (40 * (1 + newGamePlusMod));
-				maxTou -= (40 * (1 + newGamePlusMod));
-				maxSpe -= (40 * (1 + newGamePlusMod));
-				maxInt += (50 * (1 + newGamePlusMod));
-				maxWis += (100 * (1 + newGamePlusMod));
+				//if (findPerk(PerkLib.) < 0) {
+					maxStr -= (30 * (1 + newGamePlusMod));
+					maxTou -= (30 * (1 + newGamePlusMod));
+					maxSpe -= (30 * (1 + newGamePlusMod));
+				//}
+				maxInt += (40 * (1 + newGamePlusMod));
+				maxWis += (60 * (1 + newGamePlusMod));
+			}
+			if (findPerk(PerkLib.ElementalConjurerSacrifice) >= 0) {
+				//if (findPerk(PerkLib.) < 0) {
+					maxStr -= (45 * (1 + newGamePlusMod));
+					maxTou -= (45 * (1 + newGamePlusMod));
+					maxSpe -= (45 * (1 + newGamePlusMod));
+				//}
+				maxInt += (60 * (1 + newGamePlusMod));
+				maxWis += (90 * (1 + newGamePlusMod));
 			}
 			if (findPerk(PerkLib.HclassHeavenTribulationSurvivor) >= 0) {
 				maxStr += (10 * (1 + newGamePlusMod));
