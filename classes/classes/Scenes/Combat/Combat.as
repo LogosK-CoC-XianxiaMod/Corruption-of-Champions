@@ -659,7 +659,7 @@ public function unarmedAttack():Number {
 	}
 	if (player.findPerk(PerkLib.HclassHeavenTribulationSurvivor) >= 0) unarmed += 12 * (1 + player.newGamePlusMod());
 	if (player.findPerk(PerkLib.GclassHeavenTribulationSurvivor) >= 0) unarmed += 18 * (1 + player.newGamePlusMod());
-//	if (findPerk(OneOfBeastWarriorPerks) >= 0) unarmed *= 1.05;
+	if (player.hasStatusEffect(StatusEffects.CrinosShape) && player.findPerk(PerkLib.ImprovingNaturesBlueprintsNaturalWeapons) >= 0) unarmed *= 1.1;
 //	if (player.jewelryName == "fox hairpin") unarmed += .2;
 	unarmed = Math.round(unarmed);
 	return unarmed;
@@ -3472,6 +3472,7 @@ public function enemyAIImpl():void {
 		//}
 	}
 	if (player.hasStatusEffect(StatusEffects.TranceTransformation)) player.soulforce -= 50;
+	if (player.hasStatusEffect(StatusEffects.CrinosShape)) player.wrath -= mspecials.crinosshapeCost();
 }
 public function finishCombat():void
 {
@@ -4266,6 +4267,19 @@ if((player.hasStatusEffect(StatusEffects.NagaBind) || player.hasStatusEffect(Sta
 	//		outputText("<b>As your soulforce is drained you can feel Violet Pupil Transformation regenerative power spreading in your body.</b>\n\n");
 	//	}
 	}
+	//Crinos Shape
+	if (player.hasStatusEffect(StatusEffects.CrinosShape)) {
+		if (player.wrath < mspecials.crinosshapeCost()) {
+			kGAMECLASS.dynStats("str", -player.statusEffectv1(StatusEffects.CrinosShape));
+			kGAMECLASS.dynStats("tou", -player.statusEffectv2(StatusEffects.CrinosShape));
+			kGAMECLASS.dynStats("spe", -player.statusEffectv3(StatusEffects.CrinosShape));
+			player.removeStatusEffect(StatusEffects.CrinosShape);
+			outputText("<b>The flow of power through you suddenly stops, as you no longer have the wrath to sustain it.  You drop roughly to the floor, the bestial chanches slowly fading away leaving you in your normal form.</b>\n\n");
+		}
+	//	else {
+	//		outputText("<b>As your soulforce is drained you can feel Violet Pupil Transformation regenerative power spreading in your body.</b>\n\n");
+	//	}
+	}
 	//Ezekiel Curse
 	if (player.hasStatusEffect(StatusEffects.EzekielCurse)) {
 		if (flags[kFLAGS.EVANGELINE_AFFECTION] >= 2 && player.findPerk(PerkLib.EzekielBlessing) >= 0) {
@@ -4457,8 +4471,10 @@ public function regeneration(combat:Boolean = true):void {
 		if (player.findPerk(PerkLib.LizanRegeneration) >= 0) healingPercent += 1.5;
 		if (player.findPerk(PerkLib.LizanMarrow) >= 0) healingPercent += 0.5;
 		if (player.findPerk(PerkLib.BodyCultivator) >= 0) healingPercent += 0.5;
-		if (player.findPerk(PerkLib.HclassHeavenTribulationSurvivor) >= 0) healingPercent += 0.5;
-		if (player.findPerk(PerkLib.GclassHeavenTribulationSurvivor) >= 0) healingPercent += 0.5;
+		if (player.findPerk(PerkLib.HclassHeavenTribulationSurvivor) >= 0) healingPercent += 1;
+		if (player.findPerk(PerkLib.GclassHeavenTribulationSurvivor) >= 0) healingPercent += 1.5;
+		if (player.perkv1(PerkLib.Sanctuary) == 1) healingPercent += ((player.corruptionTolerance() - player.cor) / (100 + player.corruptionTolerance()));
+		if (player.perkv1(PerkLib.Sanctuary) == 2) healingPercent += player.cor / (100 + player.corruptionTolerance());
 		if ((player.internalChimeraRating() >= 1 && player.hunger < 1 && flags[kFLAGS.HUNGER_ENABLED] > 0) || (player.internalChimeraRating() >= 1 && flags[kFLAGS.HUNGER_ENABLED] <= 0)) healingPercent -= (0.5 * player.internalChimeraRating());
 		if (healingPercent > maximumRegeneration()) healingPercent = maximumRegeneration();
 		HPChange(Math.round((player.maxHP() * healingPercent / 100) + nonPercentBasedRegeneration()), false);
@@ -4568,6 +4584,12 @@ public function wrathregeneration(combat:Boolean = true):void {
 		if (player.hasStatusEffect(StatusEffects.Lustzerking)) gainedwrath += 3;
 		if (player.hasStatusEffect(StatusEffects.Rage)) gainedwrath += 3;
 		if (player.hasStatusEffect(StatusEffects.OniRampage)) gainedwrath += 6;
+		if (player.hasStatusEffect(StatusEffects.CrinosShape)) {
+			gainedwrath += 1;
+			if (player.findPerk(PerkLib.ImprovedCrinosShape) >= 0) gainedwrath += 2;
+			if (player.findPerk(PerkLib.GreaterCrinosShape) >= 0) gainedwrath += 3;
+			if (player.findPerk(PerkLib.MasterCrinosShape) >= 0) gainedwrath += 4;
+		}
 		kGAMECLASS.WrathChange(gainedwrath, false);
 	}
 	else {
@@ -4896,26 +4918,26 @@ public function display():void {
 		//wrath
 		if (player.findPerk(PerkLib.EyesOfTheHunterNovice) >= 0 && player.sens >= 25) {
 			outputText("\n----------------------------\n");
-			outputText("\nGeneral Type: ");
-			if (monster.hasPerk(PerkLib.EnemyBeastOrAnimalMorphType) >= 0) outputText("< Beast or Animal-morph > ");
-			if (monster.hasPerk(PerkLib.EnemyConstructType) >= 0) outputText("< Construct > ");
-			if (monster.hasPerk(PerkLib.EnemyGigantType) >= 0) outputText("< Gigant > ");
-			if (monster.hasPerk(PerkLib.EnemyGodType) >= 0) outputText("< God > ");
-			if (monster.hasPerk(PerkLib.EnemyGroupType) >= 0) outputText("< Group > ");
+			outputText("\n<b>General Type:</b>");
+			if (monster.hasPerk(PerkLib.EnemyBeastOrAnimalMorphType)) outputText("\n-Beast or Animal-morph");
+			if (monster.hasPerk(PerkLib.EnemyConstructType)) outputText("\n-Construct");
+			if (monster.hasPerk(PerkLib.EnemyGigantType)) outputText("\n-Gigant");
+			if (monster.hasPerk(PerkLib.EnemyGodType)) outputText("\n-God");
+			if (monster.hasPerk(PerkLib.EnemyGroupType)) outputText("\n-Group");
 			if (player.findPerk(PerkLib.EyesOfTheHunterAdept) >= 0 && player.sens >= 50) {
-				if (monster.hasPerk(PerkLib.EnemyBossType) >= 0) outputText("< Boss > ");
-				outputText("\nElemental Type: ");
-				if (monster.hasPerk(PerkLib.DarknessNature) >= 0) outputText("< Darkness Nature > ");
-				if (monster.hasPerk(PerkLib.FireNature) >= 0) outputText("< Fire Nature > ");
-				if (monster.hasPerk(PerkLib.IceNature) >= 0) outputText("< Ice Nature > ");
-				if (monster.hasPerk(PerkLib.LightningNature) >= 0) outputText("< Lightning Nature > ");
+				if (monster.hasPerk(PerkLib.EnemyBossType)) outputText("\n-Boss");
+				outputText("\n<b>Elemental Type:</b>");
+				if (monster.hasPerk(PerkLib.DarknessNature)) outputText("\n-Darkness Nature");
+				if (monster.hasPerk(PerkLib.FireNature)) outputText("\n-Fire Nature");
+				if (monster.hasPerk(PerkLib.IceNature)) outputText("\n-Ice Nature");
+				if (monster.hasPerk(PerkLib.LightningNature)) outputText("\n-Lightning Nature");
 				if (player.findPerk(PerkLib.EyesOfTheHunterMaster) >= 0 && player.sens >= 75) {
-					if (monster.hasPerk(PerkLib.DarknessVulnerability) >= 0) outputText("< Darkness Vulnerability > ");
-					if (monster.hasPerk(PerkLib.FireVulnerability) >= 0) outputText("< Fire Vulnerability > ");
-					if (monster.hasPerk(PerkLib.IceVulnerability) >= 0) outputText("< Ice Vulnerability > ");
-					if (monster.hasPerk(PerkLib.LightningVulnerability) >= 0) outputText("< Lightning Vulnerability > ");
-					//if (monster.hasPerk(PerkLib) >= 0) outputText("");
-					//if (monster.hasPerk(PerkLib) >= 0) outputText("");
+					if (monster.findPerk(PerkLib.DarknessVulnerability) >= 0) outputText("\n-Darkness Vulnerability");
+					if (monster.findPerk(PerkLib.FireVulnerability) >= 0) outputText("\n-Fire Vulnerability");
+					if (monster.findPerk(PerkLib.IceVulnerability) >= 0) outputText("\n-Ice Vulnerability");
+					if (monster.findPerk(PerkLib.LightningVulnerability) >= 0) outputText("\n-Lightning Vulnerability");
+					//if (monster.findPerk(PerkLib) >= 0) outputText("");
+					//if (monster.findPerk(PerkLib) >= 0) outputText("");
 				}
 			}
 			outputText("\n");
