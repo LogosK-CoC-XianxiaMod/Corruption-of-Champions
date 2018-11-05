@@ -1,26 +1,24 @@
-package classes.Items.Weapons 
+package classes.Items.Weapons
 {
-	import classes.PerkLib;
-	public class NephilimBlade extends WeaponWithPerk
+import classes.Items.Weapon;
+
+public class NephilimBlade extends Weapon
 	{
-		
-		public function NephilimBlade() 
+
+		public function NephilimBlade()
 		{
 			super(
-				"NPHMBlade","Nephilim Blade","nephilim blade","a nephilim blade","slash",52,3000,
-				"Once upon a time on Mareth, a demigod of great purity named Nephilim is said to have existed. His duty was to shape the land at the demand of the gods, which he did. His task finished, he disappeared never to be found again. This sword is rumored to have belonged to him. While you don’t know for sure if the story is true, one thing is certain, this blade seeks and destroys corruption wherever it might find it, and will periodically wash its user of any impurity.",
-				"Large",
-				PerkLib.Sanctuary,0,0,0,0
+				"NPHMBlade","Nephilim Blade","nephilim blade","a nephilim blade","slash",62,2480,
+				"A long lost sword, made in a shining metal. It once belonged to the demigod Nephilim. This masterfully crafted blade seeks and destroys corruption wherever it might find it. It will periodically cleanse their user body and soul.",
+				"Large"
 			);
 		}
 		override public function get attack():Number {
-			var boost:int = 0;
-			if (game.player.str >= 150) boost += 20;
-			if (game.player.str >= 100) boost += 15;
-			if (game.player.str >= 50 ) boost += 10;
-			boost += (7 + (20 - game.player.cor / 3));
-			return (7 + boost); 
-		}	
+			var strMod:int = Math.floor(Math.min(game.player.str, 150))/50;
+			var boost:int = (6 * strMod) + 5;
+			boost += (20 - game.player.cor / 3);
+			return (5 + boost);
+		}
 	}
 
 }

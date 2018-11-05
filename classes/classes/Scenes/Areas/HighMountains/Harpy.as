@@ -1,10 +1,15 @@
 ﻿package classes.Scenes.Areas.HighMountains
 {
-	import classes.*;
-	import classes.GlobalFlags.kFLAGS;
-	import classes.internals.*;
+import classes.*;
+import classes.BodyParts.Butt;
+import classes.BodyParts.Hips;
+import classes.BodyParts.LowerBody;
+import classes.BodyParts.Wings;
+import classes.GlobalFlags.kFLAGS;
+import classes.Scenes.SceneLib;
+import classes.internals.*;
 
-	public class Harpy extends Monster
+public class Harpy extends Monster
 	{
 
 //*Note, special attack one is an idea based on Ceraph.
@@ -27,25 +32,23 @@
 				if (flags[kFLAGS.IN_COMBAT_USE_PLAYER_WAITED_FLAG] == 0) {
 					outputText("The harpy lets out a terrible cry and drops, reaching an almost impossible speed as she dives down at you.  Her eyes are narrowed like a true bird of prey.  You were too busy with your own attack to avoid it!  Her claws surge down and pierce your [armor] like paper, driving hard into the flesh beneath and making you cry out in pain.  The harpy dumps you onto the ground, your wounds bleeding profusely. ");
 					var damage:Number = (160 + rand(20)) * (1 + (player.newGamePlusMod() / 2));
-					player.takeDamage(damage, true);					
+					player.takePhysDamage(damage, true);					
 					removeStatusEffect(StatusEffects.Uber);
 				}
 				else {
 					outputText("You stand firm and ready yourself as the crazed harpy hovers above you. Letting out an ear-splitting cry she dives at you with her claws extended, reaching an incredible speed before she levels out.  The harpy is heading right for you!  Thanks to your ready position, you manage to dive aside just as the harpy reaches you.  She clips you slightly, spinning you as you dive for the ground.  You hit the ground hard, but look up in time to see her make a rough, graceless landing.  Her body rolls until it reached a standstill.  The enraged harpy drags herself up and takes flight once more!  ");
-					player.takeDamage(10 + rand(10), true);
+					player.takePhysDamage(10 + rand(10), true);
 					removeStatusEffect(StatusEffects.Uber);
 					HP -= 20;
 				}
 			}
-			combatRoundOver();
 		}
 
 		//(Harpy special attack 2, lust increase)
 		protected function harpyTease():void
 		{
 			outputText("The harpy charges at you carelessly, her body striking you with the full weight of her motherly hips.  The pair of you go crashing backwards onto the ground.  You grapple with her weighty ass, trying your best not to think dirty thoughts, but the way she's maniacally flapping and writhing her curvy body against you makes it impossible! After a brief, groping wrestle on the ground, she pushes you away and takes flight again.");
-			game.dynStats("lus", (12 + rand(player.sens / 5)));
-			combatRoundOver();
+			player.dynStats("lus", (12 + rand(player.sens / 5)));
 		}
 
 
@@ -61,7 +64,7 @@
 
 		override public function defeated(hpVictory:Boolean):void
 		{
-			game.highMountains.harpyScene.harpyVictoryuuuuu();
+			SceneLib.highMountains.harpyScene.harpyVictoryuuuuu();
 		}
 
 
@@ -69,9 +72,9 @@
 		{
 			if (pcCameWorms) {
 				outputText("\n\nYour foe doesn't seem disgusted enough to leave...");
-				doNext(game.endLustLoss);
+				doNext(SceneLib.combat.endLustLoss);
 			} else {
-				game.highMountains.harpyScene.harpyLossU();
+				SceneLib.highMountains.harpyScene.harpyLossU();
 			}
 		}
 
@@ -98,27 +101,28 @@
 			this.imageName = "harpy";
 			this.long = "You are fighting a tall, deranged harpy. She appears very human, about six feet six inches tall but covered in a fine layer of powder-blue down. Her arms are sinewy and muscular, with a long web connecting them to her ample hips, covered in stringy blue feathers to aid her flight. A larger pair of powdery-blue wings also protrudes from her shoulder blades, flapping idly. She appears quite deranged as she circles you, approaching and backing away erratically. Her face is quite beautiful, with fine lilac makeup adorning the features of a handsome woman, and her lips are traced with rich golden lipstick. As she circles you, squawking frantically and trying to intimidate you, your eyes are drawn to her slender torso and small, pert breasts, each the size of a small fruit and covered in a layer of the softest feathers which ripple and move with the gusts from her wings. As astounding as her breasts are, her egg-bearing hips are even more impressive.  They're twice as wide as her torso, with enormous, jiggling buttocks where her huge, meaty thighs are coming up to meet them. Her legs end in three-pronged talons; their shadowy black curves glinting evilly in the light.";
 			// this.plural = false;
-			this.createVagina(false, VAGINA_WETNESS_SLICK, VAGINA_LOOSENESS_GAPING_WIDE);
+			this.createVagina(false, VaginaClass.WETNESS_SLICK, VaginaClass.LOOSENESS_GAPING_WIDE);
 			this.createStatusEffect(StatusEffects.BonusVCapacity, 40, 0, 0, 0);
 			createBreastRow(Appearance.breastCupInverse("B"));
-			this.ass.analLooseness = ANAL_LOOSENESS_TIGHT;
-			this.ass.analWetness = ANAL_WETNESS_DRY;
+			this.ass.analLooseness = AssClass.LOOSENESS_TIGHT;
+			this.ass.analWetness = AssClass.WETNESS_DRY;
 			this.createStatusEffect(StatusEffects.BonusACapacity,20,0,0,0);
 			this.tallness = 6*12+6;
-			this.hipRating = HIP_RATING_INHUMANLY_WIDE;
-			this.buttRating = BUTT_RATING_EXPANSIVE;
-			this.lowerBody = LOWER_BODY_TYPE_HARPY;
+			this.hips.type = Hips.RATING_INHUMANLY_WIDE;
+			this.butt.type = Butt.RATING_EXPANSIVE;
+			this.lowerBody = LowerBody.HARPY;
 			this.skin.setBaseOnly({color:"pink"});
 			this.skinDesc = "feathers";
 			this.hairColor = "blue";
 			this.hairLength = 16;
 			initStrTouSpeInte(90, 70, 110, 60);
-			initLibSensCor(70, 30, 80);
+			initWisLibSensCor(50, 70, 30, 80);
 			this.weaponName = "talons";
 			this.weaponVerb="slashing talons";
-			this.weaponAttack = 35 + (8 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.weaponAttack = 35;
 			this.armorName = "feathers";
-			this.armorDef = 10 + (2 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.armorDef = 10;
+			this.armorMDef = 1;
 			this.bonusHP = 200;
 			this.bonusLust = 20;
 			this.lust = 10;
@@ -127,17 +131,12 @@
 			this.level = 20;
 			this.gems = 30 + rand(14);
 			this.drop = new ChainedDrop().add(armors.W_ROBES,1/10)
+					.add(consumables.SKYSEED,1/5)
 					.elseDrop(consumables.GLDSEED);
-			this.wingType = WING_TYPE_HARPY;
+			this.wings.type = Wings.HARPY;
 			this.special1 = harpyUberCharge;
 			this.special2 = harpyTease;
 			this.createStatusEffect(StatusEffects.Flying,50,0,0,0);
-			this.str += 18 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.tou += 14 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.spe += 22 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.inte += 12 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];			
-			this.lib += 14 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.newgamebonusHP = 2400;
 			checkMonster();
 		}
 

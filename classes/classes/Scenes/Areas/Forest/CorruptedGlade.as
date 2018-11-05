@@ -1,11 +1,12 @@
 package classes.Scenes.Areas.Forest {
-	import classes.*;
-	import classes.GlobalFlags.kFLAGS;
+import classes.*;
+import classes.BodyParts.Tail;
+import classes.GlobalFlags.kFLAGS;
 
-	public class CorruptedGlade extends BaseContent implements TimeAwareInterface {
+public class CorruptedGlade extends BaseContent implements TimeAwareInterface {
 		
 		public function CorruptedGlade() {
-			CoC.timeAwareClassAdd(this);
+			EventParser.timeAwareClassAdd(this);
 		}
 		
 		public function timeChange():Boolean {
@@ -140,33 +141,33 @@ package classes.Scenes.Areas.Forest {
 				if (tentacle == 0) { //Small
 					outputText("a little small for your ");
 					switch (player.vaginas[0].vaginalLooseness) {
-						case VAGINA_LOOSENESS_TIGHT:		tentacleSize =   0; break;
-						case VAGINA_LOOSENESS_NORMAL:		tentacleSize =   4; break;
-						case VAGINA_LOOSENESS_LOOSE:		tentacleSize =  16; break;
-						case VAGINA_LOOSENESS_GAPING:		tentacleSize =  40; break;
-						case VAGINA_LOOSENESS_GAPING_WIDE:	tentacleSize =  65; break;
+						case VaginaClass.LOOSENESS_TIGHT:		tentacleSize =   0; break;
+						case VaginaClass.LOOSENESS_NORMAL:		tentacleSize =   4; break;
+						case VaginaClass.LOOSENESS_LOOSE:		tentacleSize =  16; break;
+						case VaginaClass.LOOSENESS_GAPING:		tentacleSize =  40; break;
+						case VaginaClass.LOOSENESS_GAPING_WIDE:	tentacleSize =  65; break;
 						default:							tentacleSize = 100;
 					}
 				}
 				if (tentacle == 1) { //Normal
 					outputText("well suited to your ");
 					switch (player.vaginas[0].vaginalLooseness) {
-						case VAGINA_LOOSENESS_TIGHT:		tentacleSize =   3; break;
-						case VAGINA_LOOSENESS_NORMAL:		tentacleSize =   7; break;
-						case VAGINA_LOOSENESS_LOOSE:		tentacleSize =  26; break;
-						case VAGINA_LOOSENESS_GAPING:		tentacleSize =  60; break;
-						case VAGINA_LOOSENESS_GAPING_WIDE:	tentacleSize = 115; break;
+						case VaginaClass.LOOSENESS_TIGHT:		tentacleSize =   3; break;
+						case VaginaClass.LOOSENESS_NORMAL:		tentacleSize =   7; break;
+						case VaginaClass.LOOSENESS_LOOSE:		tentacleSize =  26; break;
+						case VaginaClass.LOOSENESS_GAPING:		tentacleSize =  60; break;
+						case VaginaClass.LOOSENESS_GAPING_WIDE:	tentacleSize = 115; break;
 						default:							tentacleSize = 175;
 					}
 				}
 				if (tentacle == 2) { //Large
 					outputText("almost too big to cram in your ");
 					switch (player.vaginas[0].vaginalLooseness) {
-						case VAGINA_LOOSENESS_TIGHT:		tentacleSize =   6; break;
-						case VAGINA_LOOSENESS_NORMAL:		tentacleSize =   9; break;
-						case VAGINA_LOOSENESS_LOOSE:		tentacleSize =  34; break;
-						case VAGINA_LOOSENESS_GAPING:		tentacleSize =  78; break;
-						case VAGINA_LOOSENESS_GAPING_WIDE:	tentacleSize = 135; break;
+						case VaginaClass.LOOSENESS_TIGHT:		tentacleSize =   6; break;
+						case VaginaClass.LOOSENESS_NORMAL:		tentacleSize =   9; break;
+						case VaginaClass.LOOSENESS_LOOSE:		tentacleSize =  34; break;
+						case VaginaClass.LOOSENESS_GAPING:		tentacleSize =  78; break;
+						case VaginaClass.LOOSENESS_GAPING_WIDE:	tentacleSize = 135; break;
 						default:							tentacleSize = 210;
 					}
 				}
@@ -192,9 +193,9 @@ package classes.Scenes.Areas.Forest {
 					outputText("You don't get far before you realize all the hair on your body has shifted to a verdant green color.  <b>You now have green hair.</b>  ");
 					player.hairColor = "green";
 				}
-				if (rand(4) == 0 && player.hipRating <= 10) { //+hip up to 10
+				if (rand(4) == 0 && player.hips.type <= 10) { //+hip up to 10
 					outputText("A strange shifting occurs below your waist, making your [armor] feel tight.  <b>Your hips have grown larger</b>, becoming " + hipDescript() + ".  ");
-					player.hipRating += rand(3) + 1;
+					player.hips.type += rand(3) + 1;
 					player.fertility++;
 				}
 			}
@@ -226,9 +227,9 @@ package classes.Scenes.Areas.Forest {
 					player.hairColor = "green";
 				}
 				//+butt up to 10
-				if (rand(4) == 0 && player.buttRating <= 10) {
+				if (rand(4) == 0 && player.butt.type <= 10) {
 					outputText("A strange shifting occurs on your backside, making your [armor] feel tight.  <b>Your butt has grown larger</b>, becoming a " + buttDescript() + ".  ");
-					player.buttRating += rand(3) + 1;
+					player.butt.type += rand(3) + 1;
 				}
 				//Rarely change one prick to a vine-like tentacle cock. 
 				if (rand(3) == 0 && player.cocks.length > 0 && player.hairColor == "green") {
@@ -292,7 +293,7 @@ package classes.Scenes.Areas.Forest {
 			if (player.findPerk(PerkLib.DragonFireBreath) >= 0 || player.findPerk(PerkLib.FireLord) >= 0 || player.findPerk(PerkLib.Hellfire) >= 0) {
 				addButton(button++, "Fire Breath", destroyTheCorruptedGlades, 0);
 			}
-			if ((player.findPerk(PerkLib.EnlightenedNinetails) >= 0 || player.findPerk(PerkLib.CorruptedNinetails) >= 0) && player.tailType == TAIL_TYPE_FOX && player.tailCount >= 7) {
+			if ((player.findPerk(PerkLib.EnlightenedNinetails) >= 0 || player.findPerk(PerkLib.CorruptedNinetails) >= 0) && player.tailType == Tail.FOX && player.tailCount >= 7) {
 				addButton(button++, "Fox Fire", destroyTheCorruptedGlades, 1);
 			}
 			if (player.hasStatusEffect(StatusEffects.KnowsWhitefire)) {
@@ -317,17 +318,17 @@ package classes.Scenes.Areas.Forest {
 				case 0: //Fire breath
 					outputText("You charge the fire within you and as soon as you build it up enough, you unleash it on the glade, lighting them on fire. By the time the fire dies out, charred plants are all that remain of the glade.\n\n");
 					destroyAmount++;
-					fatigue(50, 1);
+					fatigue(50, USEFATG_MAGIC);
 					break;
 				case 1: //Nine tails foxfire
 					outputText("Holding out your palm, you conjure a flame that dances across your fingertips.  You launch it at the glade with a ferocious throw, and it bursts on impact, setting the glade on fire. By the time the fire dies out, charred plants are all that remain of the glade.\n\n");
 					destroyAmount++;
-					fatigue(20, 1);
+					fatigue(20, USEFATG_MAGIC);
 					break;
 				case 2: //Whitefire
 					outputText("You narrow your eyes, focusing your mind with deadly intent. You snap your fingers and the glade is enveloped in a flash of white flames! By the time the fire dies out, charred plants are all that remain of the glade.\n\n");
 					destroyAmount++;
-					fatigue(20, 1);
+					fatigue(20, USEFATG_MAGIC);
 					break;
 				case 3: //Axe
 					outputText("You grab an axe from your toolbox and hack away at the plants without mercy. Eventually, you manage to chop down every perverted plant in the glade save for some of the trees. They gradually wither away. ");
@@ -357,7 +358,7 @@ package classes.Scenes.Areas.Forest {
 					}
 					break;
 				default:
-					outputText("<b>Please report this error to Kitteh6660.</b>\n\n");
+					outputText("<b>Please report this error to Ormael/Aimozg/Oxdeception.</b>\n\n");
 			}
 			if (flags[kFLAGS.CORRUPTED_GLADES_DESTROYED] == 0) outputText("That's one glade eliminated! With effort and dedication, you will be able to cleanse the forest of foul glades.");
 			else outputText("Once again, the forest is cleansed of a tainted glade.");

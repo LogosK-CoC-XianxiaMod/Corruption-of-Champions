@@ -1,9 +1,10 @@
 ﻿package classes.Scenes.Places.TelAdre{
-	import classes.*;
-	import classes.GlobalFlags.kFLAGS;
-	import classes.GlobalFlags.kGAMECLASS;
+import classes.*;
+import classes.GlobalFlags.kFLAGS;
+import classes.Scenes.Holidays;
+import classes.Scenes.SceneLib;
 
-	public class BakeryScene extends TelAdreAbstractContent {
+public class BakeryScene extends TelAdreAbstractContent {
 
 	public function BakeryScene()
 	{
@@ -17,8 +18,8 @@ public function bakeryuuuuuu():void {
 		easterBakeSale();
 		return;
 	}
-	if(rand(10) <= 1 && kGAMECLASS.shouldraFollower.followerShouldra() && player.gender > 0 && flags[kFLAGS.UNKNOWN_FLAG_NUMBER_00242] == 4) {
-		kGAMECLASS.shouldraFollower.shouldraBakeryIntro();
+	if(rand(10) <= 1 && SceneLib.shouldraFollower.followerShouldra() && player.gender > 0 && flags[kFLAGS.UNKNOWN_FLAG_NUMBER_00242] == 4) {
+		SceneLib.shouldraFollower.shouldraBakeryIntro();
 		return;
 	}
 	flags[kFLAGS.UNKNOWN_FLAG_NUMBER_00243]++;
@@ -42,9 +43,9 @@ public function bakeryuuuuuu():void {
 	//[Repeat approach]
 	else {
 		//Kanga christmas!
-		if(kGAMECLASS.nieveHoliday()) {
-			kGAMECLASS.encounterKamiTheChristmasRoo();
-			if(flags[kFLAGS.KAMI_ENCOUNTER] == 1) addButton(3,"Pudding",kGAMECLASS.getWinterPudding);
+		if(Holidays.nieveHoliday()) {
+			Holidays.encounterKamiTheChristmasRoo();
+			if(flags[kFLAGS.KAMI_ENCOUNTER] == 1) addButton(3,"Pudding",Holidays.getWinterPudding);
 		}
 		//Normal repeats!
 		else outputText("You step into the bakery's domed interior and inhale, treated to a symphony of pleasant smells and the cozy warmth that radiates from the baking ovens.  There are plenty of tables and chairs around for one to eat at, and you find yourself stepping into line while you glance at the menu.\n\n");
@@ -114,17 +115,19 @@ private function displayIngredients():void {
 	outputText("Fox Berry - 5 gems.\n");
 	outputText("Ringtail Fig - 5 gems.\n");
 	outputText("Mouse Cocoa - 10 gems.\n");
+	outputText("Red River Root - 14 gems.\n");
 	outputText("Ferret Fruit - 20 gems.\n");
 }
 
 public function ingredientsMenu():void {
 	clearOutput();
-	displayIngredients()
+	displayIngredients();
 	menu();
 	addButton(0,"Fox Berry",buyFoxBerry);
 	addButton(1,"Ringtail Fig",buyFig);
-	addButton(2,"Mouse Cocoa",buyCocoa);
-	addButton(3,"Ferret Fruit",buyFerretFruit);
+	addButton(2,"Mouse Cocoa", buyCocoa);
+	addButton(3,"R.Rvr Root",buyRoot);
+	addButton(4,"Ferret Fruit",buyFerretFruit);
 	addButton(14,"Back",checkBakeryMenu);
 }
 
@@ -148,7 +151,8 @@ private function talkToBaker():void {
 	addButton(4,"Pound Cake",talkToBakerAboutPoundCake);
 	addButton(5,"Fox Berry",talkAboutFoxBerry);
 	addButton(6,"Ringtail Fig",talkAFig);
-	addButton(7,"Mouse Cocoa",talkAboutMouseCocoa);
+	addButton(7,"Mouse Cocoa", talkAboutMouseCocoa);
+	addButton(8,"R.Rvr Root",talkAboutRoot);
 	addButton(14,"Nevermind", talkBakeryMenu);
 }
 
@@ -234,6 +238,19 @@ private function talkAFig():void {
 	addButton(1,"No",talkToBaker);
 }
 
+//[Bakery - Talk - Baker - Ringtail Fig]
+private function talkAboutRoot():void {
+	clearOutput();
+	outputText("\"<i>Red River root is a root, but not red. Little merchants bring them from a river far away, that they call ‘Civappu’. Good for making beer, but too spicy if left aging. Used for food, then. If eaten raw will make you dizzy, and make you red and fluffy. From far lands, so a bit more expensive.</i>\"");
+	menu();
+	addButton(0, "Yes", buyRoot);
+	addButton(1, "No", talkToBaker);
+	if (flags[kFLAGS.MINO_CHEF_TALKED_RED_RIVER_ROOT] < 0) {
+		flags[kFLAGS.MINO_CHEF_TALKED_RED_RIVER_ROOT] = 0;
+	}
+	flags[kFLAGS.MINO_CHEF_TALKED_RED_RIVER_ROOT]++;
+}
+
 //[Bakery - Talk - Baker - Mouse Cocoa]
 private function talkAboutMouseCocoa():void {
 	clearOutput();
@@ -287,6 +304,24 @@ private function buyFig():void {
 	inventory.takeItem(consumables.RINGFIG, ingredientsMenu);
 }
 
+private function buyRoot():void {
+	clearOutput();
+	if (player.gems < 14) {
+		outputText("You can't afford one of those!");
+		menu();
+		addButton(0, "Next", ingredientsMenu);
+		return;
+	}
+	outputText("You pay fourteen gems for the root.  ");
+	player.gems -= 14;
+	statScreenRefresh();
+	if (flags[kFLAGS.SHIFT_KEY_DOWN] == 1) {
+		consumables.RDRROOT.useItem();
+		doNext(ingredientsMenu);
+	}
+	else inventory.takeItem(consumables.RDRROOT, ingredientsMenu);
+}
+
 
 private function talkBakeryMenu():void {
 	//choices("Brownies",createCallBackFunction2(nomnomnom, "brownies", 3),"Cookies",2831,"Cupcakes",2833,"Doughnuts",createCallBackFunction2(nomnomnom, "doughnuts", 5),"Pound Cake",createCallBackFunction2(nomnomnom, "pound cake", 4),"Fox Berry",buyFoxBerry,"SpecialEclair",minoCum,"GiantCupcake",gcupcake,rubiT,rubiB,"Leave",telAdreMenu);
@@ -305,19 +340,19 @@ private function talkBakeryMenu():void {
 	var rubiB:Function = telAdre.rubi.rubiIntros();
 	if (rubiB != null) addButton(1, rubiT, rubiB);
 
-	if(kGAMECLASS.nieveHoliday()) {
+	if(Holidays.nieveHoliday()) {
 		if(flags[kFLAGS.KAMI_ENCOUNTER] > 0) {
 			outputText("\nYou could 'burn off some steam' with Kami during her lunch break, since you already know how that'll end up!\n");
-			addButton(2,"Kami",kGAMECLASS.approachKamiTheChristmasRoo);
+			addButton(2,"Kami",Holidays.approachKamiTheChristmasRoo);
 		}
 		else {
 			outputText("\nYou could summon the curvaceous kangaroo waitress you ran into earlier - perhaps you can win her over.\n");
-			addButton(2,"Kangaroo",kGAMECLASS.approachKamiTheChristmasRoo);
+			addButton(2,"Kangaroo",Holidays.approachKamiTheChristmasRoo);
 		}
 	}
 	outputText("\nYou see a bubblegum-pink girl at the bakery, walking around and eagerly trying to hand out fliers to people. Her “uniform” is more like a yellow bikini with frills circling the waist of the bottom half. If this didn’t make her stand out from the crowd then her hair certainly would; it’s a big, poofy, curly, dark pink mess that reaches down to her ass with a huge cupcake hat sitting on top.\n");
-	if(flags[kFLAGS.MET_FROSTY] != 0) addButton(3,"Frosty",kGAMECLASS.telAdre.frosty.approachFrosty);
-	else addButton(3,"PinkGirl",kGAMECLASS.telAdre.frosty.approachFrosty);
+	if(flags[kFLAGS.MET_FROSTY] != 0) addButton(3,"Frosty",SceneLib.telAdre.frosty.approachFrosty);
+	else addButton(3,"PinkGirl",SceneLib.telAdre.frosty.approachFrosty);
 	addButton(14,"Leave",bakeryuuuuuu);
 }
 
@@ -352,51 +387,51 @@ public function nomnomnom(name:String,price:Number):void {
 		if(flags[kFLAGS.TEMP_STORAGE_PASTRY_NAME] == "doughnuts") {
 			outputText(player.modTone(0,2));
 			outputText(player.modThickness(100,1));
-			if(rand(3) == 0 && player.buttRating < 15 && (player.hunger > 25 || flags[kFLAGS.HUNGER_ENABLED] <= 0)) {
+			if(rand(3) == 0 && player.butt.type < 15 && (player.hunger > 25 || flags[kFLAGS.HUNGER_ENABLED] <= 0)) {
 				outputText("\n\nWhen you stand back up your " + buttDescript() + " jiggles a little bit more than you'd expect.");
-				player.buttRating++;
+				player.butt.type++;
 			}
-			if(rand(3) == 0 && player.hipRating < 15 && (player.hunger > 25 || flags[kFLAGS.HUNGER_ENABLED] <= 0)) {
+			if(rand(3) == 0 && player.hips.type < 15 && (player.hunger > 25 || flags[kFLAGS.HUNGER_ENABLED] <= 0)) {
 				outputText("\n\nAfter finishing, you find your gait has changed.  Did your hips widen?");
-				player.hipRating++;
+				player.hips.type++;
 			}
 			player.refillHunger(25);
 		}
 		else if(flags[kFLAGS.TEMP_STORAGE_PASTRY_NAME] == "cookies") {
 			outputText(player.modTone(0,1));
 			outputText(player.modThickness(100,2));
-			if(rand(3) == 0 && player.hipRating < 20 && (player.hunger > 25 || flags[kFLAGS.HUNGER_ENABLED] <= 0)) {
+			if(rand(3) == 0 && player.hips.type < 20 && (player.hunger > 25 || flags[kFLAGS.HUNGER_ENABLED] <= 0)) {
 				outputText("\n\nAfter finishing, you find your gait has changed.  Did your hips widen?");
-				player.hipRating++;
+				player.hips.type++;
 			}
 			player.refillHunger(20);
 		}
 		else if(flags[kFLAGS.TEMP_STORAGE_PASTRY_NAME] == "brownies") {
 			outputText(player.modThickness(100,4));
-			if(rand(2) == 0 && player.hipRating < 30 && (player.hunger > 25 || flags[kFLAGS.HUNGER_ENABLED] <= 0)) {
+			if(rand(2) == 0 && player.hips.type < 30 && (player.hunger > 25 || flags[kFLAGS.HUNGER_ENABLED] <= 0)) {
 				outputText("\n\nAfter finishing, you find your gait has changed.  Your " + hipDescript() + " definitely got wider.");
-				player.hipRating += 2;
+				player.hips.type += 2;
 			}
 			player.refillHunger(20);
 		}
 		else if(flags[kFLAGS.TEMP_STORAGE_PASTRY_NAME] == "cupcakes") {
 			outputText(player.modTone(0,4));
-			if(rand(2) == 0 && player.buttRating < 30 && (player.hunger > 25 || flags[kFLAGS.HUNGER_ENABLED] <= 0)) {
+			if(rand(2) == 0 && player.butt.type < 30 && (player.hunger > 25 || flags[kFLAGS.HUNGER_ENABLED] <= 0)) {
 				outputText("\n\nWhen you stand back up your " + buttDescript() + " jiggles with a good bit of extra weight.");
-				player.buttRating += 2;
+				player.butt.type += 2;
 			}
 			player.refillHunger(20);
 		}
 		else if(flags[kFLAGS.TEMP_STORAGE_PASTRY_NAME] == "pound cake") {
 			outputText(player.modTone(0,2));
 			outputText(player.modThickness(100,2));
-			if(rand(3) == 0 && player.buttRating < 25 && (player.hunger > 25 || flags[kFLAGS.HUNGER_ENABLED] <= 0)) {
+			if(rand(3) == 0 && player.butt.type < 25 && (player.hunger > 25 || flags[kFLAGS.HUNGER_ENABLED] <= 0)) {
 				outputText("\n\nWhen you stand back up your " + buttDescript() + " jiggles a little bit more than you'd expect.");
-				player.buttRating++;
+				player.butt.type++;
 			}
-			if(rand(3) == 0 && player.hipRating < 25 && (player.hunger > 25 || flags[kFLAGS.HUNGER_ENABLED] <= 0)) {
+			if(rand(3) == 0 && player.hips.type < 25 && (player.hunger > 25 || flags[kFLAGS.HUNGER_ENABLED] <= 0)) {
 				outputText("\n\nAfter finishing, you find your gait has changed.  Did your " + hipDescript() + " widen?");
-				player.hipRating++;
+				player.hips.type++;
 			}
 			player.refillHunger(50);
 		}

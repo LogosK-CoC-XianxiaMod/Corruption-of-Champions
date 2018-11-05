@@ -1,22 +1,23 @@
 package classes.Items.Weapons 
 {
-	import classes.PerkLib;
-	public class BloodLetter extends WeaponWithPerk
+	import classes.Items.Weapon;
+	import classes.Player;
+
+	public class BloodLetter extends Weapon
 	{
 		
 		public function BloodLetter() 
 		{
 			super(
-				"BLDLetter","Blood Letter","blood letter","a blood letter","slash",40,3000,
-				"This dark blade is as beautiful as it is deadly. While it will only lend its unholy power to a warrior as corrupt as itself, it is too powerful a blade to be controlled by mere mortal hands. Due to this, it, has a tendency to turn on it’s wielder, drawing blood both ways.",
-				"",
-				PerkLib.Sanctuary,0,0,0,0
+				"BLDLetter","Blood Letter","bloodletter katana","a bloodletter katana","slash",42,3360,
+				"This dark blade is as beautiful as it is deadly, made in black metal and decorated with crimson ruby gemstones. Lending its power to a corrupt warrior, it will strike with an unholy force, albeit, draining some blood from its wielder on the process.",
+				"Large"
 			);
 		}
 		override public function get attack():Number {
 			var boost:int = 0;
-			boost += (7 + (game.player.cor - 80 / 3));
-			return (17 + boost); 
+			boost += (3 * (game.player.cor - 80 / 3));
+			return (24 + boost); 
 		}
 		
 	}

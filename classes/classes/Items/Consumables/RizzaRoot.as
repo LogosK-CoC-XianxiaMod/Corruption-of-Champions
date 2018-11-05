@@ -23,6 +23,7 @@ package classes.Items.Consumables
 			if (player.findPerk(PerkLib.EzekielBlessing) >= 0) changeLimit++;
 			if (player.findPerk(PerkLib.TransformationResistance) >= 0) changeLimit--;
 			outputText("You chew on the thin red roots.  They have a rubbery texture and the taste is something like lemons and oranges mixed together.  The roots dry out your mouth as you chew them but at the same time they cause a cooling and numbing sensation that’s rather pleasant.");
+			if (player.hasPerk(PerkLib.TransformationImmunity)) changeLimit = 0;
 			if ((changes < changeLimit) && (player.skinType != 0) && (Utils.rand(6) == 0)){
 				if (player.skinType == 1)
 					outputText("\n\nYour fur itches incessantly, so you start scratching it.  It starts coming off in big clumps before the whole mess begins sloughing off your body.  In seconds, your skin is hairless, or nearly so. <b>You've lost your fur!</b>");
@@ -33,8 +34,8 @@ package classes.Items.Consumables
 				player.skin.restore();
 				changes += 2;
 			}
-			if ((changes < changeLimit) && (player.earType != 4) && (Utils.rand(4) == 0)){
-				player.earType = 4;
+			if ((changes < changeLimit) && (player.ears.type != 4) && (Utils.rand(4) == 0)){
+				player.ears.type = 4;
 				changes++;
 				outputText("\n\nA weird tingling runs through your scalp as your [hair] shifts slightly.  You reach up and your hand bumps against <b>your new pointed elfin ears</b>.  You bet they look cute!");
 			}

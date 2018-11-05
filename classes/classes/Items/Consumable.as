@@ -3,11 +3,14 @@
  */
 package classes.Items
 {
-	import classes.GlobalFlags.*;
-	import classes.Scenes.Camp;
-	import classes.Scenes.Places.Prison;
-	import classes.DefaultDict;
-	import classes.Player;
+import classes.CoC;
+import classes.DefaultDict;
+import classes.EngineCore;
+import classes.GlobalFlags.*;
+import classes.Player;
+import classes.Scenes.Camp;
+import classes.Scenes.Places.Prison;
+import classes.Scenes.SceneLib;
 import classes.internals.Utils;
 
 /**
@@ -16,19 +19,18 @@ import classes.internals.Utils;
 	 */
 	public class Consumable extends Useable
 	{
-		include "../../../includes/appearanceDefs.as";
 
-		protected function get mutations():Mutations { return kGAMECLASS.mutations; }
+        protected function get mutations():Mutations { return CoC.instance.mutations; }
 		protected function get changes():int { return mutations.changes; }
 		protected function set changes(val:int):void { mutations.changes = val; }
 		protected function get changeLimit():int { return mutations.changeLimit; }
 		protected function set changeLimit(val:int):void { mutations.changeLimit = val; }
 
-		protected function get player():Player { return kGAMECLASS.player; }
-		protected function get prison():Prison { return kGAMECLASS.prison; }
-		protected function get flags():DefaultDict { return kGAMECLASS.flags; }
-		protected function get camp():Camp { return kGAMECLASS.camp; }
-		protected function doNext(eventNo:Function):void { kGAMECLASS.doNext(eventNo); }
+		protected function get player():Player { return CoC.instance.player; }
+		protected function get prison():Prison { return SceneLib.prison; }
+		protected function get flags():DefaultDict { return CoC.instance.flags; }
+		protected function get camp():Camp { return SceneLib.camp; }
+		protected function doNext(eventNo:Function):void { EngineCore.doNext(eventNo); }
 		protected function rand(n:Number):int { return Utils.rand(n); }
 		
 		public function Consumable(id:String, shortName:String = null, longName:String = null, value:Number = 0, description:String = null) {
@@ -55,7 +57,7 @@ import classes.internals.Utils;
 		 * @param	... args stat change parameters
 		 */
 		protected function dynStats(... args):void {
-			game.dynStats.apply(null, args);
+			game.player.dynStats.apply(game.player, args);
 		}
 
 /*

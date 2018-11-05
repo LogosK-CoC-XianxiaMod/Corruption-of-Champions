@@ -3,12 +3,13 @@
  */
 package classes
 {
+import classes.EngineCore;
 import classes.GlobalFlags.kFLAGS;
-import classes.GlobalFlags.kGAMECLASS;
+import classes.CoC;
 
 import flash.utils.Dictionary;
 
-	public class PerkType extends BaseContent
+public class PerkType extends BaseContent
 	{
 		private static var PERK_LIBRARY:Dictionary = new Dictionary();
 
@@ -249,10 +250,40 @@ import flash.utils.Dictionary;
 			});
 			return this;
 		}
+		public function requireHeartMutationSlot():PerkType {
+			requirements.push({
+				fn  : function(player:Player):Boolean {
+					return player.maxHeartMutations() > 0;
+				},
+				text: "Free Heart Mutation Slot",
+				type: "heartmutation"
+			});
+			return this;
+		}
+		public function requireMusclesMutationSlot():PerkType {
+			requirements.push({
+				fn  : function(player:Player):Boolean {
+					return player.maxMusclesMutations() > 0;
+				},
+				text: "Free Muscles Mutation Slot",
+				type: "musclesmutation"
+			});
+			return this;
+		}
+		public function requireMouthMutationSlot():PerkType {
+			requirements.push({
+				fn  : function(player:Player):Boolean {
+					return player.maxMouthMutations() > 0;
+				},
+				text: "Free Mouth Mutation Slot",
+				type: "mouthmutation"
+			});
+			return this;
+		}
 		public function requireHungerEnabled():PerkType {
 			requirements.push({
 				fn  : function(player:Player):Boolean {
-					return kGAMECLASS.flags[kFLAGS.HUNGER_ENABLED] > 0;
+					return CoC.instance.flags[kFLAGS.HUNGER_ENABLED] > 0;
 				},
 				text: "Hunger enabled",
 				type: "hungerflag"
@@ -262,10 +293,21 @@ import flash.utils.Dictionary;
 		public function requireMinLust(value:int):PerkType {
 			requirements.push({
 				fn  : function(player:Player):Boolean {
-					return kGAMECLASS.minLust() >= value;
+					return EngineCore.minLust() >= value;
 				},
 				text: "Min. Lust "+value,
 				type: "minlust",
+				value: value
+			});
+			return this;
+		}
+		public function requireMinSens(value:int):PerkType {
+			requirements.push({
+				fn  : function(player:Player):Boolean {
+					return CoC.instance.player.minSens() >= value;
+				},
+				text: "Min. Sensitivity "+value,
+				type: "minsensitivity",
 				value: value
 			});
 			return this;

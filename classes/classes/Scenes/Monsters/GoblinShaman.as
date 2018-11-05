@@ -1,11 +1,13 @@
 package classes.Scenes.Monsters 
 {
-	import classes.*;
-	import classes.internals.*;
-	import classes.GlobalFlags.kGAMECLASS;
-	import classes.GlobalFlags.kFLAGS;
-	
-	public class GoblinShaman extends Goblin
+import classes.*;
+import classes.BodyParts.Butt;
+import classes.BodyParts.Hips;
+import classes.GlobalFlags.kFLAGS;
+import classes.Scenes.SceneLib;
+import classes.internals.*;
+
+public class GoblinShaman extends Goblin
 	{
 		public var spellCostCharge:int = 6;
 		public var spellCostBlind:int = 8;
@@ -56,8 +58,6 @@ package classes.Scenes.Monsters
 			else if (spellChooser == 2 && fatigue <= (100 - spellCostWhitefire)) {
 				outputText("The goblin narrows her eyes and focuses her mind with deadly intent. She snaps her fingers and you are enveloped in a flash of white flames!  ");
 				var damage:int = inte + rand(50) * spellMultiplier();
-				if (player.findPerk(PerkLib.FromTheFrozenWaste) >= 0 || player.findPerk(PerkLib.ColdAffinity) >= 0) damage *= 3;
-				if (player.findPerk(PerkLib.FireAffinity) >= 0) damage *= 0.3;
 				if (player.hasStatusEffect(StatusEffects.Blizzard)) {
 				player.addStatusValue(StatusEffects.Blizzard, 1, -1);
 				outputText("Luckly protective ice maelstorm still surrounding you lessening amount of damage.  ");
@@ -72,15 +72,15 @@ package classes.Scenes.Monsters
 				else if (flags[kFLAGS.GAME_DIFFICULTY] == 3) damage *= 1.5;
 				else if (flags[kFLAGS.GAME_DIFFICULTY] >= 4) damage *= 2;
 				damage = Math.round(damage);
-				player.takeDamage(damage, true);
+				player.takeFireDamage(damage, true);
 				fatigue += spellCostWhitefire;
 			}
 			//Arouse
 			else if (spellChooser == 3 && fatigue <= (100 - spellCostArouse)) {
 				outputText("She makes a series of arcane gestures, drawing on her lust to inflict it upon you! ");
 				var lustDamage:int = (inte / 10) + (player.lib / 10) + rand(10) * spellMultiplier();
-				lustDamage = lustDamage * (game.lustPercent() / 100);
-				game.dynStats("lus", lustDamage, "resisted", false);
+				lustDamage = lustDamage * (EngineCore.lustPercent() / 100);
+				player.dynStats("lus", lustDamage, "scale", false);
 				outputText(" <b>(<font color=\"#ff00ff\">" + (Math.round(lustDamage * 10) / 10) + "</font>)</b>");
 				fatigue += spellCostArouse;
 			}
@@ -101,7 +101,6 @@ package classes.Scenes.Monsters
 				tou += 20 * spellMultiplier();
 				fatigue += spellCostMight;
 			}
-			combatRoundOver();
 		}
 		
 		private function spellMultiplier():Number {
@@ -120,16 +119,16 @@ package classes.Scenes.Monsters
 		
 		override public function defeated(hpVictory:Boolean):void
 		{
-			game.goblinShamanScene.goblinShamanRapeIntro();
+			SceneLib.goblinShamanScene.goblinShamanRapeIntro();
 		}
 		override public function won(hpVictory:Boolean, pcCameWorms:Boolean):void
 		{
 			if (player.gender == 0 || flags[kFLAGS.SFW_MODE] > 0) {
 				outputText("You collapse in front of the goblin, too wounded to fight.  She growls and kicks you in the head, making your vision swim. As your sight fades, you hear her murmur, \"<i>Fucking dicks can't even bother to grow a dick or cunt.</i>\"");
-				game.cleanupAfterCombat();
+				SceneLib.combat.cleanupAfterCombatImpl();
 			} 
 			else {
-				game.goblinShamanScene.goblinShamanBeatYaUp();
+				SceneLib.goblinShamanScene.goblinShamanBeatYaUp();
 			}
 		}
 		
@@ -140,25 +139,26 @@ package classes.Scenes.Monsters
 			this.imageName = "goblinshaman";
 			this.long = "The goblin before you stands approximately three feet and a half. Her ears appear to be pierced more times than the amount of piercings a typical goblin has. Her hair is deep indigo. She’s unlike most of the goblins you’ve seen. She’s wielding a staff in her right hand. In addition to the straps covering her body, she’s wearing a necklace seemingly carved with what looks like shark teeth. She’s also wearing a tattered loincloth, unlike most goblins who would show off their pussies. From the looks of one end of her staff glowing, she’s clearly a shaman!";
 			if (player.hasCock()) this.long += "  She's clearly intent on casting you into submission just so she can forcibly make you impregnate her.";
-			this.createVagina(false, VAGINA_WETNESS_DROOLING, VAGINA_LOOSENESS_NORMAL);
+			this.createVagina(false, VaginaClass.WETNESS_DROOLING, VaginaClass.LOOSENESS_NORMAL);
 			this.createStatusEffect(StatusEffects.BonusVCapacity, 40, 0, 0, 0);
 			createBreastRow(Appearance.breastCupInverse("E"));
-			this.ass.analLooseness = ANAL_LOOSENESS_TIGHT;
-			this.ass.analWetness = ANAL_WETNESS_DRY;
+			this.ass.analLooseness = AssClass.LOOSENESS_TIGHT;
+			this.ass.analWetness = AssClass.WETNESS_DRY;
 			this.createStatusEffect(StatusEffects.BonusACapacity,30,0,0,0);
 			this.tallness = 44 + rand(7);
-			this.hipRating = HIP_RATING_AMPLE+2;
-			this.buttRating = BUTT_RATING_LARGE;
+			this.hips.type = Hips.RATING_AMPLE + 2;
+			this.butt.type = Butt.RATING_LARGE;
 			this.skinTone = "dark green";
 			this.hairColor = "indigo";
 			this.hairLength = 4;
 			initStrTouSpeInte(74, 50, 70, 87);
-			initLibSensCor(45, 45, 60);
+			initWisLibSensCor(87, 45, 45, 60);
 			this.weaponName = "wizard staff";
 			this.weaponVerb = "bludgeon";
-			this.weaponAttack = 14 + (3 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.weaponAttack = 14;
 			this.armorName = "fur loincloth";
-			this.armorDef = 6 + (1 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.armorDef = 6;
+			this.armorMDef = 18;
 			this.fatigue = 0;
 			this.bonusHP = 275;
 			this.bonusLust = 20;
@@ -182,12 +182,6 @@ package classes.Scenes.Monsters
 			this.special1 = goblinDrugAttack;
 			this.special2 = goblinTeaseAttack;
 			this.special3 = castSpell;
-			this.str += 14 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.tou += 10 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.spe += 14 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.inte += 17 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];			
-			this.lib += 9 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.newgamebonusHP = 1280;
 			checkMonster();
 		}
 		

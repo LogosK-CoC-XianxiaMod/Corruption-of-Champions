@@ -3,11 +3,10 @@
  */
 package classes.Items
 {
-	import classes.ItemType;
-	import classes.PerkLib;
-	import classes.Player;
+import classes.PerkLib;
+import classes.Scenes.SceneLib;
 
-	public class Weapon extends Useable //Equipable
+public class Weapon extends Useable //Equipable
 	{
 		private var _verb:String;
 		private var _attack:Number;
@@ -35,9 +34,11 @@ package classes.Items
 			//Type
 			desc += "\n\nType: Melee Weapon ";
 			if (perk == "Large") desc += "(Large)";
+			else if (perk == "Small") desc += "(Small)";
 			else if (perk == "Staff") desc += "(Staff)";
 			else if (perk == "Dual") desc += "(Dual)";
 			else if (perk == "Dual Large") desc += "(Dual Large)";
+			else if (perk == "Dual Small") desc += "(Dual Small)";
 			else if (verb.indexOf("whip") >= 0) desc += "(Whip)";
 			else if (verb.indexOf("punch") >= 0) desc += "(Gauntlet)";
 			else if (verb == "slash" || verb == "keen cut") desc += "(Sword)";
@@ -64,8 +65,9 @@ package classes.Items
 		public function playerEquip():Weapon { //This item is being equipped by the player. Add any perks, etc. - This function should only handle mechanics, not text output
 			if ((perk == "Large" && game.player.shield != ShieldLib.NOTHING && game.player.findPerk(PerkLib.TitanGrip) < 0)
 			|| (perk == "Dual" && game.player.shield != ShieldLib.NOTHING)
-			|| (perk == "Dual Large" && game.player.shield != ShieldLib.NOTHING)) {
-				game.inventory.unequipShield();
+			|| (perk == "Dual Large" && game.player.shield != ShieldLib.NOTHING)
+			|| (perk == "Dual Small" && game.player.shield != ShieldLib.NOTHING)) {
+				SceneLib.inventory.unequipShield();
 			}
 			return this;
 		}

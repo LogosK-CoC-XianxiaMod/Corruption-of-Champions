@@ -1,10 +1,11 @@
 ﻿package classes.Scenes.Places{
-	import classes.*;
-	import classes.GlobalFlags.kFLAGS;
-	import classes.Scenes.Areas.Plains.BazaarGatekeeper;
-	import classes.Scenes.Places.Bazaar.*;
+import classes.*;
+import classes.GlobalFlags.kFLAGS;
+import classes.Scenes.Areas.Plains.BazaarGatekeeper;
+import classes.Scenes.Places.Bazaar.*;
+import classes.Scenes.SceneLib;
 
-	public class Bazaar extends BaseContent {
+public class Bazaar extends BaseContent {
 // JOEY_OFFERED_MILKER:int = 466;
 // OWN_MAIDEN_BIKINI:int = 770;
 // COUNTDOWN_TO_NIGHT_RAPE:int = 872;
@@ -119,8 +120,8 @@ public function enterTheBazaarAndMenu(demons:Boolean = true):void {
 	//Bimbo Niamh
 	if (flags[kFLAGS.NIAMH_STATUS] > 0 && flags[kFLAGS.NIAMH_MOVED_OUT_COUNTER] == -1) {
 		if (flags[kFLAGS.NIAMH_STATUS] == 2) outputText("\n\nThe sounds of voices raised in song and girlish laughter makes it obvious where Niamh is holding a perpetual party.");
-		addButton(9, "Niamh", getGame().telAdre.niamh.bazaarNiamh);
-	}
+        addButton(9, "Niamh", SceneLib.telAdre.niamh.bazaarNiamh);
+    }
 	addButton(14,"Leave",camp.returnToCampUseOneHour);
 }
 
@@ -297,11 +298,11 @@ private function joeysMassageWifNoExtraJizz():void {
 	//(MALE)
 	if(player.hasCock()) {
 		outputText("slides his warm, ruby lips over your [cock], licking and slurping the [cockhead] like a treasured candy.  That hot, breathy embrace hugs tight to your urethral bulge, slobbering up the cock-tip.  The flexible, thin rabbit tongue swirls over your cum-slit to lap at the bubbling pre-cum, even as his quaking balls continue to bury your face in bunny-semen.");
-		if(player.totalCocks() > 1) {
+		if(player.cockTotal() > 1) {
 			outputText("  He takes your " + cockDescript(1) + " with his free hand and pulls it over, giving it an affectionate, loving smooch.");
-			if(player.totalCocks() > 2) {
+			if(player.cockTotal() > 2) {
 				outputText("  The process is repeated");
-				if(player.totalCocks() > 3) outputText(" as necessary until " + sMultiCockDesc() + " is coated with dick-drenching bunny spit.");
+				if(player.cockTotal() > 3) outputText(" as necessary until " + sMultiCockDesc() + " is coated with dick-drenching bunny spit.");
 				else outputText(", coating your " + cockDescript(2) + " with dick-drenching bunny spit.");
 			}
 		}
@@ -544,7 +545,7 @@ private function gretasGarments():void {
 		if(flags[kFLAGS.OWN_MAIDEN_BIKINI] == 0) outputText(", except maybe a super-skimpy chain bikini that's chased with white and gold highlights");
 	}
 	outputText(".");
-	dynStats("lus", 2, "resisted", false);
+	dynStats("lus", 2, "scale", false);
 	menu();
 	if(flags[kFLAGS.FOUND_SOCKS] == 0) addButton(4,"Low Stock",askGretaAboutInventory);
 	else {
@@ -726,7 +727,6 @@ private function pickACockForSock():void {
 	}
 	else {
 		outputText("\n\nWhich cock would you like to put it on?");
-		temp = 0;
 		var button:int = 0;
 		menu();
 		while(button < player.cockTotal()) {
@@ -816,7 +816,7 @@ private function yesPutDatSockOnMe(target:int):void {
 	}
 	else { // Conflict! NOOOOO! Pull up! Pull up!
 
-		outputText("Then she suddenly stops, staring at your groin.\n\n\"<i>Oh, dear...</i>\" she says, \"<i>As much as I would love to take your money honey, I can't be mixing magics like that.</i>\"")
+		outputText("Then she suddenly stops, staring at your groin.\n\n\"<i>Oh, dear...</i>\" she says, \"<i>As much as I would love to take your money honey, I can't be mixing magics like that.</i>\"");
 		menu();
 		addButton(0,"Next",gretasGarments);		
 	}
@@ -836,7 +836,6 @@ private function takeOffDatSock():void {
 	clearOutput();
 	outputText("Which cock-sock would you like to get removed?");
 	//(display list of socked cocks)
-	temp = 0;
 	var button:int = 0;
 	menu();
 	while(button < player.cockTotal()) {
@@ -861,11 +860,11 @@ private function removeTargettedSock(index:int):void {
 	var storage:String = player.cocks[index].sock;
 	var extra:Boolean = false;
 	player.cocks[index].sock = "";
-	temp = player.cockTotal();
-	while(temp > 0) {
-		temp--;
+	var i:int = player.cockTotal();
+	while(i > 0) {
+		i--;
 		//If the PC has another cock with the same effect.
-		if(player.cocks[temp].sock == storage) {
+		if(player.cocks[i].sock == storage) {
 			extra = true;
 		}
 	}
@@ -1075,7 +1074,7 @@ private function abuseHisAss():void {
 	//[[If smallest cock is over 16 inches)
 	if(player.smallestCockLength() >= 16) {
 		outputText("\n\nYour lips part to let out a grunt of frustration.  Your cockhead is unable to break through the tiger man's tight resistance.  His struggles start to die down as [eachCock] continues to drool over his muscled rear.");
-		if(player.totalCocks() == 1) outputText("  You squeeze your [cocks] between his warm ass cheeks, stroking yourself with his exposed bottom.  The tiger whimpers meekly under you.");
+		if(player.cockTotal() == 1) outputText("  You squeeze your [cocks] between his warm ass cheeks, stroking yourself with his exposed bottom.  The tiger whimpers meekly under you.");
 		else outputText("  Your fattest cock grinds between the tiger man's rear, dripping spunk over his back and clothing while your other cocks make a sloppy mess of his ass.");
 		outputText("  The tiger man's muscled butt is soon glazed with your pre-cum.  Wet, slapping noises echo out into the alley as you grind your hips into his rear.  You can't help but think in the back of your head that the noise is stirring people inside the tent he came out of.");
 	}
@@ -1208,12 +1207,11 @@ private function suckOffNone():void {
 //all options lead to here for now
 private function finalGayFinallee(road:int = 0):void {
 	outputText("\n\nWith a wet pop, the satyr pulls his spent manhood from your " + assholeDescript()  + ".  He smears his softening cock over your " + buttDescript()  + " and leaves a white streak of cum across your cheeks.  He huffs a content breath and moves over to the side.  \"<i>I'm good, you guys decide who gets to fuck the slut next.</i>\"  You look up at the tiger and bear men.  Their eyes light up a moment before turning to look at your " + buttDescript()  + " with hungry lust.  Your spine shivers under their gaze, but before they can move a green blur runs past them.");
-	
 	outputText("\n\n\"<i>Zug want hole!</i>\" The large green orc runs to your behind, slapping his massive foot-long against your " + buttDescript()  + " as if to call 'dibs!'.  You bite your lips at the sight of the throbbing twelve inches sawing your ass cheeks apart, the dark olive flesh glistening with a thick layer of prespunk and slick, cool lubricant.  The orc's bulky muscles twitch menacingly as he stares the tiger and bear down.  The two of them stay where they are and, after a few moments, the orc grunts.  He looks down and lines himself up with your hole.  His thick, orcish girth presses against your " + assholeDescript()  + ", pushing in forcefully as the satyr's cum and rough pounding opened you just wide enough for the orc to slide in with little pain.");
-	
 	outputText("\n\nYou give a muffled groan as the giant orc cock impales you, the stiff erection grinding over your stretched-out, silken walls.  His fat orc sack swats your upturned " + buttDescript()  + ".  It coaxes whimpers from your lips as the green cock pulls out and slams back in, the brute of an orc focusing on getting further into you as his massive phallus plunges deeper and deeper with each thrust.  The colossal girth rides on the satyr's cum trails and pushes past it, stuffing you full to bursting with his orc meat.  His hands grip your hips and he roughly yanks you into a good angle as he begins to abuse your " + buttDescript()  + " with long, pummeling lunges.  He lets out guttural groans as his hefty cock drools orc cream, mixing it with the satyr's spooge as your hole begins to resemble a used condom.");
 	player.buttChange(30,true,true,false);
 	outputText("\n\nYou can barely focus on pleasuring the two cocks in your hands as your lower body receives a slut's treatment.  \"<i>Ragh! Hole so tight around orc cock!  Make good orc bitch!</i>\"  The large green man groans and you feel his heavy sack clench against your cheeks.  Your eyes go wide as you're suddenly flooded with orc spunk, the sensation and sound of the cum overflowing from your hole to splatter against the Orc's balls and thighs overwhelming your senses.  The Orc lets out a \"<i>Wrahhg!</i>\" as he pins your hips, hilting his orc cock as he continues to unload his thick, fertile seed into you.  Your belly soon distends and bulges from the amount of cum shooting up your ass.  The orc man pants over you as you feel your " + assholeDescript()  + " dripping orc spunk like a leaking dam.");
+	if (player.isGargoyle() && player.hasPerk(PerkLib.GargoyleCorrupted)) player.refillGargoyleHunger(30);
 	//now it's time for the choice before to matter, we got three endings here, one for each choice.
 	//((Ending 1 , suck tiger, //bumpy road))
 	if(road == 0) {
@@ -1313,8 +1311,8 @@ private function finalGayFinallee(road:int = 0):void {
 	private function investigateBackAlley():void {
 		clearOutput();
 		outputText("Your curiousity draws you half way down a dark alleyway between two tents. In the gloom ahead you see what appears to be a cage wagon, and hear the sounds of guttural voices engaged in boisterous conversation. Inexplicably you find yourself struck by an unwholesome sense of foreboding. <b>Even from here that cage looks like it is designed to carry people off to somewhere very unpleasant, some place where your life could be turned upside down and the rules you have become accustomed to in this world may no longer apply.</b> You take a long moment to consider turning back. Do you throw caution to the wind and investigate further?");
-		doYesNo(getGame().prison.goDirectlyToPrisonDoNotPassGoDoNotCollect200Gems, enterTheBazaarAndMenu);
-	}
+        doYesNo(SceneLib.prison.goDirectlyToPrisonDoNotPassGoDoNotCollect200Gems, enterTheBazaarAndMenu);
+    }
 
 }
 }

@@ -19,6 +19,14 @@ public class BaseCombatContent extends BaseContent {
 	protected function combatMenu(newRound:Boolean = true):void {
 		combat.combatMenu(newRound);
 	}
+	// Returns true if combat is over. Setups doNext to win/loss/combat menu
+	protected function combatIsOver():Boolean {
+		return combat.combatIsOver();
+	}
+	protected function combatRoundOver():void
+	{
+		combat.combatRoundOver();
+	}
 	protected function endHpVictory():void {
 		combat.endHpVictory();
 	}
@@ -37,9 +45,6 @@ public class BaseCombatContent extends BaseContent {
 	protected function doDamage(damage:Number, apply:Boolean = true, display:Boolean = false):Number {
 		return combat.doDamage(damage, apply, display);
 	}
-	protected function takeDamage(damage:Number, display:Boolean = false):Number {
-		return combat.takeDamage(damage, display);
-	}
 	protected function combatMiss():Boolean {
 		return combat.combatMiss();
 	}
@@ -54,6 +59,12 @@ public class BaseCombatContent extends BaseContent {
 	}
 	protected function unarmedAttack():Number {
 		return combat.unarmedAttack();
+	}
+	protected function ghostStrength():Number {
+		return combat.ghostStrength();
+	}
+	protected function ghostSpeed():Number {
+		return combat.ghostSpeed();
 	}
 	// =================
 	// CHECKS
@@ -76,6 +87,15 @@ public class BaseCombatContent extends BaseContent {
 	protected function isWieldingRangedWeapon():Boolean {
 		return combat.isWieldingRangedWeapon();
 	}
+	protected function isPlayerBound():Boolean {
+		return combat.isPlayerBound();
+	}
+	protected function isPlayerSilenced():Boolean {
+		return combat.isPlayerSilenced();
+	}
+	protected function isPlayerStunned():Boolean {
+		return combat.isPlayerStunned();
+	}
 	// =================
 	// MODIFIERS
 	// =================
@@ -94,20 +114,23 @@ public class BaseCombatContent extends BaseContent {
 	protected function soulskillMod():Number {
 		return combat.soulskillMod();
 	}
-	protected function strenghtscalingbonus():Number {
-		return combat.strenghtscalingbonus();
+	protected function scalingBonusStrength():Number {
+		return combat.scalingBonusStrength();
 	}
-	protected function toughnessscalingbonus():Number {
-		return combat.toughnessscalingbonus();
+	protected function scalingBonusToughness():Number {
+		return combat.scalingBonusToughness();
 	}
-	protected function speedscalingbonus():Number {
-		return combat.speedscalingbonus();
+	protected function scalingBonusSpeed():Number {
+		return combat.scalingBonusSpeed();
 	}
-	protected function inteligencescalingbonus():Number {
-		return combat.inteligencescalingbonus();
+	protected function scalingBonusIntelligence():Number {
+		return combat.scalingBonusIntelligence();
 	}
-	protected function wisdomscalingbonus():Number {
-		return combat.wisdomscalingbonus();
+	protected function scalingBonusWisdom():Number {
+		return combat.scalingBonusWisdom();
+	}
+	protected function scalingBonusLibido():Number {
+		return combat.scalingBonusLibido();
 	}
 	protected function spellCost(mod:Number):Number {
 		return combat.magic.spellCostImpl(mod);
@@ -118,6 +141,15 @@ public class BaseCombatContent extends BaseContent {
 	protected function spellCostBlack(mod:Number):Number {
 		return combat.magic.spellCostBlackImpl(mod);
 	}
+	protected function healCost(mod:Number):Number {
+		return combat.magic.healCostImpl(mod);
+	}
+	protected function healCostWhite(mod:Number):Number {
+		return combat.magic.healCostWhiteImpl(mod);
+	}
+	protected function healCostBlack(mod:Number):Number {
+		return combat.magic.healCostBlackImpl(mod);
+	}
 	protected function spellMod():Number {
 		return combat.magic.spellModImpl();
 	}
@@ -126,6 +158,15 @@ public class BaseCombatContent extends BaseContent {
 	}
 	protected function spellModWhite():Number {
 		return combat.magic.spellModWhiteImpl();
+	}
+	protected function healMod():Number {
+		return combat.magic.healModImpl();
+	}
+	protected function healModBlack():Number {
+		return combat.magic.healModBlackImpl();
+	}
+	protected function healModWhite():Number {
+		return combat.magic.healModWhiteImpl();
 	}
 	protected function calcInfernoMod(damage:Number):int {
 		return combat.magic.calcInfernoModImpl(damage);

@@ -1,13 +1,18 @@
 package classes.Scenes.Dungeons.Factory
 {
-	import classes.*;
-	import classes.Scenes.Dungeons.Factory;
-	import classes.internals.*;
-	import classes.GlobalFlags.kFLAGS;
+import classes.*;
+import classes.BodyParts.Butt;
+import classes.BodyParts.Hips;
+import classes.BodyParts.LowerBody;
+import classes.BodyParts.Tail;
+import classes.BodyParts.Wings;
+import classes.Scenes.Dungeons.Factory;
+import classes.Scenes.SceneLib;
+import classes.internals.*;
 
-	public class OmnibusOverseer extends Monster
+public class OmnibusOverseer extends Monster
 	{
-		public var factory:Factory = new Factory()
+		public var factory:Factory = new Factory();
 		private var temp:Number = 0;
 		
 		override public function defeated(hpVictory:Boolean):void
@@ -19,7 +24,7 @@ package classes.Scenes.Dungeons.Factory
 		{
 			if (pcCameWorms){
 				outputText("\n\nYour foe doesn't seem to care...");
-				doNext(game.endLustLoss);
+				doNext(SceneLib.combat.endLustLoss);
 			} else {
 				factory.doLossOmnibus();
 			}
@@ -29,12 +34,11 @@ package classes.Scenes.Dungeons.Factory
 			outputText("The demoness blinks her eyes closed and knits her eyebrows in concentration.  The red orbs open wide and she smiles, licking her lips.   The air around her grows warmer, and muskier, as if her presence has saturated it with lust.");
 			if (hasStatusEffect(StatusEffects.LustAura)) {
 				outputText("  Your eyes cross with unexpected feelings as the taste of desire in the air worms its way into you.  The intense aura quickly subsides, but it's already done its job.");
-				game.dynStats("lus", (8 + int(player.lib / 20 + player.cor / 25)));
+				player.dynStats("lus", (8 + int(player.lib / 20 + player.cor / 25)));
 			}
 			else {
 				createStatusEffect(StatusEffects.LustAura, 0, 0, 0, 0);
 			}
-			game.combatRoundOver();
 		}
 		
 		private function milkAttack():void {
@@ -53,17 +57,16 @@ package classes.Scenes.Dungeons.Factory
 					outputText("The milk splashes into your [armor], soaking you effectively.  ");
 					if (player.cocks.length > 0) {
 						outputText("Your [cock] gets hard as the milk lubricates and stimulates it.  ");
-						game.dynStats("lus", 5);
+						player.dynStats("lus", 5);
 					}
 					if (player.vaginas.length > 0) {
 						outputText("You rub your thighs together as the milk slides between your pussy lips, stimulating you far more than it should.  ");
-						game.dynStats("lus", 5);
+						player.dynStats("lus", 5);
 					}
 				}
-				game.dynStats("lus", 7 + player.sens / 20);
+				player.dynStats("lus", 7 + player.sens / 20);
 				if (player.biggestLactation() > 1) outputText("Milk dribbles from your [allbreasts] in sympathy.");
 			}
-			game.combatRoundOver();
 		}
 		
 		public function OmnibusOverseer()
@@ -78,26 +81,27 @@ package classes.Scenes.Dungeons.Factory
 			this.ballSize = 0;
 			this.cumMultiplier = 3;
 			// this.hoursSinceCum = 0;
-			this.createVagina(false, VAGINA_WETNESS_DROOLING, VAGINA_LOOSENESS_NORMAL);
+			this.createVagina(false, VaginaClass.WETNESS_DROOLING, VaginaClass.LOOSENESS_NORMAL);
 			createBreastRow(Appearance.breastCupInverse("DD"));
-			this.ass.analLooseness = ANAL_LOOSENESS_TIGHT;
-			this.ass.analWetness = ANAL_WETNESS_SLIME_DROOLING;
+			this.ass.analLooseness = AssClass.LOOSENESS_TIGHT;
+			this.ass.analWetness = AssClass.WETNESS_SLIME_DROOLING;
 			this.tallness = rand(9) + 70;
-			this.hipRating = HIP_RATING_AMPLE+2;
-			this.buttRating = BUTT_RATING_TIGHT;
-			this.lowerBody = LOWER_BODY_TYPE_DEMONIC_HIGH_HEELS;
+			this.hips.type = Hips.RATING_AMPLE + 2;
+			this.butt.type = Butt.RATING_TIGHT;
+			this.lowerBody = LowerBody.DEMONIC_HIGH_HEELS;
 			this.skinTone = "light purple";
 			this.hairColor = "purple";
 			this.hairLength = 42;
 			initStrTouSpeInte(100, 70, 45, 85);
-			initLibSensCor(90, 70, 80);
+			initWisLibSensCor(85, 90, 70, 80);
 			this.weaponName = "claws";
 			this.weaponVerb="claw";
-			this.weaponAttack = 12 + (2 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.weaponAttack = 12;
 			this.weaponPerk = "";
 			this.weaponValue = 150;
 			this.armorName = "demonic skin";
-			this.armorDef = 18 + (2 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.armorDef = 18;
+			this.armorMDef = 2;
 			this.bonusHP = 400;
 			this.bonusLust = 50;
 			this.lust = 20;
@@ -109,18 +113,13 @@ package classes.Scenes.Dungeons.Factory
 			this.drop = new WeightedDrop(null, 1);
 			this.special1 = lustAura;
 			this.special2 = milkAttack;
-			this.wingType = WING_TYPE_BAT_LIKE_TINY;
-			this.wingDesc = "tiny hidden";
-			this.tailType = TAIL_TYPE_DEMONIC;
+			this.wings.type = Wings.BAT_LIKE_TINY;
+			this.wings.desc = "tiny hidden";
+			this.tailType = Tail.DEMONIC;
 			this.createPerk(PerkLib.InhumanDesireI, 0, 0, 0, 0);
 			this.createPerk(PerkLib.DemonicDesireI, 0, 0, 0, 0);
 			this.createPerk(PerkLib.EnemyBossType, 0, 0, 0, 0);
-			this.str += 20 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.tou += 14 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.spe += 18 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.inte += 17 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];			
-			this.lib += 18 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.newgamebonusHP = 1560;
+			this.createPerk(PerkLib.EnemyTrueDemon, 0, 0, 0, 0);
 			checkMonster();
 		}
 		

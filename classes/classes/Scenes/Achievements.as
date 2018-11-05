@@ -1,12 +1,10 @@
 package classes.Scenes 
 {
-	import classes.*
-	import classes.BaseContent;
-	import classes.GlobalFlags.kACHIEVEMENTS;
-	import classes.GlobalFlags.kFLAGS;
-	import classes.GlobalFlags.kGAMECLASS;
-	
-	public class Achievements extends BaseContent
+import classes.*;
+import classes.GlobalFlags.kACHIEVEMENTS;
+import classes.CoC;
+
+public class Achievements extends BaseContent
 	{
 		public var achievementsEarned:int = 0;
 		public var achievementsTotal:int = 0;
@@ -46,7 +44,7 @@ package classes.Scenes
 			achievementsEarned = 0;
 			achievementsTotal = 0;
 			clearOutput();
-			kGAMECLASS.displayHeader("Achievements");
+			EngineCore.displayHeader("Achievements");
 			outputText("Note: Some achievements are contradictory and may require multiple playthroughs to obtain every achievement.\n");
 			titleAchievementSection("Storyline"); //4 achievements
 			addAchievement("Newcomer", kACHIEVEMENTS.STORY_NEWCOMER, "Enter the realm of Mareth.");
@@ -116,10 +114,12 @@ package classes.Scenes
 			addAchievement("Century", kACHIEVEMENTS.TIME_CENTURY, "Get to day 36,500. (100 years)", "Get to day 36,500. (100 years | It's time to stop playing. Go outside.)", true);
 			addAchievement("Time Traveller", kACHIEVEMENTS.TIME_TRAVELLER, "Get to day 36,500+ by tampering with save", "", true);
 			
-			titleAchievementSection("Dungeons"); //11 achievements
+			titleAchievementSection("Dungeons"); //12 achievements
 			addAchievement("Delver", kACHIEVEMENTS.DUNGEON_DELVER, "Clear any dungeon.");
-			addAchievement("Delver Apprentice", kACHIEVEMENTS.DUNGEON_DELVER, "Clear 3 dungeons.");
-			addAchievement("Delver Master", kACHIEVEMENTS.DUNGEON_DELVER_MASTER, "Clear every dungeon in the game.");
+			addAchievement("Delver Apprentice", kACHIEVEMENTS.DUNGEON_DELVER, "Clear 2 dungeons.");
+			addAchievement("Delver Expert", kACHIEVEMENTS.DUNGEON_DELVER_MASTER, "Clear 4 dungeons.");
+			addAchievement("Delver Master", kACHIEVEMENTS.DUNGEON_DELVER_EXPERT, "Clear 8 dungeons.");
+			addAchievement("Delver Grand Master", kACHIEVEMENTS.DUNGEON_DELVER_GRAND_MASTER, "Clear 16 dungeons.");
 			addAchievement("Shut Down Everything", kACHIEVEMENTS.DUNGEON_SHUT_DOWN_EVERYTHING, "Clear the Factory.");
 			addAchievement("You're in Deep", kACHIEVEMENTS.DUNGEON_YOURE_IN_DEEP, "Fully clear the Deep Cave.");
 			addAchievement("End of Reign", kACHIEVEMENTS.DUNGEON_END_OF_REIGN, "Fully clear the Lethice Stronghold.");
@@ -128,6 +128,7 @@ package classes.Scenes
 			addAchievement("Accomplice", kACHIEVEMENTS.DUNGEON_ACCOMPLICE, "Watch Helia kill the Harpy Queen.", "", true);
 			addAchievement("Extremely Celibate Delver", kACHIEVEMENTS.DUNGEON_EXTREMELY_CHASTE_DELVER, "Complete Phoenix Tower without ever orgasming from the beginning.", "", true);
 			addAchievement("Tiger stalking the Dragon", kACHIEVEMENTS.DUNGEON_TIGER_STALKING_THE_DRAGON, "Fully clear the Hidden Cave.");
+			addAchievement("Slain the Heroslayer", kACHIEVEMENTS.DUNGEON_SLAIN_THE_HEROSLAYER, "Fully clear the Den of Desire.");
 			
 			titleAchievementSection("Fashion"); //3 achievements
 			addAchievement("Wannabe Wizard", kACHIEVEMENTS.FASHION_WANNABE_WIZARD, "Equip wizard robes and magic staff.");
@@ -185,7 +186,10 @@ package classes.Scenes
 			
 			titleAchievementSection("General"); //10 achievements
 			addAchievement("Portal Defender", kACHIEVEMENTS.GENERAL_PORTAL_DEFENDER, "Defeat 25 demons and sleep 10 times.");
-			addAchievement("Bad Ender", kACHIEVEMENTS.GENERAL_BAD_ENDER, "Cause or witness 3 Bad Ends to various NPCs.");
+			addAchievement("Bad Ender", kACHIEVEMENTS.GENERAL_BAD_ENDER, "Cause or witness 2 Bad Ends to various NPCs.");
+			addAchievement("Bad Ender 2: Electric Boogaloo", kACHIEVEMENTS.GENERAL_BAD_ENDER_2, "Cause or witness 4 Bad Ends to various NPCs.");
+			addAchievement("Bad Ender 3: Serious Serial Slayer", kACHIEVEMENTS.GENERAL_BAD_ENDER_3, "Cause or witness 8 Bad Ends to various NPCs.");
+			addAchievement("Bad Ender 4: The Prequel", kACHIEVEMENTS.GENERAL_BAD_ENDER_4, "Cause or witness 16 Bad Ends to various NPCs.");
 			addAchievement("Game Over!", kACHIEVEMENTS.GENERAL_GAME_OVER, "Get a Bad End.");
 			addAchievement("Urine Trouble", kACHIEVEMENTS.GENERAL_URINE_TROUBLE, "Urinate at least once in the realm of Mareth.");
 			addAchievement("Smashed", kACHIEVEMENTS.GENERAL_SMASHED, "Get so drunk that you end up urinating.", "", true);
@@ -210,17 +214,18 @@ package classes.Scenes
 			addAchievement("Freeloader", kACHIEVEMENTS.GENERAL_FREELOADER, "Visit the Kitsune's mansion 3 times.");
 			addAchievement("Schizophrenic", kACHIEVEMENTS.GENERAL_SCHIZO, "Go between pure and corrupt 4 times. (Threshold of 20 and 80 corruption)");
 			addAchievement("Clean Slate", kACHIEVEMENTS.GENERAL_CLEAN_SLATE, "Go from 100 corruption to zero for the first time.");
-			addAchievement("Perky", kACHIEVEMENTS.GENERAL_PERKY, "Have at least 20 perks.");
-			addAchievement("Super Perky", kACHIEVEMENTS.GENERAL_SUPER_PERKY, "Have at least 35 perks.");
-			addAchievement("Mega Perky", kACHIEVEMENTS.GENERAL_MEGA_PERKY, "Have at least 50 perks.");
-			addAchievement("Ultra Perky", kACHIEVEMENTS.GENERAL_ULTRA_PERKY, "Have at least 75 perks.", "", true);
-			addAchievement("Hyper Perky", kACHIEVEMENTS.GENERAL_HYPER_PERKY, "Have at least 100 perks.", "", true);
-			addAchievement("Jack of All Trades", kACHIEVEMENTS.GENERAL_STATS_50, "Have at least 50 of each stat. (Libido, sensitivity, corruption optional)");
-			addAchievement("Incredible Stats", kACHIEVEMENTS.GENERAL_STATS_100, "Have at least 100 of each stat. (Libido, sensitivity, corruption optional)");
-			addAchievement("Inhuman Stats", kACHIEVEMENTS.GENERAL_STATS_150, "Have at least 150 of each stat. (Libido, sensitivity, corruption optional)");
-			//addAchievement("Incredible Stats", kACHIEVEMENTS.GENERAL_STATS_200, "Have at least 200 of each stat. (Libido, sensitivity, corruption optional)");
-			//addAchievement("Incredible Stats", kACHIEVEMENTS.GENERAL_STATS_250, "Have at least 250 of each stat. (Libido, sensitivity, corruption optional)");
-			//addAchievement("Incredible Stats", kACHIEVEMENTS.GENERAL_STATS_300, "Have at least 300 of each stat. (Libido, sensitivity, corruption optional)");
+			addAchievement("Perky", kACHIEVEMENTS.GENERAL_PERKY, "Have at least 25 perks.");
+			addAchievement("Super Perky", kACHIEVEMENTS.GENERAL_SUPER_PERKY, "Have at least 50 perks.");
+			addAchievement("Mega Perky", kACHIEVEMENTS.GENERAL_MEGA_PERKY, "Have at least 75 perks.");
+			addAchievement("Ultra Perky", kACHIEVEMENTS.GENERAL_ULTRA_PERKY, "Have at least 100 perks.", "", true);
+			addAchievement("Hyper Perky", kACHIEVEMENTS.GENERAL_HYPER_PERKY, "Have at least 200 perks.", "", true);
+			addAchievement("Umber Perky", kACHIEVEMENTS.GENERAL_UMBER_PERKY, "Have at least 300 perks.", "", true);
+			addAchievement("Jack of All Trades", kACHIEVEMENTS.GENERAL_STATS_50, "Have at least 50 of each stat. (Corruption optional)");
+			addAchievement("Incredible Stats", kACHIEVEMENTS.GENERAL_STATS_100, "Have at least 100 of each stat. (Corruption optional)");
+			addAchievement("Amazing Stats", kACHIEVEMENTS.GENERAL_STATS_150, "Have at least 150 of each stat. (Corruption optional)");
+			addAchievement("Superhuman Stats", kACHIEVEMENTS.GENERAL_STATS_200, "Have at least 200 of each stat. (Corruption optional)");
+			addAchievement("Inhuman Stats", kACHIEVEMENTS.GENERAL_STATS_300, "Have at least 300 of each stat. (Corruption optional)");
+			//addAchievement("Incredible Stats", kACHIEVEMENTS.GENERAL_STATS_500, "Have at least 500 of each stat. (Corruption optional)");
 			addAchievement("Like Chuck Norris", kACHIEVEMENTS.GENERAL_LIKE_CHUCK_NORRIS, "Defeat the Frost Giant without any equipment.", "Defeat the Frost Giant without any equipment. Way to be a badass!");
 			addAchievement("Tentacle Beast Slayer", kACHIEVEMENTS.GENERAL_TENTACLE_BEAST_SLAYER, "Slay your first Tentacle Beast.");
 			addAchievement("Hammer Time", kACHIEVEMENTS.GENERAL_HAMMER_TIME, "Buy a total of 300 nails.");
@@ -241,10 +246,10 @@ package classes.Scenes
 			addAchievement("Up to Eleven", kACHIEVEMENTS.GENERAL_UP_TO_11, "Take your height up to 11 feet.");
 			
 			menu();
-			addButton(10, "" + achievementsEarned + " of " + achievementsTotal + "", kGAMECLASS.doNothing);
-			addButton(11, "achievements", kGAMECLASS.doNothing);
-			addButton(12, "unlocked", kGAMECLASS.doNothing);
-			addButton(14, "Back", kGAMECLASS.mainMenu.mainMenu);
+			addButton(10, "" + achievementsEarned + " of " + achievementsTotal + "", EngineCore.doNothing);
+			addButton(11, "achievements", EngineCore.doNothing);
+			addButton(12, "unlocked", EngineCore.doNothing);
+			addButton(14, "Back", CoC.instance.mainMenu.mainMenu);
 		}
 		
 	}

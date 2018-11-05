@@ -4,12 +4,14 @@
  */
 package classes.Scenes.Places.HeXinDao 
 {
-	import classes.*;
-	import classes.GlobalFlags.kFLAGS;
-	import classes.internals.*;
-	import classes.Scenes.Places.HeXinDao.IgnisArenaSeerScene;
+import classes.*;
+import classes.BodyParts.Butt;
+import classes.BodyParts.Hips;
+import classes.BodyParts.Tail;
+import classes.GlobalFlags.kFLAGS;
+import classes.internals.*;
 
-	public class IgnisArenaSeer extends Monster
+public class IgnisArenaSeer extends Monster
 	{
 		public var ignisfight:IgnisArenaSeerScene = new IgnisArenaSeerScene();
 		
@@ -24,12 +26,10 @@ package classes.Scenes.Places.HeXinDao
 				player.removeStatusEffect(StatusEffects.Blizzard);
 				damage *= 0.5;
 			}
-			if (player.findPerk(PerkLib.FromTheFrozenWaste) >= 0 || player.findPerk(PerkLib.ColdAffinity) >= 0) damage *= 3;
-			if (player.findPerk(PerkLib.FireAffinity) >= 0) damage *= 0.3;
 			damage = Math.round(damage);
-			if (player.findPerk(PerkLib.SoulSprite) > 0) player.takeDamage(damage, true);
-			if (player.findPerk(PerkLib.Archmage) > 0) player.takeDamage(damage, true);
-			player.takeDamage(damage, true);
+			if (player.findPerk(PerkLib.SoulSprite) > 0) player.takeFireDamage(damage, true);
+			if (player.findPerk(PerkLib.Archmage) > 0) player.takeFireDamage(damage, true);
+			player.takeMagicDamage(damage, true);
 		}
 		
 		public function IgnisCastsFoxFire():void {
@@ -46,14 +46,12 @@ package classes.Scenes.Places.HeXinDao
 			if (inte >= 301 && inte < 351) damage += ((inte * 2.25) + rand(inte * 2.75));
 			if (inte >= 351 && inte < 401) damage += ((inte * 2.5) + rand(inte * 3));
 			if (inte >= 401) damage += ((inte * 2.75) + rand(inte * 3.25));
-			if (player.findPerk(PerkLib.FromTheFrozenWaste) >= 0 || player.findPerk(PerkLib.ColdAffinity) >= 0) damage *= 3;
-			if (player.findPerk(PerkLib.FireAffinity) >= 0) damage *= 0.3;
 			damage = Math.round(damage);
-			player.takeDamage(damage, true);
+			player.takeFireDamage(damage, true);
 			outputText(" ");
 			var lustDmg:Number = player.lustVuln * ((this.inte / 10) + rand(player.lib + player.cor) / 5);
 			lustDmg = Math.round(lustDmg);
-			game.dynStats("lus", lustDmg, "resisted", false);
+			player.dynStats("lus", lustDmg, "scale", false);
 			if (!hasStatusEffect(StatusEffects.IgnisCounter)) createStatusEffect(StatusEffects.IgnisCounter, 1, 0, 0, 0);
 			else addStatusValue(StatusEffects.IgnisCounter, 1, 1);
 		}
@@ -77,7 +75,7 @@ package classes.Scenes.Places.HeXinDao
 			if (player.findPerk(PerkLib.FireAffinity) >= 0) damage *= 0.3;
 			if (player.armorPerk != "Heavy" || player.armorPerk != "Ayo") damage *= 2;
 			damage = Math.round(damage);
-			player.takeDamage(damage, true);
+			player.takeMagicDamage(damage, true);
 			removeStatusEffect(StatusEffects.IgnisCounter);
 		}
 		
@@ -88,7 +86,6 @@ package classes.Scenes.Places.HeXinDao
 				if (this.statusEffectv1(StatusEffects.IgnisCounter) > 2) IgnisCastsComet();
 				else IgnisCastsFoxFire();
 			}
-			combatRoundOver();
 		}
 		
 		override public function won(hpVictory:Boolean, pcCameWorms:Boolean):void
@@ -99,7 +96,7 @@ package classes.Scenes.Places.HeXinDao
 		override public function defeated(hpVictory:Boolean):void
 		{
 			clearOutput();
-			if (HP <= 0) outputText("Ignis staggers, signaling he’s had enough.  \"<i>I surrender!  I surrender!  Damn...  You’re pretty good, [champion].</i>\"");
+			if (HP <= 0) outputText("Ignis staggers, signaling he’s had enough.  \"<i>I surrender!  I surrender!  Damn...  You’re pretty good, [name].</i>\"");
 			else outputText("Ignis collapses, his self control finally taxed beyond limit.  He throws aside his kimono and begins vigorously masturbating, in full view of everyone in the arena’s stands. Within a minute, Ignis’ foxcock is hanging limp and the kitsune himself is covered in several layers of his own cum.  After catching his breath, he shakily puts his kimono on and gestures at you.  \"<i>That was quite a display.  You could give the demons a run for their money.!</i>\"");
 			outputText(" He walks up to you, still somewhat shaky from the fight.  ");
 			ignisfight.PCbeatenIgnisAtArena();
@@ -107,7 +104,7 @@ package classes.Scenes.Places.HeXinDao
 		
 		override public function get long():String
 		{
-			var ignisBelow50:Boolean = (HP < eMaxHP() * 0.5);
+			var ignisBelow50:Boolean = (HP < maxHP() * 0.5);
 			return "You’re facing Ignis, a kitsune seer.   The white furred kitsune is wearing a "+
 					(ignisBelow50?("torn "):"") +
 					"grey kimono, flickering with magical flames. "+
@@ -128,22 +125,23 @@ package classes.Scenes.Places.HeXinDao
 			this.cumMultiplier = 6;
 			this.hoursSinceCum = 400;
 			createBreastRow(0);
-			this.ass.analLooseness = ANAL_LOOSENESS_TIGHT;
-			this.ass.analWetness = ANAL_WETNESS_NORMAL;
+			this.ass.analLooseness = AssClass.LOOSENESS_TIGHT;
+			this.ass.analWetness = AssClass.WETNESS_NORMAL;
 			this.createStatusEffect(StatusEffects.BonusACapacity,20,0,0,0);
 			this.tallness = rand(24) + 60;
-			this.hipRating = HIP_RATING_SLENDER;
-			this.buttRating = BUTT_RATING_TIGHT;
+			this.hips.type = Hips.RATING_SLENDER;
+			this.butt.type = Butt.RATING_TIGHT;
 			this.skinTone = "white";
 			this.hairColor = "silver";
 			this.hairLength = 13 + rand(20);
 			initStrTouSpeInte(35, 55, 110, 105);
-			initLibSensCor(60, 65, 45);
+			initWisLibSensCor(105, 60, 65, 45);
 			this.weaponName = "staff";
 			this.weaponVerb="smack";
-			this.weaponAttack = 8 + (2 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.weaponAttack = 8;
 			this.armorName = "grey kimono";
-			this.armorDef = 20 + (5 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.armorDef = 20;
+			this.armorMDef = 50;
 			this.bonusHP = 120;
 			this.bonusLust = 20;
 			this.lust = 20;
@@ -153,20 +151,14 @@ package classes.Scenes.Places.HeXinDao
 			this.gems = rand(20) + 20;
 			if (flags[kFLAGS.IGNIS_ARENA_SEER] < 3) {
 			this.drop = new ChainedDrop()
-					.add(jewelries.SEERPIN, 1);
+					.add(headjewelries.SEERPIN, 1);
 			}
 			if (flags[kFLAGS.IGNIS_ARENA_SEER] > 2) {
 				this.drop = new WeightedDrop().
 					add(consumables.MG_SFRP,1).
 					add(consumables.FOXJEWL, 4);
 			}
-			this.tailType = TAIL_TYPE_FOX;
-			this.str += 7 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.tou += 11 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.spe += 22 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.inte += 21 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];			
-			this.lib += 12 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.newgamebonusHP = 1460;//50hp x i 30% boost do statów
+			this.tailType = Tail.FOX;
 			checkMonster();
 		}
 		

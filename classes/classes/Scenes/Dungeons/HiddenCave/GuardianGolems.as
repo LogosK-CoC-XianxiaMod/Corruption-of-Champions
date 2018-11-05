@@ -4,12 +4,12 @@
  */
 package classes.Scenes.Dungeons.HiddenCave 
 {
-	import classes.*;
-	import classes.internals.*;
-	import classes.GlobalFlags.kGAMECLASS;
-	import classes.GlobalFlags.kFLAGS;
-	
-	public class GuardianGolems extends Monster
+import classes.*;
+import classes.GlobalFlags.kFLAGS;
+import classes.Scenes.SceneLib;
+import classes.internals.*;
+
+public class GuardianGolems extends Monster
 	{
 		public function backhand():void {
 			outputText("The golems visage twists into a grimace of irritation, and few of them swings their hands at you in a vicious backhand.");
@@ -18,8 +18,8 @@ package classes.Scenes.Dungeons.HiddenCave
 			if (damage <= 0 || (player.getEvasionRoll())) outputText(" You slide underneath the surprise swings!");
 			else
 			{
-				outputText(" They chits you square in the chest from a few different angles. ");
-				damage = player.takeDamage(damage, true);
+				outputText(" They hits you square in the chest from a few different angles. ");
+				damage = player.takePhysDamage(damage, true);
 			}
 		}
 		
@@ -28,7 +28,6 @@ package classes.Scenes.Dungeons.HiddenCave
 			var choice:Number = rand(3);
 			if (choice < 2) eAttack();
 			if (choice == 2) backhand();
-			combatRoundOver();
 		}
 		
 	//	override public function defeated(hpVictory:Boolean):void
@@ -38,7 +37,7 @@ package classes.Scenes.Dungeons.HiddenCave
 		
 		override public function won(hpVictory:Boolean,pcCameWorms:Boolean):void
 		{
-			game.dungeons.hiddencave.defeatedByGuardianGolems();
+			SceneLib.dungeons.hiddencave.defeatedByGuardianGolems();
 		}
 		
 		public function GuardianGolems() 
@@ -52,7 +51,7 @@ package classes.Scenes.Dungeons.HiddenCave
 			this.createBreastRow(0, 1);
 			initGenderless();
 			initStrTouSpeInte(20, 25, 20, 10);
-			initLibSensCor(10, 10, 50);
+			initWisLibSensCor(10, 10, 10, 50);
 			this.tallness = 72;
 			this.drop = new ChainedDrop()
 					.add(useables.GOLCORE, 1);
@@ -60,20 +59,15 @@ package classes.Scenes.Dungeons.HiddenCave
 			this.bonusHP = 75;
 			this.weaponName = "stone fists";
 			this.weaponVerb = "smash";
-			this.weaponAttack = 12 + (3 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.weaponAttack = 12;
 			this.armorName = "cracked stone";
-			this.armorDef = 12 + (2 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.armorDef = 12;
+			this.armorMDef = 12;
 			this.createPerk(PerkLib.Resolute, 0, 0, 0, 0);
 			this.createPerk(PerkLib.RefinedBodyI, 0, 0, 0, 0);
 			this.createPerk(PerkLib.TankI, 0, 0, 0, 0);
 			this.createPerk(PerkLib.EnemyGroupType, 0, 0, 0, 0);
 			this.createPerk(PerkLib.EnemyConstructType, 0, 0, 0, 0);
-			this.str += 4 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.tou += 5 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.spe += 4 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.inte += 2 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];			
-			this.lib += 2 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.newgamebonusHP = 170;
 			checkMonster();
 		}
 		

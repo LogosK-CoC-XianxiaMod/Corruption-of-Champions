@@ -1,16 +1,14 @@
 package classes.Scenes.Dungeons.D3
 {
-	import classes.Monster;
-	import classes.Appearance;
-	import classes.Scenes.Areas.Swamp.AbstractSpiderMorph;
-	import classes.StatusEffects;
-	import classes.GlobalFlags.kGAMECLASS;
-	import classes.GlobalFlags.kFLAGS;
-	import classes.CockTypesEnum;
-	import classes.StatusEffects;
-	import classes.PerkLib;
+import classes.BodyParts.Butt;
+import classes.BodyParts.Hips;
+import classes.CockTypesEnum;
+import classes.PerkLib;
+import classes.Scenes.Areas.Swamp.AbstractSpiderMorph;
+import classes.Scenes.SceneLib;
+import classes.StatusEffects;
 
-	public class DriderIncubus extends AbstractSpiderMorph
+public class DriderIncubus extends AbstractSpiderMorph
 	{
 		public function DriderIncubus()
 		{
@@ -23,15 +21,16 @@ package classes.Scenes.Dungeons.D3
 			this.balls = 2;
 			this.ballSize = 4;
 			this.hoursSinceCum = 9999;
-			this.hipRating = HIP_RATING_SLENDER;
-			this.buttRating = BUTT_RATING_TIGHT;
+			this.hips.type = Hips.RATING_SLENDER;
+			this.butt.type = Butt.RATING_TIGHT;
 			initStrTouSpeInte(140, 300, 140, 90);
-			initLibSensCor(160, 40, 100);
+			initWisLibSensCor(80, 160, 40, 100);
 			this.weaponName = "spear";
-			this.weaponAttack = 38 + (8 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.weaponAttack = 38;
 			this.weaponVerb = "lunge";
 			this.armorName = "chitin";
-			this.armorDef = 60 + (7 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.armorDef = 60;
+			this.armorMDef = 10;
 			this.bonusHP = 1500;
 			this.bonusLust = 40;
 			this.gems = 200 + rand(80);
@@ -42,13 +41,8 @@ package classes.Scenes.Dungeons.D3
 			this.createPerk(PerkLib.DemonicDesireI, 0, 0, 0, 0);
 			this.createPerk(PerkLib.RefinedBodyI, 0, 0, 0, 0);
 			this.createPerk(PerkLib.TankI, 0, 0, 0, 0);
+			this.createPerk(PerkLib.EnemyTrueDemon, 0, 0, 0, 0);
 			this.drop = NO_DROP;
-			this.str += 42 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.tou += 90 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.spe += 42 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.inte += 27 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];			
-			this.lib += 48 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.newgamebonusHP = 12450;
 			this.checkMonster();
 		}
 
@@ -57,12 +51,13 @@ package classes.Scenes.Dungeons.D3
 		
 		override public function defeated(hpVictory:Boolean):void
 		{
-			game.d3.driderIncubus.beatTheSpooderbutt(hpVictory);
+			SceneLib.d3.driderIncubus.beatTheSpooderbutt(hpVictory);
 		}
 		
 		override public function won(hpVictory:Boolean, pcCameWorms:Boolean):void
 		{
-			game.d3.driderIncubus.spooderbuttGetsANewCockSleeve(hpVictory, pcCameWorms);
+			if (player.isGargoyle()) SceneLib.d3.gargoyleBadEndD3();
+			else SceneLib.d3.driderIncubus.spooderbuttGetsANewCockSleeve(hpVictory, pcCameWorms);
 		}
 		
 		private var _goblinFree:Boolean = false;
@@ -91,16 +86,14 @@ package classes.Scenes.Dungeons.D3
 			// Because fuck having arguments with status effects :^)
 			_combatRound++;
 			
-			if (this.lust < .65*this.eMaxLust() && this.HP < .33*this.eMaxHP())
-			{
+if (this.lust < .65 * this.maxLust() && this.HP < .33 * this.maxHP()) {
 				gainHpAndLust();
 			}
-			else if (this.lust >= .65*this.eMaxLust() && this.HP >= .33*this.eMaxHP())
-			{
+			else if (this.lust >= .65 * this.maxLust() && this.HP >= .33 * this.maxHP()) {
 				dropHpAndLust();
 			}
 			
-			if (rand(this.eMaxLust()) > lust + 10)
+			if (rand(this.maxLust()) > lust + 10)
 			{
 				spearStrike();
 				outputText("\n\n");
@@ -117,7 +110,6 @@ package classes.Scenes.Dungeons.D3
 				goblinAI();
 			}
 			
-			combatRoundOver();
 		}
 		
 		private function performPhysicalAttack():void
@@ -155,7 +147,7 @@ package classes.Scenes.Dungeons.D3
 		{
 			//Heals 10% of HP but raises lust by 8.
 			
-			this.addHP(this.eMaxHP() * 0.1);
+this.addHP(this.maxHP() * 0.1);
 			this.lust += 8;
 			
 			if (_hpGains == 0) outputText("<i>“You won’t defeat me so easily!”</i>");
@@ -166,7 +158,7 @@ package classes.Scenes.Dungeons.D3
 			_hpGains++;
 			
 			outputText(" The demon gestures wildly, drawing a rune across his own chest. It flares, blood red and pulsing. Your foe’s wounds slowly edge close, fueled by magic. When the luminous symbol fades, the drider pants, his black skin flushing purple in places.");
-			if (this.lust > .65*this.eMaxLust())
+			if (this.lust > .65*this.maxLust())
 			{
 				if (_goblinFree) outputText(" His dick is rigid and bouncing, so hard it looks like it could go off at any moment.");
 				else outputText(" His balls are tensing underneath the goblin, and he keeps moaning under his breath.");
@@ -180,7 +172,7 @@ package classes.Scenes.Dungeons.D3
 		{
 			//-8% of max HP, -10 lust.
 			
-			this.HP -= (this.eMaxHP() * 0.08);
+this.HP -= (this.maxHP() * 0.08);
 			this.lust -= 10;
 			
 			outputText("The demon snarls and draws his spear back, placing it blade down against his arm. Grinning malevolently, he slides the razor-sharp edge along his skin, leaving a trail of glittering ruby on his wounded flesh. <i>“Pain brings clarity of mind - something you couldn’t understand.”</i> He grins wider, mastering his baser emotions. <i>“Let me teach you.”</i>\n\n");
@@ -208,7 +200,7 @@ package classes.Scenes.Dungeons.D3
 			}
 			else
 			{
-				player.takeDamage(damage);
+				player.takePhysDamage(damage);
 				outputText(" The weapon bites deep. (" + damage +")");
 			}
 		}
@@ -306,7 +298,7 @@ package classes.Scenes.Dungeons.D3
 				
 				if (damage > 0)
 				{
-					damage = player.takeDamage(damage);
+					damage = player.takePhysDamage(damage);
 					//Hit
 					outputText(" You go flying back into a pair of oiled-up slavegirls. They gasp in surprise as you tear your way back to the fight. Too late, they attempt to caress you, barely touching your [leg] before you’re back in the fight. (" + damage +")");
 				}
@@ -341,7 +333,7 @@ package classes.Scenes.Dungeons.D3
 				
 				if (damage > 0)
 				{
-					damage = player.takeDamage(damage);
+					damage = player.takePhysDamage(damage);
 					//Hit
 					outputText(" You don’t feel the impact, but you do hear the crack of wood striking");
 					// 9999
@@ -387,7 +379,7 @@ package classes.Scenes.Dungeons.D3
 			}
 			else
 			{
-				player.takeDamage(damage);
+				player.takePhysDamage(damage);
 				outputText(" The weapon bites deep. (" + damage +")");
 			}
 		}
@@ -408,7 +400,7 @@ package classes.Scenes.Dungeons.D3
 				outputText(" ache to be touched");
 			}
 			
-			game.dynStats("lus", (player.lib / 10 + player.cor / 10) + 15);
+			player.dynStats("lus", (player.lib / 10 + player.cor / 10) + 15);
 			
 			outputText(". Your body rebels against you under the unholy influence");
 			if (player.lust < player.maxLust()) outputText(", but the effect is fleeting, thankfully. You try to ignore the residual tingles. You can’t afford to lose this close to your goal!");
@@ -418,19 +410,9 @@ package classes.Scenes.Dungeons.D3
 		private function taintedMind():void
 		{
 			//Prevents use of attack, bow, other physical type stuff
-			//Lasts 4 rounds? Iunno. Tune to adjust difficulty.
 			outputText("<i>“You fight well, for a mortal... but can you fight like a demon?”</i> He claps his hands together, bathing the immediate area in a wave of energy. Some of the nearby slaves cry out in alarm, then settle into giggling, cooing messes. You don’t seem any worse for the wear in its wake, though something feels wrong about holding your [weapon].");
-			
-			// 9999
 			if (player.cor <= 33) outputText(" What did he mean about fighting like a demon?");
-			
 			player.createStatusEffect(StatusEffects.TaintedMind, 4, 0, 0, 0);
-		}
-		
-		public function taintedMindAttackAttempt():void
-		{
-			outputText("You ready an attack, but find your hands groping your own body instead. Somehow the demon’s magic has made it impossible to strike at him, crossing wires that weren’t meant to be crossed. Frowning, you look down at your more aroused form, determined not to fall for this a second time.");
-			game.dynStats("lus", 15);
 		}
 		
 		//On same round timer as physical stun
@@ -449,7 +431,7 @@ package classes.Scenes.Dungeons.D3
 			else
 			{
 				outputText(" The intensity overwhelms your ability to act, arousing and stunning you.");
-				game.dynStats("lus", (player.lib / 15 + player.cor / 15) + 15);
+				player.dynStats("lus", (player.lib / 15 + player.cor / 15) + 15);
 				player.createStatusEffect(StatusEffects.Stunned, 0, 0, 0, 0);
 			}
 		}
@@ -472,7 +454,7 @@ package classes.Scenes.Dungeons.D3
 			{
 				//Fail
 				outputText(" You concentrate to try and throw it off, but he overwhelms your mental defenses. Clouds of swirling pink filled with unsubtle erotic silhouettes fill your vision, effectively blinding you!");
-				game.dynStats("lus", 25);
+				player.dynStats("lus", 25);
 				player.createStatusEffect(StatusEffects.PurpleHaze, 2 + rand(2), 0, 0, 0);
 				player.createStatusEffect(StatusEffects.Blind, player.statusEffectv1(StatusEffects.PurpleHaze), 0, 0, 0);
 			}
@@ -536,7 +518,7 @@ package classes.Scenes.Dungeons.D3
 			outputText("\n\nShe dances and spins to the side, cooing, <i>“Don’t you want me anymore, baby? Look how ready I am”</i> Her nipples are taut and stiff, and the junction between her thighs absolutely drenched. Neither you nor your foe can keep from sparing lusty glances her way.");
 			
 			lust += 7;
-			game.dynStats("lus", 7);
+			player.dynStats("lus", 7);
 		}
 		
 		public function freeGoblin():void
@@ -547,7 +529,7 @@ package classes.Scenes.Dungeons.D3
 			outputText("\n\nYou’re forced to drop her as the enraged drider prepares his counterattack. She lands on her feet, surprisingly enough.");
 			outputText("\n\n<i>“Oh, forgive me master! I’ll still get you off - I promise!”</i> The green slut wiggles away from you, trying to get at her master’s loins.");
 			outputText("\n\nWell... maybe she didn’t want free after all. At least she’ll make for a good distraction.");
-			kGAMECLASS.enemyAI();
-		}
+            SceneLib.combat.enemyAIImpl();
+        }
 	}
 }

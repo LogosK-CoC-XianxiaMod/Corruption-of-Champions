@@ -4,12 +4,12 @@
  */
 package classes.Scenes.NPCs 
 {
-	import classes.*;
-	import classes.internals.*;
-	import classes.GlobalFlags.kGAMECLASS;
-	import classes.GlobalFlags.kFLAGS;
-	
-	use namespace kGAMECLASS;
+import classes.*;
+import classes.BodyParts.Butt;
+import classes.BodyParts.Hips;
+import classes.Scenes.SceneLib;
+
+use namespace CoC;
 	
 	public class Ted extends Monster
 	{
@@ -20,7 +20,6 @@ package classes.Scenes.NPCs
 			}
 			if (player.findPerk(PerkLib.Evade) >= 0 && rand(100) < 10) {
 				outputText("You barely manage to avoid a wide sweeping attack from dragon-boy by rolling under it.");
-				combatRoundOver();
 				return;
 			}
 			damage = int((str + 60 + weaponAttack) - Math.random()*(player.tou) - player.armorDef);
@@ -30,24 +29,21 @@ package classes.Scenes.NPCs
 				outputText("You easily deflect and block the damage from dragon boy wide swing.");//Ted's
 			}
 			else outputText("Dragon boy easily hits you with a wide, difficult to avoid swing.  ");
-			if(damage > 0) player.takeDamage(damage, true);
+			if(damage > 0) player.takePhysDamage(damage, true);
 			statScreenRefresh();
 		}
 		private function tedSpecialAttackTwo():void {
 			var damage:Number = 0;
 			if (hasStatusEffect(StatusEffects.Blind)) {
 				outputText("Dragon-boy unwisely tries to make a massive swing while blinded, which you are easily able to avoid.");
-				combatRoundOver();
 				return;
 			}
 			if (player.spe - spe > 0 && int(Math.random()*(((player.spe-spe)/4)+80)) > 60) {
 				outputText("You manage to roll out of the way of a massive overhand swing.");
-				combatRoundOver();
 				return;
 			}
 			if (player.findPerk(PerkLib.Evade) >= 0 && rand(100) < 60) {
 				outputText("You easily sidestep as dragon-boy tries to deliver a huge overhand blow.");
-				combatRoundOver();
 				return;
 			}
 			damage = int((str + 30 + weaponAttack) - Math.random()*(player.tou) - player.armorDef);
@@ -57,7 +53,7 @@ package classes.Scenes.NPCs
 			}
 			if (damage > 0) {
 				outputText("You are struck by a two-handed overhead swing from the enraged dragon-boy.  ");
-				damage = player.takeDamage(damage, true);
+				damage = player.takePhysDamage(damage, true);
 			}
 			statScreenRefresh();
 		}//poniżej ataki jakie bedzie używać w dodatku do 2 powyżej w czasie spotkań po Hidden Cave
@@ -80,7 +76,6 @@ package classes.Scenes.NPCs
 			if (choice1 == 0) eAttack();
 			if (choice1 == 1) tedSpecialAttackOne();
 			if (choice1 == 2) tedSpecialAttackTwo();
-			combatRoundOver();
 		}
 		
 		override public function defeated(hpVictory:Boolean):void
@@ -89,12 +84,12 @@ package classes.Scenes.NPCs
 			outputText("A dragon-boy fall on his knees ");
 			if (this.HP < 1)outputText("beaten up");
 			else outputText("too horny to fight back");
-			game.tedScene.defeatedTed();
+			SceneLib.tedScene.defeatedTed();
 		}
 		
 		override public function won(hpVictory:Boolean, pcCameWorms:Boolean):void
 		{
-			game.tedScene.lostToTed();
+			SceneLib.tedScene.lostToTed();
 		}
 		
 		public function Ted() 
@@ -110,22 +105,23 @@ package classes.Scenes.NPCs
 			this.cumMultiplier = 1;
 			this.hoursSinceCum = 50;
 			createBreastRow(0);
-			this.ass.analLooseness = ANAL_LOOSENESS_TIGHT;
-			this.ass.analWetness = ANAL_WETNESS_NORMAL;
+			this.ass.analLooseness = AssClass.LOOSENESS_TIGHT;
+			this.ass.analWetness = AssClass.WETNESS_NORMAL;
 			this.tallness = 78;
-			this.hipRating = HIP_RATING_SLENDER;
-			this.buttRating = BUTT_RATING_TIGHT;
+			this.hips.type = Hips.RATING_SLENDER;
+			this.butt.type = Butt.RATING_TIGHT;
 			this.skin.setBaseOnly({color:"white"});
 			this.skinDesc = "skin";
 			this.hairColor = "brown";
 			this.hairLength = 2;
 			initStrTouSpeInte(30, 50, 50, 30);
-			initLibSensCor(20, 40, 50);
+			initWisLibSensCor(30, 20, 40, 50);
 			this.weaponName = "bam hammer";
 			this.weaponVerb="bam";
-			this.weaponAttack = 8 + (2 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.weaponAttack = 8;
 			this.armorName = "dragonscales armor";
-			this.armorDef = 5 + (1 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.armorDef = 5;
+			this.armorMDef = 50;
 			this.lust = 15;
 			this.lustVuln = .9;
 			this.temperment = TEMPERMENT_LUSTY_GRAPPLES;
@@ -138,12 +134,6 @@ package classes.Scenes.NPCs
 			this.createPerk(PerkLib.LizanRegeneration, 0, 0, 0, 0);
 			this.createPerk(PerkLib.LizanMarrow, 0, 0, 0, 0);
 			this.createPerk(PerkLib.EnemyBossType, 0, 0, 0, 0);
-			this.str += 6 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.tou += 10 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.spe += 10 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.inte += 6 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];			
-			this.lib += 4 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.newgamebonusHP = 360;
 			checkMonster();
 		}
 		

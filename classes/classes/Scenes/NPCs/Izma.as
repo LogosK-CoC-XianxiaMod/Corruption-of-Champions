@@ -1,9 +1,11 @@
 package classes.Scenes.NPCs
 {
-	import classes.*;
-	import classes.GlobalFlags.kFLAGS;
+import classes.*;
+import classes.BodyParts.Butt;
+import classes.BodyParts.Hips;
+import classes.Scenes.SceneLib;
 
-	/**
+/**
 	 * ...
 	 * @author ...
 	 */
@@ -39,7 +41,7 @@ package classes.Scenes.NPCs
 			}
 			outputText("Izma rushes you with impressive speed, striking a few precise locations on your joints with her fingertips before leaping back.  It doesn't hurt, but you feel tired and sore. \"<i>Pressure points...</i>\" she laughs, seeing your confused expression.");
 			//(Fatigue damage)
-			game.fatigue(20+rand(20));
+			EngineCore.fatigue(20+rand(20));
 		}
 
 		private function IzmaSpecials2():void {
@@ -79,12 +81,12 @@ package classes.Scenes.NPCs
 			}
 			else outputText("laugh as her blades scape uselessly at your armor-clad back");
 			outputText(" before breaking her embrace and leaping away. ");
-			player.takeDamage(damage, true);
+			player.takePhysDamage(damage, true);
 		}
 		private function IzmaSpecials3():void {
 			outputText("Rather than move to attack you, Izma grins at you and grabs her breasts, massaging them as she caresses her long penis with one knee. Her tail thrashes and thumps the sand heavily behind her as she simulates an orgasm, moaning loudly into the air. The whole display leaves you more aroused than before.");
 			//(lust gain)
-			game.dynStats("lus", (20 + player.lib/5));
+			player.dynStats("lus", (20 + player.lib/5));
 		}
 
 		private function IzmaAI():void {
@@ -99,7 +101,6 @@ package classes.Scenes.NPCs
 				else choice = 4;
 			}
 			if(choice == 4) IzmaSpecials3();
-			combatRoundOver();
 		}
 
 		override public function eAttack():void
@@ -121,21 +122,20 @@ package classes.Scenes.NPCs
 				else choice = 4;
 			}
 			if (choice == 4) IzmaSpecials3();
-			combatRoundOver();
 		}
 
 		override public function defeated(hpVictory:Boolean):void
 		{
-			game.izmaScene.defeatIzma();
+			SceneLib.izmaScene.defeatIzma();
 		}
 
 		override public function won(hpVictory:Boolean, pcCameWorms:Boolean):void
 		{
 			if (pcCameWorms){
 				outputText("\n\n\"<i>Gross!</i>\" Izma cries as she backs away, leaving you to recover alone.");
-				game.cleanupAfterCombat();
+				SceneLib.combat.cleanupAfterCombatImpl();
 			} else {
-				game.izmaScene.IzmaWins();
+				SceneLib.izmaScene.IzmaWins();
 			}
 		}
 
@@ -149,25 +149,26 @@ package classes.Scenes.NPCs
 			this.createCock(15,2.2);
 			this.balls = 4;
 			this.ballSize = 3;
-			this.createVagina(false, VAGINA_WETNESS_SLICK, VAGINA_LOOSENESS_LOOSE);
+			this.createVagina(false, VaginaClass.WETNESS_SLICK, VaginaClass.LOOSENESS_LOOSE);
 			this.createStatusEffect(StatusEffects.BonusVCapacity, 45, 0, 0, 0);
 			createBreastRow(Appearance.breastCupInverse("DD"));
-			this.ass.analLooseness = ANAL_LOOSENESS_NORMAL;
-			this.ass.analWetness = ANAL_WETNESS_DRY;
+			this.ass.analLooseness = AssClass.LOOSENESS_NORMAL;
+			this.ass.analWetness = AssClass.WETNESS_DRY;
 			this.createStatusEffect(StatusEffects.BonusACapacity,30,0,0,0);
 			this.tallness = 5*12+5;
-			this.hipRating = HIP_RATING_CURVY;
-			this.buttRating = BUTT_RATING_NOTICEABLE;
+			this.hips.type = Hips.RATING_CURVY;
+			this.butt.type = Butt.RATING_NOTICEABLE;
 			this.skinTone = "striped orange";
 			this.hairColor = "silver";
 			this.hairLength = 20;
 			initStrTouSpeInte(100, 110, 106, 74);
-			initLibSensCor(75, 25, 40);
+			initWisLibSensCor(74, 75, 25, 40);
 			this.weaponName = "clawed gauntlets";
 			this.weaponVerb="clawed punches";
-			this.weaponAttack = 45 + (10 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.weaponAttack = 45;
 			this.armorName = "bikini and grass skirt";
-			this.armorDef = 12 + (2 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.armorDef = 12;
+			this.armorMDef = 1;
 			this.bonusHP = 330;
 			this.bonusLust = 20;
 			this.lust = 20;
@@ -177,12 +178,6 @@ package classes.Scenes.NPCs
 			this.gems = rand(15) + 10;
 			this.drop = NO_DROP;
 			this.createPerk(PerkLib.EnemyBeastOrAnimalMorphType, 0, 0, 0, 0);
-			this.str += 30 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.tou += 33 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.spe += 31 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.inte += 22 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];			
-			this.lib += 22 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.newgamebonusHP = 4140;
 			checkMonster();
 		}
 		

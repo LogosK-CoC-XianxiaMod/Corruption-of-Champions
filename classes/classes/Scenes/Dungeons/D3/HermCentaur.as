@@ -1,14 +1,14 @@
 package classes.Scenes.Dungeons.D3 
 {
-	import classes.PerkLib;
-	import classes.Monster;
-	import classes.Appearance;
-	import classes.StatusEffects;
-	import classes.GlobalFlags.kGAMECLASS;
-	import classes.GlobalFlags.kFLAGS;
-	import classes.CockTypesEnum;
-	
-	/**
+import classes.Appearance;
+import classes.BodyParts.Butt;
+import classes.BodyParts.Hips;
+import classes.CockTypesEnum;
+import classes.Monster;
+import classes.PerkLib;
+import classes.Scenes.SceneLib;
+
+/**
 	 * ...
 	 * @author Gedan
 	 */
@@ -20,7 +20,7 @@ package classes.Scenes.Dungeons.D3
 			this.a = "the ";
 			this.short = "herm centaur";
 			this.imageName = "hermcentaur";
-			this.long = "Standing tall and proud just a few feet away is a massive demon unlike any others you've seen.  She's every bit a centaur - horse body, hooves, fur, and everything, but she's also massive in proportion - about nine feet tall and equally well endowed.  Heaving, jiggly E-cups jut proudly from her chest, unrestrained and bare to the world, thick nipples capping them like majestic, sexual crowns.  Under her belly, a thick equine cock slaps wetly against her fur with every step, heavy balls dangling behind.  A solid black horn juts from her forehead, a testament to the demonic corruption flowing through this monstrous woman's veins.  Still, without the horn, you'd never have guessed she was a demon.  Her gleaming fire-orange hair and pale, freckled skin look like something you would see on an innocent maid, not a bestial altar of corrupted decadence.";
+			this.long = "Standing tall and proud just a few feet away is a massive demon unlike any others you've seen.  She's every bit a centaur - horse body, hooves, fur, and everything, but she's also massive in proportion - about nine feet tall and equally well endowed.  Heaving, jiggly E-cups jut proudly from her chest, unrestrained and bare to the world, thick nipples capping them like majestic, sexual crowns.  Under her belly, a thick equine cock slaps wetly against her fur with every step, heavy balls dangling behind.  A solid black horns juts from her forehead, a testament to the demonic corruption flowing through this monstrous woman's veins.  Still, without the horns, you'd never have guessed she was a demon.  Her gleaming fire-orange hair and pale, freckled skin look like something you would see on an innocent maid, not a bestial altar of corrupted decadence.";
 			this.tallness = 12 * 9;
 			// THIS SHIT IS RETARDED.
 			// Rather than doing something smart, like usiing the mf() function to set the gender prounouns in checkMonster, instead, each create<x> function sets them to something. So if you createVag then createCock, you get male pronouns. Fuck off.
@@ -29,15 +29,16 @@ package classes.Scenes.Dungeons.D3
 			this.createVagina(false, 4, 5); 
 			this.balls = 2;
 			this.ballSize = 3;
-			this.hipRating = HIP_RATING_FERTILE;
-			this.buttRating = BUTT_RATING_EXPANSIVE;
+			this.hips.type = Hips.RATING_FERTILE;
+			this.butt.type = Butt.RATING_EXPANSIVE;
 			initStrTouSpeInte(210, 210, 120, 120);
-			initLibSensCor(140, 40, 100);
+			initWisLibSensCor(120, 140, 40, 100);
 			this.weaponName = "fists";
-			this.weaponAttack = 30 + (7 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.weaponAttack = 30;
 			this.weaponVerb = "punch";
 			this.armorName = "wraps";
-			this.armorDef = 26 + (3 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.armorDef = 26;
+			this.armorMDef = 6;
 			this.bonusHP = 1800;
 			this.bonusLust = 40;
 			this.gems = 300 + rand(90);
@@ -47,24 +48,20 @@ package classes.Scenes.Dungeons.D3
 			this.createPerk(PerkLib.DemonicDesireI, 0, 0, 0, 0);
 			this.createPerk(PerkLib.RefinedBodyI, 0, 0, 0, 0);
 			this.createPerk(PerkLib.EnemyBeastOrAnimalMorphType, 0, 0, 0, 0);
+			this.createPerk(PerkLib.EnemyTrueDemon, 0, 0, 0, 0);
 			this.drop = NO_DROP;
-			this.str += 63 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.tou += 63 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.spe += 36 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.inte += 36 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];			
-			this.lib += 42 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.newgamebonusHP = 12000;
 			this.checkMonster();
 		}
 		
 		override public function defeated(hpVictory:Boolean):void
 		{
-			game.d3.hermCentaur.beatThePony(hpVictory);
+			SceneLib.d3.hermCentaur.beatThePony(hpVictory);
 		}
 		
 		override public function won(hpVictory:Boolean, pcCameWorms:Boolean):void
 		{
-			game.d3.hermCentaur.inSovietCoCPonyRidesYou(hpVictory, pcCameWorms);
+			if (player.isGargoyle()) SceneLib.d3.gargoyleBadEndD3();
+			else SceneLib.d3.hermCentaur.inSovietCoCPonyRidesYou(hpVictory, pcCameWorms);
 		}
 		
 		// Gonna handle this a little differently than usual.
@@ -88,9 +85,9 @@ package classes.Scenes.Dungeons.D3
 			
 			// Priority use
 			if (_chargingArouse) arouseSpellCast();
-			else if ((this.lust+60)/this.eMaxLust() >= .9 && !_usedGottaCum) gottaCum();
+			else if ((this.lust+60)/this.maxLust() >= .9 && !_usedGottaCum) gottaCum();
 			else if (this.HPRatio() <= 0.5 && !_usedHeal) healUp();
-			else if (rand(lust)/this.eMaxLust() >= 0.4) this.hypnoCock();
+			else if (rand(lust)/this.maxLust() >= 0.4) this.hypnoCock();
 			else
 			{	
 				// Selections
@@ -100,7 +97,6 @@ package classes.Scenes.Dungeons.D3
 				opts[rand(opts.length)]();
 			}
 			
-			combatRoundOver();
 		}
 		
 		private function feminineMusk():void
@@ -116,14 +112,14 @@ package classes.Scenes.Dungeons.D3
 				else outputText(" your anus until it puckers, craving something to fill it - anything.");
 			}
 			
-			game.dynStats("lus+", 8 + (player.lib / 10) + (player.sens / 10));
+			player.dynStats("lus+", 8 + (player.lib / 10) + (player.sens / 10));
 		}
 		
 		private function aphrodisiacSquirt():void
 		{
 			outputText("The centaur grabs her heavy tits and casually squeezes the prodding, hard nipples that cap them.  A trickle of rose moisture trickles out, dripping down the underside of her bust to glisten wetly in the light.  Spellbound for the moment, you look on in wonder at the display of demonic lactations.  A faint sweetness lingers in the air, and you lick your lips without meaning to.  Then, she squeezes down to spray a torrent of pink-tinged breastmilk directly at you, splitting into so many forks of fluid that you have no hope to dodge.");
 			
-			game.dynStats("lus+", 8 + (player.lib / 10) + (player.sens / 10));
+			player.dynStats("lus+", 8 + (player.lib / 10) + (player.sens / 10));
 
 			if (player.lust < .3*player.maxLust()) outputText("\n\nYou close your mouth tight and endure the shimmering shower, trying your damnedest to resist the effects of this insidious liquid.  Wherever it strikes you, it vanishes soon after, absorbed directly into your body.");
 			else if (player.lust < .4*player.maxLust()) outputText("\n\nYour heart beats faster.");
@@ -181,7 +177,7 @@ package classes.Scenes.Dungeons.D3
 				//(OH SHIT YOU GUNNA GET FUKKED)
 				outputText("The chanting reaches a crescendo before you can stop it, and as the nine-foot woman points at you, you barely have time to enunciate a single curse.  Her spell is upon you.  There's a flash of crimson light, seemingly as bright as the sun, and then you're hit with a wave of lust so strong it might as well be a physical force.  It slaps you hard enough to send you reeling, even while your heart pumps every spare drop of blood south.  You cry out at the forced arousal, blubbering wildly as the pleasure mounts and images of you and your foe locked together in every sexual position imaginable flood your consciousness.");
 				
-				game.dynStats("lus+", 20 + (player.lib / 6) + (player.sens / 6));
+				player.dynStats("lus+", 20 + (player.lib / 6) + (player.sens / 6));
 			}
 		}
 		
@@ -206,7 +202,7 @@ package classes.Scenes.Dungeons.D3
 			// Resistance-esque check, idk I threw this terrible shit together
 			if (player.inte * (2 / _hypnoCockUses) > rand((player.lib / 3) + (player.sens / 3) + (player.cor / 3)))
 			{
-				game.dynStats("lus+", 2 + rand((player.lib / 20) + (player.sens / 20)));
+				player.dynStats("lus+", 2 + rand((player.lib / 20) + (player.sens / 20)));
 				
 				if (player.lust <= .33*player.maxLust()) outputText("\n\nA warning thought jars you out of the cock-induced reverie with a start - this demon was going to hypnotize you, likely trying to seduce you into submission.  Not this time!  You tear yourself away and look her in the eye triumphantly.");
 				else if (player.lust <= .66*player.maxLust()) outputText("\n\nA quiet voice pipes up somewhere inside you and warns that something is amiss.  It's enough to stir you from your stupor, kindling your willpower to wrest your view from your foe's gently bobbing fuck-log.  You look her in the eye triumphantly.");
@@ -214,7 +210,7 @@ package classes.Scenes.Dungeons.D3
 			}
 			else
 			{
-				game.dynStats("lus+", 20 + 2 * _hypnoCockUses + 2 + rand((player.lib / 10) + (player.sens / 10)));
+				player.dynStats("lus+", 20 + 2 * _hypnoCockUses + 2 + rand((player.lib / 10) + (player.sens / 10)));
 				
 				outputText("Down it bobs, slowly hanging lower and lower... SMACK!  Up it goes, taking your bedazzled eyes along for the ride.  \"<i>That's a good " + player.mf("boy", "girl") + ",</i>\" the dick's director whispers, \"<i>Just follow the tempo and let it fill your mind, oozing inside you with each thump.</i>\"");
 				outputText("\n\nFuck!  She's right, it's getting awfully hard to think about anything else.  You fixate further on the cock, unwilling or unable to look away.");
@@ -246,7 +242,7 @@ package classes.Scenes.Dungeons.D3
 			outputText("\n\nFlushing, the demoness whimpers, \"<i>...don't think I can do that again, but I don't think you'll be able to turn me on like that twice!</i>\"");
 			
 			this.lust = 0;
-			game.dynStats("lus", 15);
+			player.dynStats("lus", 15);
 		}
 		
 		private function healUp():void
@@ -255,7 +251,7 @@ package classes.Scenes.Dungeons.D3
 			
 			outputText("Wiping a drop of blood from her wounds, the demon frowns in irritation.  \"<i>Do you have any idea how hard healing spells are to pull off when you're thinking about plowing a champion from behind?</i>\"  Her eyes flutter closed in concentration while sexual fluids run unimpeded from her mixed genitals.  At the same time, her wounds close up, covered with freshly grown horsehair or pale pink skin.  A few moments later, she wobbles slightly and mutters, \"<i>All better... hopefully you don't manage that twice.  I doubt I could pull it off again.  Then again, you'll likely be hilted on my dick or tongue-deep in my snatch by then, won't you?</i>\"");
 			
-			this.HP = this.eMaxHP();
+this.HP = this.maxHP();
 		}
 		
 	}

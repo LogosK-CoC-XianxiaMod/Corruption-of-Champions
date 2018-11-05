@@ -1,11 +1,14 @@
 package classes.Scenes.Areas.Forest
 {
-	import classes.*;
-	import classes.GlobalFlags.kFLAGS;
-	import classes.Scenes.Monsters.Goblin;
-	import classes.internals.*;
+import classes.*;
+import classes.BodyParts.Butt;
+import classes.BodyParts.Hips;
+import classes.GlobalFlags.kFLAGS;
+import classes.Scenes.Monsters.Goblin;
+import classes.Scenes.SceneLib;
+import classes.internals.*;
 
-	public class Tamani extends Goblin
+public class Tamani extends Goblin
 	{
 
 		override protected function goblinTeaseAttack():void
@@ -38,7 +41,7 @@ package classes.Scenes.Areas.Forest
 				selector = rand(2);
 				if(selector == 0) {
 					outputText("With effort you manage to wrench your eyes away from the inviting folds of Tamani's vagina.  ");
-					if(player.totalCocks() > 1) outputText("Each of y");
+					if(player.cockTotal() > 1) outputText("Each of y");
 					else outputText("Y");
 					outputText("our " + multiCockDescriptLight());
 					if(player.lust > 80) outputText(" drips pre-cum");
@@ -49,7 +52,7 @@ package classes.Scenes.Areas.Forest
 				}
 				else {
 					outputText("Struggling, you pull your eyes back into your head and away from Tamani's gorgeous slit.  You shudder, feeling ");
-					if(player.totalCocks () > 1) outputText("each of ");
+					if(player.cockTotal () > 1) outputText("each of ");
 					outputText("your " + player.multiCockDescriptLight());
 					if(player.lust <= 41) outputText(" thicken perceptibly");
 					else if(player.lust <= 81) outputText(" twitch eagerly");
@@ -63,18 +66,17 @@ package classes.Scenes.Areas.Forest
 				selector = rand(2);
 				if(selector == 0) {
 					outputText("You barely manage to step yourself from lunging forward to bury your mouth between your mistress's legs.  Hard and trembling between your legs, ");
-					if(player.totalCocks() > 1) outputText("each of ");
+					if(player.cockTotal() > 1) outputText("each of ");
 					outputText("your [cocks] aches with need.  You battle with the compulsion to kneel before your short, stacked mistress and perform your duties as her breeder husband.");
 				}
 				else {
 					outputText("You wrench your gaze from the juicy mound before you with great difficulty.  The desire to submit to your wife and fuck her on the spot rages through your body, melting your resistance into liquid lust and pooling it in your groin.  ");
-					if(player.totalCocks() > 1) outputText("Each of y");
+					if(player.cockTotal() > 1) outputText("Each of y");
 					else outputText("Y");
 					outputText("our [cocks] pulses and dribbles pre-cum, aching to do its duty and fire load after load into Tamani's perfect pussy.");
 				}
 			}
-			game.dynStats("lus", (rand(player.lib/5)+3+(flags[kFLAGS.TAMANI_TIMES_HYPNOTISED])));
-			combatRoundOver();
+			player.dynStats("lus", (rand(player.lib/5)+3+(flags[kFLAGS.TAMANI_TIMES_HYPNOTISED])));
 		}
 
 		override public function defeated(hpVictory:Boolean):void
@@ -84,41 +86,41 @@ package classes.Scenes.Areas.Forest
 			} else {
 				outputText("Tamani gives up on defeating you and starts masturbating!", true);
 			}
-			if(player.lust >= 33 && player.totalCocks() > 0 && flags[kFLAGS.SFW_MODE] <= 0) {
+			if(player.lust >= 33 && player.cockTotal() > 0 && flags[kFLAGS.SFW_MODE] <= 0) {
 				outputText("  You could fuck her, but if that's the case why did you bother fighting her?\n\nWhat do you do to her?");
 				var temp:Function = null;
 				var temp2:Function = null;
-				if(player.hasCock() && player.cockThatFits(analCapacity()) >= 0) temp = game.forest.tamaniScene.tamaniAnalShits;
+				if(player.hasCock() && player.cockThatFits(analCapacity()) >= 0) temp = SceneLib.forest.tamaniScene.tamaniAnalShits;
 				//NOT PREGGERS
-				if (!game.forest.tamaniScene.pregnancy.isPregnant && player.canOvipositSpider()) {
-					temp2 = game.forest.tamaniScene.tamaniBeaten;
+				if (!SceneLib.forest.tamaniScene.pregnancy.isPregnant && player.canOvipositSpider()) {
+					temp2 = SceneLib.forest.tamaniScene.tamaniBeaten;
 				}
-				game.simpleChoices("Fuck", game.forest.tamaniScene.tamaniSexWon, "Buttfuck", temp, "", null, "Lay Eggs", temp2, "Leave", game.cleanupAfterCombat);
+				EngineCore.simpleChoices("Fuck", SceneLib.forest.tamaniScene.tamaniSexWon, "Buttfuck", temp, "", null, "Lay Eggs", temp2, "Leave", SceneLib.combat.cleanupAfterCombatImpl);
 			}
-			else game.cleanupAfterCombat();
+			else SceneLib.combat.cleanupAfterCombatImpl();
 		}
 
 		override public function won(hpVictory:Boolean, pcCameWorms:Boolean):void
 		{
 			if (hpVictory){
-				if(player.totalCocks() > 0) {
-					if(rand(2) == 0) game.forest.tamaniScene.tamaniSexLost();
-					else game.forest.tamaniScene.tamaniSexLetHer();
+				if(player.cockTotal() > 0) {
+					if(rand(2) == 0) SceneLib.forest.tamaniScene.tamaniSexLost();
+					else SceneLib.forest.tamaniScene.tamaniSexLetHer();
 				}else {
 					outputText("Tamani sighs as you begin to lose conscious, \"<i>You dummy, why'd you get rid of the fun parts?</i>\"", true);
-					game.cleanupAfterCombat();
+					SceneLib.combat.cleanupAfterCombatImpl();
 				}
 			} else {
-				if(player.totalCocks() > 0) {
+				if(player.cockTotal() > 0) {
 				//hypnoslut loss scene
 				if(game.flags[kFLAGS.TAMANI_TIMES_HYPNOTISED] > 19 && rand(2) == 0) {
-					game.forest.tamaniScene.getRapedByTamaniYouHypnoSlut();
-				} else if(rand(2) == 0) game.forest.tamaniScene.tamaniSexLost();
-				else game.forest.tamaniScene.tamaniSexLetHer();
+					SceneLib.forest.tamaniScene.getRapedByTamaniYouHypnoSlut();
+				} else if(rand(2) == 0) SceneLib.forest.tamaniScene.tamaniSexLost();
+				else SceneLib.forest.tamaniScene.tamaniSexLetHer();
 				} else {
 					outputText("You give into your lusts and masturbate, but Tamani doesn't seem to care.  She kicks and punches you over and over, screaming, \"<i>You dummy, why'd you get rid of the fun parts?</i>\"", true);
-					game.combat.takeDamage(10000);
-					game.cleanupAfterCombat();
+					player.takePhysDamage(10000);
+					SceneLib.combat.cleanupAfterCombatImpl();
 				}
 			}
 		}
@@ -129,27 +131,28 @@ package classes.Scenes.Areas.Forest
 			this.a = "";
 			this.short = "Tamani";
 			this.imageName = "tamani";
-			this.long = "She keeps her arms folded across her " + game.forest.tamaniScene.tamaniChest() + " and glares at you.  The little thing is only about four feet tall, with pink and black dyed hair cut into a cute little 'do.  The greenish-gray skin of her breasts bulges out around her arms, supported by a few leather straps, amplifying her cleavage.  Her cunt lips are pierced multiple times, inflamed, and slightly parted.  There really isn't any clothing on her to hide them, just more of the ever-present straps wrapping around her thighs.";
+			this.long = "She keeps her arms folded across her " + SceneLib.forest.tamaniScene.tamaniChest() + " and glares at you.  The little thing is only about four feet tall, with pink and black dyed hair cut into a cute little 'do.  The greenish-gray skin of her breasts bulges out around her arms, supported by a few leather straps, amplifying her cleavage.  Her cunt lips are pierced multiple times, inflamed, and slightly parted.  There really isn't any clothing on her to hide them, just more of the ever-present straps wrapping around her thighs.";
 			// this.plural = false;
-			this.createVagina(false, VAGINA_WETNESS_DROOLING, VAGINA_LOOSENESS_NORMAL);
+			this.createVagina(false, VaginaClass.WETNESS_DROOLING, VaginaClass.LOOSENESS_NORMAL);
 			this.createStatusEffect(StatusEffects.BonusVCapacity, 55, 0, 0, 0);
 			createBreastRow(Appearance.breastCupInverse("E"));
-			this.ass.analLooseness = ANAL_LOOSENESS_TIGHT;
-			this.ass.analWetness = ANAL_WETNESS_DRY;
+			this.ass.analLooseness = AssClass.LOOSENESS_TIGHT;
+			this.ass.analWetness = AssClass.WETNESS_DRY;
 			this.createStatusEffect(StatusEffects.BonusACapacity,40,0,0,0);
 			this.tallness = 40;
-			this.hipRating = HIP_RATING_AMPLE+2;
-			this.buttRating = BUTT_RATING_LARGE;
+			this.hips.type = Hips.RATING_AMPLE + 2;
+			this.butt.type = Butt.RATING_LARGE;
 			this.skinTone = "greenish gray";
 			this.hairColor = "pink and black";
 			this.hairLength = 16;
 			initStrTouSpeInte(37, 58, 55, 62);
-			initLibSensCor(64, 65, 50);
+			initWisLibSensCor(60, 64, 65, 50);
 			this.weaponName = "fists";
 			this.weaponVerb="tiny punch";
-			this.weaponAttack = 1 + (1 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.weaponAttack = 1;
 			this.armorName = "leather straps";
-			this.armorDef = 1 + (1 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.armorDef = 1;
+			this.armorMDef = 1;
 			this.bonusHP = 60;
 			this.bonusLust = 20;
 			this.lust = 40;
@@ -170,12 +173,6 @@ package classes.Scenes.Areas.Forest
 							null);
 			this.special1 = goblinDrugAttack;
 			this.special2 = goblinTeaseAttack;
-			this.str += 7 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.tou += 11 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.spe += 11 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.inte += 12 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];			
-			this.lib += 12 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.newgamebonusHP = 530;
 			checkMonster();
 		}
 		

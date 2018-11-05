@@ -1,14 +1,16 @@
 package classes.Scenes.Dungeons.D3 
 {
-	import classes.BreastRowClass;
-	import classes.Cock;
-	import classes.Monster;
-	import classes.VaginaClass;
-	import classes.StatusEffects;
-	import classes.PerkLib;
-	import classes.GlobalFlags.kFLAGS;
-	
-	/**
+import classes.Appearance;
+import classes.BodyParts.Ears;
+import classes.BreastRowClass;
+import classes.Cock;
+import classes.Monster;
+import classes.PerkLib;
+import classes.Scenes.SceneLib;
+import classes.StatusEffects;
+import classes.VaginaClass;
+
+/**
 	 * ...
 	 * @author Gedan
 	 */
@@ -61,7 +63,7 @@ package classes.Scenes.Dungeons.D3
 
 				outputText("\n\n“<i>What’s the matter, [name]?</i>” " + player.mf("he", "she") +" breathes, staring lustfully into your eyes as " + player.mf("he", "she") +" sinks both hands into " + player.mf("his", "her") +" crotch and bends forward, forcing you close to " + player.mf("his", "her") +" face. “<i>Never tried it in front of a mirror? You were missing out on the nasty little tramp you are.</i>”");
 				
-				game.dynStats("lus", damage + (rand(7) - 3));
+				player.dynStats("lus", damage + (rand(7) - 3));
 			}
 			addTalkShit();
 		}
@@ -72,25 +74,25 @@ package classes.Scenes.Dungeons.D3
 			
 			if (HP < 1)
 			{
-				doNext(game.endHpVictory);
+				doNext(SceneLib.combat.endHpVictory);
 				return;
 			}
 			
-			if (lust > eMaxLust())
+			if (lust > maxLust())
 			{
-				doNext(game.endLustVictory);
+				doNext(SceneLib.combat.endLustVictory);
 				return;
 			}
 			
 			if (player.HP < 1)
 			{
-				doNext(game.endHpLoss);
+				doNext(SceneLib.combat.endHpLoss);
 				return;
 			}
 			
 			if (player.lust >= player.maxLust())
 			{
-				doNext(game.endLustLoss);
+				doNext(SceneLib.combat.endLustLoss);
 				return;
 			}
 			
@@ -101,7 +103,7 @@ package classes.Scenes.Dungeons.D3
 					outputText("\n\n[He] goes on in a dull croon as [he] continues to circle you, moving with the odd, syncopated jerks of a creature in a body that has only existed for a couple of minutes. “<i>Just let it happen, [name]. You can’t beat me. I am you, only with the knowledge and powers of a demon. Accept your fate.</i>”");
 					outputText("\n\nA weird fluttering feeling runs up your arm, and with a cold chill you look down to see it shimmer slightly, as if you were looking at it through running water.");
 					outputText("\n\n<b>You need to finish this as fast as you can.</b>");
-					break
+					break;
 					
 				case 1:
 					outputText("\n\n“<i>Do you know, I can’t even remember what gender I was before I got stuck in that mirror?</i>” the doppelganger says, as [he] slides a hand between your thighs’ mirror counterparts thoughtfully. “<i>I loved changing all the time. Being stuck as one gender seemed so boring when the tools to shift from one shape to the next were always there. That’s why this was my punishment. Forced to change all the time, at the unthinking behest of whoever happened to look into this cursed thing. You have to give Lethice credit, she’s not just cruel, she’s got imagination too. It’s a hell of a combination. I’d hate to see what she had in store for you.</i>”");
@@ -131,7 +133,7 @@ package classes.Scenes.Dungeons.D3
 				case 5:
 					outputText("\n\nThe shimmering intensifies for a moment as something... shifts....");
 					
-					game.dynStats("lus+", 1000);
+					player.dynStats("lus+", 1000);
 					
 					break;
 					
@@ -139,44 +141,36 @@ package classes.Scenes.Dungeons.D3
 					outputText("\n\n“<i>How did you even survive?</i>” the doppelganger looks in confusion. “<i>Regardless, I'm still taking your body.</i>”");
 					break;
 			}
-			
-			_roundCount++;
-			combatRoundOver();
+			_roundCount++; // ??? WTF
 		}
 		
 		override public function defeated(hpVictory:Boolean):void
 		{
-			game.d3.doppleganger.punchYourselfInTheBalls();
+			SceneLib.d3.doppleganger.punchYourselfInTheBalls();
 		}
 		
 		override public function won(hpVictory:Boolean, pcCameWorms:Boolean):void
 		{
-			game.d3.doppleganger.inSovietCoCSelfFucksYou();
+			if (player.isGargoyle()) SceneLib.d3.gargoyleBadEndD3();
+			else SceneLib.d3.doppleganger.inSovietCoCSelfFucksYou();
 		}
 		
 		public function handleSpellResistance(spell:String):void
 		{
 			outputText("The mirror demon barely even flinches as your fierce, puissant fire washes over [him].");
-
 			outputText("\n\n“<i>Picked up a few things since you’ve been here, then?</i>” [he] yawns. Flickers of flame cling to [his] fingers, its radiance sputtering and burning away, replaced by a livid black color. “<i>Serf magic. Easy to pick up, easy to use, difficult to impress with. Let me show you how it’s really done!</i>” [He] thrusts [his] hands out and hurls a pitiless black fireball straight at you, a negative replica of the one you just shot at [him].");
-			
 			if (spell == "fireball")
 			{
-				var damage:Number = player.level * 10 + 45 + rand(10)
-				if (player.findPerk(PerkLib.FromTheFrozenWaste) >= 0 || player.findPerk(PerkLib.ColdAffinity) >= 0) damage *= 3;
-				if (player.findPerk(PerkLib.FireAffinity) >= 0) damage *= 0.3;
+				var damage:Number = player.level * 10 + 45 + rand(10);
 				damage = Math.round(damage);
-				player.takeDamage(damage, true);
+				player.takeFireDamage(damage, true);
 			}
 			else if (spell == "whitefire")
 			{
-				var damage2:Number = 10 + (player.inte / 3 + rand(player.inte / 2))
-				if (player.findPerk(PerkLib.FromTheFrozenWaste) >= 0 || player.findPerk(PerkLib.ColdAffinity) >= 0) damage2 *= 3;
-				if (player.findPerk(PerkLib.FireAffinity) >= 0) damage2 *= 0.3;
+				var damage2:Number = 10 + (player.inte / 3 + rand(player.inte / 2));
 				damage2 = Math.round(damage2);
-				player.takeDamage(damage2, true);
+				player.takeFireDamage(damage2, true);
 			}
-			
 			addTalkShit();
 		}
 		
@@ -191,7 +185,6 @@ package classes.Scenes.Dungeons.D3
 			if (hasStatusEffect(StatusEffects.Stunned)) {
 				removeStatusEffect(StatusEffects.Stunned);
 				outputText("Your duplicate is too stunned, buying you another round!");
-				combatRoundOver();
 				return;
 			}
 			outputText("Your duplicate chuckles in the face of your attacks.");
@@ -217,23 +210,24 @@ package classes.Scenes.Dungeons.D3
 				this.ballSize = 0;
 			}
 			this.hoursSinceCum = player.hoursSinceCum;
-			hipRating = player.hipRating;
-			if (hipRating < 1) hipRating = 1;
-			buttRating = player.buttRating;
-			if (buttRating < 1) buttRating = 1;
+			hips.type = player.hips.type;
+			if (hips.type < 1) hips.type = 1;
+			butt.type = player.butt.type;
+			if (butt.type < 1) butt.type = 1;
 			lowerBody = player.lowerBody;
 			skinDesc = player.skinDesc;
 			initStrTouSpeInte(player.str, player.tou, player.spe, player.inte);
-			initLibSensCor(player.lib, player.sens, player.cor);
+			initWisLibSensCor(player.wis, player.lib, player.sens, player.cor);
 			if (cor < 50) cor = 50;
 			faceType = player.faceType;
 			skin.setAllProps(player.skin.saveToObject());
 			this.bonusHP = 500;
 			this.bonusLust = 40;
 			this.weaponName = player.weaponName;
-			this.weaponAttack = player.weaponAttack + (2 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.weaponAttack = player.weaponAttack;
 			this.weaponVerb = player.weaponVerb;
-			this.armorDef = player.armorDef + (1 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.armorDef = player.armorDef;
+			this.armorMDef = player.armorMDef;
 			this.armorName = player.armorName;
 			this.level = player.level;
 			this.ass.analLooseness = player.ass.analLooseness;
@@ -278,12 +272,6 @@ package classes.Scenes.Dungeons.D3
 			this.pronoun2 = "[him]";
 			this.pronoun3 = "[his]";
 			this.drop = NO_DROP;
-			this.str += 5 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.tou += 5 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.spe += 5 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.inte += 5 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];			
-			this.lib += 5 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.newgamebonusHP = 1000;
 			checkMonster();
 		}
 		
@@ -299,40 +287,40 @@ package classes.Scenes.Dungeons.D3
 			
 			str += " "  + player.mf("His", "Her") + " [hair] is parted by";
 			
-			switch(player.earType)
+			switch(player.ears.type)
 			{
-				case EARS_HORSE:
+				case Ears.HORSE:
 					str += " a pair of horse-like ears";
 					break;
-				case EARS_FERRET:
+				case Ears.FERRET:
 					str += " a small pair of rounded ferret ears";
 					break;
-				case EARS_DOG:
+				case Ears.DOG:
 					str += " a pair of dog ears";
 					break;
-				case EARS_COW:
+				case Ears.COW:
 					str += " a pair of round, floppy cow ears";
 					break;
-				case EARS_ELFIN:
+				case Ears.ELFIN:
 					str += " a large pair of pointy ears";
 					break;
-				case EARS_CAT:
+				case Ears.CAT:
 					str += " a pair of cute, fuzzy cat ears";
 					break;
-				case EARS_LIZARD:
-				case EARS_DRAGON:
+				case Ears.LIZARD:
+				case Ears.DRAGON:
 					str += " a pair of rounded protrusions with small holes";
 					break;
-				case EARS_BUNNY:
+				case Ears.BUNNY:
 					str += " a pair of floppy rabbit ears";
 					break;
-				case EARS_FOX:
+				case Ears.FOX:
 					str += " a pair of large, adept fox ears";
 					break;
-				case EARS_RACCOON:
+				case Ears.RACCOON:
 					str += " a pair of vaugely egg-shaped, furry racoon ears";
 					break;
-				case EARS_MOUSE:
+				case Ears.MOUSE:
 					str += " a pair of large, dish-shaped mouse ears";
 					break;
 				default:
@@ -341,7 +329,7 @@ package classes.Scenes.Dungeons.D3
 			}
 			
 			str += ". " + player.mf("He", "She") + " keeps exploring the area around " + player.mf("his", "her") +" mouth with " + player.mf("his", "her") +" tongue with a horribly acquisitive, sensual interest.";
-			str += " " + player.mf("He", "She") + " moves around on " + player.mf("his", "her") +" [legs] with a twitchy jerkiness, " + player.mf("his", "her") + " " + game.hipDescript() + " swinging and tightening.";
+			str += " " + player.mf("He", "She") + " moves around on " + player.mf("his", "her") +" [legs] with a twitchy jerkiness, " + player.mf("his", "her") + " " + Appearance.hipDescription(player) + " swinging and tightening.";
 			if (player.tailType != 0) str += " " + player.mf("His", "Her") + " tail flicks this way and that.";
 			str += " " + player.mf("He", "She") + " wields the exact same [weapon] you do, and is dressed in the mirror image of your [armor]. ";
 			if (player.biggestTitSize() >= 2) str += "It’s difficult not to notice the way the mirror image of your " + player.breastDescript(player.biggestTitRow()) + " ebbs and heaves within it.";

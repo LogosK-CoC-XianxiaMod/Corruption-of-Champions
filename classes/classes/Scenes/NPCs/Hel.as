@@ -1,16 +1,20 @@
 package classes.Scenes.NPCs
 {
-	import classes.*;
-	import classes.GlobalFlags.kFLAGS;
-	import classes.internals.*;
+import classes.*;
+import classes.BodyParts.Butt;
+import classes.BodyParts.Hips;
+import classes.BodyParts.Tail;
+import classes.GlobalFlags.kFLAGS;
+import classes.Scenes.SceneLib;
+import classes.internals.*;
 
-	public class Hel extends Monster
+public class Hel extends Monster
 	{
 
 		private function helAttack():void {
 			var damage:Number;
 			//return to combat menu when finished
-			doNext(game.playerMenu);
+			doNext(EventParser.playerMenu);
 			//Blind dodge change
 			if (hasStatusEffect(StatusEffects.Blind) && rand(3) < 1) {
 				outputText(capitalA + short + " completely misses you with a blind attack!\n");
@@ -50,12 +54,11 @@ package classes.Scenes.NPCs
 						lust += 5 * lustVuln;
 					}
 				}
-				if(damage > 0) damage = player.takeDamage(damage, true);
+				if(damage > 0) damage = player.takePhysDamage(damage, true);
 			}
 			
 			statScreenRefresh();
 			outputText("\n");
-			combatRoundOver();
 		}
 
 		//Attack 2 – Tail Slap (Hit)
@@ -63,7 +66,7 @@ package classes.Scenes.NPCs
 		private function helAttack2():void {
 			var damage:Number;
 			//return to combat menu when finished
-			doNext(game.playerMenu);
+			doNext(EventParser.playerMenu);
 			//Blind dodge change
 			if(hasStatusEffect(StatusEffects.Blind) && rand(3) < 1) {
 				outputText(capitalA + short + " completely misses you with a blind attack!\n");
@@ -91,8 +94,6 @@ package classes.Scenes.NPCs
 			}
 			//Determine damage - str modified by enemy toughness!
 			damage = int((str) - rand(player.tou) - player.armorDef);
-			if (player.findPerk(PerkLib.FromTheFrozenWaste) >= 0 || player.findPerk(PerkLib.ColdAffinity) >= 0) damage *= 3;
-			if (player.findPerk(PerkLib.FireAffinity) >= 0) damage *= 0.3;
 			damage = Math.round(damage);
 			//No damage
 			if(damage <= 0) {
@@ -109,10 +110,9 @@ package classes.Scenes.NPCs
 					lust += 5 * lustVuln;
 				}
 			}
-			if(damage > 0) damage = player.takeDamage(damage, true);
+			if(damage > 0) damage = player.takeFireDamage(damage, true);
 			statScreenRefresh();
 			outputText("\n");
-			combatRoundOver();
 		}
 
 		private function helCleavage():void {
@@ -124,14 +124,13 @@ package classes.Scenes.NPCs
 			else {
 				outputText("To your surprise, the salamander suddenly yanks up her top, letting her hefty breasts hang free in the air; her small, bright pink nipples quickly harden from either arousal or temperature.  Before you can take your eyes off her impressive rack, she jumps at you.  One of her scaled arms encircles your waist, and the other forcefully shoves your face into her cleavage.  She jiggles her tits around your face for a moment before you're able to break free, though you can feel a distinct heat rising in your loins.  As quickly as they were revealed, the breasts are concealed again and your opponent is ready for more combat!");
 				var lust:Number = 20 + rand(10) + player.sens/10 + rand(player.lib/20);
-				game.dynStats("lus", lust);
+				player.dynStats("lus", lust);
 				//Apply resistance
-				lust *= game.lustPercent()/100;
+				lust *= EngineCore.lustPercent()/100;
 				//Clean up
 				lust = Math.round(lust * 10)/10;
 				outputText(" <b>(<font color=\"#ff00ff\">+" + lust + " lust</font>)</b>\n");
 			}
-			combatRoundOver();
 		}
 		override protected function performCombatAction():void
 		{
@@ -153,18 +152,18 @@ package classes.Scenes.NPCs
 
 		override public function defeated(hpVictory:Boolean):void
 		{
-			if(hasStatusEffect(StatusEffects.Sparring)) game.helFollower.PCBeatsUpSalamanderSparring();
-			else game.helScene.beatUpHel();
+			if(hasStatusEffect(StatusEffects.Sparring)) SceneLib.helFollower.PCBeatsUpSalamanderSparring();
+			else SceneLib.helScene.beatUpHel();
 		}
 
 		override public function won(hpVictory:Boolean, pcCameWorms:Boolean):void
 		{
 			if (pcCameWorms){
 				outputText("\n\nHelia waits it out in stoic silence...");
-				doNext(game.endLustLoss);
+				doNext(SceneLib.combat.endLustLoss);
 			} else {
-				if(hasStatusEffect(StatusEffects.Sparring)) game.helFollower.loseToSparringHeliaLikeAButtRapedChump();
-				else game.helScene.loseToSalamander();
+				if(hasStatusEffect(StatusEffects.Sparring)) SceneLib.helFollower.loseToSparringHeliaLikeAButtRapedChump();
+				else SceneLib.helScene.loseToSalamander();
 			}
 		}
 
@@ -179,25 +178,26 @@ package classes.Scenes.NPCs
 			}
 			this.imageName = "hel";
 			this.long = "You are fighting a (literally) smoking hot salamander – a seven foot tall woman with crimson scales covering her legs, back, and forearms, with a tail swishing menacingly behind her, ablaze with a red-hot fire.  Her red hair whips wildly around her slender shoulders, occasionally flitting over her hefty E-cup breasts, only just concealed within a scale-covered bikini top.  Bright red eyes focus on you from an almost-human face as she circles you, ready to close in for the kill.  Her brutal, curved sword is raised to her side, feinting at you between genuine attacks.";
-			createVagina(true,VAGINA_WETNESS_NORMAL,VAGINA_LOOSENESS_NORMAL);
+			createVagina(true,VaginaClass.WETNESS_NORMAL,VaginaClass.LOOSENESS_NORMAL);
 			createStatusEffect(StatusEffects.BonusVCapacity,85,0,0,0);
 			createBreastRow(Appearance.breastCupInverse("E+"));
-			this.ass.analLooseness = ANAL_LOOSENESS_TIGHT;
-			this.ass.analWetness = ANAL_WETNESS_DRY;
+			this.ass.analLooseness = AssClass.LOOSENESS_TIGHT;
+			this.ass.analWetness = AssClass.WETNESS_DRY;
 			this.createStatusEffect(StatusEffects.BonusACapacity,85,0,0,0);
 			this.tallness = 90;
-			this.hipRating = HIP_RATING_CURVY+2;
-			this.buttRating = BUTT_RATING_LARGE+1;
+			this.hips.type = Hips.RATING_CURVY + 2;
+			this.butt.type = Butt.RATING_LARGE + 1;
 			this.skinTone = "dusky";
 			this.hairColor = "red";
 			this.hairLength = 13;
 			initStrTouSpeInte(90, 80, 75, 60);
-			initLibSensCor(70, 25, 30);
+			initWisLibSensCor(60, 70, 25, 30);
 			this.weaponName = "sword";
 			this.weaponVerb="slashing blade";
-			this.weaponAttack = 26 + (6 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.weaponAttack = 26;
 			this.armorName = "scales";
-			this.armorDef = 21 + (3 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.armorDef = 21;
+			this.armorMDef = 2;
 			this.armorPerk = "";
 			this.armorValue = 50;
 			this.bonusHP = 300;
@@ -211,16 +211,10 @@ package classes.Scenes.NPCs
 					add(armors.CHBIKNI,1/20).
 					add(weapons.SCIMITR,1/20).
 					add(consumables.SALAMFW,0.7);
-			this.tailType = TAIL_TYPE_SALAMANDER;
+			this.tailType = Tail.SALAMANDER;
 			this.tailRecharge = 0;
 			this.createStatusEffect(StatusEffects.Keen, 0, 0, 0, 0);
 			this.createPerk(PerkLib.IceVulnerability, 0, 0, 0, 0);
-			this.str += 18 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.tou += 16 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.spe += 15 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.inte += 12 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];			
-			this.lib += 14 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.newgamebonusHP = 2250;
 			checkMonster();
 		}
 		

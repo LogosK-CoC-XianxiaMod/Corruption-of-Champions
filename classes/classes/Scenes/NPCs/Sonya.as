@@ -4,12 +4,17 @@
  */
 package classes.Scenes.NPCs 
 {
-	import classes.*;
-	import classes.internals.*;
-	import classes.GlobalFlags.kGAMECLASS;
-	import classes.GlobalFlags.kFLAGS;
-	
-	use namespace kGAMECLASS;
+import classes.*;
+import classes.BodyParts.Butt;
+import classes.BodyParts.Ears;
+import classes.BodyParts.Face;
+import classes.BodyParts.Hips;
+import classes.BodyParts.LowerBody;
+import classes.BodyParts.Tail;
+import classes.GlobalFlags.kFLAGS;
+import classes.internals.*;
+
+use namespace CoC;
 	
 	public class Sonya extends Monster
 	{
@@ -41,25 +46,26 @@ package classes.Scenes.NPCs
 				this.short = "glacial bull";
 				this.long = "The glacial bull is twelve feet tall, much taller and muscular than any other bull you've seen before. Additionaly it seems to be heavy corrupted havins much less human traits than other minotaurs you meet. Weirdly he seems to have his chest covered by piece of cloth too in addition to typicaly used by his brothers loincloth, but that not distracts you from the pair of large hammers it wields.";
 			}
-			createVagina(true,VAGINA_WETNESS_NORMAL,VAGINA_LOOSENESS_TIGHT);
+			createVagina(true,VaginaClass.WETNESS_NORMAL,VaginaClass.LOOSENESS_TIGHT);
 			this.createStatusEffect(StatusEffects.BonusVCapacity,60,0,0,0);
 			createBreastRow(Appearance.breastCupInverse("flat"));
-			this.ass.analLooseness = ANAL_LOOSENESS_TIGHT;
-			this.ass.analWetness = ANAL_WETNESS_DRY;
+			this.ass.analLooseness = AssClass.LOOSENESS_TIGHT;
+			this.ass.analWetness = AssClass.WETNESS_DRY;
 			this.createStatusEffect(StatusEffects.BonusACapacity,10,0,0,0);
 			this.tallness = 144;
-			this.hipRating = HIP_RATING_CURVY+2;
-			this.buttRating = BUTT_RATING_LARGE+1;
+			this.hips.type = Hips.RATING_CURVY + 2;
+			this.butt.type = Butt.RATING_LARGE + 1;
 			this.skinTone = "light";
 			this.hairColor = "red";
 			this.hairLength = 1;
 			initStrTouSpeInte(250, 200, 150, 180);
-			initLibSensCor(50, 50, 100);
+			initWisLibSensCor(180, 50, 50, 100);
 			this.weaponName = "twin hammers";
 			this.weaponVerb="smash";
-			this.weaponAttack = 70 + (15 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.weaponAttack = 70;
 			this.armorName = "thick fur";
-			this.armorDef = 30 + (4 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.armorDef = 30;
+			this.armorMDef = 0;
 			this.bonusHP = 100;
 			this.bonusLust = 30;
 			this.lust = 30;
@@ -71,21 +77,15 @@ package classes.Scenes.NPCs
 				//	add(armors.S_SWMWR,1/12).
 				//	add(consumables.L_DRAFT,1/4).
 					add(consumables.LABOVA_,0.7);
-			this.earType = EARS_COW;
-			this.faceType = FACE_COW_MINOTAUR;
-			this.lowerBody = LOWER_BODY_TYPE_HOOFED;
-			this.tailType = TAIL_TYPE_COW;
+			this.ears.type = Ears.COW;
+			this.faceType = Face.COW_MINOTAUR;
+			this.lowerBody = LowerBody.HOOFED;
+			this.tailType = Tail.COW;
 			this.tailRecharge = 0;
 			//this.createPerk(PerkLib.EnemyBossType, 0, 0, 0, 0);
 			//this.createPerk(PerkLib.InhumanDesireI, 0, 0, 0, 0);
 			//this.createPerk(PerkLib.DemonicDesireI, 0, 0, 0, 0);
 			this.createPerk(PerkLib.EnemyBeastOrAnimalMorphType, 0, 0, 0, 0);
-			this.str += 75 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.tou += 60 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.spe += 45 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.inte += 54 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];			
-			this.lib += 15 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.newgamebonusHP = 9960;
 			checkMonster();
 		}
 		

@@ -1,9 +1,12 @@
 package classes.Scenes.NPCs
 {
-	import classes.*;
-	import classes.GlobalFlags.kFLAGS;
+import classes.*;
+import classes.BodyParts.Butt;
+import classes.BodyParts.Hips;
+import classes.BodyParts.Tongue;
+import classes.Scenes.SceneLib;
 
-	public class Holli extends Monster
+public class Holli extends Monster
 	{
 		/*Fight -Z
 		 Marae's offshoot, [monster] stands rooted in front of you.  Solid black eyes with golden pupils stare out at you.  Her normally-nude body is concealed inside her tree, though occasionally she will flash you the devilish grin of a sadistic temptress and the bark will split to reveal a pale, jiggling bit of flesh.  A pair of gnarled oak horns sprout from her forehead; leaves and flowers alternately bloom and wither on them as her face contorts with emotion.
@@ -31,11 +34,10 @@ package classes.Scenes.NPCs
 			outputText("try to escape, but " + short + " wraps one of her writhing roots around your [leg], slamming you to the ground and tying you up with several more!  \"<i>And just where do you think you're going, my little meat?</i>\" she hisses.  Her bark splits open, exposing her body, and a green shaft snakes out of her crotch, sprouting thorns and blooming into a rose at the tip.  She holds the drooling blossom over your [face] as she forces your mouth open with her roots! ");
 			//hp loss, begin lust constrict next round
 			if (player.findPerk(PerkLib.Juggernaut) < 0 && armorPerk != "Heavy") {var damage:int = 15;
-			damage = player.takeDamage(damage, true);
+			damage = player.takePhysDamage(damage, true);
 			}
 			outputText("\n\n");
 			player.createStatusEffect(StatusEffects.HolliConstrict, 0, 0, 0, 0);
-			combatRoundOver();
 		}
 
 //End of Round, if no Jojo Fire -Z
@@ -87,7 +89,6 @@ package classes.Scenes.NPCs
 
 				}
 			}
-			combatRoundOver();
 		}
 
 //if player uses whitefire/firebreath successfully, suppress these, go to 'Fire Lit' EOR events, and output additional line after the attack:
@@ -119,12 +120,11 @@ package classes.Scenes.NPCs
 				else outputText("have me inside you");
 				outputText(", forever...</i>\" ");
 				//lust damage, fatigue damage, light HP damage
-				game.fatigue(10);
-				game.dynStats("lus", 25);
+				EngineCore.fatigue(10);
+				player.dynStats("lus", 25);
 				var damage:Number = 20 + rand(10);
-				damage = player.takeDamage(damage, true);
+				damage = player.takePhysDamage(damage, true);
 			}
-			combatRoundOver();
 		}
 
 //constrict -Z
@@ -145,11 +145,10 @@ package classes.Scenes.NPCs
 				//plus med HP damage on turn one, plus med-heavy lust damage every turn while constricted
 				//sap rose shitposting
 				var damage:int = 10 + rand(5);
-				damage = player.takeDamage(damage, true);
-				game.dynStats("lus", 15);
+				damage = player.takePhysDamage(damage, true);
+				player.dynStats("lus", 15);
 				player.createStatusEffect(StatusEffects.HolliConstrict, 0, 0, 0, 0);
 			}
-			combatRoundOver();
 		}
 
 		public function struggleOutOfHolli():void
@@ -159,7 +158,7 @@ package classes.Scenes.NPCs
 			player.addStatusValue(StatusEffects.HolliConstrict, 1, 9);
 			//Struggle Succeed
 			//if demon/dragon tongue, automatic success
-			if (player.tongueType > TONGUE_HUMAN) {
+			if (player.tongue.type > Tongue.HUMAN) {
 				outputText("You can't move an arm nor a [leg] to bat the flower away... but she's literally holding your mouth open.  Your long tongue rolls out, gripping and ripping out several of the petals on the end of her stalk!  Holli screams and her roots slacken, allowing you to batter your way out of them.");
 				player.removeStatusEffect(StatusEffects.HolliConstrict);
 			}
@@ -175,7 +174,6 @@ package classes.Scenes.NPCs
 				waitForHolliConstrict(false);
 				return;
 			}
-			combatRoundOver();
 		}
 
 		public function waitForHolliConstrict(newScreen:Boolean = true):void
@@ -185,8 +183,7 @@ package classes.Scenes.NPCs
 			//lower monster lust by medium-lots and apply med sens-based lust damage
 			lust -= 20;
 			if (lust < 20) lust = 20;
-			game.dynStats("lus", 15 + player.sens / 5);
-			combatRoundOver();
+			player.dynStats("lus", 15 + player.sens / 5);
 		}
 
 //heal -Z
@@ -197,7 +194,6 @@ package classes.Scenes.NPCs
 			outputText("The bark splits part way and the woman's mouth suddenly explodes with color, her lips folding out into a rather yonic-looking orchid.  Copious white-tinted sap oozes from the bloom, coating her bark and healing the lesions.  Petals rustle as she speaks wetly through it.  \"<i>Your efforts are nothing!  Throw yourself on my mercy; be my slave and do my bidding!</i>\"");
 			//heal some fuckin' hp
 			addHP(200);
-			combatRoundOver();
 		}
 
 		override protected function performCombatAction():void
@@ -211,12 +207,12 @@ package classes.Scenes.NPCs
 
 		override public function defeated(hpVictory:Boolean):void
 		{
-			game.holliScene.defeatHolli();
+			SceneLib.holliScene.defeatHolli();
 		}
 
 		override public function won(hpVictory:Boolean, pcCameWorms:Boolean):void
 		{
-			game.holliScene.enjoyYourBadEndBIYAAAATCH();
+			SceneLib.holliScene.enjoyYourBadEndBIYAAAATCH();
 		}
 
 
@@ -241,24 +237,25 @@ package classes.Scenes.NPCs
 			this.ballSize = 0;
 			this.cumMultiplier = 3;
 			this.hoursSinceCum = 20;
-			this.createVagina(false, VAGINA_WETNESS_WET, VAGINA_LOOSENESS_LOOSE);
+			this.createVagina(false, VaginaClass.WETNESS_WET, VaginaClass.LOOSENESS_LOOSE);
 			this.createStatusEffect(StatusEffects.BonusVCapacity, 20, 0, 0, 0);
 			createBreastRow(Appearance.breastCupInverse("E"));
-			this.ass.analLooseness = ANAL_LOOSENESS_TIGHT;
-			this.ass.analWetness = ANAL_WETNESS_NORMAL;
+			this.ass.analLooseness = AssClass.LOOSENESS_TIGHT;
+			this.ass.analWetness = AssClass.WETNESS_NORMAL;
 			this.tallness = rand(12) + 55;
-			this.hipRating = HIP_RATING_CURVY;
-			this.buttRating = BUTT_RATING_LARGE;
+			this.hips.type = Hips.RATING_CURVY;
+			this.butt.type = Butt.RATING_LARGE;
 			this.skinTone = "black";
 			this.hairColor = "sandy-blonde";
 			this.hairLength = 15;
 			initStrTouSpeInte(150, 80, 80, 85);
-			initLibSensCor(75, 40, 80);
+			initWisLibSensCor(85, 75, 40, 80);
 			this.weaponName = "branches";
 			this.weaponVerb="branchy thwack";
-			this.weaponAttack = 6 + (2 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.weaponAttack = 6;
 			this.armorName = "bark";
-			this.armorDef = 40 + (5 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.armorDef = 40;
+			this.armorMDef = 10;
 			this.bonusHP = 1000;
 			this.bonusLust = 40;
 			this.lust = 20;
@@ -269,12 +266,6 @@ package classes.Scenes.NPCs
 			this.drop = NO_DROP;
 			this.createPerk(PerkLib.FireVulnerability, 0, 0, 0, 0);
 			this.createPerk(PerkLib.EnemyPlantType, 0, 0, 0, 0);
-			this.str += 30 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.tou += 16 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.spe += 16 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.inte += 17 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];			
-			this.lib += 15 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.newgamebonusHP = 2820;
 			checkMonster();
 		}
 		

@@ -28,8 +28,6 @@ inspection and compare it with description.
 Default monsters can have up to 3 special attacks stored in fields `special1`, `special2`, `special3`.
 Values could be either 5xxx event codes (old-style, use **ONLY** for existing special) or function references.
 
-Any special attack at all the return points should call `combatRoundOver()` to mark end of monster action.
-
 ### Scenes: approach, defeated, won
 
 You might want to write a special Scene class for the monster, which will contain
@@ -278,7 +276,7 @@ All scenes should be put it BaseContent subclasses. How many classes per event i
 An instance of this scene class should be available from `CoC` (declared as field and instantiated in the declaration),
 but not necessarily directly. It is preferable that location-specific scenes should be fields of corresponding location
 scenes. In code referencing a "foreign" scene to call an event could be something like
-`doNext(kGAMECLASS.telAdre.bakeryScene.bakeryuuuuuu);` . For such location-specific scenes it is good to subclass them
+`doNext(CoC.instance.telAdre.bakeryScene.bakeryuuuuuu);` . For such location-specific scenes it is good to subclass them
 from common superclass containing handy methods to access instance of their parent and other helpy stuff (see
 _Scenes/Places/TelAdre/TelAdreAbstractContent.as_ )
 

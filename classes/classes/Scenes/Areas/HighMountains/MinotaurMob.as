@@ -1,9 +1,15 @@
 package classes.Scenes.Areas.HighMountains
 {
-	import classes.*;
-	import classes.GlobalFlags.kFLAGS;
+import classes.*;
+import classes.BodyParts.Butt;
+import classes.BodyParts.Face;
+import classes.BodyParts.Hips;
+import classes.BodyParts.LowerBody;
+import classes.BodyParts.Tail;
+import classes.GlobalFlags.kFLAGS;
+import classes.Scenes.SceneLib;
 
-	/**
+/**
 	 * ...
 	 * @author ...
 	 */
@@ -52,7 +58,7 @@ package classes.Scenes.Areas.HighMountains
 				outputText("The smallest of the beastmen, the minitaur, moans and begs, \"<i>Please Mom, can we please fuck you?  I... I need it so bad.</i>\"  He raises the edge of his loincloth to show exactly what he's talking about.  His member is limp but leaking.  What really catches your eyes sits behind that drizzling shaft - a pair of balls looking swollen and pent up beyond belief.  A sticky web of his leavings hangs between his genitals and his loincloth, showing you just how much he's been leaking at the thought of fucking you.  Fanning the sopping garment, he inadvertently blows a wave of his pheromones your way.\n");
 				damage = 9 + player.lib/20;
 			}
-			game.dynStats("lus", damage);
+			player.dynStats("lus", damage);
 			damage = player.lust - oldLust;
 			//UNIVERSAL pre-cum RESULT:
 			//(Low damage taken)
@@ -79,7 +85,7 @@ package classes.Scenes.Areas.HighMountains
 				outputText(" in need.");
 				if(player.minotaurNeed()) {
 					outputText("  You need a fix so bad!");
-					game.dynStats("lus", 5);
+					player.dynStats("lus", 5);
 				}
 				else {
 					outputText("  You can understand firsthand just how potent and addictive that fluid is...");
@@ -89,7 +95,6 @@ package classes.Scenes.Areas.HighMountains
 				if(player.lust <= 99) outputText("You pull back from the brink with a start.  It'll take more than a little drugged pre-cum to bring you down!");
 				else outputText("You sigh and let your tongue loll out.  It wouldn't so bad, would it?");
 			}
-			combatRoundOver();
 		}
 
 		//Grope
@@ -98,22 +103,19 @@ package classes.Scenes.Areas.HighMountains
 			outputText("Strong hands come from behind and slide under your equipment to squeeze your " + chestDesc() + ".  The brutish fingers immediately locate and pinch at your " + nippleDescript(0) + "s, the sensitive flesh on your chest lighting up with pain and pleasure.  You arch your back in surprise, utterly stunned by the violation of your body.  After a moment you regain your senses and twist away, but the damage is already done.  You're breathing a bit quicker now");
 			if(player.lust >= 80) outputText(", and your pussy is absolutely soaking wet");
 			outputText(".");
-			game.dynStats("lus", (5 + player.sens/10));
-			combatRoundOver();
+			player.dynStats("lus", (5 + player.sens/10));
 		}
 		//Gang Grope
 		private function minotaurGangGangGropeAttack():void {
 			game.spriteSelect(94);
-			outputText("Before you can react, hands reach out from multiple angles and latch onto your body.  One pair squeezes at your " + game.buttDescript() + ", the strong grip massaging your cheeks with loving touches.  Another set of hands are sliding along your tummy, reaching down for, but not quite touching, the juicy delta below.  Palms encircle your [chest] and caress them, gently squeezing in spite of the brutish hands holding you.  You wriggle and squirm in the collective grip of the many minotaurs for a few moments, growing more and more turned on by the treatment.  At last, you shake out of their hold and stand free, panting hard from exertion and desire.");
-			game.dynStats("lus", (15 + player.sens/10));
-			combatRoundOver();
+			outputText("Before you can react, hands reach out from multiple angles and latch onto your body.  One pair squeezes at your " + Appearance.buttDescription(player) + ", the strong grip massaging your cheeks with loving touches.  Another set of hands are sliding along your tummy, reaching down for, but not quite touching, the juicy delta below.  Palms encircle your [chest] and caress them, gently squeezing in spite of the brutish hands holding you.  You wriggle and squirm in the collective grip of the many minotaurs for a few moments, growing more and more turned on by the treatment.  At last, you shake out of their hold and stand free, panting hard from exertion and desire.");
+			player.dynStats("lus", (15 + player.sens/10));
 		}
 		//Waste  a turn
 		private function minotaurGangWaste():void {
 			flags[kFLAGS.UNKNOWN_FLAG_NUMBER_00329] = 1;
 			game.spriteSelect(94);
 			outputText("\"<i>Oh man I can't wait to go hilt-deep in that pussy... I'm going to wreck " + player.mf("him", "her") + ",</i>\" promises one bull to his brother.  The other laughs and snorts, telling him how he'll have to do the deed during sloppy seconds.  It quickly escalates, and soon, every single one of the beast-men is taunting the others, bickering over how and when they'll get to have you.  While they're wasting their time, it's your chance to act!");
-			combatRoundOver();
 		}
 
 		override public function doAI():void
@@ -130,16 +132,16 @@ package classes.Scenes.Areas.HighMountains
 
 		override public function defeated(hpVictory:Boolean):void
 		{
-			game.highMountains.minotaurMobScene.victoryMinotaurGang();
+			SceneLib.highMountains.minotaurMobScene.victoryMinotaurGang();
 		}
 
 		override public function won(hpVictory:Boolean, pcCameWorms:Boolean):void
 		{
 			if (pcCameWorms) {
 				outputText("\n\nThe minutaurs share a laugh while you cum, but their throbbing erections don't subside in the slightest.");
-				doNext(game.endLustLoss);
+				doNext(SceneLib.combat.endLustLoss);
 			} else {
-				game.highMountains.minotaurMobScene.minotaurDeFeet();
+				SceneLib.highMountains.minotaurMobScene.minotaurDeFeet();
 			}
 		}
 
@@ -162,25 +164,26 @@ package classes.Scenes.Areas.HighMountains
 			this.cumMultiplier = 1.5;
 			this.hoursSinceCum = ballSize * 10;
 			createBreastRow(0);
-			this.ass.analLooseness = ANAL_LOOSENESS_STRETCHED;
-			this.ass.analWetness = ANAL_WETNESS_NORMAL;
+			this.ass.analLooseness = AssClass.LOOSENESS_STRETCHED;
+			this.ass.analWetness = AssClass.WETNESS_NORMAL;
 			this.createStatusEffect(StatusEffects.BonusACapacity,30,0,0,0);
 			this.tallness = rand(37) + 84;
-			this.hipRating = HIP_RATING_AVERAGE;
-			this.buttRating = BUTT_RATING_AVERAGE+1;
-			this.lowerBody = LOWER_BODY_TYPE_HOOFED;
+			this.hips.type = Hips.RATING_AVERAGE;
+			this.butt.type = Butt.RATING_AVERAGE + 1;
+			this.lowerBody = LowerBody.HOOFED;
 			this.skin.growFur({color:"red"});
 			this.skinDesc = "shaggy fur";
 			this.hairColor = randomChoice("black","brown");
 			this.hairLength = 3;
-			this.faceType = FACE_COW_MINOTAUR;
+			this.faceType = Face.COW_MINOTAUR;
 			initStrTouSpeInte(80, 110, 30, 20);
-			initLibSensCor(100, 15, 35);
+			initWisLibSensCor(20, 100, 15, 35);
 			this.weaponName = "fists";
 			this.weaponVerb="punches";
-			this.weaponAttack = 36 + (8 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.weaponAttack = 36;
 			this.armorName = "thick fur";
-			this.armorDef = 30 + (4 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.armorDef = 30;
+			this.armorMDef = 5;
 			var bonusHP:Number = 600 + 50 * (game.flags[kFLAGS.UNKNOWN_FLAG_NUMBER_00326] - 3);
 			var lustVuln:Number = 0.45;
 			if((game.flags[kFLAGS.UNKNOWN_FLAG_NUMBER_00326] - 3) * 2 > 13) lustVuln = .3;
@@ -194,17 +197,11 @@ package classes.Scenes.Areas.HighMountains
 			if(level > 29) level = 29;
 			this.level = level;
 			this.gems = rand(50) + 100;
-			this.tailType = TAIL_TYPE_COW;
-			this.special1 = game.mountain.minotaurScene.minoPheromones;
+			this.tailType = Tail.COW;
+			this.special1 = SceneLib.mountain.minotaurScene.minoPheromones;
 			this.drop = NO_DROP;
 			this.createPerk(PerkLib.EnemyGroupType, 0, 0, 0, 0);
 			this.createPerk(PerkLib.EnemyBeastOrAnimalMorphType, 0, 0, 0, 0);
-			this.str += 16 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.tou += 22 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.spe += 6 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.inte += 4 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];			
-			this.lib += 20 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.newgamebonusHP = 2040;
 			checkMonster();
 		}
 	}

@@ -1,17 +1,16 @@
 package classes.Scenes.Dungeons.D3
 {
-	import classes.Monster;
-	import classes.Appearance;
-	import classes.Scenes.Areas.Swamp.AbstractSpiderMorph;
-	import classes.StatusEffects;
-	import classes.GlobalFlags.kGAMECLASS;
-	import classes.CockTypesEnum;
-	import classes.StatusEffects;
-	import classes.PerkLib;
-	import classes.GlobalFlags.kFLAGS;
-	import classes.internals.WeightedDrop;
+import classes.BodyParts.Butt;
+import classes.BodyParts.Hips;
+import classes.EngineCore;
+import classes.GlobalFlags.kFLAGS;
+import classes.Monster;
+import classes.PerkLib;
+import classes.Scenes.SceneLib;
+import classes.StatusEffects;
+import classes.internals.WeightedDrop;
 
-	public class Lethice extends Monster
+public class Lethice extends Monster
 	{
 		public function Lethice()
 		{
@@ -23,15 +22,16 @@ package classes.Scenes.Dungeons.D3
 			this.createBreastRow(8);
 			this.balls = 2;
 			this.ballSize = 4;
-			this.hipRating = HIP_RATING_SLENDER;
-			this.buttRating = BUTT_RATING_TIGHT;
+			this.hips.type = Hips.RATING_SLENDER;
+			this.butt.type = Butt.RATING_TIGHT;
 			initStrTouSpeInte(320, 320, 150, 150);
-			initLibSensCor(180, 50, 100);
+			initWisLibSensCor(150, 180, 50, 100);
 			this.weaponName = "whip";
-			this.weaponAttack = 70 + (15 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.weaponAttack = 70;
 			this.weaponVerb = "whip";
 			this.armorName = "wraps";
-			this.armorDef = 36 + (4 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.armorDef = 36;
+			this.armorMDef = 72;
 			this.bonusHP = 3000;
 			this.bonusLust = 150;
 			this.gems = 200 + rand(100);
@@ -44,13 +44,8 @@ package classes.Scenes.Dungeons.D3
 			this.createPerk(PerkLib.TankI, 0, 0, 0, 0);
 			this.createPerk(PerkLib.Regeneration, 0, 0, 0, 0);
 			this.createPerk(PerkLib.EnemyBossType, 0, 0, 0, 0);
+			this.createPerk(PerkLib.EnemyTrueDemon, 0, 0, 0, 0);
 			this.drop = new WeightedDrop(weapons.L_WHIP, 1);
-			this.str += 96 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.tou += 96 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.spe += 45 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.inte += 45 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];			
-			this.lib += 54 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.newgamebonusHP = 20160;
 			this.checkMonster();
 		}
 		
@@ -63,7 +58,7 @@ package classes.Scenes.Dungeons.D3
 			}
 			else if (_fightPhase == 2)
 			{
-				str += "You're completely surrounded by demons! The members of Lethice's corrupted court have flooded the throne hall like a sea of tainted flesh, crushing in on you with the sheer weight of bodies being thrown against you. Incubi, succubi, and forms between and combining them all grasp and thrust at you, trying to overwhelm you with desire for their inhuman bodies and the unspeakable pleasures only demons command."
+				str += "You're completely surrounded by demons! The members of Lethice's corrupted court have flooded the throne hall like a sea of tainted flesh, crushing in on you with the sheer weight of bodies being thrown against you. Incubi, succubi, and forms between and combining them all grasp and thrust at you, trying to overwhelm you with desire for their inhuman bodies and the unspeakable pleasures only demons command.";
 				if (hasStatusEffect(StatusEffects.Blind))
 				{
 					str += " The demons have relented somewhat, clutching at their eyes and screaming in frustration and panic thanks to your potent spell!";
@@ -124,13 +119,13 @@ package classes.Scenes.Dungeons.D3
 				phase2Ends(hpVictory);
 				return;
 			}
-
-			game.d3.lethice.defeated(hpVictory);
+			SceneLib.d3.lethice.defeated(hpVictory);
 		}
 		
 		override public function won(hpVictory:Boolean, pcCameWorms:Boolean):void
 		{
-			game.d3.lethice.won(hpVictory, pcCameWorms);
+			if (player.isGargoyle()) SceneLib.d3.gargoyleBadEndD3();
+			else SceneLib.d3.lethice.won(hpVictory, pcCameWorms);
 		}
 		
 		private var _roundCount:int = 0;
@@ -150,7 +145,6 @@ package classes.Scenes.Dungeons.D3
 				case 3: phase3(); break;
 				default: phase1(); break;
 			}
-			combatRoundOver();
 		}
 
 		private function phase1():void
@@ -166,7 +160,7 @@ package classes.Scenes.Dungeons.D3
 			outputText("Lethice’s hands blur in a familiar set of arcane motions, similar to the magical gestures you’ve seen from the imps. Hers are a thousand times more intricate. Her slender fingers move with all the precision of a master artist’s brush, wreathed in sparks of black energy.");
 			var l:Number = player.lib / 10 + player.cor / 10 + 25;
 			if (player.hasStatusEffect(StatusEffects.MinotaurKingsTouch)) l *= 1.25;
-			game.dynStats("lus", l);
+			player.dynStats("lus", l);
 	
 			if (player.lust <= 30) outputText("\n\nYou feel strangely warm.");
 			else if (player.lust <= 60) outputText("\n\nBlood rushes to your groin as a surge of arousal hits you, making your knees weak.");
@@ -214,14 +208,14 @@ package classes.Scenes.Dungeons.D3
 			}
 			outputText(" spray forth a torrent of white flame, burning the shadowy constructs away in the light of your pure, focused fire. In the span of seconds, Lethice’s spell is gone.");
 
-			game.doNext(game.combat.combatMenu);
+			EngineCore.doNext(SceneLib.combat.combatMenu);
 			game.player.mana -= 30;
 			outputText("\n\n");
 			flags[kFLAGS.SPELLS_CAST]++;
-			game.combat.spellPerkUnlock();
-			game.statScreenRefresh();
-			game.enemyAI();
-		}
+			SceneLib.combat.spellPerkUnlock();
+			EngineCore.statScreenRefresh();
+            SceneLib.combat.enemyAIImpl();
+        }
 
 		private function demonfire():void
 		{
@@ -231,10 +225,7 @@ package classes.Scenes.Dungeons.D3
 			var damage:Number = 100 + rand(25);
 			if (player.findPerk(PerkLib.FromTheFrozenWaste) >= 0 || player.findPerk(PerkLib.ColdAffinity) >= 0) damage *= 3;
 			if (player.findPerk(PerkLib.FireAffinity) >= 0) damage *= 0.3;
-			damage = Math.round(damage);
-			damage = player.takeDamage(damage);
-
-			outputText(" (" + damage + ")");
+			player.takeMagicDamage(damage,true);
 		}
 
 		private function wingbuffet():void
@@ -249,7 +240,7 @@ package classes.Scenes.Dungeons.D3
 			{
 				outputText(" The cloying smoke gets in your eyes and your mouth, making you cough and sputter. Worst of all, you can’t see anything!");
 				player.createStatusEffect(StatusEffects.Blind, 2, 0, 0, 0);
-				player.takeDamage(1);
+				player.takePhysDamage(1);
 				outputText(" (1)");
 			}
 		}
@@ -278,10 +269,11 @@ package classes.Scenes.Dungeons.D3
 			}
 			else
 			{
-				damage = player.takeDamage(damage);
+				damage = player.takePhysDamage(damage);
 				if (damage <= 5)
 				{
-					outputText(" She barely scratches you. She’ll need stronger weapons than that to take you down. (" + damage + ")");
+					outputText(" She barely scratches you. She’ll need stronger weapons than that to take you down. ");
+					if(damage > 0){outputText("(" + damage + ")");}
 				}
 				else
 				{
@@ -294,15 +286,15 @@ package classes.Scenes.Dungeons.D3
 		{
 			clearOutput();
 			outputText("You pull with all your might against the grasping tentacles to no avail; their grip is simply too strong!");
-			game.enemyAI();
-		}
+            SceneLib.combat.enemyAIImpl();
+        }
 		
 		public function grappleWait():void
 		{
 			clearOutput();
 			outputText("You can't bring yourself to fight back against Lethice's tentaclespawn. The sensuous, coiling grasp around your limbs, their questing, pliant tips digging around inside your [armor]... you relax in their grip for a little while longer, too enticed by their movement to struggle right now.");
-			game.enemyAI();
-		}
+            SceneLib.combat.enemyAIImpl();
+        }
 		
 		private function phase1Ends(hpVictory:Boolean):void
 		{
@@ -333,7 +325,7 @@ package classes.Scenes.Dungeons.D3
 			outputText("\n\nOh, shit. You look up in time to see a cavalcade of demonic flesh swooping down from on high, bodies practically tumbling one over the other to get at you. The horde takes every physical form imaginable: towering, hulking brutish males, inhumanly curvaceous succubi, and the reverse of both - not to mention hermaphrodites masculine and feminine - and all with every sort of transformation. Bestial creatures, dragon-like incubi, and succubi whose skins range the colors of the rainbow and so, so much more come piling down the throne hall in a ceaseless barrage of flesh and decadence. They won’t stop until they’ve dragged you to the ground and fucked you into submission!");
 
 			// 9999 reconfigure for the group
-			HP = eMaxHP();
+			HP   = maxHP();
 			lust = 10;
 			_fightPhase = 2;
 			a = "the ";
@@ -346,7 +338,6 @@ package classes.Scenes.Dungeons.D3
 			if (hasStatusEffect(StatusEffects.PhysicalDisabled)) removeStatusEffect(StatusEffects.PhysicalDisabled);
 			if (hasStatusEffect(StatusEffects.AttackDisabled)) removeStatusEffect(StatusEffects.AttackDisabled);
 			
-			combatRoundOver();
 		}
 
 		private function phase2():void
@@ -355,7 +346,6 @@ package classes.Scenes.Dungeons.D3
 			if (rand(10) == 0 && !player.hasStatusEffect(StatusEffects.Blind)) atks.push(bukkakeTime);
 
 			atks[rand(atks.length)]();
-			combatRoundOver();
 		}
 
 		private function demonLustMagic():void
@@ -372,21 +362,21 @@ package classes.Scenes.Dungeons.D3
 				outputText("\n\nYou try your hardest to push back the lustful, submissive thoughts that begin to permeate your mind, but against so many concentrated wills... even you can't hold back. You moan as the first hints of arousal spread through you, burning in your loins. What you wouldn't give for a fuck about now!");
 				l = player.lib / 10 + player.cor / 10 + 10;
 				if (player.hasStatusEffect(StatusEffects.MinotaurKingsTouch)) l *= 1.25;
-				game.dynStats("lus", l);
+				player.dynStats("lus", l);
 			}
 			else if (player.lust <= 66)
 			{
 				outputText("\n\nAt first, you try to think of something else... but in your state, that just ends up being sex: hot, dirty, sweaty fucking surrounded by a sea of bodies. With a gasp, you realize you've left yourself open to the demons, and they're all too happy to flood your mind with images of submission and wanton debauchery, trying to trick you into letting them take you!");
 				l = player.lib / 10 + player.cor / 10 + 10;
 				if (player.hasStatusEffect(StatusEffects.MinotaurKingsTouch)) l *= 1.25;
-				game.dynStats("lus", l);
+				player.dynStats("lus", l);
 			}
 			else
 			{
 				outputText("\n\nYou don't even try to resist anymore -- your mind is already a cornucopia of lustful thoughts, mixed together with desire that burns in your veins and swells in your loins, all but crippling your ability to resist. The demons only add to it, fueling your wanton imagination with images of hedonistic submission, of all the wondrous things they could do to you if you only gave them the chance. It's damn hard not to.");
-				l = player.lib / 10 + player.cor / 10 + 10
+				l = player.lib / 10 + player.cor / 10 + 10;
 				if (player.hasStatusEffect(StatusEffects.MinotaurKingsTouch)) l *= 1.25;
-				game.dynStats("lus", l);
+				player.dynStats("lus", l);
 			}
 		}
 
@@ -404,7 +394,7 @@ package classes.Scenes.Dungeons.D3
 				else outputText("\n\nOh gods! The way their bodies undulate, caressing and cumming, moaning as they're fucked from behind and transfer all of that energy to you, makes your body burn with desire. It's almost too much to bear!");
 				var l:Number = player.lib / 10 + player.cor / 10 + 10;
 				if (player.hasStatusEffect(StatusEffects.MinotaurKingsTouch)) l *= 1.25;
-				game.dynStats("lus", l);
+				player.dynStats("lus", l);
 			}
 		}
 
@@ -431,8 +421,8 @@ package classes.Scenes.Dungeons.D3
 			else
 			{
 				var damage:Number = 70 - rand(player.tou);
-				damage = player.takeDamage(damage);
-				outputText(" Several of the big, stout horns slam into you, given all the more force thanks to the crushing waves of demons pushing them forward. You yelp in pain as they score your flesh! (" + damage + ")");
+				outputText(" Several of the big, stout horns slam into you, given all the more force thanks to the crushing waves of demons pushing them forward. You yelp in pain as they score your flesh!");
+				player.takePhysDamage(damage,true);
 			}
 		}
 
@@ -446,9 +436,8 @@ package classes.Scenes.Dungeons.D3
 			else
 			{
 				var damage:Number = 70 - rand(player.tou);
-				damage = player.takeDamage(damage);
-
-				outputText(" You squirm out of their crushing embrace, trying to crawl away on the ground, but if they can't squeeze you down the demons seem happy to trample you! You scream in alarm and pain as dozens of feet, hooves, claws, and other appendages come crushing down on you! (" + damage + ")");
+				outputText(" You squirm out of their crushing embrace, trying to crawl away on the ground, but if they can't squeeze you down the demons seem happy to trample you! You scream in alarm and pain as dozens of feet, hooves, claws, and other appendages come crushing down on you!");
+				player.takePhysDamage(damage,true);
 			}
 		}
 
@@ -471,12 +460,12 @@ package classes.Scenes.Dungeons.D3
 			else if (player.findPerk(PerkLib.Evade) >= 0)
 			{
 				outputText(" You at least manage to close your eyes before the wave of spooge hits you, splattering all over your [armor].");
-				game.dynStats("lus", 5);
+				player.dynStats("lus", 5);
 			}
 			else
 			{
 				outputText(" You take a huge, fat, musky glob of spunk right to the eyes! You yelp in alarm, trying to wipe the salty, burning demonic cock-cream out, but it's simply too thick! Yuck!");
-				game.dynStats("lus", 5);
+				player.dynStats("lus", 5);
 				player.createStatusEffect(StatusEffects.Blind, 2 + rand(2), 0, 0, 0);
 			}
 		}
@@ -495,10 +484,10 @@ package classes.Scenes.Dungeons.D3
 
 			outputText("\n\nWhile the demons are down, and Lethice is still recovering from your first skirmish, you have a much-needed moment to relieve the tensions starting to grow within you. Or you could press the attack, and take the fight to the queen.");
 
-			game.menu();
-			if (player.hasCock() || player.hasVagina()) game.addButton(0, "DemonFuck", p2DemonFuck, hpVictory);
-			if (player.hasStatusEffect(StatusEffects.KnowsHeal)) game.addButton(1, "Heal", p2Heal);
-			game.addButton(2, "Next", p2Next);
+			EngineCore.menu();
+			if (player.hasCock() || player.hasVagina()) EngineCore.addButton(0, "DemonFuck", p2DemonFuck, hpVictory);
+			if (player.hasStatusEffect(StatusEffects.KnowsHeal)) EngineCore.addButton(1, "Heal", p2Heal);
+			EngineCore.addButton(2, "Next", p2Next);
 		}
 
 		private function p2DemonFuck(hpVictory:Boolean):void
@@ -522,10 +511,10 @@ package classes.Scenes.Dungeons.D3
 			outputText("\n\nAround you, spurred on by your face-fucking the omnibus, the defeated demon court undulates in waves of orgiastic pleasure, gleefully sucking each other’s cocks, penetrating any hole they can find, or simply rolling on the floor locked in each other’s sensual embraces. Those that didn’t join the fight hoot and holler from the stands, encouraging you to fuck the omnibus like the eager slut she is. For her part, the horny demon just smirks up at you between long, loving licks across your sex.");
 
 			// [Oral Finish] [Fuck Demoncunt] [Ride Dogcock]
-			game.menu();
-			game.addButton(0, "OralFinish", oralFinish);
-			if (player.hasCock()) game.addButton(1, "FuckDemon", fuckDemon);
-			game.addButton(2, "RideCock", rideCock);
+			EngineCore.menu();
+			EngineCore.addButton(0, "OralFinish", oralFinish);
+			if (player.hasCock()) EngineCore.addButton(1, "FuckDemon", fuckDemon);
+			EngineCore.addButton(2, "RideCock", rideCock);
 		}
 
 		private function oralFinish():void
@@ -598,9 +587,9 @@ package classes.Scenes.Dungeons.D3
 		{
 			clearOutput();
 			outputText("Drawing on your magic, you use the opportunity to mend your wounds. No foe dares challenge you during the brief lull in battle, enabling you to maintain perfect concentration. With your flesh freshly knit and ready for battle, you look to Lethice.");
-			var temp:Number = int((player.inte / (2 + rand(3)) * game.combat.spellMod()) * (player.maxHP() / 150));
+			var temp:Number = int((player.inte / (2 + rand(3)) * SceneLib.combat.spellMod()) * (player.maxHP() / 150));
 			if(player.armorName == "skimpy nurse's outfit") temp *= 1.2;
-			game.HPChange(temp,false);
+			EngineCore.HPChange(temp,false);
 
 			beginPhase3(true);
 		}
@@ -622,7 +611,7 @@ package classes.Scenes.Dungeons.D3
 			// 9999 configure phase 3
 
 			_fightPhase = 3;
-			HP = eMaxHP();
+			HP   = maxHP();
 			lust = 10;
 			_defMode = 1;
 			
@@ -633,10 +622,10 @@ package classes.Scenes.Dungeons.D3
 			pronoun2 = "her";
 			pronoun3 = "her";
 			
-			game.menu();
+			EngineCore.menu();
 			
-			if (doLethNext) game.addButton(0, "Next", p2Next);
-			else combatRoundOver();
+			if (doLethNext) EngineCore.addButton(0, "Next", p2Next);
+			else SceneLib.combat.combatRoundOver();
 		}
 
 		private function phase3():void
@@ -666,7 +655,7 @@ package classes.Scenes.Dungeons.D3
 				lustVuln = 0.0;
 			}
 
-			if (_roundCount == 5) gropehands()
+			if (_roundCount == 5) gropehands();
 			else
 			{
 				var atks:Array = [parasiteThrowingStars, whiptrip, sonicwhip];
@@ -698,12 +687,12 @@ package classes.Scenes.Dungeons.D3
 			}
 			else
 			{
-				var l:Number = player.lib / 10 + player.cor / 10 + 10
+				var l:Number = player.lib / 10 + player.cor / 10 + 10;
 				if (player.hasStatusEffect(StatusEffects.MinotaurKingsTouch)) l *= 1.25;
-				game.dynStats("lus", l);
+				player.dynStats("lus", l);
 				
 				var damage:Number = str + weaponAttack - rand(player.tou);
-				damage = player.takeDamage(damage);
+				damage = player.takePhysDamage(damage);
 
 				outputText(" You can’t avoid them all! One clips you on its way past, ripping into your [skin] and leaving you feeling... flushed and hot in its wake.");
 				if (player.hasCock())
@@ -722,8 +711,9 @@ package classes.Scenes.Dungeons.D3
 					outputText(" There’s suddenly a dearth of room in the chest of your [armor]. Your [chest] are expanding, bouncing distractingly and slowing you with the extra weight!");
 					player.growTits(2, player.breastRows.length, false, 2);
 				}
-
-				outputText(" (" + damage + ")");
+				if(damage > 0){
+					outputText(" (" + damage + ")");
+				}
 			}
 		}
 
@@ -769,9 +759,7 @@ package classes.Scenes.Dungeons.D3
 				damage = 100 + weaponAttack + str - rand(player.tou);
 			}
 
-			damage = player.takeDamage(damage);
-
-			outputText(" ("+ damage +")");
+			player.takeMagicDamage(damage, true);
 		}
 
 		private function sonicwhip():void
@@ -779,8 +767,7 @@ package classes.Scenes.Dungeons.D3
 			outputText("Lethice raises her sizzling, flame-spitting whip high up overhead, then snaps her arm out and back in an instant, cracking the whip so hard that it gives birth to a shockwave of flame and cacophonous thunder. There’s no avoiding the all-encompassing wave of energy. There’s not even time to brace yourself. It slams into you, rattling bones and scorching flesh.");
 
 			var damage:Number = 75 + weaponAttack + str;
-			damage = player.takeDamage(damage);
-			outputText(" (" + damage +")");
+			player.takeMagicDamage(damage,true);
 		}
 
 		private function whipchoke():void
@@ -809,11 +796,9 @@ package classes.Scenes.Dungeons.D3
 				outputText("\n\n<b>You are effectively silenced!</b>");
 
 				var damage:Number = weaponAttack + 25 - rand(player.tou);
-				damage = player.takeDamage(damage);
+				player.takePhysDamage(damage,true);
 
 				player.createStatusEffect(StatusEffects.WhipSilence, 3, 0, 0, 0);
-
-				outputText(" (" + damage +")");
 			}
 		}
 	
@@ -829,7 +814,7 @@ package classes.Scenes.Dungeons.D3
 					var damage:Number = eOneAttack();
 					outputAttack(damage);
 					postAttack(damage);
-					game.statScreenRefresh();
+					EngineCore.statScreenRefresh();
 					outputText("\n");
 				}
 				else
@@ -843,7 +828,7 @@ package classes.Scenes.Dungeons.D3
 		{
 			outputText("<i>“Let’s see how you fight while you’re being groped, shall we? A shame Pigby isn’t around to see how I’ve improved his hands,”</i> Lethice murmurs. Cupping her hands into a parody of lecher’s grip, the corruptive Queen squeezes and chants. Immediately, you feel phantasmal hands all over your body, reaching through your armor to fondle your bare [skinFurScales]. Digits slip into your [butt]. Fingertips brush your [nipples]. Warm palms slide down your quivering belly toward your vulnerable loins.");
 			outputText("\n\nYou glare daggers at Lethice, but she merely laughs. <i>“A shame I never got to convince him that his hands were so much more effective when used like this.”</i>");
-			game.dynStats("lus", 5);
+			player.dynStats("lus", 5);
 			player.createStatusEffect(StatusEffects.PigbysHands, 0, 0, 0, 0);
 		}
 	}

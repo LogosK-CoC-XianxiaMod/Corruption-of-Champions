@@ -3,12 +3,13 @@
  */
 package classes.Scenes.NPCs
 {
-	import classes.*;
-	import classes.GlobalFlags.kFLAGS;
-	import classes.GlobalFlags.kGAMECLASS;
-	import classes.GlobalFlags.kACHIEVEMENTS;
+import classes.*;
+import classes.BodyParts.Tail;
+import classes.GlobalFlags.kACHIEVEMENTS;
+import classes.GlobalFlags.kFLAGS;
+import classes.Scenes.SceneLib;
 
-	public class CeraphFollowerScene extends NPCAwareContent
+public class CeraphFollowerScene extends NPCAwareContent
 	{
 		public function CeraphFollowerScene()
 		{
@@ -106,7 +107,7 @@ package classes.Scenes.NPCs
 			outputText("“<i>I’ll go over there tonight then,</i>” she says. There’s a far-away gleam of excitement in her eyes as she tugs on a nipple; only now does it occur to you what ‘marked as being under demon protection’ might entail. “<i>Anything else, [master]?</i>”");
 			
 			flags[kFLAGS.FOLLOWER_AT_FARM_CERAPH] = 1;
-			kGAMECLASS.farm.farmCorruption.whitneyCorruption(10);
+			SceneLib.farm.farmCorruption.whitneyCorruption(10);
 			
 			ceraphFollowerAppearance(false);
 		}
@@ -243,7 +244,7 @@ package classes.Scenes.NPCs
 			outputText("The defeated demon explains, \"<i>Though I am now and forever your slut, your slave, your bitch... those in my harem cannot be abandoned.  I am sad to say I cannot live with you, " + player.mf("Master", "Mistress") + ".</i>\"  She sees the look forming in your eyes and hastily adds, \"<i>Oh, I'll still be at your beck and call, but if I can't make it, I'll be sure to send you one of my pets.  Just rub this charm whenever you want my services, " + player.mf("Master", "Mistress") + ", and I'll be there.</i>\"  Ceraph holds out a tiny onyx bar tipped with rubies.  The gems shine and glitter with their own inner light, while the black shaft seems to drink in everything around it, leaving behind darkness.\n\n");
 
 			outputText("Well, with a harem as large as hers, it makes sense that she'd have to keep them in her lair and tend to them.  There's no way you could foster the people in your camp, and besides, since their Mistress is your slave, they're <b>now yours by extension, as well</b>.  Ceraph reaches down to ");
-			if (monster.lust >= monster.eMaxLust()) outputText("resume stroking");
+			if (monster.lust >= monster.maxLust()) outputText("resume stroking");
 			else outputText("stroke");
 			outputText(" her nodule-studded demon-dick with her free hand.  She whimpers, \"<i>Would my " + player.mf("Master", "Mistress") + " prefer to carry " + player.mf("his", "her") + " slave's token, or wear it as a belly-button piercing?</i>\"\n\n");
 
@@ -413,16 +414,16 @@ package classes.Scenes.NPCs
 				outputText("The demoness pulls out a diamond-studded piercing and closes in on you, her cock peeking out of her panties, her pussy moist, and her hips swaying seductively as she advances.  Ceraph gives you a serious look and warns you, \"<i>You realize you're not even going to be able to lift a hand against your foes after this?  You really love a challenge, don't you " + player.mf("Master", "Mistress") + "?</i>\"\n\n");
 
 				outputText("The idea of facing the denizens of this land without even so much as the ability to throw a punch turns you on immensely, and you pant and gasp as ");
-				if (player.totalCocks() > 0) {
+				if (player.cockTotal() > 0) {
 					outputText("pre-cum oozes from ");
-					if (player.totalCocks() > 1) outputText("each of ");
+					if (player.cockTotal() > 1) outputText("each of ");
 					outputText("your [cocks].");
 				}
 				else if (player.hasVagina()) outputText("feminine moisture drools from between your lips and your " + clitDescript() + " turns into a hard button.");
 				else outputText("your body aches for release.");
 				outputText("  With an amused grin, Ceraph yanks down your gear and ");
 				//[dicks]
-				if (player.totalCocks() > 0) {
+				if (player.cockTotal() > 0) {
 					outputText("grabs your " + cockDescript(0));
 					if (player.cocks[0].pierced > 0) outputText(", the old piercing clattering to the ground as it slides out, ");
 					outputText(" and snaps the diamond stud through your sensitive flesh, making your vision haze red in pain.\n\n");
@@ -678,7 +679,7 @@ package classes.Scenes.NPCs
 			outputText(" down your cum as it erupts from your [cocks].  As it swallows every drop, you hazily wonder what she'll do with it all, but then the still-fucking tentacles move faster, spraying their cum out from your too-packed orifices to rain over both of you.  Your " + vaginaDescript() + " and " + assholeDescript() + " flutter and contract, involuntarily squeezing the purple-skinned invaders for even greater levels of sensations.  It's too much and too hard.  You black out with a moan of satiated pleasure.\n\n");
 
 			outputText("You come to in a puddle of cum, both yours and Ceraph's.  The demoness is sitting down across from you, her appearance returned to normal.  She brightens when she wakes and kneels, saying, \"<i>Thank you for allowing me to serve you so... completely, " + player.mf("Master", "Mistress") + ".  It was... thrilling.</i>\"\n\n");
-
+			if (player.isGargoyle() && player.hasPerk(PerkLib.GargoyleCorrupted)) player.refillGargoyleHunger(30);
 			player.orgasm();
 
 			dynStats("sen", -2, "cor", .25);
@@ -778,7 +779,7 @@ package classes.Scenes.NPCs
 
 		private function ceraphUrtaRoleplay():void
 		{
-			kGAMECLASS.urta.urtaSprite();
+			SceneLib.urta.urtaSprite();
 			clearOutput();
 			outputText("\"<i>Roleplay? My " + player.mf("Master", "Mistress") + " is wonderfully exploitative with " + player.mf("his", "her") + " pet's lewd body,</i>\" Ceraph purrs, lips curling into a sly smile. Holding your arms at your sides, you nod at the subjugated demon, indicating that she should strip you. Keeping her eyes averted, she obediently complies, removing your [armor] piece by piece until you stand nude, in all your splendor. Turning upon her, you issue your curt command, briefly describing the form that she is to take. Surprisingly, she knows exactly who you're talking about. \"<i>Ah, the fox-bitch,</i>\" she muses, eyes flashing solid black again for a moment. \"<i>She's been such a thorn in my side for so long... letting you defile her will be a particularly intense pleasure, " + player.mf("Master", "Mistress") + ".</i>\"\n\n");
 
@@ -801,7 +802,7 @@ package classes.Scenes.NPCs
 		private function ceraphUrtaRoleplayDrunk():void
 		{
 			clearOutput();
-			kGAMECLASS.urta.urtaSprite();
+			SceneLib.urta.urtaSprite();
 			outputText("You wish her a cheerful 'bottom's up,' relief washing over her face as she seeks shelter in the blissful oblivion of alcohol. Lifting the bottle's fluted neck to her polished lips, Urta throws back her head and begins swallowing. Her throat bulges in rhythmic gulps, air bubbling up through the liquor as the whiskey steadily vanishes into her shame-thirsty gullet. Her face flushes deeper, the bitter sting of booze taking her mind off of the embarrassment of her equine attributes. Her cock throbs in the open air with each noisy glug, dollops of cum still drooling from her engorged member. Finishing the entire bottle, the fox-morph wetly sucks down a fresh lungful of air, her expression floating somewhere between stimulated joy and dazed confusion. She looks closely at the bottle and blinks several times. \"<i>Wh- what did you put in this?</i>\"\n\n");
 
 			outputText("With a shrug, you admit that you're impressed she noticed the little additive. It seemed unlikely she would've tasted much of anything with how quickly she slurped down her liquid vice.  Grinning, you ask her how the black egg tasted. Urta's mouth hangs open, inebriation sinking its talons into her brain one by one, but after a moment, the realization dawns on her. Before she can voice her outrage, the change begins, Urta's body cringing with twisting spasms. She drops the bottle and clutches at her stomach, but when she raises her hands again, strands of light grey fur scatter into the wind from between her fingers. Falling to her knees, she begins itching, frantically, more of her ashen hair sloughing off as if she were shedding uncontrollably. Watching the girl paw at herself wildly, you bend down, close to her face, and when her head turns up to speak, you give the vixen a flick across her nose. She snatches her sensitive muzzle with a whine, hands wrapping around it as she writhes on the ground, fur falling away with each trembling shake.\n\n");
@@ -817,7 +818,7 @@ package classes.Scenes.NPCs
 		private function ceraphUrtaRoleplayDrunk2():void
 		{
 			clearOutput();
-			kGAMECLASS.urta.urtaSprite();
+			SceneLib.urta.urtaSprite();
 			outputText("The cock sliding up your backside throbs in anticipation and you realize that Urta's over-stimulated herself. Lips parting in a whorish moan, she climaxes, her fingers digging into her soft, smooth skin as her massive shaft flares thicker than you've seen before, gouts of thick jizz arcing from her head. You can feel the voluminous loads surging between your cheeks before bursting from her tip and cresting through the air before splattering down in cords of creamy cum. All along your back, neck, hair, and face, sticky wads of spunk douse you in the fox-girl's excitement and you squeeze your rear as tightly as you can to massage out every last ladle of her rich seed. She bathes you a pale off-white but to your surprise, she's still moaning and stroking the skin of her changed body. \"<i>It's not enough,</i>\" she mumbles, \"<i>I need more.</i>\" You start to rise, but the drunk girl slams her palms onto your shoulders, planting you back into the ground, body horizontal beneath her. Sliding backwards, her engorged cockhead presses insistently against the juncture of your hips, still bubbling with dollops of cum.  \"<i>It's too sensitive,</i>\" she whines, pinning your lower body between her muscled legs.  Your struggles to get out from under the drunk, horny girl are fruitless, so you turn your head and see that her throbbing sac is- if anything- even larger than before, her cock still rock hard as she guides it up against your " + vaginaDescript() + ".\n\n");
 
 			outputText("\"<i>Oh damnit, damnit, damnit,</i>\" Utra chants as she presses her erection against your drooling slit, the equine inches slipping along the sweat-oiled plumpness of your thighs. Inching forward, she presses the flared tip of her head against your tender lips, the distended flesh struggling against the tightness of your snatch, lubricated depths unwillingly parting bit by bit until finally, the bulbous cockhead slips into you, your cunt tightening down around it, firmly locking the guard captain inside you. \"<i>Ah! Ffffffuck!</i>\" she curses.  \"<i>How are you always so tight?</i>\" she groans, happily. Unable to restrain herself, she begins bucking in place, sliding the first three inches of her throbbing member back and forth inside you, savoring the ripples her rocking motion sends through your " + buttDescript() + ", your hypnotic hips mesmerizing the girl riding you. Raising an amber hand, she cracks an open palm against your tender ass as she drives another two inches inside you, your gut lurching with the force. You try to ");
@@ -834,8 +835,8 @@ package classes.Scenes.NPCs
 			outputText("When she cums for the third time, you can feel the blast directly on your cervix, the force of her load parting the muscled sphincter, ropes of newly virile seed flooding your womb.  The weight of her distended scrotum pulses between your thighs and your belly bulges under the impregnating torrent. Urta's body tenses as she inundates your depths with the excess of her loins, the influx cascading through your uterus to burst like a tide, your body flush with her pouring jizz.");
 			if (player.hasCock()) outputText("  " + SMultiCockDesc() + " releases its own glut in a sympathetic climax that turns the dirt under your body into sticky mud as your inflating gut spreads out from either side of your belly. Still cumming, Urta presses her lips to the back of your neck, kissing you softly in a gesture that almost seems to convey a sense of ownership as much as tenderness.  When she finally withdraws from your over-filled pussy, the glut of her semen bubbles out of your body in rolling waves of alabaster cream.  She rises, unsteadily, to stand over you, her cock finally drooping, thick strands of spunk still dripping between her engorged urethra and your spasming cunt.  \"<i>Hey, I can finally take a shower without smelling like a wet dog afterwards,</i>\" she realizes, happily. She reaches a hand down to help you up, her expression one of blissful satisfaction, but the experience was too much for you and you pass out. The last thing you see is the warm halo of her caramel face and the caring sparkle of her leafy eyes.");
 			outputText("\n\n");
-
 			outputText("You wake up before long and find yourself cleaned, though still a little sticky, as if someone had used their tongue to wash the cum from your " + player.skinFurScales() + ".");
+			if (player.isGargoyle() && player.hasPerk(PerkLib.GargoyleCorrupted)) player.refillGargoyleHunger(30);
 			player.orgasm();
 			dynStats("lib", -1, "sen", -2, "cor", 2);
 			//Preggers chance!
@@ -849,7 +850,7 @@ package classes.Scenes.NPCs
 //[Sober]
 		private function ceraphUrtaRoleplaySober():void
 		{
-			kGAMECLASS.urta.urtaSprite();
+			SceneLib.urta.urtaSprite();
 			clearOutput();
 			outputText("You tell Urta to put the bottle down. She won't need that, not any more. She looks at you in confusion, setting the whiskey to one side, curling her tail between her legs to cover her throbbing member. Closing the distance between the two of you, she stiffens when you wrap an arm around the small of her back and bring the other hand up to her chin. She doesn't have to be ashamed any more, you explain, because you know the cure for her curse. The fox-morph's eyes light up, her mouth parting but not daring to speak or even breathe. Stroking a thumb along the line of her jaw, you close your eyes and nod slowly, pulling her into an embrace tight enough for you to feel the fluttering pulse of her body heat sinking through your " + player.skinFurScales() + ". You can tell by the wobbling of her lower lip that she is dying to ask how, but you merely brush the dappled-grey bangs from her eyes, staring into the guard's emerald irises. You can feel the soft intake of her breath as it catches in her throat and she leans toward you ever so slightly, blushing. You meet her halfway, obsidian-warm lips pressing against yours tentatively at first, before gaining confidence. She sinks deeper into the embrace, the tight tension knotting her back slowly easing as surrenders her self-conscious shame for unabashed passion, relishing the intimacy of your caress. When you draw back from the intoxicating fever of the fox girl, you whisper one word to her: \"<i>Love.</i>\"\n\n");
 
@@ -858,7 +859,7 @@ package classes.Scenes.NPCs
 			outputText("The herm, at last restored to a pure woman, rubs the healed expanse of her abdomen, unbelieving, before leaping to her feet and excitedly seizing both of your hands. \"<i>I'm normal! No longer a freak! Oh, [name], I can never repay you for this. You've given me a new life! Please... won't you,</i>\" she gazes at you with a flush of anticipation, \"<i>won't you make love to me?</i>\" Pulling your hands to her hips, she steps close enough to kiss, but merely presses her forehead against your own, viridian eyes no longer clouded with coarse lust. Instead, they practically glow with the girl's ardor, her smile authentic and honest. Unblinking, you gaze into her eyes for a moment that stretches into an eternity, cupping a hand around her cheek. She reads your acceptance as clearly as if you'd been yelling it from the mountaintops and she returns your gentle smile, nuzzling her nose against yours.\n\n");
 
 			outputText("Drawing you back to your cot, Urta sits on the cushioned bedding, knees spread as she leans back and braces herself on her elbows. You sink between her muscled thighs, rubbing your palms up the dusky fur of her hips as you bring your head toward her leaking pussy. The delicate folds of her labia are as dark as her nose, but there is a certain elegance in their plush depths, like the petals of a black rose guarding the nectar of the flower. You trace your tongue around the edge of her vulva, warm skin tingling with the faintest trace of the athletic guardswoman's perfumed sweat, exciting the tip of your tongue and making you draw it back into your mouth to savor the untainted taste of the girl's body. Placing small kisses on the puffy lips of her sex, you draw the girl's skin into your mouth with a gentle sucking, nibbling at the fox's flesh with only your lips as you gradually, achingly work your way up to the polished nub of her clitoris, engorged from your teasing oral stimulation. You stroke the sensitive flesh with the tip of your nose, brushing the swell of your lower lip across Urta's joy-buzzer. She moans, her hips swaying back and forth in time to your movements.");
-			if (player.horns > 0) outputText("  Unable to keep her hands at her sides, but unwilling to stand between your mouth and her slit, the fox-girl takes hold of your horns, pulling your face tightly against her mound, her chest tight with a barely audible squeak of delight. Stroking the tip of your tongue at the curtain of her sex, you allow her the barest trace of penetration before drawing back and placing a wet kiss on her clit. Enough foreplay.");
+			if (player.horns.count > 0) outputText("  Unable to keep her hands at her sides, but unwilling to stand between your mouth and her slit, the fox-girl takes hold of your horns, pulling your face tightly against her mound, her chest tight with a barely audible squeak of delight. Stroking the tip of your tongue at the curtain of her sex, you allow her the barest trace of penetration before drawing back and placing a wet kiss on her clit. Enough foreplay.");
 			dynStats("lus", 200);
 			//[Next]
 			doNext(ceraphUrtaRoleplaySober2);
@@ -867,7 +868,7 @@ package classes.Scenes.NPCs
 		private function ceraphUrtaRoleplaySober2():void
 		{
 			hideUpDown();
-			kGAMECLASS.urta.urtaSprite();
+			SceneLib.urta.urtaSprite();
 			clearOutput();
 			outputText("You rise and run your hands along the lighter fur of her toned abs. \"<i>Please,</i>\" she whispers, \"<i>I want to feel you inside me.</i>\"  Your [cock] is all too willing, throbbing meat sliding up and down her lubricated lips as you slowly rock back and forth. Bracing your tip at the pucker of her honey-slick passage, you take one of her hands in yours, entwining your fingers with a squeeze as you push into her. Urta jolts with a sharp intake of breath before relaxing herself and closing her eyes to focus on the sensation of your inflamed shaft parting her inner walls. You push in deeper, amazed at how wet she is already, the strength of her love for you intensifying every motion. Despite all the sexual encounters she's had before this moment, in this single instant, it's as if she's experiencing pleasure for the first time. Aching bliss coursing through her limbs, it's all she can do to gasp and slowly toss her head side to side as you sink deeper into the girl, her recesses filling with the almost liquid heat of your throbbing member.");
 			if (player.cockArea(0) > 150) outputText("  Even your tremendous size is no impediment to blessing the girl with your passion- every inch of her body gives way as you sink into her beyond the limits you would normally expect, as if her body were perfectly tailored to yours.");
@@ -1551,7 +1552,7 @@ package classes.Scenes.NPCs
 			outputText("\n\nShe pirouettes away, practically dancing into the sky while she strokes and teases the cock you just lost.  You shudder and shake as orgasm wracks your body, your cum falling like rain thousands of feet away.  You swear, you can hear your pet laughing.");
 			player.orgasm();
 			dynStats("lib", -2, "sen", -2, "cor", 5);
-			flags[kFLAGS.UNKNOWN_FLAG_NUMBER_00218]++;
+			flags[kFLAGS.CERAPH_OWNED_DICKS]++;
 			player.removeCock(x, 1);
 			doNext(camp.returnToCampUseOneHour);
 		}
@@ -1569,7 +1570,7 @@ package classes.Scenes.NPCs
 			//(-100 lust, -1 fetish, +1 vagina toy status)
 			player.orgasm();
 			dynStats("lib", -2, "sen", -2, "cor", 5);
-			flags[kFLAGS.UNKNOWN_FLAG_NUMBER_00219]++;
+			flags[kFLAGS.CERAPH_OWNED_PUSSIES]++;
 			doNext(camp.returnToCampUseOneHour);
 		}
 
@@ -1622,7 +1623,7 @@ package classes.Scenes.NPCs
 			outputText("Ceraph turns and prances off through the rocks, tweaking your nipples HARD every few moments to remind you of your choice.  She vanishes before long, leaving you to deal with the slowly dwindling sensation of her cock in your tits.\n\n");
 			//(-1 fetish, +1 tit toy status)
 			dynStats("lus", 20, "cor", 5);
-			flags[kFLAGS.UNKNOWN_FLAG_NUMBER_00220]++;
+			flags[kFLAGS.CERAPH_OWNED_TITS]++;
 			doNext(camp.returnToCampUseOneHour);
 		}
 
@@ -1663,6 +1664,7 @@ package classes.Scenes.NPCs
 			outputText("  Her hands run through your [hair] and pull your [face] into her shoulder.  She holds you tightly, clingingly even.  If you weren't so enraptured by the sensation of your sperm-filled nipples, you might actually care.");
 			outputText("\n\nThe two of you slowly relax, dueling climaxes winding down to return some level of sanity at last.  As soon as the demoness' eyes uncross, she stands up, " + num2Text(player.totalNipples()) + " dicks sliding free of clutching, spunk-stuffed twats at once.  You gasp and shudder, the sensitive flesh nearly setting you off again.  As she stretches, Ceraph's new appendages shrink, losing their masculinity and even faster their size.  You rise while trying to ignore the runnels of demon-spunk that spout from your well-fucked chest, your [chest] wobbling fantastically with the extra fluid weight.  Ceraph leans over to suck a [nipple] into her mouth, and after a few quick swallows, she sighs contently.");
 			outputText("\n\n\"<i>Delicious, my [Master],</i>\" the demoness coos as her wings unfurl, \"<i>Please, let's do this again.</i>\"  She leaps into the sky and flies off, no doubt to tend to her own pets.");
+			if (player.isGargoyle() && player.hasPerk(PerkLib.GargoyleCorrupted)) player.refillGargoyleHunger(30);
 			player.orgasm();
 			dynStats("sen", 2, "cor", 1);
 			doNext(camp.returnToCampUseOneHour);
@@ -1832,7 +1834,7 @@ package classes.Scenes.NPCs
 			if (dog) outputText("Arf!</i>\" you bark");
 			else outputText("Meowwwww!</i>\" you mew");
 			outputText(", loud and almost proudly");
-			if (player.tailType > TAIL_TYPE_NONE) outputText(", wagging your tail excitedly");
+			if (player.tailType > Tail.NONE) outputText(", wagging your tail excitedly");
 			outputText(".");
 			outputText("\n\nCeraph casually pulls her panties a bit lower to ");
 			if (flags[kFLAGS.CERAPH_HIDING_DICK] == 0) outputText("ease the pressure on her tightly-contained phallus");
@@ -1967,7 +1969,7 @@ package classes.Scenes.NPCs
 			if (dog) outputText("Arf! Arf!</i>\" you bark");
 			else outputText("Meow!  Meowwwww!</i>\" you mew");
 			outputText(", wiggling your ");
-			if (player.tailType > TAIL_TYPE_NONE) outputText("tail");
+			if (player.tailType > Tail.NONE) outputText("tail");
 			else outputText("[butt]");
 			outputText(" happily.  For some reason, the idea of denying yourself release in exchange for more humiliation is appealing to you.");
 
@@ -2149,7 +2151,7 @@ package classes.Scenes.NPCs
 				outputText(" could go off at any second.  The journey is murder for your poor, ");
 				if (player.hasCock()) outputText("over-inflated maleness");
 				else outputText("puffy, aching cleft");
-				if (player.totalCocks() > 1) outputText("es");
+				if (player.cockTotal() > 1) outputText("es");
 				outputText(", but you somehow make the whole way home without ");
 				if (player.hasCock()) outputText("popping");
 				else outputText("tipping over the edge");
@@ -2158,7 +2160,7 @@ package classes.Scenes.NPCs
 				outputText("\n\nClick.");
 				outputText("\n\nYour collar is removed, and you look around realizing your owner is gone.  Your muscles are sore from the journey and you NEED to masturbate...  You aren't even sure why you did that.");
 			}
-			dynStats("sen", 4, "lus=", 100, "resisted", false);
+			dynStats("sen", 4, "lus=", 100, "scale", false);
 			doNext(camp.returnToCampUseOneHour);
 		}
 	}

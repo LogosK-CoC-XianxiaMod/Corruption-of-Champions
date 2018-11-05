@@ -1,11 +1,12 @@
 package classes.Scenes.NPCs
 {
-	import classes.*;
-	import classes.GlobalFlags.kGAMECLASS;
-	import classes.GlobalFlags.kFLAGS;
-	import classes.internals.*;
+import classes.*;
+import classes.BodyParts.Butt;
+import classes.BodyParts.Hips;
+import classes.Scenes.SceneLib;
+import classes.internals.*;
 
-	/**
+/**
 	 * ...
 	 * @author ...
 	 */
@@ -15,7 +16,7 @@ package classes.Scenes.NPCs
 		private function shouldrattack():void {
 			var damage:Number = 0;
 			//return to combat menu when finished
-			doNext(game.playerMenu);
+			doNext(EventParser.playerMenu);
 			//Determine if dodged!
 			if(player.spe - spe > 0 && int(Math.random()*(((player.spe-spe)/4)+80)) > 80) {
 				outputText("The girl wades in for a swing, but you deftly dodge to the side. She recovers quickly, spinning back at you.");
@@ -45,10 +46,10 @@ package classes.Scenes.NPCs
 				//(regular attack 1)
 				if(choice == 0) outputText("Ducking in close, the girl thunders a punch against your midsection, leaving a painful sting. ");
 				//(regular attack 2)
-				else if(choice == 1) outputText("The girl feints a charge, leans back, and snaps a kick against your " + kGAMECLASS.hipDescript() + ". You stagger, correct your posture, and plunge back into combat. ");
+				else if(choice == 1) outputText("The girl feints a charge, leans back, and snaps a kick against your " + Appearance.hipDescription(player) + ". You stagger, correct your posture, and plunge back into combat. ");
 				//(regular attack 3)
 				else if(choice == 2) outputText("You momentarily drop your guard as the girl appears to stumble. She rights herself as you step forward and lands a one-two combination against your torso. ");
-				damage = player.takeDamage(damage, true);
+				damage = player.takePhysDamage(damage, true);
 			}
 			if(damage > 0) {
 				if(lustVuln > 0 && player.armorName == "barely-decent bondage straps") {
@@ -58,22 +59,19 @@ package classes.Scenes.NPCs
 			}
 			statScreenRefresh();
 			outputText("\n");
-			combatRoundOver();
 		}
 
 		//(lust attack 1)
 		private function shouldraLustAttack():void {
 			if(rand(2) == 0) outputText("The girl spins away from one of your swings, her tunic flaring around her hips. The motion gives you a good view of her firm and moderately large butt. She notices your glance and gives you a little wink.\n");
 			else outputText("The girl's feet get tangled on each other and she tumbles to the ground. Before you can capitalize on her slip, she rolls with the impact and comes up smoothly. As she rises, however, you reel back and raise an eyebrow in confusion; are her breasts FILLING the normally-loose tunic? She notices your gaze and smiles, performing a small pirouette on her heel before squaring up to you again. Your confusion only heightens when her torso comes back into view, her breasts back to their normal proportions. A trick of the light, perhaps? You shake your head and try to fall into the rhythm of the fight.\n");
-			game.dynStats("lus", (8+player.lib/10));
-			combatRoundOver();
+			player.dynStats("lus", (8+player.lib/10));
 		}
 		//(magic attack)
 		private function shouldraMagicLazers():void {
 			outputText("Falling back a step, the girl raises a hand and casts a small spell. From her fingertips shoot four magic missiles that slam against your skin and cause a surprising amount of discomfort. ");
-			var damage:Number = player.takeDamage(int + rand(10), true);
+			var damage:Number = player.takeMagicDamage(this.inte + rand(10), true);
 			outputText("\n");
-			combatRoundOver();
 		}
 
 		override protected function performCombatAction():void
@@ -86,12 +84,12 @@ package classes.Scenes.NPCs
 
 		override public function defeated(hpVictory:Boolean):void
 		{
-			game.shouldraScene.defeatDannyPhantom();
+			SceneLib.shouldraScene.defeatDannyPhantom();
 		}
 
 		override public function won(hpVictory:Boolean, pcCameWorms:Boolean):void
 		{
-			game.shouldraScene.loseToShouldra();
+			SceneLib.shouldraScene.loseToShouldra();
 		}
 
 		public function Shouldra()
@@ -101,38 +99,34 @@ package classes.Scenes.NPCs
 			this.imageName = "shouldra";
 			this.long = "Her face has nothing overly attractive about it; a splash of freckles flits across her cheeks, her brows are too strong to be considered feminine, and her jaw is a tad bit square. Regardless, the features come together to make an aesthetically pleasing countenance, framed by a stylish brown-haired bob. Her breasts are obscured by her grey, loose-fitting tunic, flowing down to reach the middle of her thigh. Her legs are clad in snug, form-fitting leather breeches, and a comfortable pair of leather shoes shield her soles from the potentially harmful environment around her.";
 			// this.plural = false;
-			this.createVagina(false, VAGINA_WETNESS_WET, VAGINA_LOOSENESS_NORMAL);
+			this.createVagina(false, VaginaClass.WETNESS_WET, VaginaClass.LOOSENESS_NORMAL);
 			this.createStatusEffect(StatusEffects.BonusVCapacity, 40, 0, 0, 0);
 			createBreastRow(Appearance.breastCupInverse("D"));
-			this.ass.analLooseness = ANAL_LOOSENESS_TIGHT;
-			this.ass.analWetness = ANAL_WETNESS_DRY;
+			this.ass.analLooseness = AssClass.LOOSENESS_TIGHT;
+			this.ass.analWetness = AssClass.WETNESS_DRY;
 			this.createStatusEffect(StatusEffects.BonusACapacity,40,0,0,0);
 			this.tallness = 65;
-			this.hipRating = HIP_RATING_AMPLE;
-			this.buttRating = BUTT_RATING_AVERAGE+1;
+			this.hips.type = Hips.RATING_AMPLE;
+			this.butt.type = Butt.RATING_AVERAGE + 1;
 			this.skinTone = "white";
 			this.hairColor = "white";
 			this.hairLength = 3;
 			initStrTouSpeInte(55, 40, 10, 140);
-			initLibSensCor(120, 0, 33);
+			initWisLibSensCor(140, 120, 0, 33);
 			this.weaponName = "fists";
 			this.weaponVerb="punches";
-			this.weaponAttack = 14 + (3 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.weaponAttack = 14;
 			this.armorName = "comfortable clothes";
-			this.armorDef = 1 + (1 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.armorDef = 1;
+			this.armorMDef = 1;
 			this.bonusHP = 30;
 			this.bonusLust = 10;
 			this.lust = 10;
 			this.temperment = TEMPERMENT_LUSTY_GRAPPLES;
 			this.level = 12;
 			this.gems = 0;
-			this.drop = new ChainedDrop().add(consumables.ECTOPLS,1/3);
-			this.str += 11 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.tou += 8 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.spe += 2 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.inte += 28 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];			
-			this.lib += 24 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.newgamebonusHP = 1460;
+			this.drop = new ChainedDrop().add(consumables.ECTOPLS, 1 / 3);
+			this.createPerk(PerkLib.Incorporeality, 0, 0, 0, 0);
 			checkMonster();
 		}
 		

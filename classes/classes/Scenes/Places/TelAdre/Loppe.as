@@ -1,7 +1,8 @@
 ﻿package classes.Scenes.Places.TelAdre {
-	import classes.GlobalFlags.kFLAGS;
+import classes.BodyParts.Tongue;
+import classes.GlobalFlags.kFLAGS;
 
-	public class Loppe extends TelAdreAbstractContent {
+public class Loppe extends TelAdreAbstractContent {
 public function Loppe(){
 
 }
@@ -960,7 +961,7 @@ private function loppeRidesCocks():void {
 		menu();
 		addButton(0,"Next",loppeRidesYouNoFaceJizz);
 	}
-	dynStats("lus=", player.maxLust(), "resisted", false);
+	dynStats("lus=", player.maxLust(), "scale", false);
 }
 
 //{If NoFace:
@@ -1781,7 +1782,7 @@ private function letsLoppeGoCum():void {
 	}
 	//set LoppeDenial to 4
 	flags[kFLAGS.LOPPE_DENIAL_COUNTER] = 3;
-	dynStats("lus", 30+player.lib/10, "resisted", false);
+	dynStats("lus", 30+player.lib/10, "scale", false);
 	flags[kFLAGS.LOPPE_TIMES_SEXED]++;
 	doNext(camp.returnToCampUseOneHour);
 }
@@ -1823,7 +1824,7 @@ private function superLoppeOrgasmDenialGo():void {
 		flags[kFLAGS.LOPPE_DENIAL_COUNTER] = 10;
 		//leave, set LoppeDenial flag = 14 (an extra 7 for being a jerk)
 	}
-	dynStats("lus", 30+player.lib/10, "resisted", false);
+	dynStats("lus", 30+player.lib/10, "scale", false);
 	flags[kFLAGS.LOPPE_TIMES_SEXED]++;
 	doNext(camp.returnToCampUseOneHour);
 }
@@ -1872,7 +1873,7 @@ private function boobjobLoppe():void {
 		outputText("\n\nYou open your mouth, about to say something - and Loppe promptly shoves her cock-head inside.  With a gag and a splutter at the sudden intrusion, your hands dart to her shaft, but she only feeds it deeper inside of you - she stops, however, before she enters your throat, letting you taste the cum still dripping from her flare.");
 
 		outputText("\n\n\"<i>Tittyfuck AND oral!?  You're the best!  You're making me a very, very happy girl!</i>\"  Loppe exclaims, oblivious to any protests you might make as she begins rutting you even harder.  \"<i>I got a present coming for you riiiight now!  Ah!</i>\"  Groaning sharply, she fills your mouth with huge ropes of spunk, and you have no choice but to swallow...  Without any way to struggle, you do your best to lick at the part of her cock that's in your mouth, ");
-		if(player.tongueType > TONGUE_HUMAN) outputText("looping your inhuman tongue around it and stroking for extra stimulus even while ");
+		if(player.tongue.type > Tongue.HUMAN) outputText("looping your inhuman tongue around it and stroking for extra stimulus even while ");
 		outputText("grabbing your breasts and squeezing the horsemeat between them.  The sooner you help her get over this frenzy, the sooner she'll get off of you... hopefully.  \"<i>Ah, sugar!  I knew you liked it rough!</i>\" your suddenly forceful lover shouts, ominously.");
 		outputText("\n\n<b>Many orgasms later...</b>");
 
@@ -2079,7 +2080,7 @@ private function teaseLoppeNSuck():void {
 	outputText("\n\nLoppe's legs grab you under your arms, pulling you closer to her tool.  \"<i>Please, sugar.  Stop teasing me and help me.  You have no idea how badly I want to put my dick between those wonderful lips of yours!</i>\"");
 
 	outputText("\n\nWith a smile to yourself, you oblige");
-	if(player.tongueType > TONGUE_HUMAN) outputText(", inhumanly long tongue looping out to coil wetly around the length");
+	if(player.tongue.type > Tongue.HUMAN) outputText(", inhumanly long tongue looping out to coil wetly around the length");
 	outputText(".  You suckle gently, letting the salty tang of hot spunk wash over your tastebuds, and then start to gulp and swallow your way down her prick's sizable length.");
 
 	outputText("\n\n\"<i>Ah!  Oh, yes!  That hits the spot!</i>\" Loppe cries in relief.");

@@ -3,11 +3,11 @@
  */
 package classes.Scenes.Areas.Bog
 {
-	import classes.*;
-	import classes.GlobalFlags.kFLAGS;
-	import classes.GlobalFlags.kGAMECLASS;
+import classes.*;
+import classes.GlobalFlags.kFLAGS;
+import classes.CoC;
 
-	public class PhoukaScene extends BaseContent implements TimeAwareInterface {
+public class PhoukaScene extends BaseContent implements TimeAwareInterface {
 
 		internal static var phoukaForm:int = 0; //This keeps track of the form of the phouka across different scenes and through combat
 		internal static const PHOUKA_FORM_FAERIE:int = 0;
@@ -17,7 +17,7 @@ package classes.Scenes.Areas.Bog
 
 		public function PhoukaScene() 
 		{
-			CoC.timeAwareClassAdd(this);
+			EventParser.timeAwareClassAdd(this);
 		}
 
 		//Implementation of TimeAwareInterface
@@ -26,7 +26,7 @@ package classes.Scenes.Areas.Bog
 			if (player.statusEffectv1(StatusEffects.PhoukaWhiskeyAffect) > 0) {
 				player.addStatusValue(StatusEffects.PhoukaWhiskeyAffect, 1, -1); //Count down hours until player is not drunk
 				if (player.statusEffectv1(StatusEffects.PhoukaWhiskeyAffect) <= 0) {
-					kGAMECLASS.consumables.P_WHSKY.phoukaWhiskeyExpires(player);
+					CoC.instance.consumables.P_WHSKY.phoukaWhiskeyExpires(player);
 					return true;
 				}
 			}
@@ -88,7 +88,7 @@ package classes.Scenes.Areas.Bog
 		protected function phoukaFaerieFireLeave():void
 		{
 			if (flags[kFLAGS.PHOUKA_ENCOUNTER_STATUS] == 0)
-			outputText("\n\nYou decide it's best not to mess with weird floating lights out in the bog and return to your camp.")
+			outputText("\n\nYou decide it's best not to mess with weird floating lights out in the bog and return to your camp.");
 			else outputText("\n\nAt the moment you don't feel the need to meet one of those " + phoukaNameText("phouka", "creatures") + " again.");
 			doNext(camp.returnToCampUseOneHour);  //Return to camp, 1 hour used
 		}
@@ -150,16 +150,16 @@ package classes.Scenes.Areas.Bog
 			clearOutput();
 			outputText("You ask the " + phoukaName());
 			if (player.level < 10)
-				outputText(" if perhaps there's some way he could release you.")
+				outputText(" if perhaps there's some way he could release you.");
 			else outputText(" if he really wants a taste of what you're going to give him.");
 
 			if (player.cor + rand(125) <= 110) { //Players with 0% corruption have a 12% chance that the Phouka is willing to talk, players with 100% corruption have a 92% chance
 				//The phouka is not in the mood for talk, start the fight gagged as punishment for trying to talk
 				outputText("  You open your mouth to say something more to the ");
 				if (player.cor < 34)
-					outputText("vile little monster")
+					outputText("vile little monster");
 				else if (player.cor < 67)
-					outputText("perverted " + phoukaName())
+					outputText("perverted " + phoukaName());
 				else outputText("fuckable little " + phoukaName());
 				outputText(" but he must not feel like listening.  He launches a ball of black mud at your face, sealing your mouth with sticky and [if (corruption <= 50)ewww -][if (corruption > 50)mmmm -] salty muck.");
 				startCombat(new Phouka(phoukaName()));
@@ -348,9 +348,9 @@ package classes.Scenes.Areas.Bog
 				else {
 					outputText("\n\nYou look at the sleeping phouka");
 					if (player.hasCock())
-						outputText(", [eachCock] beginning to swell" + (player.hasVagina() ? " and your [vagina] starting to moisten" : "") + ".")
+						outputText(", [eachCock] beginning to swell" + (player.hasVagina() ? " and your [vagina] starting to moisten" : "") + ".");
 					else if (player.hasVagina())
-						outputText(", your [vagina] starting to moisten.")
+						outputText(", your [vagina] starting to moisten.");
 					else outputText("and you feel your sphincter twitch as your brain thinks about what you could do with this phouka now."); //Genderless
 				}
 				menu();
@@ -629,7 +629,8 @@ package classes.Scenes.Areas.Bog
 			else
 				outputText("Realizing that you haven't yet cum, the goat morph continues to rock in and out of your ass.  The air fills with the sucking and slurping noises of the goat's seed alternately being sucked deeper or forced out of your ass.  Finally you reach your limit and cum[if (hasCock = true), your own cock turning the mud white beneath you].");
 			dynStats("cor", rand(1) + (postCombat ? 1 : 3)); //Extra two corruption for being enough of a pervert to want to fuck the phouka
-			player.orgasm();				
+			player.orgasm();
+			if (player.isGargoyle() && player.hasPerk(PerkLib.GargoyleCorrupted)) player.refillGargoyleHunger(30);
 			if (postCombat) outputText("  While you're recovering the goat-morph reaches into your gem pouch and takes a handful.");
 			outputText("\n\nThe goat morph begins to dissolve and reform.  Soon you're looking at a tiny faerie that buzzes up in front of your face.  He says <i>“[if (hasVagina = true)Well I enjoyed that, and it looks like you did too.  Next time I catch ya I really want te try yer cunt.  Can’t wait te see yer belly all swollen up with my seed.][if (hasVagina = false)Do us both a favor - eat some eggs or drink some milk before ye come back.  Since you like being my bitch so much ye might as well have the right parts for it.]”</i> With that the " + phoukaName() + " buzzes up into the canopy and out of sight.");
 			if (postCombat) {
@@ -864,6 +865,7 @@ package classes.Scenes.Areas.Bog
 		protected function phoukaSexPregnateEnd(postCombat:Boolean):void
 		{ //Everything after the sex. Handles awards, gem loss and text for player leaving the bog
 			player.orgasm();
+			if (player.isGargoyle() && player.hasPerk(PerkLib.GargoyleCorrupted)) player.refillGargoyleHunger(30);
 			dynStats("cor", rand(1) + (postCombat && (phoukaForm != PHOUKA_FORM_FAERIE) ? 1 : 3)); //Extra two corruption for being enough of a pervert to want to fuck the phouka
 			if (phoukaForm == PHOUKA_FORM_FAERIE) { //In this case postCombat means you need an award because you must have won to get faerie sex
 					outputText("\n\nSatisfied for now you begin to put your clothes back on.  Maybe that " + phoukaName() + " will learn, maybe not.");

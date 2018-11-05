@@ -1,9 +1,9 @@
 package classes.Scenes.Dungeons {
-	import classes.*;
-	import classes.GlobalFlags.*;
-	import classes.Scenes.Dungeons.*;
-	
-	public class DungeonMap extends BaseContent
+import classes.*;
+import classes.GlobalFlags.*;
+import classes.Scenes.SceneLib;
+
+public class DungeonMap extends BaseContent
 	{
 		
 		public function DungeonMap() 
@@ -27,14 +27,14 @@ package classes.Scenes.Dungeons {
 		}
 		
 		public function findLockedDoorLethiceThrone():void {
-			if (kGAMECLASS.d3.unlockedThroneRoom()) rawOutputText("\n      |      ");
+			if (SceneLib.d3.unlockedThroneRoom()) rawOutputText("\n      |      ");
 			else rawOutputText("\n      L      ");
 		}
 		
 		public function chooseRoomToDisplay():void {
-			if (kGAMECLASS.dungeonLoc >= 0 && kGAMECLASS.dungeonLoc < 10) { //Factory
-				outputText("Factory, " + (kGAMECLASS.dungeonLoc >= 6 && kGAMECLASS.dungeonLoc < 9 ? "2": "1") + "F");
-				if (kGAMECLASS.dungeonLoc == 0) {
+			if (DungeonAbstractContent.dungeonLoc >= 0 && DungeonAbstractContent.dungeonLoc < 10) { //Factory
+				outputText("Factory, " + (DungeonAbstractContent.dungeonLoc >= 6 && DungeonAbstractContent.dungeonLoc < 9 ? "2": "1") + "F");
+				if (DungeonAbstractContent.dungeonLoc == 0) {
 					rawOutputText("\n    [ ]    ");
 					rawOutputText("\n     |     ");
 					rawOutputText("\n[S]—[ ]—[ ]");
@@ -42,7 +42,7 @@ package classes.Scenes.Dungeons {
 					rawOutputText("\n[ ]—[P]—[ ]");
 					rawOutputText("\n     |     ");
 				}
-				else if (kGAMECLASS.dungeonLoc == 1) {
+				else if (DungeonAbstractContent.dungeonLoc == 1) {
 					rawOutputText("\n    [ ]    ");
 					rawOutputText("\n     |     ");
 					rawOutputText("\n[S]—[ ]—[ ]");
@@ -50,7 +50,7 @@ package classes.Scenes.Dungeons {
 					rawOutputText("\n[ ]—[ ]—[P]");
 					rawOutputText("\n     |     ");
 				}
-				else if (kGAMECLASS.dungeonLoc == 2) {
+				else if (DungeonAbstractContent.dungeonLoc == 2) {
 					rawOutputText("\n    [ ]    ");
 					rawOutputText("\n     |     ");
 					rawOutputText("\n[S]—[P]—[ ]");
@@ -58,7 +58,7 @@ package classes.Scenes.Dungeons {
 					rawOutputText("\n[ ]—[ ]—[ ]");
 					rawOutputText("\n     |     ");
 				}
-				else if (kGAMECLASS.dungeonLoc == 3) {
+				else if (DungeonAbstractContent.dungeonLoc == 3) {
 					rawOutputText("\n    [ ]    ");
 					rawOutputText("\n     |     ");
 					rawOutputText("\n[S]—[ ]—[P]");
@@ -66,7 +66,7 @@ package classes.Scenes.Dungeons {
 					rawOutputText("\n[ ]—[ ]—[ ]");
 					rawOutputText("\n     |     ");
 				}
-				else if (kGAMECLASS.dungeonLoc == 4) {
+				else if (DungeonAbstractContent.dungeonLoc == 4) {
 					rawOutputText("\n    [P]    ");
 					rawOutputText("\n     |     ");
 					rawOutputText("\n[S]—[ ]—[ ]");
@@ -74,7 +74,7 @@ package classes.Scenes.Dungeons {
 					rawOutputText("\n[ ]—[ ]—[ ]");
 					rawOutputText("\n     |     ");
 				}
-				else if (kGAMECLASS.dungeonLoc == 5) {
+				else if (DungeonAbstractContent.dungeonLoc == 5) {
 					rawOutputText("\n    [ ]    ");
 					rawOutputText("\n     |     ");
 					rawOutputText("\n[P]—[ ]—[ ]");
@@ -82,22 +82,22 @@ package classes.Scenes.Dungeons {
 					rawOutputText("\n[ ]—[ ]—[ ]");
 					rawOutputText("\n     |     ");
 				}
-				else if (kGAMECLASS.dungeonLoc == 6) {
+				else if (DungeonAbstractContent.dungeonLoc == 6) {
 					rawOutputText("\n[P]—[ ]    ");
 					findLockedDoor2();
 					rawOutputText("\n[ ]        ");
 				}
-				else if (kGAMECLASS.dungeonLoc == 7) {
+				else if (DungeonAbstractContent.dungeonLoc == 7) {
 					rawOutputText("\n[S]—[P]    ");
 					findLockedDoor2();
 					rawOutputText("\n[ ]        ");
 				}
-				else if (kGAMECLASS.dungeonLoc == 8) {
+				else if (DungeonAbstractContent.dungeonLoc == 8) {
 					rawOutputText("\n[S]—[ ]    ");
 					findLockedDoor2();
 					rawOutputText("\n[P]        ");
 				}
-				else if (kGAMECLASS.dungeonLoc == 9) {
+				else if (DungeonAbstractContent.dungeonLoc == 9) {
 					rawOutputText("\n    [ ]    ");
 					rawOutputText("\n     |     ");
 					rawOutputText("\n[S]—[ ]—[ ]");
@@ -106,9 +106,9 @@ package classes.Scenes.Dungeons {
 					rawOutputText("\n     |     ");
 				}
 			}
-			else if (kGAMECLASS.dungeonLoc >= 10 && kGAMECLASS.dungeonLoc < 17) { //Zetaz's Lair
+			else if (DungeonAbstractContent.dungeonLoc >= 10 && DungeonAbstractContent.dungeonLoc < 17) { //Zetaz's Lair
 				rawOutputText("Zetaz's Lair");
-				if (kGAMECLASS.dungeonLoc == 10) {
+				if (DungeonAbstractContent.dungeonLoc == 10) {
 					rawOutputText("\n    [ ]—[ ]");
 					findLockedDoor3();
 					rawOutputText("\n[ ]—[ ]—[ ]");
@@ -118,7 +118,7 @@ package classes.Scenes.Dungeons {
 					rawOutputText("\n    [P]    ");
 					rawOutputText("\n     |     ");
 				}
-				else if (kGAMECLASS.dungeonLoc == 11) {
+				else if (DungeonAbstractContent.dungeonLoc == 11) {
 					rawOutputText("\n    [ ]—[ ]");
 					findLockedDoor3();
 					rawOutputText("\n[ ]—[ ]—[ ]");
@@ -128,7 +128,7 @@ package classes.Scenes.Dungeons {
 					rawOutputText("\n    [ ]    ");
 					rawOutputText("\n     |     ");
 				}
-				else if (kGAMECLASS.dungeonLoc == 12) {
+				else if (DungeonAbstractContent.dungeonLoc == 12) {
 					rawOutputText("\n    [ ]—[ ]");
 					findLockedDoor3();
 					rawOutputText("\n[ ]—[P]—[ ]");
@@ -138,7 +138,7 @@ package classes.Scenes.Dungeons {
 					rawOutputText("\n    [ ]    ");
 					rawOutputText("\n     |     ");
 				}
-				else if (kGAMECLASS.dungeonLoc == 13) {
+				else if (DungeonAbstractContent.dungeonLoc == 13) {
 					rawOutputText("\n    [ ]—[ ]");
 					findLockedDoor3();
 					rawOutputText("\n[P]—[ ]—[ ]");
@@ -148,7 +148,7 @@ package classes.Scenes.Dungeons {
 					rawOutputText("\n    [ ]    ");
 					rawOutputText("\n     |     ");
 				}
-				else if (kGAMECLASS.dungeonLoc == 14) {
+				else if (DungeonAbstractContent.dungeonLoc == 14) {
 					rawOutputText("\n    [ ]—[ ]");
 					findLockedDoor3();
 					rawOutputText("\n[ ]—[ ]—[P]");
@@ -158,7 +158,7 @@ package classes.Scenes.Dungeons {
 					rawOutputText("\n    [ ]    ");
 					rawOutputText("\n     |     ");
 				}
-				else if (kGAMECLASS.dungeonLoc == 15) {
+				else if (DungeonAbstractContent.dungeonLoc == 15) {
 					rawOutputText("\n    [ ]—[P]");
 					findLockedDoor3();
 					rawOutputText("\n[ ]—[ ]—[ ]");
@@ -168,7 +168,7 @@ package classes.Scenes.Dungeons {
 					rawOutputText("\n    [ ]    ");
 					rawOutputText("\n     |     ");
 				}
-				else if (kGAMECLASS.dungeonLoc == 16) {
+				else if (DungeonAbstractContent.dungeonLoc == 16) {
 					rawOutputText("\n    [P]—[ ]");
 					findLockedDoor3();
 					rawOutputText("\n[ ]—[ ]—[ ]");
@@ -179,9 +179,9 @@ package classes.Scenes.Dungeons {
 					rawOutputText("\n     |     ");
 				}
 			}
-			else if (kGAMECLASS.dungeonLoc >= 17 && kGAMECLASS.dungeonLoc < 23) { //Tower of the Phoenix
+			else if (DungeonAbstractContent.dungeonLoc >= 17 && DungeonAbstractContent.dungeonLoc < 23) { //Tower of the Phoenix
 				rawOutputText("Tower of the Phoenix");
-				if (kGAMECLASS.dungeonLoc == 17) {
+				if (DungeonAbstractContent.dungeonLoc == 17) {
 					rawOutputText(", 1F");
 					rawOutputText("\n    [S]    ");
 					rawOutputText("\n     |     ");
@@ -191,7 +191,7 @@ package classes.Scenes.Dungeons {
 					rawOutputText("\n           ");
 					rawOutputText("\n           ");
 				}
-				else if (kGAMECLASS.dungeonLoc == 18) {
+				else if (DungeonAbstractContent.dungeonLoc == 18) {
 					rawOutputText(", B1");
 					rawOutputText("\n    [S]    ");
 					rawOutputText("\n           ");
@@ -201,7 +201,7 @@ package classes.Scenes.Dungeons {
 					rawOutputText("\n           ");
 					rawOutputText("\n           ");
 				}
-				else if (kGAMECLASS.dungeonLoc == 19) {
+				else if (DungeonAbstractContent.dungeonLoc == 19) {
 					rawOutputText(", 1F");
 					rawOutputText("\n    [P]    ");
 					rawOutputText("\n     |     ");
@@ -211,7 +211,7 @@ package classes.Scenes.Dungeons {
 					rawOutputText("\n           ");
 					rawOutputText("\n           ");
 				}
-				else if (kGAMECLASS.dungeonLoc == 20) {
+				else if (DungeonAbstractContent.dungeonLoc == 20) {
 					rawOutputText(", B1");
 					rawOutputText("\n    [P]    ");
 					rawOutputText("\n           ");
@@ -221,7 +221,7 @@ package classes.Scenes.Dungeons {
 					rawOutputText("\n           ");
 					rawOutputText("\n           ");
 				}
-				else if (kGAMECLASS.dungeonLoc == 21) {
+				else if (DungeonAbstractContent.dungeonLoc == 21) {
 					rawOutputText(", 2F");
 					rawOutputText("\n    [P]    ");
 					rawOutputText("\n           ");
@@ -231,7 +231,7 @@ package classes.Scenes.Dungeons {
 					rawOutputText("\n           ");
 					rawOutputText("\n           ");
 				}
-				else if (kGAMECLASS.dungeonLoc == 22) {
+				else if (DungeonAbstractContent.dungeonLoc == 22) {
 					rawOutputText(", 3F");
 					rawOutputText("\n    [P]    ");
 					rawOutputText("\n           ");
@@ -242,9 +242,9 @@ package classes.Scenes.Dungeons {
 					rawOutputText("\n           ");
 				}
 			}
-			else if (kGAMECLASS.dungeonLoc >= 23 && kGAMECLASS.dungeonLoc < 39) {
+			else if (DungeonAbstractContent.dungeonLoc >= 23 && DungeonAbstractContent.dungeonLoc < 39) {
 				rawOutputText("Cave of the Sand Witches");
-				if (kGAMECLASS.dungeonLoc == 23) {
+				if (DungeonAbstractContent.dungeonLoc == 23) {
 					rawOutputText("\n        [ ]        ");
 					rawOutputText("\n         |         ");
 					rawOutputText("\n[ ] [ ] [ ] [ ]—[ ]");
@@ -254,7 +254,7 @@ package classes.Scenes.Dungeons {
 					rawOutputText("\n[ ] [ ] [P] [ ]—[ ]");
 					rawOutputText("\n         |         ");
 				}
-				else if (kGAMECLASS.dungeonLoc == 24) {
+				else if (DungeonAbstractContent.dungeonLoc == 24) {
 					rawOutputText("\n        [ ]        ");
 					rawOutputText("\n         |         ");
 					rawOutputText("\n[ ] [ ] [ ] [ ]—[ ]");
@@ -264,7 +264,7 @@ package classes.Scenes.Dungeons {
 					rawOutputText("\n[ ] [ ] [ ] [ ]—[ ]");
 					rawOutputText("\n         |         ");
 				}
-				else if (kGAMECLASS.dungeonLoc == 25) {
+				else if (DungeonAbstractContent.dungeonLoc == 25) {
 					rawOutputText("\n        [ ]        ");
 					rawOutputText("\n         |         ");
 					rawOutputText("\n[ ] [ ] [ ] [ ]—[ ]");
@@ -274,7 +274,7 @@ package classes.Scenes.Dungeons {
 					rawOutputText("\n[ ] [ ] [ ] [ ]—[ ]");
 					rawOutputText("\n         |         ");
 				}
-				else if (kGAMECLASS.dungeonLoc == 26) {
+				else if (DungeonAbstractContent.dungeonLoc == 26) {
 					rawOutputText("\n        [ ]        ");
 					rawOutputText("\n         |         ");
 					rawOutputText("\n[ ] [P] [ ] [ ]—[ ]");
@@ -284,7 +284,7 @@ package classes.Scenes.Dungeons {
 					rawOutputText("\n[ ] [ ] [ ] [ ]—[ ]");
 					rawOutputText("\n         |         ");
 				}
-				else if (kGAMECLASS.dungeonLoc == 27) {
+				else if (DungeonAbstractContent.dungeonLoc == 27) {
 					rawOutputText("\n        [ ]        ");
 					rawOutputText("\n         |         ");
 					rawOutputText("\n[ ] [ ] [ ] [ ]—[ ]");
@@ -294,7 +294,7 @@ package classes.Scenes.Dungeons {
 					rawOutputText("\n[ ] [P] [ ] [ ]—[ ]");
 					rawOutputText("\n         |         ");
 				}
-				else if (kGAMECLASS.dungeonLoc == 28) {
+				else if (DungeonAbstractContent.dungeonLoc == 28) {
 					rawOutputText("\n        [ ]        ");
 					rawOutputText("\n         |         ");
 					rawOutputText("\n[ ] [ ] [ ] [ ]—[ ]");
@@ -304,7 +304,7 @@ package classes.Scenes.Dungeons {
 					rawOutputText("\n[ ] [ ] [ ] [ ]—[ ]");
 					rawOutputText("\n         |         ");
 				}
-				else if (kGAMECLASS.dungeonLoc == 29) {
+				else if (DungeonAbstractContent.dungeonLoc == 29) {
 					rawOutputText("\n        [ ]        ");
 					rawOutputText("\n         |         ");
 					rawOutputText("\n[P] [ ] [ ] [ ]—[ ]");
@@ -314,7 +314,7 @@ package classes.Scenes.Dungeons {
 					rawOutputText("\n[ ] [ ] [ ] [ ]—[ ]");
 					rawOutputText("\n         |         ");
 				}
-				else if (kGAMECLASS.dungeonLoc == 30) {
+				else if (DungeonAbstractContent.dungeonLoc == 30) {
 					rawOutputText("\n        [ ]        ");
 					rawOutputText("\n         |         ");
 					rawOutputText("\n[ ] [ ] [ ] [ ]—[ ]");
@@ -324,7 +324,7 @@ package classes.Scenes.Dungeons {
 					rawOutputText("\n[P] [ ] [ ] [ ]—[ ]");
 					rawOutputText("\n         |         ");
 				}
-				else if (kGAMECLASS.dungeonLoc == 31) {
+				else if (DungeonAbstractContent.dungeonLoc == 31) {
 					rawOutputText("\n        [ ]        ");
 					rawOutputText("\n         |         ");
 					rawOutputText("\n[ ] [ ] [ ] [ ]—[ ]");
@@ -334,7 +334,7 @@ package classes.Scenes.Dungeons {
 					rawOutputText("\n[ ] [ ] [ ] [ ]—[ ]");
 					rawOutputText("\n         |         ");
 				}
-				else if (kGAMECLASS.dungeonLoc == 32) {
+				else if (DungeonAbstractContent.dungeonLoc == 32) {
 					rawOutputText("\n        [ ]        ");
 					rawOutputText("\n         |         ");
 					rawOutputText("\n[ ] [ ] [ ] [P]—[ ]");
@@ -344,7 +344,7 @@ package classes.Scenes.Dungeons {
 					rawOutputText("\n[ ] [ ] [ ] [ ]—[ ]");
 					rawOutputText("\n         |         ");
 				}
-				else if (kGAMECLASS.dungeonLoc == 33) {
+				else if (DungeonAbstractContent.dungeonLoc == 33) {
 					rawOutputText("\n        [ ]        ");
 					rawOutputText("\n         |         ");
 					rawOutputText("\n[ ] [ ] [ ] [ ]—[P]");
@@ -354,7 +354,7 @@ package classes.Scenes.Dungeons {
 					rawOutputText("\n[ ] [ ] [ ] [ ]—[ ]");
 					rawOutputText("\n         |         ");
 				}
-				else if (kGAMECLASS.dungeonLoc == 34) {
+				else if (DungeonAbstractContent.dungeonLoc == 34) {
 					rawOutputText("\n        [ ]        ");
 					rawOutputText("\n         |         ");
 					rawOutputText("\n[ ] [ ] [ ] [ ]—[ ]");
@@ -364,7 +364,7 @@ package classes.Scenes.Dungeons {
 					rawOutputText("\n[ ] [ ] [ ] [ ]—[ ]");
 					rawOutputText("\n         |         ");
 				}
-				else if (kGAMECLASS.dungeonLoc == 35) {
+				else if (DungeonAbstractContent.dungeonLoc == 35) {
 					rawOutputText("\n        [ ]        ");
 					rawOutputText("\n         |         ");
 					rawOutputText("\n[ ] [ ] [ ] [ ]—[ ]");
@@ -374,7 +374,7 @@ package classes.Scenes.Dungeons {
 					rawOutputText("\n[ ] [ ] [ ] [ ]—[P]");
 					rawOutputText("\n         |         ");
 				}
-				else if (kGAMECLASS.dungeonLoc == 36) {
+				else if (DungeonAbstractContent.dungeonLoc == 36) {
 					rawOutputText("\n        [ ]        ");
 					rawOutputText("\n         |         ");
 					rawOutputText("\n[ ] [ ] [ ] [ ]—[ ]");
@@ -384,7 +384,7 @@ package classes.Scenes.Dungeons {
 					rawOutputText("\n[ ] [ ] [ ] [P]—[ ]");
 					rawOutputText("\n         |         ");
 				}
-				else if (kGAMECLASS.dungeonLoc == 37) {
+				else if (DungeonAbstractContent.dungeonLoc == 37) {
 					rawOutputText("\n        [ ]        ");
 					rawOutputText("\n         |         ");
 					rawOutputText("\n[ ] [ ] [P] [ ]—[ ]");
@@ -394,7 +394,7 @@ package classes.Scenes.Dungeons {
 					rawOutputText("\n[ ] [ ] [ ] [ ]—[ ]");
 					rawOutputText("\n         |         ");
 				}
-				else if (kGAMECLASS.dungeonLoc == 38) {
+				else if (DungeonAbstractContent.dungeonLoc == 38) {
 					rawOutputText("\n        [P]        ");
 					rawOutputText("\n         |         ");
 					rawOutputText("\n[ ] [ ] [ ] [ ]—[ ]");
@@ -405,9 +405,9 @@ package classes.Scenes.Dungeons {
 					rawOutputText("\n         |         ");
 				}
 			}
-			else if (kGAMECLASS.dungeonLoc >= 39 && kGAMECLASS.dungeonLoc < 60) { //Hidden Cave
+			else if (DungeonAbstractContent.dungeonLoc >= 39 && DungeonAbstractContent.dungeonLoc < 64) { //Hidden Cave
 				rawOutputText("Hidden Cave");
-				if (kGAMECLASS.dungeonLoc == 39) {
+				if (DungeonAbstractContent.dungeonLoc == 39) {
 					rawOutputText(", Entrance");
 					rawOutputText("\n[ ]—[ ]                ");
 					rawOutputText("\n |                     ");
@@ -419,7 +419,7 @@ package classes.Scenes.Dungeons {
 					rawOutputText("\n         |           | ");
 					rawOutputText("\n    [S]—[ ]            ");
 				}
-				else if (kGAMECLASS.dungeonLoc == 40) {
+				else if (DungeonAbstractContent.dungeonLoc == 40) {
 					rawOutputText(", SE Underground Passage");
 					rawOutputText("\n[ ]—[ ]                ");
 					rawOutputText("\n |                     ");
@@ -431,7 +431,7 @@ package classes.Scenes.Dungeons {
 					rawOutputText("\n         |           | ");
 					rawOutputText("\n    [S]—[ ]            ");
 				}
-				else if (kGAMECLASS.dungeonLoc == 41) {
+				else if (DungeonAbstractContent.dungeonLoc == 41) {
 					rawOutputText(", E Underground Passage");
 					rawOutputText("\n[ ]—[ ]                ");
 					rawOutputText("\n |                     ");
@@ -443,7 +443,7 @@ package classes.Scenes.Dungeons {
 					rawOutputText("\n         |           | ");
 					rawOutputText("\n    [S]—[ ]            ");
 				}
-				else if (kGAMECLASS.dungeonLoc == 42) {
+				else if (DungeonAbstractContent.dungeonLoc == 42) {
 					rawOutputText(", NE Underground Passage");
 					rawOutputText("\n[ ]—[ ]                ");
 					rawOutputText("\n |                     ");
@@ -455,7 +455,7 @@ package classes.Scenes.Dungeons {
 					rawOutputText("\n         |           | ");
 					rawOutputText("\n    [S]—[ ]            ");
 				}
-				else if (kGAMECLASS.dungeonLoc == 43) {
+				else if (DungeonAbstractContent.dungeonLoc == 43) {
 					rawOutputText(", N Underground Passage");
 					rawOutputText("\n[ ]—[ ]                ");
 					rawOutputText("\n |                     ");
@@ -467,7 +467,7 @@ package classes.Scenes.Dungeons {
 					rawOutputText("\n         |           | ");
 					rawOutputText("\n    [S]—[ ]            ");
 				}
-				else if (kGAMECLASS.dungeonLoc == 44) {
+				else if (DungeonAbstractContent.dungeonLoc == 44) {
 					rawOutputText(", Stone Staircase");
 					rawOutputText("\n[ ]—[ ]                ");
 					rawOutputText("\n |                     ");
@@ -479,7 +479,7 @@ package classes.Scenes.Dungeons {
 					rawOutputText("\n         |           | ");
 					rawOutputText("\n    [P]—[ ]            ");
 				}
-				else if (kGAMECLASS.dungeonLoc == 45) {
+				else if (DungeonAbstractContent.dungeonLoc == 45) {
 					rawOutputText(", S Underground Passage");
 					rawOutputText("\n[ ]—[ ]                ");
 					rawOutputText("\n |                     ");
@@ -491,7 +491,7 @@ package classes.Scenes.Dungeons {
 					rawOutputText("\n         |           | ");
 					rawOutputText("\n    [S]—[ ]            ");
 				}
-				else if (kGAMECLASS.dungeonLoc == 46) {
+				else if (DungeonAbstractContent.dungeonLoc == 46) {
 					rawOutputText(", Small Storage");
 					rawOutputText("\n[ ]—[ ]                ");
 					rawOutputText("\n |                     ");
@@ -503,7 +503,7 @@ package classes.Scenes.Dungeons {
 					rawOutputText("\n         |           | ");
 					rawOutputText("\n    [S]—[P]            ");
 				}
-				else if (kGAMECLASS.dungeonLoc == 47) {
+				else if (DungeonAbstractContent.dungeonLoc == 47) {
 					rawOutputText(", NW Underground Passage");
 					rawOutputText("\n[ ]—[ ]                ");
 					rawOutputText("\n |                     ");
@@ -515,7 +515,7 @@ package classes.Scenes.Dungeons {
 					rawOutputText("\n         |           | ");
 					rawOutputText("\n    [S]—[ ]            ");
 				}
-				else if (kGAMECLASS.dungeonLoc == 48) {
+				else if (DungeonAbstractContent.dungeonLoc == 48) {
 					rawOutputText(", W Underground Passage");
 					rawOutputText("\n[ ]—[ ]                ");
 					rawOutputText("\n |                     ");
@@ -527,7 +527,7 @@ package classes.Scenes.Dungeons {
 					rawOutputText("\n         |           | ");
 					rawOutputText("\n    [S]—[ ]            ");
 				}
-				else if (kGAMECLASS.dungeonLoc == 49) {
+				else if (DungeonAbstractContent.dungeonLoc == 49) {
 					rawOutputText(", SW Underground Passage");
 					rawOutputText("\n[ ]—[ ]                ");
 					rawOutputText("\n |                     ");
@@ -539,7 +539,7 @@ package classes.Scenes.Dungeons {
 					rawOutputText("\n         |           | ");
 					rawOutputText("\n    [S]—[ ]            ");
 				}
-				else if (kGAMECLASS.dungeonLoc == 50) {
+				else if (DungeonAbstractContent.dungeonLoc == 50) {
 					rawOutputText(", Narrow Tunnel (E)");
 					rawOutputText("\n[ ]—[ ]                ");
 					rawOutputText("\n |                     ");
@@ -551,7 +551,7 @@ package classes.Scenes.Dungeons {
 					rawOutputText("\n         |           | ");
 					rawOutputText("\n    [S]—[ ]            ");
 				}
-				else if (kGAMECLASS.dungeonLoc == 51) {
+				else if (DungeonAbstractContent.dungeonLoc == 51) {
 					rawOutputText(", Narrow Tunnel");
 					rawOutputText("\n[ ]—[ ]                ");
 					rawOutputText("\n |                     ");
@@ -563,7 +563,7 @@ package classes.Scenes.Dungeons {
 					rawOutputText("\n         |           | ");
 					rawOutputText("\n    [S]—[ ]            ");
 				}
-				else if (kGAMECLASS.dungeonLoc == 52) {
+				else if (DungeonAbstractContent.dungeonLoc == 52) {
 					rawOutputText(", Narrow Tunnel (N)");
 					rawOutputText("\n[ ]—[ ]                ");
 					rawOutputText("\n |                     ");
@@ -575,7 +575,7 @@ package classes.Scenes.Dungeons {
 					rawOutputText("\n         |           | ");
 					rawOutputText("\n    [S]—[ ]            ");
 				}
-				else if (kGAMECLASS.dungeonLoc == 53) {
+				else if (DungeonAbstractContent.dungeonLoc == 53) {
 					rawOutputText(", Large Storage (W)");
 					rawOutputText("\n[P]—[ ]                ");
 					rawOutputText("\n |                     ");
@@ -587,7 +587,7 @@ package classes.Scenes.Dungeons {
 					rawOutputText("\n         |           | ");
 					rawOutputText("\n    [S]—[ ]            ");
 				}
-				else if (kGAMECLASS.dungeonLoc == 54) {
+				else if (DungeonAbstractContent.dungeonLoc == 54) {
 					rawOutputText(", Large Storage (E)");
 					rawOutputText("\n[ ]—[P]                ");
 					rawOutputText("\n |                     ");
@@ -600,31 +600,31 @@ package classes.Scenes.Dungeons {
 					rawOutputText("\n    [S]—[ ]            ");
 				}
 				else if (flags[kFLAGS.HIDDEN_CAVE_2ND_FLOOR] < 1) {
-					if (kGAMECLASS.dungeonLoc == 55) {
+					if (DungeonAbstractContent.dungeonLoc == 55) {
 						rawOutputText(", Stone Staircase Basement");
 						rawOutputText("\n[ ]—[ ]—[ ]");
 						rawOutputText("\n |       | ");
 						rawOutputText("\n[ ]     [P]");
 					}
-					else if (kGAMECLASS.dungeonLoc == 56) {
+					else if (DungeonAbstractContent.dungeonLoc == 56) {
 						rawOutputText(", Tunnel");
 						rawOutputText("\n[ ]—[ ]—[P]");
 						rawOutputText("\n |       | ");
 						rawOutputText("\n[ ]     [S]");
 					}
-					else if (kGAMECLASS.dungeonLoc == 57) {
+					else if (DungeonAbstractContent.dungeonLoc == 57) {
 						rawOutputText(", Tunnel");
 						rawOutputText("\n[ ]—[P]—[ ]");
 						rawOutputText("\n |       | ");
 						rawOutputText("\n[ ]     [S]");
 					}
-					else if (kGAMECLASS.dungeonLoc == 58) {
+					else if (DungeonAbstractContent.dungeonLoc == 58) {
 						rawOutputText(", Tunnel");
 						rawOutputText("\n[P]—[ ]—[ ]");
 						rawOutputText("\n |       | ");
 						rawOutputText("\n[ ]     [S]");
 					}
-					else if (kGAMECLASS.dungeonLoc == 59) {
+					else if (DungeonAbstractContent.dungeonLoc == 59) {
 						rawOutputText(", Ted's Lair");
 						rawOutputText("\n[ ]—[ ]—[ ]");
 						rawOutputText("\n |       | ");
@@ -632,7 +632,7 @@ package classes.Scenes.Dungeons {
 					}
 				}
 				else if (flags[kFLAGS.HIDDEN_CAVE_2ND_FLOOR] > 0) {
-					if (kGAMECLASS.dungeonLoc == 55) {
+					if (DungeonAbstractContent.dungeonLoc == 55) {
 						rawOutputText(", Stone Staircase Basement<");
 						rawOutputText("\n    [ ]    ");
 						rawOutputText("\n     |     ");
@@ -642,7 +642,7 @@ package classes.Scenes.Dungeons {
 						rawOutputText("\n |       | ");
 						rawOutputText("\n[ ]     [P]");
 					}
-					else if (kGAMECLASS.dungeonLoc == 56) {
+					else if (DungeonAbstractContent.dungeonLoc == 56) {
 						rawOutputText(", Tunnel");
 						rawOutputText("\n    [ ]    ");
 						rawOutputText("\n     |     ");
@@ -652,7 +652,7 @@ package classes.Scenes.Dungeons {
 						rawOutputText("\n |       | ");
 						rawOutputText("\n[ ]     [S]");
 					}
-					else if (kGAMECLASS.dungeonLoc == 57) {
+					else if (DungeonAbstractContent.dungeonLoc == 57) {
 						rawOutputText(", Tunnel");
 						rawOutputText("\n    [ ]    ");
 						rawOutputText("\n     |     ");
@@ -662,7 +662,7 @@ package classes.Scenes.Dungeons {
 						rawOutputText("\n |       | ");
 						rawOutputText("\n[ ]     [S]");
 					}
-					else if (kGAMECLASS.dungeonLoc == 58) {
+					else if (DungeonAbstractContent.dungeonLoc == 58) {
 						rawOutputText(", Tunnel");
 						rawOutputText("\n    [ ]    ");
 						rawOutputText("\n     |     ");
@@ -672,7 +672,7 @@ package classes.Scenes.Dungeons {
 						rawOutputText("\n |       | ");
 						rawOutputText("\n[ ]     [S]");
 					}
-					else if (kGAMECLASS.dungeonLoc == 59) {
+					else if (DungeonAbstractContent.dungeonLoc == 59) {
 						rawOutputText(", Ted's Lair");
 						rawOutputText("\n    [ ]    ");
 						rawOutputText("\n     |     ");
@@ -682,7 +682,7 @@ package classes.Scenes.Dungeons {
 						rawOutputText("\n |       | ");
 						rawOutputText("\n[P]     [S]");
 					}
-					else if (kGAMECLASS.dungeonLoc == 60) {
+					else if (DungeonAbstractContent.dungeonLoc == 60) {
 						rawOutputText(", Small Cave (W)");
 						rawOutputText("\n    [ ]    ");
 						rawOutputText("\n     |     ");
@@ -692,7 +692,7 @@ package classes.Scenes.Dungeons {
 						rawOutputText("\n |       | ");
 						rawOutputText("\n[ ]     [S]");
 					}
-					else if (kGAMECLASS.dungeonLoc == 61) {
+					else if (DungeonAbstractContent.dungeonLoc == 61) {
 						rawOutputText(", Medium Cave");
 						rawOutputText("\n    [ ]    ");
 						rawOutputText("\n     |     ");
@@ -702,7 +702,7 @@ package classes.Scenes.Dungeons {
 						rawOutputText("\n |       | ");
 						rawOutputText("\n[ ]     [S]");
 					}
-					else if (kGAMECLASS.dungeonLoc == 62) {
+					else if (DungeonAbstractContent.dungeonLoc == 62) {
 						rawOutputText(", Small Cave (E)");
 						rawOutputText("\n    [ ]    ");
 						rawOutputText("\n     |     ");
@@ -712,7 +712,7 @@ package classes.Scenes.Dungeons {
 						rawOutputText("\n |       | ");
 						rawOutputText("\n[ ]     [S]");
 					}
-					else if (kGAMECLASS.dungeonLoc == 63) {
+					else if (DungeonAbstractContent.dungeonLoc == 63) {
 						rawOutputText(", Small Cave (N)");
 						rawOutputText("\n    [P]    ");
 						rawOutputText("\n     |     ");
@@ -724,9 +724,446 @@ package classes.Scenes.Dungeons {
 					}
 				}
 			}
+			else if (DungeonAbstractContent.dungeonLoc >= 64 && DungeonAbstractContent.dungeonLoc < 68) { //Den of Desire
+				rawOutputText("Den of Desire");
+				if (DungeonAbstractContent.dungeonLoc == 64) {
+					rawOutputText(", Entrance");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [P]    ");
+					rawOutputText("\n     |     ");
+				}
+				else if (DungeonAbstractContent.dungeonLoc == 64) {
+					rawOutputText(", Great Hall");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [P]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+				}
+				else if (DungeonAbstractContent.dungeonLoc == 66) {
+					rawOutputText(", Laboratory");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [P]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+				}
+				else if (DungeonAbstractContent.dungeonLoc == 67) {
+					rawOutputText(", Hero slayer omnibus room");
+					rawOutputText("\n    [P]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+				}
+			}
+			else if (DungeonAbstractContent.dungeonLoc >= 68 && DungeonAbstractContent.dungeonLoc < 88) { //River Dungeon: Floor 1
+				rawOutputText("River Dungeon");
+				if (DungeonAbstractContent.dungeonLoc == 68) {
+					rawOutputText(", Floor 1");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [P]    ");
+					rawOutputText("\n     |     ");
+				}
+				else if (DungeonAbstractContent.dungeonLoc == 69) {
+					rawOutputText(", Floor 1");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [P]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+				}
+				else if (DungeonAbstractContent.dungeonLoc == 70) {
+					rawOutputText(", Floor 1");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [P]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+				}
+				else if (DungeonAbstractContent.dungeonLoc == 71) {
+					rawOutputText(", Floor 1");
+					rawOutputText("\n    [P]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+				}
+				else if (DungeonAbstractContent.dungeonLoc == 72) {
+					rawOutputText(", Floor 1");
+					rawOutputText("\n    [P]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+				}
+				else if (DungeonAbstractContent.dungeonLoc == 73) {
+					rawOutputText(", Floor 1");
+					rawOutputText("\n    [P]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+				}
+				else if (DungeonAbstractContent.dungeonLoc == 74) {
+					rawOutputText(", Floor 1");
+					rawOutputText("\n    [P]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+				}
+				else if (DungeonAbstractContent.dungeonLoc == 75) {
+					rawOutputText(", Floor 1");
+					rawOutputText("\n    [P]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+				}
+				else if (DungeonAbstractContent.dungeonLoc == 76) {
+					rawOutputText(", Floor 1");
+					rawOutputText("\n    [P]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+				}
+				else if (DungeonAbstractContent.dungeonLoc == 77) {
+					rawOutputText(", Floor 1");
+					rawOutputText("\n    [P]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+				}
+				else if (DungeonAbstractContent.dungeonLoc == 88) {
+					rawOutputText(", Floor 1");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [P]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+				}
+				else if (DungeonAbstractContent.dungeonLoc == 89) {
+					rawOutputText(", Floor 1");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [P]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+				}
+				else if (DungeonAbstractContent.dungeonLoc == 80) {
+					rawOutputText(", Floor 1");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [P]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+				}
+				else if (DungeonAbstractContent.dungeonLoc == 81) {
+					rawOutputText(", Floor 1");
+					rawOutputText("\n    [P]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+				}
+				else if (DungeonAbstractContent.dungeonLoc == 82) {
+					rawOutputText(", Floor 1");
+					rawOutputText("\n    [P]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+				}
+				else if (DungeonAbstractContent.dungeonLoc == 83) {
+					rawOutputText(", Floor 1");
+					rawOutputText("\n    [P]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+				}
+				else if (DungeonAbstractContent.dungeonLoc == 84) {
+					rawOutputText(", Floor 1");
+					rawOutputText("\n    [P]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+				}
+				else if (DungeonAbstractContent.dungeonLoc == 85) {
+					rawOutputText(", Floor 1");
+					rawOutputText("\n    [P]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+				}
+				else if (DungeonAbstractContent.dungeonLoc == 86) {
+					rawOutputText(", Floor 1");
+					rawOutputText("\n    [P]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+				}
+				else if (DungeonAbstractContent.dungeonLoc == 87) {
+					rawOutputText(", Floor 1");
+					rawOutputText("\n    [P]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+				}
+			}
+			else if (DungeonAbstractContent.dungeonLoc >= 88 && DungeonAbstractContent.dungeonLoc < 104) { //Anzu's Palace
+				rawOutputText("Anzu's Palace");
+				if (DungeonAbstractContent.dungeonLoc == 88) {
+					rawOutputText(", Palace Grounds");
+					rawOutputText("\n[ ]     [ ]");
+					rawOutputText("\n |       | ");
+					rawOutputText("\n[ ]—[ ]—[ ]");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [P]    ");
+					rawOutputText("\n     |     ");
+				}
+				else if (DungeonAbstractContent.dungeonLoc == 89) {
+					rawOutputText(", Hall, Floor 1");
+					rawOutputText("\n[ ]     [ ]");
+					rawOutputText("\n |       | ");
+					rawOutputText("\n[ ]—[P]—[ ]");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+				}
+				else if (DungeonAbstractContent.dungeonLoc == 90) {
+					rawOutputText(", Living Room");
+					rawOutputText("\n[ ]     [ ]");
+					rawOutputText("\n |       | ");
+					rawOutputText("\n[P]—[ ]—[ ]");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+				}
+				else if (DungeonAbstractContent.dungeonLoc == 91) {
+					rawOutputText(", Bathroom");
+					rawOutputText("\n[P]     [ ]");
+					rawOutputText("\n |       | ");
+					rawOutputText("\n[ ]—[ ]—[ ]");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+				}
+				else if (DungeonAbstractContent.dungeonLoc == 92) {
+					rawOutputText(", Dining Room");
+					rawOutputText("\n[ ]     [ ]");
+					rawOutputText("\n |       | ");
+					rawOutputText("\n[ ]—[ ]—[P]");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+				}
+				else if (DungeonAbstractContent.dungeonLoc == 93) {
+					rawOutputText(", Kitchen");
+					rawOutputText("\n[ ]     [P]");
+					rawOutputText("\n |       | ");
+					rawOutputText("\n[ ]—[ ]—[ ]");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+				}
+				else if (DungeonAbstractContent.dungeonLoc == 94) {
+					rawOutputText(", Hall, Floor 2");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n[ ]—[P]—[ ]");
+				}
+				else if (DungeonAbstractContent.dungeonLoc == 95) {
+					rawOutputText(", Bedroom");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n[P]—[ ]—[ ]");
+				}
+				else if (DungeonAbstractContent.dungeonLoc == 96) {
+					rawOutputText(", Library");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n[ ]—[ ]—[P]");
+				}
+				else if (DungeonAbstractContent.dungeonLoc == 97) {
+					rawOutputText(", Multi-use Room");
+					rawOutputText("\n    [P]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n[ ]—[ ]—[ ]");
+				}
+				else if (DungeonAbstractContent.dungeonLoc == 98) {
+					rawOutputText(", Hall, Floor 3");
+					rawOutputText("\n           ");
+					rawOutputText("\n[ ]—[P]—[ ]");
+					rawOutputText("\n           ");
+				}
+				else if (DungeonAbstractContent.dungeonLoc == 99) {
+					rawOutputText(", Vault");
+					rawOutputText("\n           ");
+					rawOutputText("\n[P]—[ ]—[ ]");
+					rawOutputText("\n           ");
+				}
+				else if (DungeonAbstractContent.dungeonLoc == 100) {
+					rawOutputText(", Alchemy Room");
+					rawOutputText("\n           ");
+					rawOutputText("\n[ ]—[ ]—[P]");
+					rawOutputText("\n           ");
+				}
+				else if (DungeonAbstractContent.dungeonLoc == 101) {
+					rawOutputText(", Roof");
+					rawOutputText("\n           ");
+					rawOutputText("\n    [P]    ");
+					rawOutputText("\n           ");
+				}
+				else if (DungeonAbstractContent.dungeonLoc == 102) {
+					rawOutputText(", Basement");
+					rawOutputText("\n           ");
+					rawOutputText("\n[ ]—[P]    ");
+					rawOutputText("\n           ");
+				}
+				else if (DungeonAbstractContent.dungeonLoc == 103) {
+					rawOutputText(", Armory");
+					rawOutputText("\n           ");
+					rawOutputText("\n[P]—[ ]    ");
+					rawOutputText("\n           ");
+				}
+			}/*
+			else if (DungeonAbstractContent.dungeonLoc >= 64 && DungeonAbstractContent.dungeonLoc < 68) { //Den of Desire
+				rawOutputText("Den of Desire");
+				if (DungeonAbstractContent.dungeonLoc == 64) {
+					rawOutputText(", Entrance");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [P]    ");
+					rawOutputText("\n     |     ");
+				}
+				else if (DungeonAbstractContent.dungeonLoc == 64) {
+					rawOutputText(", Great Hall");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [P]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+				}
+				else if (DungeonAbstractContent.dungeonLoc == 66) {
+					rawOutputText(", Laboratory");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [P]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+				}
+				else if (DungeonAbstractContent.dungeonLoc == 67) {
+					rawOutputText(", Hero slayer omnibus room");
+					rawOutputText("\n    [P]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+					rawOutputText("\n    [ ]    ");
+					rawOutputText("\n     |     ");
+				}
+			}
+			*/
+			
+			
 		}
 		/* - layout for future dungeon use
-					if (kGAMECLASS.dungeonLoc == 55) {
+					if (CoC.instance.dungeonLoc == 55) {
 						rawOutputText(", Stone Staircase Basement<");
 						rawOutputText("\n    [ ]             [ ]    ");
 						rawOutputText("\n     |               |     ");
@@ -747,8 +1184,8 @@ package classes.Scenes.Dungeons {
 		*/
 		public function chooseRoomToDisplayD3():void {
 			//Basilisk Cave
-			if (getGame().d3._currentRoom == "entrance") {
-				rawOutputText("Basilisk Cave");
+            if (SceneLib.d3._currentRoom == "entrance") {
+                rawOutputText("Basilisk Cave");
 				rawOutputText("\n     [ ]—   ");
 				rawOutputText("\n      |     ");
 				rawOutputText("\n     [ ]    ");
@@ -757,8 +1194,8 @@ package classes.Scenes.Dungeons {
 				rawOutputText("\n      |     ");
 				rawOutputText("\n—[P]—[ ]    ");
 			}
-			else if (getGame().d3._currentRoom == "tunnel1") {
-				rawOutputText("Basilisk Cave");
+            else if (SceneLib.d3._currentRoom == "tunnel1") {
+                rawOutputText("Basilisk Cave");
 				rawOutputText("\n     [ ]—   ");
 				rawOutputText("\n      |     ");
 				rawOutputText("\n     [ ]    ");
@@ -767,8 +1204,8 @@ package classes.Scenes.Dungeons {
 				rawOutputText("\n      |     ");
 				rawOutputText("\n—[ ]—[P]    ");
 			}
-			else if (getGame().d3._currentRoom == "antechamber") {
-				rawOutputText("Basilisk Cave");
+            else if (SceneLib.d3._currentRoom == "antechamber") {
+                rawOutputText("Basilisk Cave");
 				rawOutputText("\n     [ ]—   ");
 				rawOutputText("\n      |     ");
 				rawOutputText("\n     [ ]    ");
@@ -777,8 +1214,8 @@ package classes.Scenes.Dungeons {
 				rawOutputText("\n      |     ");
 				rawOutputText("\n—[ ]—[ ]    ");
 			}
-			else if (getGame().d3._currentRoom == "roomofmirrors") {
-				rawOutputText("Basilisk Cave");
+            else if (SceneLib.d3._currentRoom == "roomofmirrors") {
+                rawOutputText("Basilisk Cave");
 				rawOutputText("\n     [ ]—   ");
 				rawOutputText("\n      |     ");
 				rawOutputText("\n     [ ]    ");
@@ -787,8 +1224,8 @@ package classes.Scenes.Dungeons {
 				rawOutputText("\n      |     ");
 				rawOutputText("\n—[ ]—[ ]    ");
 			}
-			else if (getGame().d3._currentRoom == "magpiehalls" || getGame().d3._currentRoom == "magpiehalln") {
-				rawOutputText("Basilisk Cave");
+            else if (SceneLib.d3._currentRoom == "magpiehalls" || SceneLib.d3._currentRoom == "magpiehalln") {
+                rawOutputText("Basilisk Cave");
 				rawOutputText("\n     [ ]—   ");
 				rawOutputText("\n      |     ");
 				rawOutputText("\n     [P]    ");
@@ -797,8 +1234,8 @@ package classes.Scenes.Dungeons {
 				rawOutputText("\n      |     ");
 				rawOutputText("\n—[ ]—[ ]    ");
 			}
-			else if (getGame().d3._currentRoom == "tunnel2") {
-				rawOutputText("Basilisk Cave");
+            else if (SceneLib.d3._currentRoom == "tunnel2") {
+                rawOutputText("Basilisk Cave");
 				rawOutputText("\n     [P]—   ");
 				rawOutputText("\n      |     ");
 				rawOutputText("\n     [ ]    ");
@@ -808,8 +1245,8 @@ package classes.Scenes.Dungeons {
 				rawOutputText("\n—[ ]—[ ]    ");
 			}
 			//Lethice's Keep
-			if (getGame().d3._currentRoom == "edgeofkeep") {
-				rawOutputText("Lethice's Keep");
+            if (SceneLib.d3._currentRoom == "edgeofkeep") {
+                rawOutputText("Lethice's Keep");
 				rawOutputText("\n     [ ]     ");
 				findLockedDoorLethiceThrone();
 				rawOutputText("\n [ ]—[ ]—[ ] ");
@@ -826,8 +1263,8 @@ package classes.Scenes.Dungeons {
 				rawOutputText("\n      |      ");
 				rawOutputText("\n    —[P]     ");
 			}
-			else if (getGame().d3._currentRoom == "northentry") {
-				rawOutputText("Lethice's Keep");
+            else if (SceneLib.d3._currentRoom == "northentry") {
+                rawOutputText("Lethice's Keep");
 				rawOutputText("\n     [ ]     ");
 				findLockedDoorLethiceThrone();
 				rawOutputText("\n [ ]—[ ]—[ ] ");
@@ -843,9 +1280,10 @@ package classes.Scenes.Dungeons {
 				rawOutputText("\n     [P] [ ] ");
 				rawOutputText("\n      |      ");
 				rawOutputText("\n    —[ ]     ");
-			}			
-			else if (getGame().d3._currentRoom == "southcourtyard") {
-				rawOutputText("Lethice's Keep");
+			}
+
+else if (SceneLib.d3._currentRoom == "southcourtyard") {
+                rawOutputText("Lethice's Keep");
 				rawOutputText("\n     [ ]     ");
 				findLockedDoorLethiceThrone();
 				rawOutputText("\n [ ]—[ ]—[ ] ");
@@ -861,9 +1299,10 @@ package classes.Scenes.Dungeons {
 				rawOutputText("\n     [ ] [ ] ");
 				rawOutputText("\n      |      ");
 				rawOutputText("\n    —[ ]     ");
-			}			
-			else if (getGame().d3._currentRoom == "southwestcourtyard") {
-				rawOutputText("Lethice's Keep");
+			}
+
+else if (SceneLib.d3._currentRoom == "southwestcourtyard") {
+                rawOutputText("Lethice's Keep");
 				rawOutputText("\n     [ ]     ");
 				findLockedDoorLethiceThrone();
 				rawOutputText("\n [ ]—[ ]—[ ] ");
@@ -880,8 +1319,8 @@ package classes.Scenes.Dungeons {
 				rawOutputText("\n      |      ");
 				rawOutputText("\n    —[ ]     ");
 			}
-			else if (getGame().d3._currentRoom == "southwestwalk") {
-				rawOutputText("Lethice's Keep");
+            else if (SceneLib.d3._currentRoom == "southwestwalk") {
+                rawOutputText("Lethice's Keep");
 				rawOutputText("\n     [ ]     ");
 				findLockedDoorLethiceThrone();
 				rawOutputText("\n [ ]—[ ]—[ ] ");
@@ -898,8 +1337,8 @@ package classes.Scenes.Dungeons {
 				rawOutputText("\n      |      ");
 				rawOutputText("\n    —[ ]     ");
 			}
-			else if (getGame().d3._currentRoom == "westwalk") {
-				rawOutputText("Lethice's Keep");
+            else if (SceneLib.d3._currentRoom == "westwalk") {
+                rawOutputText("Lethice's Keep");
 				rawOutputText("\n     [ ]     ");
 				findLockedDoorLethiceThrone();
 				rawOutputText("\n [ ]—[ ]—[ ] ");
@@ -916,8 +1355,8 @@ package classes.Scenes.Dungeons {
 				rawOutputText("\n      |      ");
 				rawOutputText("\n    —[ ]     ");
 			}
-			else if (getGame().d3._currentRoom == "northwestwalk") {
-				rawOutputText("Lethice's Keep");
+            else if (SceneLib.d3._currentRoom == "northwestwalk") {
+                rawOutputText("Lethice's Keep");
 				rawOutputText("\n     [ ]     ");
 				findLockedDoorLethiceThrone();
 				rawOutputText("\n [ ]—[ ]—[ ] ");
@@ -934,8 +1373,8 @@ package classes.Scenes.Dungeons {
 				rawOutputText("\n      |      ");
 				rawOutputText("\n    —[ ]     ");
 			}
-			else if (getGame().d3._currentRoom == "northwestcourtyard") {
-				rawOutputText("Lethice's Keep");
+            else if (SceneLib.d3._currentRoom == "northwestcourtyard") {
+                rawOutputText("Lethice's Keep");
 				rawOutputText("\n     [ ]     ");
 				findLockedDoorLethiceThrone();
 				rawOutputText("\n [P]—[ ]—[ ] ");
@@ -952,8 +1391,8 @@ package classes.Scenes.Dungeons {
 				rawOutputText("\n      |      ");
 				rawOutputText("\n    —[ ]     ");
 			}
-			else if (getGame().d3._currentRoom == "northcourtyard") {
-				rawOutputText("Lethice's Keep");
+            else if (SceneLib.d3._currentRoom == "northcourtyard") {
+                rawOutputText("Lethice's Keep");
 				rawOutputText("\n     [ ]     ");
 				findLockedDoorLethiceThrone();
 				rawOutputText("\n [ ]—[P]—[ ] ");
@@ -970,8 +1409,8 @@ package classes.Scenes.Dungeons {
 				rawOutputText("\n      |      ");
 				rawOutputText("\n    —[ ]     ");
 			}
-			else if (getGame().d3._currentRoom == "northeastcourtyard") {
-				rawOutputText("Lethice's Keep");
+            else if (SceneLib.d3._currentRoom == "northeastcourtyard") {
+                rawOutputText("Lethice's Keep");
 				rawOutputText("\n     [ ]     ");
 				findLockedDoorLethiceThrone();
 				rawOutputText("\n [ ]—[ ]—[P] ");
@@ -988,8 +1427,8 @@ package classes.Scenes.Dungeons {
 				rawOutputText("\n      |      ");
 				rawOutputText("\n    —[ ]     ");
 			}
-			else if (getGame().d3._currentRoom == "northeastwalk") {
-				rawOutputText("Lethice's Keep");
+            else if (SceneLib.d3._currentRoom == "northeastwalk") {
+                rawOutputText("Lethice's Keep");
 				rawOutputText("\n     [ ]     ");
 				findLockedDoorLethiceThrone();
 				rawOutputText("\n [ ]—[ ]—[ ] ");
@@ -1006,8 +1445,8 @@ package classes.Scenes.Dungeons {
 				rawOutputText("\n      |      ");
 				rawOutputText("\n    —[ ]     ");
 			}
-			else if (getGame().d3._currentRoom == "eastwalk") {
-				rawOutputText("Lethice's Keep");
+            else if (SceneLib.d3._currentRoom == "eastwalk") {
+                rawOutputText("Lethice's Keep");
 				rawOutputText("\n     [ ]     ");
 				findLockedDoorLethiceThrone();
 				rawOutputText("\n [ ]—[ ]—[ ] ");
@@ -1024,8 +1463,8 @@ package classes.Scenes.Dungeons {
 				rawOutputText("\n      |      ");
 				rawOutputText("\n    —[ ]     ");
 			}
-			else if (getGame().d3._currentRoom == "southeastwalk") {
-				rawOutputText("Lethice's Keep");
+            else if (SceneLib.d3._currentRoom == "southeastwalk") {
+                rawOutputText("Lethice's Keep");
 				rawOutputText("\n     [ ]     ");
 				findLockedDoorLethiceThrone();
 				rawOutputText("\n [ ]—[ ]—[ ] ");
@@ -1042,8 +1481,8 @@ package classes.Scenes.Dungeons {
 				rawOutputText("\n      |      ");
 				rawOutputText("\n    —[ ]     ");
 			}
-			else if (getGame().d3._currentRoom == "southeastcourtyard") {
-				rawOutputText("Lethice's Keep");
+            else if (SceneLib.d3._currentRoom == "southeastcourtyard") {
+                rawOutputText("Lethice's Keep");
 				rawOutputText("\n     [ ]     ");
 				findLockedDoorLethiceThrone();
 				rawOutputText("\n [ ]—[ ]—[ ] ");
@@ -1060,8 +1499,8 @@ package classes.Scenes.Dungeons {
 				rawOutputText("\n      |      ");
 				rawOutputText("\n    —[ ]     ");
 			}
-			else if (getGame().d3._currentRoom == "courtyardsquare") {
-				rawOutputText("Lethice's Keep");
+            else if (SceneLib.d3._currentRoom == "courtyardsquare") {
+                rawOutputText("Lethice's Keep");
 				rawOutputText("\n     [ ]     ");
 				findLockedDoorLethiceThrone();
 				rawOutputText("\n [ ]—[ ]—[ ] ");
@@ -1078,8 +1517,8 @@ package classes.Scenes.Dungeons {
 				rawOutputText("\n      |      ");
 				rawOutputText("\n    —[ ]     ");
 			}
-			else if (getGame().d3._currentRoom == "greatlift") {
-				rawOutputText("Lethice's Keep");
+            else if (SceneLib.d3._currentRoom == "greatlift") {
+                rawOutputText("Lethice's Keep");
 				rawOutputText("\n     [ ]     ");
 				findLockedDoorLethiceThrone();
 				rawOutputText("\n [ ]—[ ]—[ ] ");
@@ -1096,8 +1535,8 @@ package classes.Scenes.Dungeons {
 				rawOutputText("\n      |      ");
 				rawOutputText("\n    —[ ]     ");
 			}
-			else if (getGame().d3._currentRoom == "throneroom") {
-				rawOutputText("Lethice's Keep");
+            else if (SceneLib.d3._currentRoom == "throneroom") {
+                rawOutputText("Lethice's Keep");
 				rawOutputText("\n     [P]     ");
 				findLockedDoorLethiceThrone();
 				rawOutputText("\n [ ]—[ ]—[ ] ");

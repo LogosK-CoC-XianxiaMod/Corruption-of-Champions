@@ -5,13 +5,11 @@
 package classes.display {
 import classes.BaseContent;
 import classes.CoC_Settings;
-import classes.GlobalFlags.kGAMECLASS;
+import classes.CoC;
 
 import flash.system.Security;
 
 public class DebugInfo extends BaseContent {
-	include "../../../includes/debug.as"
-	include "../../../includes/eventTest.as"
 
 	public function debugPane():void
 	{
@@ -47,11 +45,10 @@ public class DebugInfo extends BaseContent {
 		outputText(images.showImage("monster-ceraph"));
 
 		menu();
-		addButton(0, "Event Tester", eventTestingPane);
-		addButton(1, "Test Input", eventTester);
-		addButton(5, "Parser Tests", doThatTestingThang);
+
+		addButton(5, "Parser Tests", doThatTestingThang,this.debugPane);
 		addButton(6, "Halt on Errors", toggleHaltSettings);
-		addButton(14, "Back", kGAMECLASS.mainMenu.mainMenu);
+		addButton(14, "Back", CoC.instance.mainMenu.mainMenu);
 	}
 
 	public function toggleHaltSettings():void

@@ -4,18 +4,19 @@
  */
 package classes.Scenes.Areas.DeepSea 
 {
-	import classes.*;
-	import classes.internals.*;
-	import classes.GlobalFlags.kGAMECLASS;
-	import classes.GlobalFlags.kFLAGS;
-	
-	public class Kraken extends Monster
+import classes.*;
+import classes.BodyParts.Butt;
+import classes.BodyParts.Hips;
+import classes.BodyParts.LowerBody;
+import classes.internals.*;
+
+public class Kraken extends Monster
 	{
 		public function krakenConstrict():void {
 			outputText("The " + this.short + "’s tentacles grab you all at once and start to squeeze you!");
 			player.createStatusEffect(StatusEffects.ScyllaBind,0,0,0,0); 
 			if (player.findPerk(PerkLib.Juggernaut) < 0 && armorPerk != "Heavy") {
-				player.takeDamage(4+rand(6));
+				player.takePhysDamage(4+rand(6));
 			}
 		}
 		
@@ -29,22 +30,22 @@ package classes.Scenes.Areas.DeepSea
 			clearOutput();
 			var damage:Number = 0;
 			damage += eBaseStrengthDamage() * 2;
-			outputText("The scylla slaps you with her tentacles, dealing ");
-			player.takeDamage(damage, true);
-			player.takeDamage(damage, true);
-			player.takeDamage(damage, true);
-			player.takeDamage(damage, true);
-			player.takeDamage(damage, true);
-			player.takeDamage(damage, true);
+			outputText("The kraken slaps you with her tentacles, dealing ");
+			player.takePhysDamage(damage, true);
+			player.takePhysDamage(damage, true);
+			player.takePhysDamage(damage, true);
+			player.takePhysDamage(damage, true);
+			player.takePhysDamage(damage, true);
+			player.takePhysDamage(damage, true);
 			outputText(" damage!");
 		}
 		public function krakenTentacleSlap2():void {
 			clearOutput();
 			var damage:Number = 0;
 			damage += eBaseStrengthDamage() * 2;
-			outputText("The scylla slaps you with her tentacles, dealing ");
-			player.takeDamage(damage, true);
-			player.takeDamage(damage, true);
+			outputText("The kraken slaps you with her tentacles, dealing ");
+			player.takePhysDamage(damage, true);
+			player.takePhysDamage(damage, true);
 			outputText(" damage!");
 		}
 		
@@ -65,7 +66,6 @@ package classes.Scenes.Areas.DeepSea
 				}
 				else krakenInkSpray();
 			}
-			combatRoundOver();
 		}
 		
 		public function Kraken() 
@@ -75,25 +75,26 @@ package classes.Scenes.Areas.DeepSea
 			this.imageName = "kraken";
 			this.long = "You are currently fighting 24 feet tall Kraken.";
 			// this.plural = false;
-			this.createVagina(false, VAGINA_WETNESS_DROOLING, VAGINA_LOOSENESS_GAPING);
+			this.createVagina(false, VaginaClass.WETNESS_DROOLING, VaginaClass.LOOSENESS_GAPING);
 			this.createStatusEffect(StatusEffects.BonusVCapacity, 300, 0, 0, 0);
 			createBreastRow(Appearance.breastCupInverse("C"));
-			this.ass.analLooseness = ANAL_LOOSENESS_VIRGIN;
-			this.ass.analWetness = ANAL_WETNESS_NORMAL;
+			this.ass.analLooseness = AssClass.LOOSENESS_VIRGIN;
+			this.ass.analWetness = AssClass.WETNESS_NORMAL;
 			this.tallness = 24*12;
-			this.hipRating = HIP_RATING_AMPLE;
-			this.buttRating = BUTT_RATING_NOTICEABLE;
-			this.lowerBody = LOWER_BODY_TYPE_SCYLLA;
+			this.hips.type = Hips.RATING_AMPLE;
+			this.butt.type = Butt.RATING_NOTICEABLE;
+			this.lowerBody = LowerBody.SCYLLA;
 			this.skin.setBaseOnly({color:"slippery"});
 			this.hairColor = "brown";
 			this.hairLength = 5;
 			initStrTouSpeInte(700, 200, 200, 250);
-			initLibSensCor(200, 50, 50);
+			initWisLibSensCor(250, 200, 50, 50);
 			this.weaponName = "large tentacle";
 			this.weaponVerb="slash";
-			this.weaponAttack = 145 + (30 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.weaponAttack = 145;
 			this.armorName = "super thick skin";
-			this.armorDef = 95 + (10 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.armorDef = 95;
+			this.armorMDef = 95;
 			this.bonusHP = 10000;
 			this.bonusLust = 20;
 			this.lust = 20;
@@ -110,12 +111,6 @@ package classes.Scenes.Areas.DeepSea
 			//this.createPerk(PerkLib., 0, 0, 0, 0);
 			//this.createPerk(PerkLib., 0, 0, 0, 0);
 			//this.createPerk(PerkLib., 0, 0, 0, 0);
-			this.str += 350 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.tou += 100 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.spe += 100 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.inte += 125 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];			
-			this.lib += 100 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.newgamebonusHP = 85250;
 			checkMonster();
 		}
 		

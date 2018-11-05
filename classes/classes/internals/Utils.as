@@ -61,6 +61,14 @@ package classes.internals
 			return x < min ? min : x > max ? max : x;
 		}
 		/**
+		 * Mimics JS Object.keys
+		 */
+		public static function keys(o:Object):/*String*/Array {
+			var r:/*String*/Array = [];
+			for (var k:String in o) r.push(k);
+			return r;
+		}
+		/**
 		 * Deleting obj[key] with default.
 		 *
 		 * If `key` in `obj`: return `obj[key]` and delete `obj[key]`
@@ -318,10 +326,18 @@ package classes.internals
 			return Math.random()*n < 1;
 		}
 
-		public static function validateNonNegativeNumberFields(o:Object, func:String, nnf:Array):String
+		public static function validateNonNegativeNumberFields(obj:Object, func:String, nnf:Array):String
 		{
 			var error:String = "";
+			var o:Object = obj;
 			for each (var field:String in nnf) {
+				var keys:Array = field.split('.');
+				if(keys.length > 1){
+					o = obj[keys[0]];
+					field = keys[1];
+				} else {
+					o = obj;
+				}
 				if (!o.hasOwnProperty(field) || !(o[field] is Number) && o[field] != null) error += "Misspelling in "+func+".nnf: '"+field+"'. ";
 				else if (o[field] == null) error += "Null '"+field+"'. ";
 				else if (o[field] < 0) error += "Negative '"+field+"'. ";
@@ -329,10 +345,18 @@ package classes.internals
 			return error;
 		}
 		
-		public static function validateNonEmptyStringFields(o:Object, func:String, nef:Array):String
+		public static function validateNonEmptyStringFields(obj:Object, func:String, nef:Array):String
 		{
 			var error:String = "";
+			var o:Object = obj;
 			for each (var field:String in nef) {
+				var keys:Array = field.split('.');
+				if(keys.length > 1){
+					o = obj[keys[0]];
+					field = keys[1];
+				} else {
+					o = obj;
+				}
 				if (!o.hasOwnProperty(field) || !(o[field] is String) && o[field] != null) error += "Misspelling in "+func+".nef: '"+field+"'. ";
 				else if (o[field] == null) error += "Null '"+field+"'. ";
 				else if (o[field] == "") error += "Empty '"+field+"'. ";

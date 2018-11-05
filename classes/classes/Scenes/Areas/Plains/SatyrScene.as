@@ -1,10 +1,12 @@
 ﻿package classes.Scenes.Areas.Plains{
-	import classes.*;
-	import classes.GlobalFlags.kFLAGS;
-	import classes.Items.Armors.LustyMaidensArmor;
-	import classes.Scenes.UniqueSexScenes;
+import classes.*;
+import classes.BodyParts.LowerBody;
+import classes.BodyParts.Tail;
+import classes.GlobalFlags.kFLAGS;
+import classes.Items.Armors.LustyMaidensArmor;
+import classes.Scenes.UniqueSexScenes;
 
-	public class SatyrScene extends BaseContent{
+public class SatyrScene extends BaseContent{
 
 	public var uniquuuesexscene:UniqueSexScenes = new UniqueSexScenes();
 	
@@ -73,7 +75,7 @@ private function consensualSatyrFuck(loc:int = 0):void {
 	
 	outputText("\n\nYou barely register what he's saying, the beverage hits you with such force you immediately stop drinking and start coughing, spilling some of the booze on the floor.");
 	//(+Lust)
-	dynStats("lus", 25, "resisted", false);
+	dynStats("lus", 25, "scale", false);
 	outputText("\n\nThe satyr bellows with laughter and takes a huge swig of his own wineskin.  \"<i>Looks like you need more practice with your liquor!</i>\" he chortles.  \"<i>Go on, drink up; practice makes perfect.</i>\"");
 	
 	outputText("\n\nIt suddenly dawns upon you that this satyr might not have the most noble intentions... you're pretty sure there's some sort of aphrodisiac inside this beverage he offered you, judging by the heat that spreads through your body.");
@@ -252,7 +254,7 @@ internal function defeatASatyr():void {
 	clearOutput();
 	spriteSelect(98);
 	//Lust Victory
-	if(monster.lust >= monster.eMaxLust()) outputText("The satyr collapses to its caprine knees, bleating in dismay as it paws frantically at its huge cock, oblivious to everything in its need to get off.  Already, pre-cum is fountaining from the goat-man's shaft, his jerking motions smearing the pungent sexual fluid across the crown.");
+	if(monster.lust >= monster.maxLust()) outputText("The satyr collapses to its caprine knees, bleating in dismay as it paws frantically at its huge cock, oblivious to everything in its need to get off.  Already, pre-cum is fountaining from the goat-man's shaft, his jerking motions smearing the pungent sexual fluid across the crown.");
 	//HP Victory
 	else outputText("Beaten and dazed, the satyr collapses to its caprine knees, shaking his head in a futile attempt to recover himself from the brutal trouncing you've just given him.  The combination of the blows and his previous drunken state mean he's quite incapable of getting back, however.");
 	var butt:Function = null;
@@ -275,8 +277,8 @@ internal function defeatASatyr():void {
 	if(player.hasCock() && player.cockThatFits(monster.analCapacity()) >= 0) addButton(0, "FuckHisButt", malesTakeAdvantageOfSatyrs);
 	if(player.hasVagina()) addButton(1, "Ride Face", femaleTakesAdvantageOfSatyr);
 	if(player.hasVagina() && player.biggestTitSize() >= 4 && player.armor == armors.LMARMOR) addButton(2, "B.Titfuck", (player.armor as LustyMaidensArmor).lustyMaidenPaizuri);
-	if (player.tailType == TAIL_TYPE_MANTICORE_PUSSYTAIL) addButton(5, "Tail Rape", uniquuuesexscene.manticoreTailRapeScene);
-	if (player.lowerBody == LOWER_BODY_TYPE_PLANT_FLOWER) addButton(6, "Get Pollinated", uniquuuesexscene.alrauneGetPollinatedScene);
+	if (player.tailType == Tail.MANTICORE_PUSSYTAIL) addButton(5, "Tail Rape", uniquuuesexscene.manticoreTailRapeScene);
+	if (player.lowerBody == LowerBody.PLANT_FLOWER) addButton(6, "Get Pollinated", uniquuuesexscene.alrauneGetPollinatedScene);
 	addButton(4, "Leave", cleanupAfterCombat);
 }
 //Female (Z)

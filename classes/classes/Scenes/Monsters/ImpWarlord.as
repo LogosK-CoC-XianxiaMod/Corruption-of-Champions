@@ -1,39 +1,39 @@
 package classes.Scenes.Monsters 
 {
-	import classes.*;
-	import classes.internals.*;
-	import classes.GlobalFlags.kFLAGS;
+import classes.*;
+import classes.BodyParts.Butt;
+import classes.BodyParts.Hips;
+import classes.BodyParts.LowerBody;
+import classes.BodyParts.Wings;
+import classes.GlobalFlags.kFLAGS;
+import classes.Scenes.SceneLib;
+import classes.internals.*;
 
-	public class ImpWarlord extends Imp
+public class ImpWarlord extends Imp
 	{
 		public function clawAttack():void {
 			outputText("The imp warlord charges at you with his claws ready! ");
 			if (player.getEvasionRoll()) {
 				outputText("You manage to avoid his claws thanks to your reaction!");
-				combatRoundOver();
 				return;
 			}
 			else {
 				outputText("The imp manages to swipe you!  You let out a cry in pain. ");
 				var damage:int = rand(50) + str + weaponAttack;
-				damage = player.reduceDamage(damage);
 				if (damage < 20) damage = 20;
-				player.takeDamage(damage, true);
+				player.takePhysDamage(damage, true);
 			}
-			combatRoundOver();
 		}
 
 		public function doubleAttack():void {
 			outputText("The imp warlord charges at you with his claws ready and sword raised! ");
 			if (player.getEvasionRoll()) {
 				outputText("You manage to dodge his deadly attack!");
-				combatRoundOver();
 				return;
 			}
 			else {
 				outputText("The imp manages to slash you with his sword and his deadly claws!");
 				var damage:int = rand(50) + str + weaponAttack;
-				damage = player.reduceDamage(damage);
 				if (damage < 20) damage = 20; //Min-cap damage.
 				if (damage >= 50) {
 					outputText("You let out a cry in pain and you swear you could see your wounds bleeding. ");
@@ -42,21 +42,20 @@ package classes.Scenes.Monsters
 				else {
 					outputText("Thankfully the wounds aren't that serious. ");
 				}
-				player.takeDamage(damage, true);
+				player.takePhysDamage(damage, true);
 			}
-			combatRoundOver();
 		}
 
 		
 		override public function defeated(hpVictory:Boolean):void
 		{
 			game.flags[kFLAGS.DEMONS_DEFEATED]++;
-			game.impScene.defeatImpLord();
+			SceneLib.impScene.defeatImpLord();
 		}
 
 		override public function won(hpVictory:Boolean,pcCameWorms:Boolean):void
 		{
-			game.impScene.loseToAnImpLord();
+			SceneLib.impScene.loseToAnImpLord();
 		}
 		
 		public function ImpWarlord() 
@@ -76,20 +75,21 @@ package classes.Scenes.Monsters
 			this.cumMultiplier = 3;
 			this.hoursSinceCum = 20;
 			createBreastRow(0);
-			this.ass.analLooseness = ANAL_LOOSENESS_STRETCHED;
-			this.ass.analWetness = ANAL_WETNESS_NORMAL;
+			this.ass.analLooseness = AssClass.LOOSENESS_STRETCHED;
+			this.ass.analWetness = AssClass.WETNESS_NORMAL;
 			this.tallness = rand(14) + 40;
-			this.hipRating = HIP_RATING_BOYISH;
-			this.buttRating = BUTT_RATING_TIGHT;
-			this.lowerBody = LOWER_BODY_TYPE_HOOFED;
+			this.hips.type = Hips.RATING_BOYISH;
+			this.butt.type = Butt.RATING_TIGHT;
+			this.lowerBody = LowerBody.HOOFED;
 			this.skinTone = "red";
 			initStrTouSpeInte(80, 71, 75, 56);
-			initLibSensCor(71, 35, 100);
+			initWisLibSensCor(56, 71, 35, 100);
 			this.weaponName = "sword";
 			this.weaponVerb="slash";
-			this.weaponAttack = 20 + (5 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.weaponAttack = 20;
 			this.armorName = "platemail";
-			this.armorDef = 17 + (2 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.armorDef = 17;
+			this.armorMDef = 1;
 			this.bonusHP = 350;
 			this.bonusLust = 30;
 			this.lust = 30;
@@ -103,15 +103,11 @@ package classes.Scenes.Monsters
 					add(consumables.INCUBID,12).
 					add(consumables.SUCMILK,12).
 					add(jewelries.POWRRNG,1);
-			this.wingType = WING_TYPE_IMP;
+			this.wings.type = Wings.IMP;
 			this.special1 = lustMagicAttack;
 			this.special2 = clawAttack;
-			this.str += 16 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.tou += 14 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.spe += 15 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.inte += 11 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];			
-			this.lib += 14 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.newgamebonusHP = 1400;
+			this.special3 = doubleAttack;
+			this.createPerk(PerkLib.EnemyTrueDemon, 0, 0, 0, 0);
 			checkMonster();
 		}
 		

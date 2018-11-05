@@ -1,12 +1,16 @@
 ﻿package classes.Scenes.Areas.Forest
 {
-	import classes.*;
-	import classes.internals.*;
-	import classes.GlobalFlags.kACHIEVEMENTS;
-	import classes.GlobalFlags.kFLAGS;
-	import classes.Scenes.Places.HeXinDao;
+import classes.*;
+import classes.BodyParts.Butt;
+import classes.BodyParts.Hips;
+import classes.BodyParts.Tail;
+import classes.GlobalFlags.kACHIEVEMENTS;
+import classes.GlobalFlags.kFLAGS;
+import classes.Scenes.Places.HeXinDao;
+import classes.Scenes.SceneLib;
+import classes.internals.*;
 
-	public class TentacleBeast extends Monster
+public class TentacleBeast extends Monster
 	{
 		public var golems:HeXinDao = new HeXinDao();
 		
@@ -21,9 +25,8 @@
 			//Hit
 			else {
 				outputText("The tentacles crash upon your body mercilessly. ");
-				player.takeDamage(temp, true);
+				player.takePhysDamage(temp, true);
 			}
-			combatRoundOver();
 		}
 		private function tentacleEntwine():void {
 			outputText("The beast lunges its tentacles at you from all directions in an attempt to immobilize you.\n");
@@ -41,35 +44,34 @@
 					//Female Version:
 					else if(player.hasVagina()) outputText("The creature quickly positions a long tentacle with a single sucker over your clitoris. You feel the power of the suction on you, and your body quickly heats up.  Your clit engorges, prompting the beast to latch the sucker onto your [clit].\n");
 					//Genderless
-					else outputText("The creature quickly positions a long tentacle against your " + game.assholeDescript() + ". It circles your pucker with slow, delicate strokes that bring unexpected warmth to your body.\n");
-					game.dynStats("lus", (8+player.sens/20));
+					else outputText("The creature quickly positions a long tentacle against your " + Appearance.assholeDescript(player) + ". It circles your pucker with slow, delicate strokes that bring unexpected warmth to your body.\n");
+					player.dynStats("lus", (8+player.sens/20));
 					player.createStatusEffect(StatusEffects.TentacleBind,0,0,0,0);
 				}
 			}
-			combatRoundOver();
 		}
 
 		override public function defeated(hpVictory:Boolean):void
 		{
 			if (hpVictory) {
 				outputText("The creature lets out an ear-piercing screech as it collapses upon itself. Its green coloring quickly fades to brown as the life drains from it, leaving you victorious.", true);
-				game.awardAchievement("Tentacle Beast Slayer", kACHIEVEMENTS.GENERAL_TENTACLE_BEAST_SLAYER);
+				EngineCore.awardAchievement("Tentacle Beast Slayer", kACHIEVEMENTS.GENERAL_TENTACLE_BEAST_SLAYER);
 			} else {
 				outputText("The tentacle beast's mass begins quivering and sighing, the tentacles wrapping around each other and feverishly caressing each other.  It seems the beast has given up on fighting.");
 			}
-			if (player.hasStatusEffect(StatusEffects.SoulArena)) {
+			if (player.hasStatusEffect(StatusEffects.SoulArenaGaunlet)) {
 				golems.gaunletchallange1fight3();
 			}
 			else if (hasStatusEffect(StatusEffects.PhyllaFight)) {
 				removeStatusEffect(StatusEffects.PhyllaFight);
-				game.desert.antsScene.phyllaTentacleDefeat();
+				SceneLib.desert.antsScene.phyllaTentacleDefeat();
 			}
 			else {
 				if(!hpVictory && player.gender > 0 && flags[kFLAGS.SFW_MODE] <= 0) {
 					outputText("  Perhaps you could use it to sate yourself?", true);
-					game.doYesNo(game.forest.tentacleBeastScene.tentacleVictoryRape,game.cleanupAfterCombat);
+					EngineCore.doYesNo(SceneLib.forest.tentacleBeastScene.tentacleVictoryRape,cleanupAfterCombat);
 				} else {
-					game.cleanupAfterCombat();
+					cleanupAfterCombat();
 				}
 			}
 		}
@@ -81,17 +83,17 @@
 				if (hasStatusEffect(StatusEffects.PhyllaFight)) {
 					removeStatusEffect(StatusEffects.PhyllaFight);
 					outputText("...and make it into the nearby tunnel.  ");
-					game.desert.antsScene.phyllaTentaclePCLoss();
+					SceneLib.desert.antsScene.phyllaTentaclePCLoss();
 				} else
-					game.forest.tentacleBeastScene.tentacleLossRape();
+					SceneLib.forest.tentacleBeastScene.tentacleLossRape();
 			} else {
 				outputText("You give up on fighting, too aroused to resist any longer.  Shrugging, you walk into the writhing mass...\n\n");
 				if(hasStatusEffect(StatusEffects.PhyllaFight)) {
 					removeStatusEffect(StatusEffects.PhyllaFight);
 					outputText("...but an insistent voice rouses you from your stupor.  You manage to run into a nearby tunnel.  ");
-					game.desert.antsScene.phyllaTentaclePCLoss();
+					SceneLib.desert.antsScene.phyllaTentaclePCLoss();
 				} else
-					doNext(game.forest.tentacleBeastScene.tentacleLossRape);
+					doNext(SceneLib.forest.tentacleBeastScene.tentacleLossRape);
 			}
 		}
 
@@ -123,22 +125,23 @@
 			this.pronoun2 = "it";
 			this.pronoun3 = "its";
 			this.createBreastRow(0,0);
-			this.ass.analLooseness = ANAL_LOOSENESS_TIGHT;
-			this.ass.analWetness = ANAL_WETNESS_SLIME_DROOLING;
+			this.ass.analLooseness = AssClass.LOOSENESS_TIGHT;
+			this.ass.analWetness = AssClass.WETNESS_SLIME_DROOLING;
 			this.tallness = rand(9) + 70;
-			this.hipRating = HIP_RATING_BOYISH;
-			this.buttRating = BUTT_RATING_BUTTLESS;
+			this.hips.type = Hips.RATING_BOYISH;
+			this.butt.type = Butt.RATING_BUTTLESS;
 			this.skin.setBaseOnly({color:"green"});
 			this.skinDesc = "bark";
 			this.hairColor = "green";
 			this.hairLength = 1;
 			initStrTouSpeInte(73, 90, 25, 45);
-			initLibSensCor(90, 20, 100);
+			initWisLibSensCor(40, 90, 20, 100);
 			this.weaponName = "whip-tendril";
 			this.weaponVerb="thorny tendril";
-			this.weaponAttack = 10 + (3 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.weaponAttack = 10;
 			this.armorName = "rubbery skin";
-			this.armorDef = 18 + (2 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.armorDef = 18;
+			this.armorMDef = 2;
 			this.bonusHP = 400;
 			this.bonusLust = 20;
 			this.lust = 10;
@@ -150,13 +153,7 @@
 			this.special1 = tentaclePhysicalAttack;
 			this.special2 = tentacleEntwine;
 			this.special3 = tentaclePhysicalAttack;
-			this.tailType = TAIL_TYPE_DEMONIC;
-			this.str += 14 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.tou += 18 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.spe += 5 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.inte += 9 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];			
-			this.lib += 18 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.newgamebonusHP = 1200;
+			this.tailType = Tail.DEMONIC;
 			checkMonster();
 		}
 

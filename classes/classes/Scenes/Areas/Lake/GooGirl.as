@@ -1,10 +1,14 @@
 package classes.Scenes.Areas.Lake
 {
-	import classes.*;
-	import classes.internals.*;
-	import classes.GlobalFlags.kFLAGS;
+import classes.*;
+import classes.BodyParts.Butt;
+import classes.BodyParts.Hips;
+import classes.BodyParts.LowerBody;
+import classes.BodyParts.Skin;
+import classes.Scenes.SceneLib;
+import classes.internals.*;
 
-	public class GooGirl extends Monster
+public class GooGirl extends Monster
 	{
 		/*Fight-
 		 You are fighting a goo-girl.
@@ -18,7 +22,7 @@ package classes.Scenes.Areas.Lake
 		{
 			var damage:Number = 0;
 			//return to combat menu when finished
-			doNext(game.playerMenu);
+			doNext(EventParser.playerMenu);
 			if (findPerk(PerkLib.Acid) >= 0) outputText("Her body quivering from your flames, the goo-girl ");
 			else outputText("The slime holds its hands up and they morph into a replica of your [weapon].  Happily, she swings at you");
 			//Determine if dodged!
@@ -76,18 +80,16 @@ package classes.Scenes.Areas.Lake
 					lust += 5 * lustVuln;
 				}
 			}
-			if (damage > 0) player.takeDamage(damage, true);
+			if (damage > 0) player.takePhysDamage(damage, true);
 			statScreenRefresh();
 			outputText("\n");
-			combatRoundOver();
 		}
 
 //Play – 
 		private function gooPlay():void
 		{
 			outputText("The goo-girl lunges, wrapping her slimy arms around your waist in a happy hug, hot muck quivering excitedly against you. She looks up, empty eyes confused by your lack of enthusiasm and forms her mouth into a petulant pout before letting go.  You shiver in the cold air, regretting the loss of her embrace.");
-			game.dynStats("lus", 3 + rand(3) + player.sens / 10);
-			combatRoundOver();
+			player.dynStats("lus", 3 + rand(3) + player.sens / 10);
 		}
 
 //Throw – 
@@ -95,9 +97,8 @@ package classes.Scenes.Areas.Lake
 		{
 			outputText("The girl reaches into her torso, pulls a large clump of goo out, and chucks it at you like a child throwing mud. The slime splatters on your chest and creeps under your [armor], tickling your skin like fingers dancing across your body. ");
 			var damage:Number = 1;
-			player.takeDamage(damage, true);
-			game.dynStats("lus", 5 + rand(3) + player.sens / 10);
-			combatRoundOver();
+			player.takePhysDamage(damage, true);
+			player.dynStats("lus", 5 + rand(3) + player.sens / 10);
 		}
 
 //Engulf – 
@@ -105,7 +106,6 @@ package classes.Scenes.Areas.Lake
 		{
 			outputText("The goo-girl gleefully throws her entire body at you and, before you can get out of the way, she has engulfed you in her oozing form! Tendrils of " + skinTone + " slime slide up your nostrils and through your lips, filling your lungs with the girl's muck. You begin suffocating!");
 			if (!player.hasStatusEffect(StatusEffects.GooBind)) player.createStatusEffect(StatusEffects.GooBind, 0, 0, 0, 0);
-			combatRoundOver();
 		}
 
 		override protected function performCombatAction():void
@@ -120,24 +120,24 @@ package classes.Scenes.Areas.Lake
 
 		override public function defeated(hpVictory:Boolean):void
 		{
-			game.lake.gooGirlScene.beatUpGoo();
+			SceneLib.lake.gooGirlScene.beatUpGoo();
 		}
 
 		override public function won(hpVictory:Boolean, pcCameWorms:Boolean):void
 		{
 			if (pcCameWorms) {
 				outputText("\n\nThe goo-girl seems confused but doesn't mind.");
-				doNext(game.endLustLoss);
+				doNext(SceneLib.combat.endLustLoss);
 			} else {
-				game.lake.gooGirlScene.getBeatByGooGirl();
+				SceneLib.lake.gooGirlScene.getBeatByGooGirl();
 			}
 		}
 
 		override public function teased(lustDelta:Number):void
 		{
-			if (lust <= 99) {
+			if (lust <= maxLust() * 0.99) {
 				if (lustDelta <= 0) outputText("\nThe goo-girl looks confused by your actions, as if she's trying to understand what you're doing.");
-				else if (lustDelta < 13) outputText("\nThe curious goo has begun stroking herself openly, trying to understand the meaning of your actions by imitating you.");
+				else if (lustDelta < maxLust() * 0.13) outputText("\nThe curious goo has begun stroking herself openly, trying to understand the meaning of your actions by imitating you.");
 				else outputText("\nThe girl begins to understand your intent. She opens and closes her mouth, as if panting, while she works slimy fingers between her thighs and across her jiggling nipples.");
 			}
 			else outputText("\nIt appears the goo-girl has gotten lost in her mimicry, squeezing her breasts and jilling her shiny " + skinTone + " clit, her desire to investigate you forgotten.");
@@ -153,27 +153,28 @@ package classes.Scenes.Areas.Lake
 			this.imageName = "googirl";
 			this.long = "The goo-girl has a curious expression on her youthful, shimmering face. Her body is slender and globs of slime regularly drip from her limbs, splattering into the goo puddle pooling beneath her hips. A small, heart-shaped nucleus pulses in her chest with a red glow." + (playerHasBigBoobs ? ("  She has apparently made herself a bit more like you, as her chest appears to be a perfect copy of your [chest].") : "");
 			// this.long = false;
-			this.createVagina(false, VAGINA_WETNESS_SLAVERING, VAGINA_LOOSENESS_NORMAL);
+			this.createVagina(false, VaginaClass.WETNESS_SLAVERING, VaginaClass.LOOSENESS_NORMAL);
 			this.createStatusEffect(StatusEffects.BonusVCapacity, 9001, 0, 0, 0);
 			this.createBreastRow(playerHasBigBoobs ? player.biggestTitSize() : 3);
-			this.ass.analLooseness = ANAL_LOOSENESS_TIGHT;
-			this.ass.analWetness = ANAL_WETNESS_SLIME_DROOLING;
+			this.ass.analLooseness = AssClass.LOOSENESS_TIGHT;
+			this.ass.analWetness = AssClass.WETNESS_SLIME_DROOLING;
 			this.createStatusEffect(StatusEffects.BonusACapacity,9001,0,0,0);
 			this.tallness = rand(8) + 70;
-			this.hipRating = HIP_RATING_AMPLE;
-			this.buttRating = BUTT_RATING_LARGE;
-			this.lowerBody = LOWER_BODY_TYPE_GOO;
+			this.hips.type = Hips.RATING_AMPLE;
+			this.butt.type = Butt.RATING_LARGE;
+			this.lowerBody = LowerBody.GOO;
 			var tone:String = randomChoice("blue", "purple", "crystal");
-			this.skin.setBaseOnly({color:tone,type:SKIN_BASE_GOO});
+			this.skin.setBaseOnly({color:tone,type:Skin.GOO});
 			this.hairColor = tone;
 			this.hairLength = 12 + rand(10);
 			initStrTouSpeInte(32, 40, 20, 30);
-			initLibSensCor(50, 40, 10);
+			initWisLibSensCor(30, 50, 40, 10);
 			this.weaponName = "hands";
 			this.weaponVerb="slap";
-			this.weaponAttack = 7 + (2 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.weaponAttack = 7;
 			this.armorName = "gelatinous skin";
-			this.armorDef = 4 + (1 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.armorDef = 4;
+			this.armorMDef = 12;
 			this.bonusHP = 40;
 			this.bonusLust = 10;
 			this.lust = 45;
@@ -190,12 +191,7 @@ package classes.Scenes.Areas.Lake
 			this.special3 = 5039;
 */
 			this.createPerk(PerkLib.FireVulnerability, 0, 0, 0, 0);
-			this.str += 6 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.tou += 8 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.spe += 4 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.inte += 6 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];			
-			this.lib += 10 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.newgamebonusHP = 340;
+			this.createPerk(PerkLib.EnemyGooType, 0, 0, 0, 0);
 			checkMonster();
 		}
 

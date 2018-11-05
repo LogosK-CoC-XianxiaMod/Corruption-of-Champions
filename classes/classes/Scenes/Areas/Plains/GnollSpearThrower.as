@@ -1,10 +1,12 @@
 package classes.Scenes.Areas.Plains
 {
-	import classes.*;
-	import classes.internals.*;
-	import classes.GlobalFlags.kFLAGS;
+import classes.*;
+import classes.BodyParts.Butt;
+import classes.BodyParts.Hips;
+import classes.Scenes.SceneLib;
+import classes.internals.*;
 
-	/**
+/**
 	 * ...
 	 * @author ...
 	 */
@@ -13,7 +15,7 @@ package classes.Scenes.Areas.Plains
 		private function hyenaPhysicalAttack():void {
 			var damage:Number = 0;
 			//return to combat menu when finished
-			doNext(game.playerMenu);
+			doNext(EventParser.playerMenu);
 			//Blind dodge change
 			if(hasStatusEffect(StatusEffects.Blind) && rand(3) < 2) {
 				outputText(capitalA + short + " completely misses you with a blind attack!\n");
@@ -86,7 +88,7 @@ package classes.Scenes.Areas.Plains
 					outputText("\nYou notice that some kind of unnatural heat is flowing into your body from the wound");
 					if(player.inte > 50) outputText(", was there some kind of aphrodisiac on the knife?");
 					else outputText(".");
-					game.dynStats("lus", (player.lib/20 + rand(4)+1));
+					player.dynStats("lus", (player.lib/20 + rand(4)+1));
 				}
 				if(lustVuln > 0 && player.armorName == "barely-decent bondage straps") {
 					if(!plural) outputText("\n" + capitalA + short + " brushes against your exposed skin and jerks back in surprise, coloring slightly from seeing so much of you revealed.");
@@ -95,10 +97,9 @@ package classes.Scenes.Areas.Plains
 				}
 			}
 			outputText(" ");
-			if(damage > 0) damage = player.takeDamage(damage, true);
+			if(damage > 0) damage = player.takePhysDamage(damage, true);
 			statScreenRefresh();
 			outputText("\n");
-			combatRoundOver();
 		}
 		
 		//<Writers note: I recommend that the javelin have a chance to greatly decrease speed for the remaining battle.  I am writing the flavor text for this event if you choose to include it>
@@ -140,25 +141,15 @@ package classes.Scenes.Areas.Plains
 			//<Hyena Attack 2 – Javelin – Successful – Player Entangled>
 			else if(rand(3) >= 1) {
 				outputText("The gnoll pulls a long, black javelin from over her shoulder.  Her spotted arm strikes forward, launching the missile through the air.  You attempt to dive to the side, but are too late.  The powerful shaft slams, hard, into your back.  Pain radiates from the powerful impact.  Instead of piercing you, however, the tip seems to explode into a sticky goo that instantly bonds with your [armor].  The four foot, heavy shaft pulls down on you awkwardly, catching at things and throwing your balance off.  You try to tug the javelin off of you but find that it has glued itself to you.  It will take time and effort to remove; making it impossible to do while a dominant hyena stalks you. ");
-				if(!player.hasStatusEffect(StatusEffects.GnollSpear)) player.createStatusEffect(StatusEffects.GnollSpear,0,0,0,0);
-				slow = 15;
-				while(slow > 0 && player.spe > 2) {
-					slow--;
-					player.addStatusValue(StatusEffects.GnollSpear,1,1);
-					player.spe--;
-					showStatDown( 'spe' );
-					// speDown.visible = true;
-					// speUp.visible = false;
-				}
-				damage = player.takeDamage(25+rand(20), true);
+				player.addCombatBuff('spe',-15);
+				damage = player.takePhysDamage(25+rand(20), true);
 			}
 			//<Hyena Attack 2 – Javelin – Successful – Player Not Entangled>
 			else {
 				
 				outputText("The gnoll pulls a long, dark wooden javelin from over her shoulder.  Her spotted arm strikes forward, launching the missile through the air.  The javelin flashes through the intervening distance, slamming into your chest.  The blunted tip doesn't skewer you, but pain radiates from the bruising impact. ");
-				damage = player.takeDamage(25+rand(20), true);
+				damage = player.takePhysDamage(25+rand(20), true);
 			}
-			combatRoundOver();
 		}
 		
 		//<Writer's Note: With the third attack, I intend that the damage be increased based on the breast size of the player.  Thus, the text will vary if the player is flat-chested as indicated by colored text.>
@@ -198,11 +189,10 @@ package classes.Scenes.Areas.Plains
 					outputText("A glint enters the dark eyes of the gnoll before she strides forward and pivots.  A long, spotted leg snaps up and out to slam against your " + chestDesc());
 					if(player.biggestTitSize() >= 1) outputText(", sending a wave of pain through the sensitive flesh");
 					outputText(".  A small, traitorous part of you can't help but notice a flash of long, dark flesh beneath her loincloth even as you stagger back from the impact. ");
-					game.dynStats("lus", 2);
-					player.takeDamage(damage, true);
+					player.dynStats("lus", 2);
+					player.takePhysDamage(damage, true);
 				}
 			}
-			combatRoundOver();
 		}
 		
 		private function hyenaArousalAttack():void {
@@ -211,25 +201,24 @@ package classes.Scenes.Areas.Plains
 			//<Hyena Attack 4 – Arousal Attack – Highly Successful>
 			if(player.cor + player.lib > chance + 50) {
 				outputText("A wry grin spreads across the gnoll's face before she sprints towards you.  Too fast to follow, she flies forward, and you desperately brace for an impact that doesn't come.  Instead of striking you, two spotted paws clamp behind your neck and pull your head down, planting your face against her leather loincloth.  A powerful, musky smell burns in your nose and the feel of firm flesh behind the flimsy leather leaves a tingling sensation along your face.  She holds you there, pressed against her groin for several moments, desire growing deep within your body, before you find the strength and will to pull away.  The amazon grins, letting you stumble back as you try to fight off the feel of her body.\n\n");
-				game.dynStats("lus", (25 + player.lib/20 + player.sens/5));
+				player.dynStats("lus", (25 + player.lib/20 + player.sens/5));
 			}
 			//<Hyena Attack 4 – Arousal Attack – Mildly Successful>
 			else if(20 + player.cor + player.lib > chance) {
 				outputText("A lazy grin spreads across the gnoll's face before she sprints towards you.  Too fast to follow, she flies forward, and you desperately brace for an impact that doesn't come.  Instead of striking you, two spotted paws clamp behind your neck and pull your head down, planting your face against her leather loincloth.  A powerful, musky smell burns in your nose and the feel of firm flesh behind the flimsy leather leaves a tingling sensation along your face.  Instinctively, you tear away from the hold, stumbling away from the sensations filling your mind, though some desire remains kindled within you.");
-				game.dynStats("lus", (15 + player.lib/20 + player.sens/5));
+				player.dynStats("lus", (15 + player.lib/20 + player.sens/5));
 			}
 			//<Hyena Attack 4 – Arousal Attack – Unsuccessful>
 			else {
 				outputText("A knowing glint fills the dark eyes of the gnoll before she sprints forward.  Your muscles tense as she reaches you and starts to lock two spotted paws behind your neck.  She pulls you down towards her musky crotch, but just as you brush her loincloth, you twist away.  The hyena snarls in frustration, and you're left wondering if that was her idea of foreplay.");
 			}
-			combatRoundOver();
 		}
 
 		override public function eAttack():void
 		{
 			var damage:Number = 0;
 //return to combat menu when finished
-			doNext(game.playerMenu);
+			doNext(EventParser.playerMenu);
 //Blind dodge change
 			if (hasStatusEffect(StatusEffects.Blind) && rand(3) < 2) {
 				outputText(capitalA + short + " completely misses you with a blind attack!\n");
@@ -298,7 +287,7 @@ package classes.Scenes.Areas.Plains
 					outputText("\nYou notice that some kind of unnatural heat is flowing into your body from the wound");
 					if (player.inte > 50) outputText(", was there some kind of aphrodisiac on the knife?");
 					else outputText(".");
-					game.dynStats("lus", (player.lib / 20 + rand(4) + 1));
+					player.dynStats("lus", (player.lib / 20 + rand(4) + 1));
 				}
 				if (lustVuln > 0 && player.armorName == "barely-decent bondage straps") {
 					if (!plural) outputText("\n" + capitalA + short + " brushes against your exposed skin and jerks back in surprise, coloring slightly from seeing so much of you revealed.");
@@ -307,35 +296,34 @@ package classes.Scenes.Areas.Plains
 				}
 			}
 			outputText(" ");
-			if (damage > 0) damage = player.takeDamage(damage, true);
+			if (damage > 0) damage = player.takePhysDamage(damage, true);
 			statScreenRefresh();
 			outputText("\n");
-			combatRoundOver();
 		}
 
 		override public function defeated(hpVictory:Boolean):void
 		{
 			if(short == "alpha gnoll") {
-				game.clearOutput();
+				EngineCore.clearOutput();
 				outputText("The gnoll alpha is defeated!  You could use her for a quick, willing fuck to sate your lusts before continuing on.  Hell, you could even dose her up with that succubi milk you took from the goblin first - it might make her even hotter.  Do you?");
-				game.menu();
-				game.addButton(0,"Fuck",	game.urtaQuest.winRapeHyenaPrincess);
-				game.addButton(1,"Succ Milk", game.urtaQuest.useSuccubiMilkOnGnollPrincesses);
-				game.addButton(4,"Leave",game.urtaQuest.urtaNightSleep);
+				EngineCore.menu();
+				EngineCore.addButton(0,"Fuck",	SceneLib.urtaQuest.winRapeHyenaPrincess);
+				EngineCore.addButton(1,"Succ Milk", SceneLib.urtaQuest.useSuccubiMilkOnGnollPrincesses);
+				EngineCore.addButton(4,"Leave",SceneLib.urtaQuest.urtaNightSleep);
 			} else {
-				game.plains.gnollSpearThrowerScene.hyenaVictory();
+				SceneLib.plains.gnollSpearThrowerScene.hyenaVictory();
 			}
 		}
 
 		override public function won(hpVictory:Boolean, pcCameWorms:Boolean):void
 		{
 			if (short == "alpha gnoll"){
-				game.urtaQuest.loseToGnollPrincessAndGetGangBanged();
+				SceneLib.urtaQuest.loseToGnollPrincessAndGetGangBanged();
 			} else if (pcCameWorms){
 				outputText("\n\nYour foe doesn't seem put off enough to leave...");
-				doNext(game.endLustLoss);
+				doNext(SceneLib.combat.endLustLoss);
 			} else {
-				game.plains.gnollSpearThrowerScene.hyenaSpearLossAnal();
+				SceneLib.plains.gnollSpearThrowerScene.hyenaSpearLossAnal();
 			}
 		}
 
@@ -346,26 +334,27 @@ package classes.Scenes.Areas.Plains
 			this.imageName = "gnollspearthrower";
 			this.long = "You are fighting a gnoll.  An amalgam of voluptuous, sensual lady and snarly, pissed off hyena, she clearly intends to punish you for trespassing.  Her dark-tan, spotted hide blends into a soft cream-colored fur covering her belly and two D-cup breasts, leaving two black nipples poking through the fur.  A crude loincloth is tied around her waist, obscuring her groin from view.  A leather strap cuts between her heavy breasts, holding a basket of javelins on her back.  Large, dish-shaped ears focus on you, leaving no doubt that she can hear every move you make.  Sharp, dark eyes are locked on your body, filled with aggression and a hint of lust.";
 			// this.plural = false;
-			this.createVagina(false, VAGINA_WETNESS_DROOLING, VAGINA_LOOSENESS_LOOSE);
+			this.createVagina(false, VaginaClass.WETNESS_DROOLING, VaginaClass.LOOSENESS_LOOSE);
 			createBreastRow(Appearance.breastCupInverse("D"));
-			this.ass.analLooseness = ANAL_LOOSENESS_STRETCHED;
-			this.ass.analWetness = ANAL_WETNESS_DRY;
+			this.ass.analLooseness = AssClass.LOOSENESS_STRETCHED;
+			this.ass.analWetness = AssClass.WETNESS_DRY;
 			this.createStatusEffect(StatusEffects.BonusACapacity,25,0,0,0);
 			this.tallness = 72;
-			this.hipRating = HIP_RATING_AMPLE;
-			this.buttRating = BUTT_RATING_TIGHT;
+			this.hips.type = Hips.RATING_AMPLE;
+			this.butt.type = Butt.RATING_TIGHT;
 			this.skin.growFur({color:"tawny"});
 			this.hairColor = "black";
 			this.hairLength = 22;
 			initStrTouSpeInte(90, 64, 110, 50);
-			initLibSensCor(64, 45, 60);
+			initWisLibSensCor(50, 64, 45, 60);
 			this.weaponName = "teeth";
 			this.weaponVerb="bite";
-			this.weaponAttack = 5 + (2 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.weaponAttack = 5;
 			this.weaponPerk = "";
 			this.weaponValue = 25;
 			this.armorName = "skin";
-			this.armorDef = 7 + (1 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.armorDef = 7;
+			this.armorMDef = 1;
 			this.bonusHP = 500;
 			this.bonusLust = 10;
 			this.lust = 30;
@@ -377,12 +366,6 @@ package classes.Scenes.Areas.Plains
 			this.special1 = hyenaJavelinAttack;
 			this.special2 = hyenaSnapKicku;
 			this.special3 = hyenaArousalAttack;
-			this.str += 18 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.tou += 12 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.spe += 22 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.inte += 10 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];			
-			this.lib += 12 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.newgamebonusHP = 1480;
 			checkMonster();
 		}
 	}

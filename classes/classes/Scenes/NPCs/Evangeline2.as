@@ -4,12 +4,12 @@
  */
 package classes.Scenes.NPCs 
 {
-	import classes.*;
-	import classes.internals.*;
-	import classes.GlobalFlags.kGAMECLASS;
-	import classes.GlobalFlags.kFLAGS;
-	
-	public class Evangeline2 extends Monster
+import classes.*;
+import classes.BodyParts.Butt;
+import classes.BodyParts.Hips;
+import classes.GlobalFlags.kFLAGS;
+
+public class Evangeline2 extends Monster
 	{
 		
 		public function spellCostChargeWeapon():Number {
@@ -147,8 +147,6 @@ package classes.Scenes.NPCs
 			if (inte >= 151 && inte < 201) damage += ((inte * 1.5) + rand(inte * 2));
 			if (inte >= 201) damage += ((inte * 1.75) + rand(inte * 2.25));
 			damage *= SpellMod();
-			if (player.findPerk(PerkLib.FromTheFrozenWaste) >= 0 || player.findPerk(PerkLib.ColdAffinity) >= 0) damage *= 3;
-			if (player.findPerk(PerkLib.FireAffinity) >= 0) damage *= 0.3;
 			damage = Math.round(damage);
 			if (player.hasStatusEffect(StatusEffects.Blizzard)) {
 			player.addStatusValue(StatusEffects.Blizzard, 1, -1);
@@ -163,7 +161,7 @@ package classes.Scenes.NPCs
 				outputText("It's super effective!  ");
 			}
 			damage = Math.round(damage);
-			player.takeDamage(damage, true);
+			player.takeFireDamage(damage, true);
 			fatigue += spellCostWhitefire();
 			flags[kFLAGS.EVANGELINE_SPELLS_CASTED]++;
 		}
@@ -175,7 +173,7 @@ package classes.Scenes.NPCs
 			if(player.lust >= (player.maxLust() * 0.3) && player.lust < (player.maxLust() * 0.6)) outputText("You staggers, suddenly weak and having trouble focusing on staying upright.  ");
 			if(player.lust >= (player.maxLust() * 0.6)) outputText("Your eyes glaze over with desire for a moment.  ");
 			lustDmg = Math.round(lustDmg);
-			game.dynStats("lus", lustDmg, "resisted", false);
+			player.dynStats("lus", lustDmg, "scale", false);
 			outputText(" <b>(<font color=\"#ff00ff\">" + lustDmg + "</font>)</b>");
 			fatigue += spellCostArouse();
 			flags[kFLAGS.EVANGELINE_SPELLS_CASTED]++;
@@ -247,35 +245,33 @@ package classes.Scenes.NPCs
 					var choice3:Number = rand(2);
 					if (choice3 == 0) eAttack();
 					if (choice3 == 1) {
-						if ((this.lust < eMaxLust() * 0.75) && !hasStatusEffect(StatusEffects.ChargeArmor)) ChargeArmorSpell();
-						else if (!hasStatusEffect(StatusEffects.Blink) && (fatigue < (eMaxFatigue() - spellCostBlink()))) BlinkSpell();
-						else if (HPRatio() < .75 && (fatigue < (eMaxFatigue() - spellCostHeal()))) HealSpell();
-						else if ((this.lust < eMaxLust() * 0.75) && rand(2) == 0 && (fatigue < (eMaxFatigue() - spellCostBlind())) && !player.hasStatusEffect(StatusEffects.Blind)) BlindSpell();
-						else if (rand(2) == 0 && (fatigue < (eMaxFatigue() - spellCostArouse()))) ArouseSpell();
-						else if ((this.lust < eMaxLust() * 0.75) && (fatigue < (eMaxFatigue() - spellCostWhitefire()))) WhiteFireSpell();
+						if ((this.lust < maxLust() * 0.75) && !hasStatusEffect(StatusEffects.ChargeArmor)) ChargeArmorSpell();
+						else if (!hasStatusEffect(StatusEffects.Blink) && (fatigue < (maxFatigue() - spellCostBlink()))) BlinkSpell();
+						else if (HPRatio() < .75 && (fatigue < (maxFatigue() - spellCostHeal()))) HealSpell();
+						else if ((this.lust < maxLust() * 0.75) && rand(2) == 0 && (fatigue < (maxFatigue() - spellCostBlind())) && !player.hasStatusEffect(StatusEffects.Blind)) BlindSpell();
+						else if (rand(2) == 0 && (fatigue < (maxFatigue() - spellCostArouse()))) ArouseSpell();
+						else if ((this.lust < maxLust() * 0.75) && (fatigue < (maxFatigue() - spellCostWhitefire()))) WhiteFireSpell();
 						else eAttack();
 					}
 					//if (choice3 == 3) EvangelineTease();
 				}
-				combatRoundOver();
 			}
 			if (flags[kFLAGS.EVANGELINE_LVL_UP] == 8 || flags[kFLAGS.EVANGELINE_LVL_UP] == 9) {
 				//var choice2:Number = rand(3);
 				var choice2:Number = rand(2);
 				if (choice2 == 0) eAttack();
 				if (choice2 == 1) {
-					if ((this.lust < eMaxLust() * 0.75) && !hasStatusEffect(StatusEffects.ChargeWeapon)) ChargeWeaponSpell();
-					else if (!hasStatusEffect(StatusEffects.Might) && (fatigue < (eMaxFatigue() - spellCostMight()))) MightSpell();
-					else if ((this.lust < eMaxLust() * 0.75) && !hasStatusEffect(StatusEffects.ChargeArmor)) ChargeArmorSpell();
-					else if (!hasStatusEffect(StatusEffects.Blink) && (fatigue < (eMaxFatigue() - spellCostBlink()))) BlinkSpell();
-					else if (HPRatio() < .75 && (fatigue < (eMaxFatigue() - spellCostHeal()))) HealSpell();
-					else if ((this.lust < eMaxLust() * 0.75) && rand(2) == 0 && (fatigue < (eMaxFatigue() - spellCostBlind())) && !player.hasStatusEffect(StatusEffects.Blind)) BlindSpell();
-					else if (rand(2) == 0 && (fatigue < (eMaxFatigue() - spellCostArouse()))) ArouseSpell();
-					else if ((this.lust < eMaxLust() * 0.75) && (fatigue < (eMaxFatigue() - spellCostWhitefire()))) WhiteFireSpell();
+					if ((this.lust < maxLust() * 0.75) && !hasStatusEffect(StatusEffects.ChargeWeapon)) ChargeWeaponSpell();
+					else if (!hasStatusEffect(StatusEffects.Might) && (fatigue < (maxFatigue() - spellCostMight()))) MightSpell();
+					else if ((this.lust < maxLust() * 0.75) && !hasStatusEffect(StatusEffects.ChargeArmor)) ChargeArmorSpell();
+					else if (!hasStatusEffect(StatusEffects.Blink) && (fatigue < (maxFatigue() - spellCostBlink()))) BlinkSpell();
+					else if (HPRatio() < .75 && (fatigue < (maxFatigue() - spellCostHeal()))) HealSpell();
+					else if ((this.lust < maxLust() * 0.75) && rand(2) == 0 && (fatigue < (maxFatigue() - spellCostBlind())) && !player.hasStatusEffect(StatusEffects.Blind)) BlindSpell();
+					else if (rand(2) == 0 && (fatigue < (maxFatigue() - spellCostArouse()))) ArouseSpell();
+					else if ((this.lust < maxLust() * 0.75) && (fatigue < (maxFatigue() - spellCostWhitefire()))) WhiteFireSpell();
 					else eAttack();
 				}
 				//if (choice2 == 3) EvangelineTease();
-				combatRoundOver();
 			}
 			if (flags[kFLAGS.EVANGELINE_LVL_UP] == 7) {
 				//var choice1:Number = rand(3);
@@ -283,26 +279,25 @@ package classes.Scenes.NPCs
 				if (choice1 == 0) eAttack();
 				if (choice1 == 1) {
 					if (this.lust > 50) {
-						if ((this.lust < eMaxLust() * 0.75) && !hasStatusEffect(StatusEffects.ChargeWeapon)) ChargeWeaponSpell();
-						else if ((this.lust < eMaxLust() * 0.75) && !hasStatusEffect(StatusEffects.ChargeArmor)) ChargeArmorSpell();
-						else if (!hasStatusEffect(StatusEffects.Might) && (fatigue < (eMaxFatigue() - spellCostMight()))) MightSpell();
-						else if (!hasStatusEffect(StatusEffects.Blink) && (fatigue < (eMaxFatigue() - spellCostBlink()))) BlinkSpell();
-						else if (HPRatio() < .75 && (fatigue < (eMaxFatigue() - spellCostHeal()))) HealSpell();
-						else if ((this.lust < eMaxLust() * 0.75) && rand(2) == 0 && (fatigue < (eMaxFatigue() - spellCostBlind())) && !player.hasStatusEffect(StatusEffects.Blind)) BlindSpell();
-						else if (rand(2) == 0 && (fatigue < (eMaxFatigue() - spellCostArouse()))) ArouseSpell();
-						else if ((this.lust < eMaxLust() * 0.75) && (fatigue < (eMaxFatigue() - spellCostWhitefire()))) WhiteFireSpell();
+						if ((this.lust < maxLust() * 0.75) && !hasStatusEffect(StatusEffects.ChargeWeapon)) ChargeWeaponSpell();
+						else if ((this.lust < maxLust() * 0.75) && !hasStatusEffect(StatusEffects.ChargeArmor)) ChargeArmorSpell();
+						else if (!hasStatusEffect(StatusEffects.Might) && (fatigue < (maxFatigue() - spellCostMight()))) MightSpell();
+						else if (!hasStatusEffect(StatusEffects.Blink) && (fatigue < (maxFatigue() - spellCostBlink()))) BlinkSpell();
+						else if (HPRatio() < .75 && (fatigue < (maxFatigue() - spellCostHeal()))) HealSpell();
+						else if ((this.lust < maxLust() * 0.75) && rand(2) == 0 && (fatigue < (maxFatigue() - spellCostBlind())) && !player.hasStatusEffect(StatusEffects.Blind)) BlindSpell();
+						else if (rand(2) == 0 && (fatigue < (maxFatigue() - spellCostArouse()))) ArouseSpell();
+						else if ((this.lust < maxLust() * 0.75) && (fatigue < (maxFatigue() - spellCostWhitefire()))) WhiteFireSpell();
 						else eAttack();
 					}
 					else {
-						if ((this.lust < eMaxLust() * 0.75) && !hasStatusEffect(StatusEffects.ChargeWeapon)) ChargeWeaponSpell();
-						else if ((this.lust < eMaxLust() * 0.75) && !hasStatusEffect(StatusEffects.ChargeArmor)) ChargeArmorSpell();
-						else if ((this.lust < eMaxLust() * 0.75) && (fatigue < (eMaxFatigue() - spellCostWhitefire()))) WhiteFireSpell();
-						else if ((this.lust < eMaxLust() * 0.75) && rand(2) == 0 && (fatigue < (eMaxFatigue() - spellCostBlind())) && !player.hasStatusEffect(StatusEffects.Blind)) BlindSpell();
+						if ((this.lust < maxLust() * 0.75) && !hasStatusEffect(StatusEffects.ChargeWeapon)) ChargeWeaponSpell();
+						else if ((this.lust < maxLust() * 0.75) && !hasStatusEffect(StatusEffects.ChargeArmor)) ChargeArmorSpell();
+						else if ((this.lust < maxLust() * 0.75) && (fatigue < (maxFatigue() - spellCostWhitefire()))) WhiteFireSpell();
+						else if ((this.lust < maxLust() * 0.75) && rand(2) == 0 && (fatigue < (maxFatigue() - spellCostBlind())) && !player.hasStatusEffect(StatusEffects.Blind)) BlindSpell();
 						else eAttack();
 					}
 				}
 				//if (choice1 == 3) EvangelineTease();
-				combatRoundOver();
 			}
 		}
 		
@@ -317,25 +312,21 @@ package classes.Scenes.NPCs
 				this.tallness = 90;
 				this.hairColor = "platinum blonde";
 				this.skin.setBaseOnly({color:"olive"});
-				this.hipRating = HIP_RATING_CURVY+2;//hipRating = 12
-				this.buttRating = BUTT_RATING_JIGGLY+2;//buttRating = 12
+				this.hips.type = Hips.RATING_CURVY + 2;//hips.type = 12
+				this.butt.type = Butt.RATING_JIGGLY + 2;//butt.type = 12
 				initStrTouSpeInte(29, 34, 45, 50);
 				this.weaponName = "inscribed spellblade";
 				this.weaponVerb="slash";
-				this.weaponAttack = 9 + (2 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+				this.weaponAttack = 9;
 				this.armorName = "practically indecent steel armor";
-				this.armorDef = 11 + (2 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+				this.armorDef = 11;
+				this.armorMDef = 5;
 				this.bonusHP = 210;
 				this.bonusLust = 40;
 				this.lustVuln = .8;
 				this.lust = 40;
 				this.additionalXP += 35;
 				this.level = 14;
-				this.str += 5 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-				this.tou += 6 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-				this.spe += 9 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-				this.inte += 10 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];			
-				this.newgamebonusHP = 700;//dodane this.str/tou/spe/inte/lib a nastepnie pomnożone przez 20
 				this.createPerk(PerkLib.TankI, 0, 0, 0, 0);
 			}//nie gotowy etap
 			if (flags[kFLAGS.EVANGELINE_LVL_UP] == 8) {
@@ -344,25 +335,21 @@ package classes.Scenes.NPCs
 				this.tallness = 90;
 				this.hairColor = "platinum blonde";
 				this.skin.restore();
-				this.hipRating = HIP_RATING_CURVY+2;
-				this.buttRating = BUTT_RATING_JIGGLY+2;
+				this.hips.type = Hips.RATING_CURVY + 2;
+				this.butt.type = Butt.RATING_JIGGLY + 2;
 				initStrTouSpeInte(41, 46, 55, 50);
 				this.weaponName = "inscribed spellblade";
 				this.weaponVerb="slash";
-				this.weaponAttack = 9 + (2 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+				this.weaponAttack = 9;
 				this.armorName = "lusty maiden's armor";
-				this.armorDef = 16 + (2 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+				this.armorDef = 16;
+				this.armorMDef = 5;
 				this.bonusHP = 240;
 				this.bonusLust = 40;
 				this.lustVuln = .8;
 				this.lust = 70;
 				this.additionalXP += 40;
-				this.level = 16;//dodane this.str/tou/spe/inte/lib a nastepnie pomnożone przez 20
-				this.str += 8 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-				this.tou += 9 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-				this.spe += 11 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-				this.inte += 10 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];			
-				this.newgamebonusHP = 860;
+				this.level = 16;
 				this.createPerk(PerkLib.TankI, 0, 0, 0, 0);
 				this.createPerk(PerkLib.Channeling, 0, 0, 0, 0);
 			}//nie gotowy etap
@@ -372,25 +359,21 @@ package classes.Scenes.NPCs
 				this.tallness = 90;
 				this.hairColor = "platinum crimson";
 				this.skin.setBaseOnly({});
-				this.hipRating = HIP_RATING_CURVY+2;
-				this.buttRating = BUTT_RATING_JIGGLY+2;
+				this.hips.type = Hips.RATING_CURVY + 2;
+				this.butt.type = Butt.RATING_JIGGLY + 2;
 				initStrTouSpeInte(41, 46, 55, 50);
 				this.weaponName = "inscribed spellblade";
 				this.weaponVerb="slash";
-				this.weaponAttack = 9 + (2 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+				this.weaponAttack = 9;
 				this.armorName = "lusty maiden's armor";
-				this.armorDef = 16 + (2 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+				this.armorDef = 16;
+				this.armorMDef = 5;
 				this.bonusHP = 270;
 				this.bonusLust = 40;
 				this.lustVuln = .8;
 				this.lust = 70;
 				this.additionalXP += 45;
 				this.level = 18;
-				this.str += 8 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-				this.tou += 9 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-				this.spe += 11 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-				this.inte += 10 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];			
-				this.newgamebonusHP = 860;//dodane this.str/tou/spe/inte/lib a nastepnie pomnożone przez 20
 				this.createPerk(PerkLib.TankI, 0, 0, 0, 0);
 				this.createPerk(PerkLib.Channeling, 0, 0, 0, 0);
 				this.createPerk(PerkLib.JobEnchanter, 0, 0, 0, 0);
@@ -401,25 +384,21 @@ package classes.Scenes.NPCs
 				this.tallness = 96;
 				this.hairColor = "crimson platinum";
 				this.skin.growFur();
-				this.hipRating = HIP_RATING_FERTILE+3;//hipRating = 18
-				this.buttRating = BUTT_RATING_EXPANSIVE+1;//buttRating = 14
+				this.hips.type = Hips.RATING_FERTILE + 3;//hips.type = 18
+				this.butt.type = Butt.RATING_EXPANSIVE + 1;//butt.type = 14
 				initStrTouSpeInte(41, 46, 70, 50);
 				this.weaponName = "inscribed spellblade";
 				this.weaponVerb="slash";
-				this.weaponAttack = 9 + (2 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+				this.weaponAttack = 9;
 				this.armorName = "lusty maiden's armor";
-				this.armorDef = 16 + (2 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+				this.armorDef = 16;
+				this.armorMDef = 10;
 				this.bonusHP = 330;
 				this.bonusLust = 40;//Jak zyska perk BoosTierEnemy wtedy bonus lust musi wzrosnac do 50 z 40 wiec do tego czasu nie ma bonus lust bedzie na 40 stał
 				this.lust = 70;
 				this.lustVuln = .75;//im bedziej poteżna bedzie tym bliżej 0 powinno być czyli trudniej ją lustem pobijać ^^
 				this.additionalXP += 55;
 				this.level = 22;
-				this.str += 8 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-				this.tou += 9 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-				this.spe += 14 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-				this.inte += 10 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];			
-				this.newgamebonusHP = 1380;//dodane this.str/tou/spe/inte/lib a nastepnie pomnożone przez 30
 				this.createPerk(PerkLib.TankI, 0, 0, 0, 0);
 				this.createPerk(PerkLib.Channeling, 0, 0, 0, 0);
 				this.createPerk(PerkLib.JobEnchanter, 0, 0, 0, 0);
@@ -432,14 +411,15 @@ package classes.Scenes.NPCs
 				this.tallness = 96;
 				this.hairColor = "crimson platinum";
 				this.skin.growFur();
-				this.hipRating = HIP_RATING_FERTILE+3;//hipRating = 18
-				this.buttRating = BUTT_RATING_EXPANSIVE+1;//buttRating = 14
+				this.hips.type = Hips.RATING_FERTILE + 3;//hips.type = 18
+				this.butt.type = Butt.RATING_EXPANSIVE + 1;//butt.type = 14
 				initStrTouSpeInte(41, 46, 80, 50);
 				this.weaponName = "inscribed spellblade";
 				this.weaponVerb="slash";
-				this.weaponAttack = 9 + (2 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+				this.weaponAttack = 9;
 				this.armorName = "lusty maiden's armor";
-				this.armorDef = 16 + (2 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+				this.armorDef = 16;
+				this.armorMDef = 10;
 				this.bonusHP = 360;
 				this.bonusLust = 40;
 				this.lust = 70;
@@ -447,22 +427,17 @@ package classes.Scenes.NPCs
 				this.additionalXP += 60;
 				this.level = 24;//nastepny lvl to 28 i dać kilka kolejnych etapów zmiany dot. bazowych mutacji: cow, succubus, kitsune i dragoness. zawsze wpierw danej rasy zmiany i +4 lvl w gór a potem +2 lvl i inne zmiany/dostosowania do nowej formy ;)
 				//w Evangeline 4 zamieścić etapy zmiany obejmujące inne rasy jak mantis/salamander a w Evangeline 5 awasowanie jako bogini (max do lvl 200) ^^
-				this.str += 8 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-				this.tou += 9 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-				this.spe += 16 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-				this.inte += 10 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];			
-				this.newgamebonusHP = 1440;//dodane this.str/tou/spe/inte/lib a nastepnie pomnożone przez 30
 				this.createPerk(PerkLib.TankI, 0, 0, 0, 0);
 				this.createPerk(PerkLib.Channeling, 0, 0, 0, 0);
 				this.createPerk(PerkLib.JobEnchanter, 0, 0, 0, 0);
 				this.createPerk(PerkLib.Regeneration, 0, 0, 0, 0);
 			}
-			this.createVagina(false, VAGINA_WETNESS_DRY, VAGINA_LOOSENESS_TIGHT);
-			this.ass.analLooseness = ANAL_LOOSENESS_VIRGIN;
-			this.ass.analWetness = ANAL_WETNESS_DRY;
+			this.createVagina(false, VaginaClass.WETNESS_DRY, VaginaClass.LOOSENESS_TIGHT);
+			this.ass.analLooseness = AssClass.LOOSENESS_VIRGIN;
+			this.ass.analWetness = AssClass.WETNESS_DRY;
 			this.skinTone = "olive";
 			this.hairLength = 36;
-			initLibSensCor(25, 35, 100);
+			initWisLibSensCor(15, 25, 35, 100);
 			this.fatigue = 0;
 			this.gems = 0;
 			this.drop = NO_DROP;

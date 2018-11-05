@@ -3,13 +3,15 @@
  */
 package classes.Scenes.Areas
 {
-	import classes.*;
-	import classes.GlobalFlags.kFLAGS;
-	import classes.GlobalFlags.kGAMECLASS;
-	import classes.Scenes.Areas.HighMountains.*;
-	import classes.Scenes.Monsters.DarkElfScene;
+import classes.*;
+import classes.GlobalFlags.kFLAGS;
+import classes.CoC;
+import classes.Scenes.Areas.HighMountains.*;
+import classes.Scenes.Holidays;
+import classes.Scenes.Monsters.DarkElfScene;
+import classes.Scenes.SceneLib;
 
-	use namespace kGAMECLASS;
+use namespace CoC;
 
 	public class HighMountains extends BaseContent
 	{
@@ -25,14 +27,22 @@ package classes.Scenes.Areas
 		public function HighMountains()
 		{
 		}
-		
+		public function isDiscovered():Boolean {
+			return flags[kFLAGS.DISCOVERED_HIGH_MOUNTAIN] > 0;
+		}
+		public function discover():void {
+			clearOutput();
+			outputText("While exploring the mountain, you come across a relatively safe way to get at its higher reaches.  You judge that with this route you'll be able to get about two thirds of the way up the mountain.  With your newfound discovery fresh in your mind, you return to camp.\n\n(<b>High Mountain exploration location unlocked!</b>)");
+			flags[kFLAGS.DISCOVERED_HIGH_MOUNTAIN]++;
+			doNext(camp.returnToCampUseOneHour);
+		}
 		//Explore High Mountain
 		public function exploreHighMountain():void
 		{
 			flags[kFLAGS.DISCOVERED_HIGH_MOUNTAIN]++;
 			doNext(playerMenu);
 			
-			if (kGAMECLASS.d3.discoverD3() == true)
+			if (SceneLib.d3.discoverD3() == true)
 			{
 				return;
 			}
@@ -43,13 +53,13 @@ package classes.Scenes.Areas
 				chooser = 1;
 			}
 			//Helia monogamy fucks
-			if (flags[kFLAGS.PC_PROMISED_HEL_MONOGAMY_FUCKS] == 1 && flags[kFLAGS.HEL_RAPED_TODAY] == 0 && rand(10) == 0 && player.gender > 0 && !kGAMECLASS.helScene.followerHel()) {
-				kGAMECLASS.helScene.helSexualAmbush();
+			if (flags[kFLAGS.PC_PROMISED_HEL_MONOGAMY_FUCKS] == 1 && flags[kFLAGS.HEL_RAPED_TODAY] == 0 && rand(10) == 0 && player.gender > 0 && !SceneLib.helScene.followerHel()) {
+				SceneLib.helScene.helSexualAmbush();
 				return;
 			}
 			//Gats xmas adventure!
 			if (rand(5) == 0 && player.gender > 0 && isHolidays() && flags[kFLAGS.GATS_ANGEL_DISABLED] == 0 && flags[kFLAGS.GATS_ANGEL_GOOD_ENDED] == 0 && (flags[kFLAGS.GATS_ANGEL_QUEST_BEGAN] == 0 || player.hasKeyItem("North Star Key") >= 0)) {
-				kGAMECLASS.gatsSpectacularRouter();
+				Holidays.gatsSpectacularRouter();
 				return;
 			}
 			//Minerva
@@ -61,9 +71,9 @@ package classes.Scenes.Areas
 				}
 			}
 			//Etna
-			if (flags[kFLAGS.ETNA_FOLLOWER] < 1 && rand(3) == 0 && player.level >= 25) {
-				if (flags[kFLAGS.ETNA_AFFECTION] < 5) kGAMECLASS.etnaScene.firstEnc();
-				else kGAMECLASS.etnaScene.repeatEnc();
+			if (flags[kFLAGS.ETNA_FOLLOWER] < 1 && rand(3) == 0) {
+				if (flags[kFLAGS.ETNA_AFFECTION] < 5) SceneLib.etnaScene.firstEnc();
+				else SceneLib.etnaScene.repeatEnc();
 				return;
 			}
 			//Temple of the Divine
@@ -96,17 +106,21 @@ package classes.Scenes.Areas
 				phoenixScene.encounterPhoenix1();
 				return;
 			}
+			if (player.hasKeyItem("Gryphon Statuette") < 0 && player.hasKeyItem("Peacock Statuette") < 0 && rand(4) == 0) {
+				caveScene();
+				return;
+			}
 			//10% chance to mino encounter rate if addicted
 			if (flags[kFLAGS.MINOTAUR_CUM_ADDICTION_STATE] > 0 && rand(10) == 0) {
 				spriteSelect(44);
 				//Cum addictus interruptus!  LOL HARRY POTTERFAG
 				//Withdrawl auto-fuck!
 				if (flags[kFLAGS.MINOTAUR_CUM_ADDICTION_STATE] == 3) {
-					getGame().mountain.minotaurScene.minoAddictionFuck();
-					return;
+                    SceneLib.mountain.minotaurScene.minoAddictionFuck();
+                    return;
 				}
-				getGame().mountain.minotaurScene.getRapedByMinotaur(true);
-				spriteSelect(44);
+                SceneLib.mountain.minotaurScene.getRapedByMinotaur(true);
+                spriteSelect(44);
 				return;
 			}
 			trace("Chooser goin for" + chooser);
@@ -130,15 +144,15 @@ package classes.Scenes.Areas
 			}
 			//Sophie
 			if (chooser == 2) {
-				if (flags[kFLAGS.UNKNOWN_FLAG_NUMBER_00282] > 0 || flags[kFLAGS.UNKNOWN_FLAG_NUMBER_00283] > 0 || kGAMECLASS.sophieFollowerScene.sophieFollower()) {
+				if (flags[kFLAGS.UNKNOWN_FLAG_NUMBER_00282] > 0 || flags[kFLAGS.UNKNOWN_FLAG_NUMBER_00283] > 0 || SceneLib.sophieFollowerScene.sophieFollower()) {
 					clearOutput();
 					outputText("A harpy wings out of the sky and attacks!");
 					startCombat(new Harpy());
 					spriteSelect(26);
 				}
 				else {
-					if (flags[kFLAGS.MET_SOPHIE_COUNTER] == 0) kGAMECLASS.sophieScene.meetSophie();
-					else kGAMECLASS.sophieScene.meetSophieRepeat();
+					if (flags[kFLAGS.MET_SOPHIE_COUNTER] == 0) SceneLib.sophieScene.meetSophie();
+					else SceneLib.sophieScene.meetSophieRepeat();
 				}
 			}
 			if (chooser == 3) 
@@ -168,6 +182,7 @@ package classes.Scenes.Areas
 				return;
 			}
 		}
+		
 		//\"<i>Chicken Harpy</i>\" by Jay Gatsby and not Savin he didn't do ANYTHING
 		//Initial Intro
 		public function chickenHarpy():void
@@ -200,7 +215,6 @@ package classes.Scenes.Areas
 			if (player.hasItem(consumables.OVIELIX, 3)) addButton(1, "Give Three", giveThreeOviElix);
 			addButton(4, "Leave", leaveChickenx);
 		}
-
 		//If Give Two
 		public function giveTwoOviElix():void
 		{
@@ -218,7 +232,6 @@ package classes.Scenes.Areas
 			addButton(4, "Purple", getHarpyEgg, consumables.PURPLEG);
 			addButton(5, "White", getHarpyEgg, consumables.WHITEEG);
 		}
-
 		//If Give Three
 		public function giveThreeOviElix():void
 		{
@@ -235,7 +248,6 @@ package classes.Scenes.Areas
 			addButton(4, "Purple", getHarpyEgg, consumables.L_PRPEG);
 			addButton(5, "White", getHarpyEgg, consumables.L_WHTEG);
 		}
-
 		//All Text
 		public function getHarpyEgg(itype:ItemType):void
 		{
@@ -245,7 +257,6 @@ package classes.Scenes.Areas
 			outputText("You take " + itype.longName + ", and the harpy nods in regards to your decision.  Prepping her cart back up for the road, she gives you a final wave goodbye before heading back down through the mountains.\n\n");
 			inventory.takeItem(itype, chickenHarpy);
 		}
-
 		//If No
 		public function leaveChickenx():void
 		{
@@ -253,6 +264,39 @@ package classes.Scenes.Areas
 			spriteSelect(90);
 			outputText("At the polite decline of her offer, the chicken harpy gives a warm smile before picking her cart back up and continuing along the path through the mountains.");
 			outputText("\n\nYou decide to take your own path, heading back to camp while you can.");
+			doNext(camp.returnToCampUseOneHour);
+		}
+		
+		public function caveScene():void {
+			clearOutput();
+			outputText("Wandering once more around the rocky cliffs on the higher area of the mountains, you find yourself increasingly bores, as you spend the most of the hour tossing aside pebbles and rocks that fell on the path, or crushing the solidified snow with your footwear.\n\n");
+			outputText("On the middle of your careless, and surprisingly peaceful stroll, you happen to find an alcove carved on the cliff’s stone. It’s not very big, maybe three or four feet tall, five feet wide and two feet deep, resting one feet above the path ground, so you’re forced to get on your knees to examine it better.\n\n");
+			outputText("The alcove itself is seemingly empty, though after a better examination, the back has engraved on the cliff rock a long, detailed inscription. Sadly, you can’t get a word from it, since it’s written in a strange, old language that’s doesn’t barely resemble anything that you’ve found in Mareth. Carved on each side there area stylized figures of avian creatures, ");
+			outputText("the most noticeable ones being a gryphon with the wings spread, and in the other side, a peacock doing the same with its tail. As you put your hands on them, you notice a that a shape vaguely resembling a hand forming in the floor of the alcove.\n\n");
+			outputText("Tentatively you put one hand on place");
+			if (player.avianScore() < 9) {
+				outputText(", but absolutely nothing happens. Maybe the magic or whatever that thing was supposed to do stopped working long ago? In any case, you had enough looking for a while, and since you’re not getting anything useful from there, you resume your walk.\n\n");
+				doNext(camp.returnToCampUseOneHour);
+			}
+			else {
+				outputText(" and gasp in surprise as the figures depicting the creatures at the sides of the alcove recede as you do so, leaving in place two smaller alcoves with two statuettes on them.\n\n");
+				outputText("The first one, made on brass and bronze, depicts a fierce looking gryphon in an assault stance. Every bit of the artifact emanates an unnatural strength. On the other side, a statue made of alabaster and ruby gemstones is shaped as a graceful peacock. Strangely, besides being pretty, the way it’s crafted gives you a weird, mystic feel.\n\n");
+				outputText("You try to grab both, but as soon as you put your hands in one of them, the alcove with the other starts closing. Seems like you’ll have only one choice here.\n\n");
+				menu();
+				addButton(0, "Gryphon", caveSceneGryphon);
+				addButton(1, "Peacock", caveScenePeacock);
+			}
+		}
+		public function caveSceneGryphon():void {
+			outputText("Picking the brass-forged statuette, you immediately feel how its energy rushes through your avian body, invigorating it with an unknown force. Carefully putting it on your bag, you see how the other one is stored away by the hidden mechanism.\n\n");
+			outputText("With nothing useful left to you here, you resume your walk and return to your camp with the gryphon idol on your bag.\n\n");
+			player.createKeyItem("Gryphon Statuette", 0, 0, 0, 0);
+			doNext(camp.returnToCampUseOneHour);
+		}
+		public function caveScenePeacock():void {
+			outputText("Picking the alabaster statuette, you immediately feel how its energy rushes through your avian body, invigorating it with an unknown force. Carefully putting it on your bag, you see how the other one is stored away by the hidden mechanism.\n\n");
+			outputText("With nothing useful left to you here, you resume your walk and return to your camp with the peacock idol on your bag.\n\n");
+			player.createKeyItem("Peacock Statuette", 0, 0, 0, 0);
 			doNext(camp.returnToCampUseOneHour);
 		}
 	}

@@ -1,17 +1,22 @@
 package classes.Scenes.NPCs
 {
-	import classes.*;
-	import classes.BodyParts.Skin;
-	import classes.GlobalFlags.kFLAGS;
-	import classes.internals.ChainedDrop;
+import classes.*;
+import classes.BodyParts.Butt;
+import classes.BodyParts.Hips;
+import classes.BodyParts.LowerBody;
+import classes.BodyParts.Skin;
+import classes.BodyParts.Tail;
+import classes.BodyParts.Wings;
+import classes.GlobalFlags.kFLAGS;
+import classes.Scenes.SceneLib;
+import classes.internals.ChainedDrop;
 
-	public class Kiha extends Monster
+public class Kiha extends Monster
 	{
 		private function kihaTimeWaster():void {
 			game.spriteSelect(72);
 			outputText("She supports the axe on a shoulder, cracking her neck and arching her back to stretch herself, giving you an unintended show.  ");
-			game.dynStats("lus", 5);
-			combatRoundOver();
+			player.dynStats("lus", 5);
 		}
 
 		//This could be silly mode worthy! Should Expand? oh ok
@@ -28,8 +33,7 @@ package classes.Scenes.NPCs
 				//Determine damage - str modified by enemy toughness!
 				var damage:int = int((str + weaponAttack) - rand(player.tou) - player.armorDef);
 				damage += 5;
-				if (player.findPerk(PerkLib.FromTheFrozenWaste) >= 0 || player.findPerk(PerkLib.ColdAffinity) >= 0) damage *= 3;
-				if (player.findPerk(PerkLib.FireAffinity) >= 0) damage *= 0.3;
+				if (flags[kFLAGS.KIHA_LVL_UP] >= 1) damage *= (1 + (flags[kFLAGS.KIHA_LVL_UP] * 0.1));
 				damage = Math.round(damage);
 				if (player.hasStatusEffect(StatusEffects.Blizzard)) {
 					player.addStatusValue(StatusEffects.Blizzard, 1, -1);
@@ -38,14 +42,13 @@ package classes.Scenes.NPCs
 				}
 				
 				outputText("A torrent of heat bursts from between her fingertips as she thrusts her clenched fist forward, the ball of intense flame writhing and burning with a fury unknown to mankind. With one fell swoop, the combined power of her love, anger, and sorrow pushes you backward, launching you out of the swamp and into Marble's pillowy chest. \"<i>Ara ara,</i>\" she begins, but you've already pushed yourself away from the milky hell-prison as you run back towards ");
-				if(!game.kihaFollower.followerKiha()) outputText("the swamp");
+				if(!SceneLib.kihaFollower.followerKiha()) outputText("the swamp");
 				else outputText("the fight");
 				outputText(". ");
-				damage = player.takeDamage(damage, true);
+				damage = player.takeFireDamage(damage, true);
 				outputText("\n");
 				if(player.HP >= 1) outputText("You follow the shrill cry of \"<i>B-BAKA!</i>\" in the distance until you reach the exact location you were in a few seconds earlier, prepared to fight again.");
 			}
-			combatRoundOver();
 		}
 
 		private function kihaFirePunch():void {
@@ -71,14 +74,12 @@ package classes.Scenes.NPCs
 			//HIT!
 			else {
 				var damage:int = int((str) - (player.armorDef));
-				if (player.findPerk(PerkLib.FromTheFrozenWaste) >= 0 || player.findPerk(PerkLib.ColdAffinity) >= 0) damage *= 3;
-				if (player.findPerk(PerkLib.FireAffinity) >= 0) damage *= 0.3;
+				if (flags[kFLAGS.KIHA_LVL_UP] >= 1) damage *= (1 + (flags[kFLAGS.KIHA_LVL_UP] * 0.1));
 				damage = Math.round(damage);
 				outputText("Before you can react, you're struck by the power of her blows, feeling an intense pain in your chest as each fist makes contact.  With a final thrust, you're pushed backwards onto the ground; the dragoness smiles as she pulls her axe out of the ground, her hands still steaming from the fingertips. ");
-				damage = player.takeDamage(damage, true);
+				damage = player.takeFireDamage(damage, true);
 				outputText("\n");
 			}
-			combatRoundOver();
 		}
 
 
@@ -101,14 +102,12 @@ package classes.Scenes.NPCs
 			}
 			else {
 				var damage:Number = Math.round(90 + rand(10) + (player.newGamePlusMod() * 30));
-				if (player.findPerk(PerkLib.FromTheFrozenWaste) >= 0 || player.findPerk(PerkLib.ColdAffinity) >= 0) damage *= 3;
-				if (player.findPerk(PerkLib.FireAffinity) >= 0) damage *= 0.3;
+				if (flags[kFLAGS.KIHA_LVL_UP] >= 1) damage *= (1 + (flags[kFLAGS.KIHA_LVL_UP] * 0.1));
 				damage = Math.round(damage);
 				outputText("You try to avoid the flames, but you're too slow!  The inferno slams into you, setting you alight!  You drop and roll on the ground, putting out the fires as fast as you can.  As soon as the flames are out, you climb back up, smelling of smoke and soot. ");
-				damage = player.takeDamage(damage, true);
+				damage = player.takeFireDamage(damage, true);
 				outputText("\n");
 			}
-			combatRoundOver();
 		}
 		/*
 		Special 2: Kiha lifts her axe overhead and then hurls it at you in a surprising feat of speed and strength. Not keen on getting cleaved in two, you sidestep the jagged metal.
@@ -121,6 +120,7 @@ package classes.Scenes.NPCs
 		*/
 		override protected function handleFear():Boolean
 		{
+			this.spe += statusEffectv2(StatusEffects.Fear);
 			removeStatusEffect(StatusEffects.Fear);
 			outputText("Kiha shudders for a moment, then looks your way with a clear head.  \"<i>Fear was the first thing the demons taught us to overcome.  Do you think it would stay my blade?</i>\"\n");
 			return true;
@@ -138,48 +138,49 @@ package classes.Scenes.NPCs
 			var flame:int = level + rand(6);
 			if (player.findPerk(PerkLib.FromTheFrozenWaste) >= 0 || player.findPerk(PerkLib.ColdAffinity) >= 0) flame *= 3;
 			if (player.findPerk(PerkLib.FireAffinity) >= 0) flame *= 0.3;
+			if (flags[kFLAGS.KIHA_LVL_UP] >= 1) flame *= (1 + (flags[kFLAGS.KIHA_LVL_UP] * 0.1));
 			flame = Math.round(flame);
 			outputText("\nAn afterwash of flames trails behind her blow, immolating you! ");
-			flame = player.takeDamage(flame, true);
+			flame = player.takeMagicDamage(flame, true);
 		}
 
 		override protected function performCombatAction():void
 		{
 			var select:Number = rand(5);
-			if (select <= 1) eAttack();
-			else if (select == 2) {
-				if (game.silly()) sillyModeKihaAttack();
+			if (select == 0) kihaTimeWaster();
+			if (select == 1) kihaFireBreath();
+			if (select == 2) {
+				if (EngineCore.silly()) sillyModeKihaAttack();
 				else kihaFirePunch();
 			}
-			else if (select == 3) kihaFireBreath();
-			else kihaTimeWaster();
+			if (select > 2) eAttack();
 		}
 
 		override public function defeated(hpVictory:Boolean):void
 		{
 			if(hasStatusEffect(StatusEffects.spiderfight))
-				game.kihaFollower.playerBeatsUpKihaPreSpiderFight();
+				SceneLib.kihaFollower.playerBeatsUpKihaPreSpiderFight();
 			else if(hasStatusEffect(StatusEffects.DomFight))
-				game.kihaFollower.pcWinsDomFight();
+				SceneLib.kihaFollower.pcWinsDomFight();
 			else if(hasStatusEffect(StatusEffects.Spar))
-				game.kihaFollower.winSparWithKiha();
-			else game.kihaScene.kihaVictoryIntroduction();
+				SceneLib.kihaFollower.winSparWithKiha();
+			else SceneLib.kihaScene.kihaVictoryIntroduction();
 		}
 
 
 		override public function won(hpVictory:Boolean, pcCameWorms:Boolean):void
 		{
 			if(hasStatusEffect(StatusEffects.spiderfight))
-				game.kihaFollower.loseKihaPreSpiderFight();
+				SceneLib.kihaFollower.loseKihaPreSpiderFight();
 			else if(hasStatusEffect(StatusEffects.DomFight))
-				game.kihaFollower.pcLosesDomFight();
+				SceneLib.kihaFollower.pcLosesDomFight();
 			else if(hasStatusEffect(StatusEffects.Spar))
-				game.kihaFollower.sparWithFriendlyKihaLose();
+				SceneLib.kihaFollower.sparWithFriendlyKihaLose();
 			else if (pcCameWorms){
 				outputText("\n\nKiha seems visibly disturbed by your infection, enough that she turns to leave.");
-				doNext(game.endLustLoss);
+				doNext(SceneLib.combat.endLustLoss);
 			} else {
-				game.kihaScene.kihaLossIntro();
+				SceneLib.kihaScene.kihaLossIntro();
 			}
 		}
 
@@ -194,48 +195,133 @@ package classes.Scenes.NPCs
 			else 
 				this.long += "Her vagina constantly glistens with moisture, regardless of her state of arousal.  Despite her nudity, Kiha stands with the confidence and poise of a trained fighter.";
 			// this.plural = false;
-			this.createVagina(false, VAGINA_WETNESS_DROOLING, VAGINA_LOOSENESS_NORMAL);
+			this.createVagina(false, VaginaClass.WETNESS_DROOLING, VaginaClass.LOOSENESS_NORMAL);
 			this.createStatusEffect(StatusEffects.BonusVCapacity, 40, 0, 0, 0);
 			createBreastRow(Appearance.breastCupInverse("D"));
-			this.ass.analLooseness = ANAL_LOOSENESS_LOOSE;
-			this.ass.analWetness = ANAL_WETNESS_DRY;
+			this.ass.analLooseness = AssClass.LOOSENESS_LOOSE;
+			this.ass.analWetness = AssClass.WETNESS_DRY;
 			this.createStatusEffect(StatusEffects.BonusACapacity,40,0,0,0);
 			this.tallness = 6*12+1;
-			this.hipRating = HIP_RATING_AMPLE;
-			this.buttRating = BUTT_RATING_AVERAGE+1;
-			this.lowerBody = LOWER_BODY_TYPE_HOOFED;
+			this.hips.type = Hips.RATING_AMPLE;
+			this.butt.type = Butt.RATING_AVERAGE + 1;
+			this.lowerBody = LowerBody.HOOFED;
 			this.skin.coverage = Skin.COVERAGE_MEDIUM;
 			this.skin.base.color = "dark";
 			this.skin.coat.color = "red";
-			this.skin.coat.type = SKIN_COAT_SCALES;
+			this.skin.coat.type = Skin.SCALES;
 			this.hairColor = "red";
 			this.hairLength = 3;
-			initStrTouSpeInte(85, 80, 85, 60);
-			initLibSensCor(50, 45, 66);
+			if (flags[kFLAGS.KIHA_LVL_UP] < 1) {
+				initStrTouSpeInte(85, 80, 85, 60);
+				initWisLibSensCor(60, 50, 45, 66);
+				this.weaponAttack = 28;
+				this.armorDef = 35;
+				this.armorMDef = 25;
+				this.bonusHP = 500;
+				this.level = 21;
+			}
+			if (flags[kFLAGS.KIHA_LVL_UP] == 1) {
+				initStrTouSpeInte(110, 105, 110, 70);
+				initWisLibSensCor(70, 70, 55, 66);
+				this.weaponAttack = 38;
+				this.armorDef = 50;
+				this.armorMDef = 30;
+				this.bonusHP = 600;
+				this.level = 27;
+			}
+			if (flags[kFLAGS.KIHA_LVL_UP] == 2) {
+				initStrTouSpeInte(135, 130, 135, 80);
+				initWisLibSensCor(80, 90, 65, 66);
+				this.weaponAttack = 48;
+				this.armorDef = 65;
+				this.armorMDef = 35;
+				this.bonusHP = 700;
+				this.level = 33;
+			}
+			if (flags[kFLAGS.KIHA_LVL_UP] == 3) {
+				initStrTouSpeInte(160, 155, 160, 90);
+				initWisLibSensCor(90, 110, 75, 66);
+				this.weaponAttack = 58;
+				this.armorDef = 80;
+				this.armorMDef = 40;
+				this.bonusHP = 800;
+				this.level = 39;
+			}
+			if (flags[kFLAGS.KIHA_LVL_UP] == 4) {
+				initStrTouSpeInte(185, 180, 185, 100);
+				initWisLibSensCor(100, 130, 85, 66);
+				this.weaponAttack = 68;
+				this.armorDef = 95;
+				this.armorMDef = 45;
+				this.bonusHP = 900;
+				this.level = 45;
+			}
+			if (flags[kFLAGS.KIHA_LVL_UP] == 5) {
+				initStrTouSpeInte(210, 205, 210, 110);
+				initWisLibSensCor(110, 150, 95, 66);
+				this.weaponAttack = 78;
+				this.armorDef = 110;
+				this.armorMDef = 50;
+				this.bonusHP = 1000;
+				this.level = 51;
+			}
+			if (flags[kFLAGS.KIHA_LVL_UP] == 6) {
+				initStrTouSpeInte(235, 230, 235, 120);
+				initWisLibSensCor(120, 170, 105, 66);
+				this.weaponAttack = 88;
+				this.armorDef = 125;
+				this.armorMDef = 55;
+				this.bonusHP = 1200;
+				this.level = 57;
+			}
+			if (flags[kFLAGS.KIHA_LVL_UP] == 7) {
+				initStrTouSpeInte(260, 255, 260, 130);
+				initWisLibSensCor(130, 190, 115, 66);
+				this.weaponAttack = 98;
+				this.armorDef = 140;
+				this.armorMDef = 60;
+				this.bonusHP = 1400;
+				this.level = 63;
+			}
 			this.weaponName = "double-bladed axe";
 			this.weaponVerb="fiery cleave";
-			this.weaponAttack = 28 + (6 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
 			this.armorName = "thick scales";
-			this.armorDef = 35 + (4 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
 			if (game.flags[kFLAGS.KIHA_UNDERGARMENTS] > 0)
-				this.armorDef += 2;
-			this.bonusHP = 500;
+				this.armorDef += (2 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));
 			this.bonusLust = 20;
 			this.lust = 10;
 			this.lustVuln = 0.4;
 			this.temperment = TEMPERMENT_LUSTY_GRAPPLES;
-			this.level = 21;
 			this.gems = rand(15) + 95;
 			this.drop = new ChainedDrop().add(useables.D_SCALE, 0.2);
-			this.wingType = WING_TYPE_IMP;
-			this.wingDesc = "huge";
-			this.tailType = TAIL_TYPE_LIZARD;
-			this.str += 17 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.tou += 16 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.spe += 17 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.inte += 12 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];			
-			this.lib += 10 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.newgamebonusHP = 2160;
+			this.wings.type = Wings.DRACONIC_LARGE;
+			this.wings.desc = "huge";
+			this.tailType = Tail.LIZARD;
+			if (flags[kFLAGS.KIHA_LVL_UP] >= 1) this.createPerk(PerkLib.EnemyBossType, 0, 0, 0, 0);
+			if (flags[kFLAGS.KIHA_LVL_UP] >= 2) {
+				this.createPerk(PerkLib.Lifeline, 0, 0, 0, 0);
+				this.createPerk(PerkLib.BasicTranquilness, 0, 0, 0, 0);
+			}
+			if (flags[kFLAGS.KIHA_LVL_UP] >= 3) {
+				this.createPerk(PerkLib.RefinedBodyI, 0, 0, 0, 0);
+				this.createPerk(PerkLib.InhumanDesireI, 0, 0, 0, 0);
+			}
+			if (flags[kFLAGS.KIHA_LVL_UP] >= 4) {
+				this.createPerk(PerkLib.Regeneration, 0, 0, 0, 0);
+				this.createPerk(PerkLib.HalfStepToImprovedTranquilness, 0, 0, 0, 0);
+			}
+			if (flags[kFLAGS.KIHA_LVL_UP] >= 5) {
+				this.createPerk(PerkLib.TankI, 0, 0, 0, 0);
+				this.createPerk(PerkLib.DemonicDesireI, 0, 0, 0, 0);
+			}
+			if (flags[kFLAGS.KIHA_LVL_UP] >= 6) {
+				this.createPerk(PerkLib.LizanRegeneration, 0, 0, 0, 0);
+				this.createPerk(PerkLib.ImprovedTranquilness, 0, 0, 0, 0);
+			}
+			//if (flags[kFLAGS.KIHA_LVL_UP] >= 7) this.createPerk(PerkLib., 0, 0, 0, 0);
+			if (flags[kFLAGS.KIHA_LVL_UP] >= 8) this.createPerk(PerkLib.LizanMarrow, 0, 0, 0, 0);
+			//if (flags[kFLAGS.KIHA_LVL_UP] >= 9) this.createPerk(PerkLib., 0, 0, 0, 0);
+			if (flags[kFLAGS.KIHA_LVL_UP] >= 10) this.createPerk(PerkLib.LizanMarrowEvolved, 0, 0, 0, 0);
 			checkMonster();
 		}
 

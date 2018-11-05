@@ -1,10 +1,18 @@
 ﻿package classes.Scenes.Areas.Forest
 {
-	import classes.*;
-	import classes.GlobalFlags.*;
-	import classes.internals.ChainedDrop;
+import classes.*;
+import classes.BodyParts.Antennae;
+import classes.BodyParts.Butt;
+import classes.BodyParts.Hips;
+import classes.BodyParts.LowerBody;
+import classes.BodyParts.Tail;
+import classes.BodyParts.Wings;
+import classes.GlobalFlags.*;
+import classes.Scenes.SceneLib;
+import classes.StatusEffects.Combat.ParalyzeVenomDebuff;
+import classes.internals.ChainedDrop;
 
-	public class BeeGirl extends Monster {
+public class BeeGirl extends Monster {
 
 		override public function defeated(hpVictory:Boolean):void {
 			clearOutput();
@@ -16,8 +24,8 @@
 					outputText("You smile in satisfaction as the " + short + " spreads her legs and starts frigging her honey-soaked cunt.  The sweet scent oozing from between her legs is too much to bear, arousing you painfully, and you see an easy way to relieve it..\n\nWhat do you do to her?");
 				}
 				player.lust = 98;
-				game.dynStats("lus", 1);
-				game.forest.beeGirlScene.afterfightoptionswithBeeGirl();
+				player.dynStats("lus", 1);
+				SceneLib.forest.beeGirlScene.afterfightoptionswithBeeGirl();
 			}
 			else if (player.hasStatusEffect(StatusEffects.Feeder) && flags[kFLAGS.SFW_MODE] <= 0) {
 				if (hpVictory) {
@@ -26,10 +34,10 @@
 				else {
 					outputText("You smile in satisfaction as the " + short + " spreads her legs and starts frigging her honey-soaked cunt.  The sweet scent oozing from between her legs is too much to bear, arousing you painfully.\n\nWhat do you do?");
 				}
-				game.forest.beeGirlScene.afterfightoptionswithBeeGirl();
+				SceneLib.forest.beeGirlScene.afterfightoptionswithBeeGirl();
 			}
 			else {
-                game.combat.finishCombat();
+                SceneLib.combat.finishCombat();
             }
 		}
 
@@ -37,10 +45,10 @@
 		{
 			if (pcCameWorms) {
 				outputText("\n\nThe bee-girl goes white and backs away with a disgusted look on her face.\n\n");
-				game.cleanupAfterCombat();
+				SceneLib.combat.cleanupAfterCombatImpl();
 			}
 			else {
-				game.forest.beeGirlScene.beeRapesYou();
+				SceneLib.forest.beeGirlScene.beeRapesYou();
 			}
 		}
 		
@@ -48,7 +56,6 @@
 			//Blind dodge change
 			if (hasStatusEffect(StatusEffects.Blind)) {
 				outputText(capitalA + short + " completely misses you with a blind sting!!");
-				combatRoundOver();
 				return;
 			}
 			//Determine if dodged!
@@ -56,13 +63,11 @@
 				if (player.spe - spe < 8) outputText("You narrowly avoid " + a + short + "'s stinger!");
 				if (player.spe - spe >= 8 && player.spe - spe < 20) outputText("You dodge " + a + short + "'s stinger with superior quickness!");
 				if (player.spe - spe >= 20) outputText("You deftly avoid " + a + short + "'s slow attempts to sting you.");
-				combatRoundOver();
 				return;
 			}
 			//determine if avoided with armor.
 			if (player.armorDef >= 10 && rand(4) > 0) {
 				outputText("Despite her best efforts, " + a + short + "'s sting attack can't penetrate your armor.");
-				combatRoundOver();
 				return;
 			}
 			//Sting successful!  Paralize or lust?
@@ -73,7 +78,7 @@
 				if (player.gender == 1) outputText("or dripping honey-slicked cunts beckoning you. ");
 				if (player.gender == 2) outputText("planting your aching sex over her face while you lick her sweet honeypot. ");
 				if (player.gender == 3) outputText("or cocks, tits, and puffy nipples. ");
-				game.dynStats("lus", 25);
+				player.dynStats("lus", 25);
 				if (player.lust > 60) {
 					outputText(" You shake your head and struggle to stay focused,");
 					if (player.gender == 1 || player.gender == 3) outputText(" but it's difficult with the sensitive bulge in your groin.");
@@ -86,21 +91,19 @@
 			//Paralise the other 50%!
 			else {
 				outputText("Searing pain lances through you as " + a + short + " manages to sting you!  You stagger back a step and nearly trip, finding it hard to move yourself.");
-				var sac:StatusEffectClass = player.statusEffectByType(StatusEffects.ParalyzeVenom);
-				if (sac) {
-					sac.value1 += 2.9; //v1 - strenght penalty, v2 speed penalty
-					sac.value2 += 2.9;
-					game.dynStats("str", -3, "spe", -3);
+				var paralyze:ParalyzeVenomDebuff = player.statusEffectByType(StatusEffects.ParalyzeVenom) as ParalyzeVenomDebuff;
+				if (paralyze) {
 					outputText("  It's getting much harder to move, you're not sure how many more stings like that you can take!");
 				} else {
-					player.createStatusEffect(StatusEffects.ParalyzeVenom, 2, 2, 0, 0);
-					game.dynStats("str", -2, "spe", -2);
+					paralyze = new ParalyzeVenomDebuff();
+					player.addStatusEffect(paralyze);
 					outputText("  You've fallen prey to paralyzation venom!  Better end this quick!");
 				}
+				paralyze.increase();
 			}
 			if (player.lust >= player.maxLust())
-				doNext(game.endLustLoss);
-			else doNext(game.playerMenu);
+				doNext(SceneLib.combat.endLustLoss);
+			else doNext(EventParser.playerMenu);
 		}
 
 		public function BeeGirl()
@@ -109,25 +112,26 @@
 			this.a = "a ";
 			this.short = "bee-girl";
 			this.imageName = "beegirl";
-			this.long = "A bee-girl buzzes around you, filling the air with intoxicatingly sweet scents and a buzz that gets inside your head.  She has a humanoid face with small antennae, black chitin on her arms and legs that looks like shiny gloves and boots, sizable breasts, and a swollen abdomen tipped with a gleaming stinger.";
-			this.createVagina(false, VAGINA_WETNESS_SLAVERING, VAGINA_LOOSENESS_GAPING);
+			this.long = "A bee-girl buzzes around you, filling the air with intoxicatingly sweet scents and a buzz that gets inside your head.  She has a humanoid face with small antennae.type, black chitin on her arms and legs that looks like shiny gloves and boots, sizable breasts, and a swollen abdomen tipped with a gleaming stinger.";
+			this.createVagina(false, VaginaClass.WETNESS_SLAVERING, VaginaClass.LOOSENESS_GAPING);
 			createBreastRow(Appearance.breastCupInverse("DD"));
-			this.ass.analLooseness = ANAL_LOOSENESS_STRETCHED;
-			this.ass.analWetness = ANAL_WETNESS_NORMAL;
+			this.ass.analLooseness = AssClass.LOOSENESS_STRETCHED;
+			this.ass.analWetness = AssClass.WETNESS_NORMAL;
 			this.tallness = rand(14) + 59;
-			this.hipRating = HIP_RATING_CURVY+3;
-			this.buttRating = BUTT_RATING_EXPANSIVE;
-			this.lowerBody = LOWER_BODY_TYPE_BEE;
+			this.hips.type = Hips.RATING_CURVY + 3;
+			this.butt.type = Butt.RATING_EXPANSIVE;
+			this.lowerBody = LowerBody.BEE;
 			this.skinTone = "yellow";
 			this.hairColor = randomChoice("black","black and yellow");
 			this.hairLength = 6;
 			initStrTouSpeInte(30, 50, 30, 20);
-			initLibSensCor(60, 55, 0);
+			initWisLibSensCor(20, 60, 55, 0);
 			this.weaponName = "chitin-plated fist";
 			this.weaponVerb="armored punch";
-			this.weaponAttack = 4 + (1 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.weaponAttack = 4;
 			this.armorName = "chitin";
-			this.armorDef = 12 + (2 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.armorDef = 12;
+			this.armorMDef = 2;
 			this.bonusHP = 40;
 			this.bonusLust = 20;
 			this.lust = 20 + rand(40);
@@ -139,17 +143,11 @@
 					.add(consumables.W__BOOK, 1 / 4)
 					.add(consumables.BEEHONY, 1 / 2)
 					.elseDrop(useables.B_CHITN);
-			this.antennae = ANTENNAE_BEE;
-			this.wingType = WING_TYPE_BEE_LIKE_SMALL;
-			this.tailType = TAIL_TYPE_BEE_ABDOMEN;
+			this.antennae.type = Antennae.BEE;
+			this.wings.type = Wings.BEE_LIKE_SMALL;
+			this.tailType = Tail.BEE_ABDOMEN;
 			this.tailVenom = 100;
 			this.special1 = beeStingAttack;
-			this.str += 6 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.tou += 10 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.spe += 6 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.inte += 4 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];			
-			this.lib += 12 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.newgamebonusHP = 380;
 			checkMonster();
 		}
 

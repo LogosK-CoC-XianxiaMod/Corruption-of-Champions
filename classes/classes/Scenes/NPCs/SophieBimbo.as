@@ -1,17 +1,16 @@
 ﻿package classes.Scenes.NPCs{
-	import classes.*;
-	import classes.GlobalFlags.kFLAGS;
-	import classes.GlobalFlags.kGAMECLASS;
-	import classes.Items.Consumables.SimpleConsumable;
+import classes.*;
+import classes.GlobalFlags.kFLAGS;
+import classes.Scenes.SceneLib;
 
-	public class SophieBimbo extends NPCAwareContent
+public class SophieBimbo extends NPCAwareContent
 	{
 
 		public function SophieBimbo()
 		{
 		}
 		
-		private function get pregnancy():PregnancyStore { return kGAMECLASS.sophieScene.pregnancy; } //Quick way to access sophie's pregnancyStore
+		private function get pregnancy():PregnancyStore { return SceneLib.sophieScene.pregnancy; } //Quick way to access sophie's pregnancyStore
 
 
 //VARS
@@ -81,10 +80,10 @@ internal function bimbotizeMeCaptainSophie():void {
 	clearOutput();
 	player.consumeItem(consumables.BIMBOLQ);
 	outputText("A wicked idea takes hold of you while you watch the harpy ");
-	if(monster.lust >= monster.eMaxLust()) outputText("touch herself");
+	if(monster.lust >= monster.maxLust()) outputText("touch herself");
 	else outputText("squirm in the dirt around her nest");
 	outputText(".  Releasing the ties on one of your pouches, you reach inside to claim the contents.  You produce the bottle of bimbo liqueur with a flourish, swirling the potent fluid inside its prison as you approach the downed harpy matron; she looks up at you with dumb, ");
-	if(monster.lust >= monster.eMaxLust()) outputText("lust");
+	if(monster.lust >= monster.maxLust()) outputText("lust");
 	else outputText("pain");
 	outputText("-glazed eyes, her beautiful but uncomprehending visage slack-jawed and empty.  It's a good look for her.\n\n");
 	
@@ -169,7 +168,7 @@ private function acceptBimboSophie():void {
 	{
 		outputText("  Afterwards, she offers to suck Jojo's cock.  The chaste mouse's jaw drops, but when he picks it up, he answers, \"<i>Never.  My body is as pure as my soul!</i>\"");
 	}
-	else if (kGAMECLASS.isabellaFollowerScene.isabellaFollower())
+	else if (SceneLib.isabellaFollowerScene.isabellaFollower())
 	{
 		outputText("  Afterwards, she offers to lick Isabella's cunt.  Isabella answers sternly, ");
 		if (isabellaAccent()) outputText("\"<i> Nein!  But you can drink mein milk from time to time.</i>\"");
@@ -301,7 +300,7 @@ public function approachBimboSophieInCamp(output:Boolean = true):void {
 	addButton(7, "Appearance", sophieBimboAppearance);
 
 	if (flags[kFLAGS.FOLLOWER_AT_FARM_SOPHIE] == 0) addButton(14, "Leave", camp.campSlavesMenu);
-	if (flags[kFLAGS.FOLLOWER_AT_FARM_SOPHIE] != 0) addButton(14, "Back", kGAMECLASS.farm.farmCorruption.rootScene);
+	if (flags[kFLAGS.FOLLOWER_AT_FARM_SOPHIE] != 0) addButton(14, "Back", SceneLib.farm.farmCorruption.rootScene);
 }
 
 //Appearance:
@@ -324,16 +323,16 @@ private function sophieBimboAppearance():void {
 	
 	outputText("\n\nSophie's arms are covered in feathers as well, and are somewhat wing-like in appearance, though she has human hands at the ends of them.  Her primary wings are larger and sprout out above her shoulder blades.  She often keeps them folded out of the way behind her, but she can kick up a huge dust-storm with them when she wants.");
 
-	if (kGAMECLASS.farm.farmCorruption.hasTattoo("sophie"))
+	if (SceneLib.farm.farmCorruption.hasTattoo("sophie"))
 	{
 		outputText("\n\n");
-		if (kGAMECLASS.farm.farmCorruption.sophieFullTribalTats())
+		if (SceneLib.farm.farmCorruption.sophieFullTribalTats())
 		{
 			outputText("She is covered from head to tail in tribal tattoos, erotic lines snaking all over her naked frame, giving her the look of a barely tamed savage.")
 		}
 		else
 		{
-			if (kGAMECLASS.farm.farmCorruption.numTattoos("sophie") > 1) outputText("She has the following tattoos emblazoned across her body:\n");
+			if (SceneLib.farm.farmCorruption.numTattoos("sophie") > 1) outputText("She has the following tattoos emblazoned across her body:\n");
 			else outputText("She has ");
 
 			if (flags[kFLAGS.SOPHIE_TATTOO_COLLARBONE] != 0) outputText(flags[kFLAGS.SOPHIE_TATTOO_COLLARBONE] + "\n");
@@ -378,7 +377,7 @@ public var eggColors:Array = [
 "Pink",
 "Purple",
 "White",
-]
+];
 
 private var _eggTypes:Array;
 
@@ -421,7 +420,7 @@ private function postEggSelector(selected:String):void
 		flags[kFLAGS.FARM_EGG_COUNTDOWN] = 7;
 	}
 	
-	doNext(kGAMECLASS.farm.farmCorruption.rootScene);
+	doNext(SceneLib.farm.farmCorruption.rootScene);
 }
 
 private function stopHarvest():void
@@ -436,7 +435,7 @@ private function stopHarvest():void
 	
 	flags[kFLAGS.FOLLOWER_PRODUCTION_SOPHIE] = 0;
 	
-	doNext(kGAMECLASS.farm.farmCorruption.rootScene);
+	doNext(SceneLib.farm.farmCorruption.rootScene);
 }
 
 private function sendToFarm():void
@@ -468,7 +467,7 @@ private function backToCamp():void
 	
 	flags[kFLAGS.FOLLOWER_AT_FARM_SOPHIE] = 0;
 	
-	doNext(kGAMECLASS.farm.farmCorruption.rootScene);
+	doNext(SceneLib.farm.farmCorruption.rootScene);
 }
 
 private function bimboSophieSexMenu():void {
@@ -1554,7 +1553,7 @@ private function sophiePreggoTitJobs():void {
 	outputText("\n\nYou rock your [hips], unable to resist, but at the first sign of motion, Sophie pulls her tits away.  \"<i>Like, just let me milk your dick babe.  Hold still and I'll make sure it's everything you want.</i>\"  She shakes her tits enticingly for emphasis.");
 	
 	outputText("\n\nDo you let her rub your dick down with her tits how she wants, or push her down and go hog-wild on those giant, pregnancy-enhanced knockers?");
-	dynStats("lus=", player.maxLust(), "resisted", false);
+	dynStats("lus=", player.maxLust(), "scale", false);
 	//[Let Her] [Hog Wild]
 	menu();
 	addButton(0,"Let Her",letSophieMilkYoDick);

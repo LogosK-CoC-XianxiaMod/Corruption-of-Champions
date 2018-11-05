@@ -1,12 +1,13 @@
 ﻿package classes.Scenes.Places{
-	import classes.*;
-	import classes.GlobalFlags.kFLAGS;
-	import classes.GlobalFlags.kGAMECLASS;
-	import classes.Items.WeaponLib;
-	import classes.Scenes.Places.Owca.*;
-	import classes.Scenes.NPCs.Kindra;
-	
-	use namespace kGAMECLASS;
+import classes.*;
+import classes.BodyParts.Antennae;
+import classes.GlobalFlags.kFLAGS;
+import classes.Items.WeaponLib;
+import classes.Scenes.NPCs.Kindra;
+import classes.Scenes.Places.Owca.*;
+import classes.Scenes.SceneLib;
+
+use namespace CoC;
 
 	public class Owca extends BaseContent{
 
@@ -237,7 +238,7 @@ private function fightZeDemons(sacrifice:Boolean = true):void {
 	startCombat(new LustyDemons());
 	if (sacrifice) {
 		//Remove weapon
-		player.createStatusEffect(StatusEffects.Disarmed, 0, 0, 0, 0);
+		player.createStatusEffect(StatusEffects.Disarmed, 50, 0, 0, 0);
 		flags[kFLAGS.PLAYER_DISARMED_WEAPON_ID] = player.weapon.id;
 		player.setWeapon(WeaponLib.FISTS);
 		monster.createStatusEffect(StatusEffects.BowDisabled, 0, 0, 0, 0);
@@ -272,10 +273,10 @@ public function loseOrSubmitToVapula():void {
 	outputText("\n\nIt's a matter of minutes before a dozen hungry omnibuses and incubi are repeatedly cock-slapping your entire body, hitting every part of you with their heavy meat, grinding their rods against every fold and curve of your flesh and staining it with seminal fluids.  Your poor " +buttDescript()+ ", already abused by two giant pricks thrusting back and forth at an unnatural pace, is now the prey of numerous hands and full, erect dicks slapping it in every possible way, smearing it with pre-cum and sweat as they run across your tender skin.  You can't see anything: your eyesight has been blocked by a never-ending row of wriggling cocks.  Nor can you hear anything over the sound of a full horde of libidinous demons panting and moaning as they abuse their fuck-toy in an overwhelming orgy of pleasure; besides, a pair of imps are rubbing the tips of their dongs against your ears, as if they wanted to fill them with seed.");
 	outputText("\n\nYou can't talk, muted as you are by a pair of fat red peckers stuffing your mouth and bumping against your throat as you unwillingly suck them off.  Your jaw hurts, your itching insides are driving you mad; your whole body is being bruised from the cock-slaps, your palms are forced to rub four shafts at the same time, and even as you pump, your fingers are occasionally grabbed and stuffed into wet fuck-holes, making a few succubi moan.  A tentacle dick brushes against you, then wraps around your limbs, slithering against your skin and leaving behind a trail of pre-cum on your torso and belly.");
 	if(player.hasCock()) outputText("  It wraps around [eachCock] for a while, jerking it for a bit and rubbing its tip against yours.");
-	//[if antennae]
-	if(player.antennae > ANTENNAE_NONE) outputText("  Your antennae are being harshly pulled and twisted; some imps, in a crazy show of libertinism, start inserting your sensitive peduncles down their bloated urethrae. The intimate friction and the sudden jolts when the internal walls slather your appendages in slick, hot pre-cum are driving you mad with irregular shots of unbearable pleasure.");
+	//[if antennae.type]
+	if(player.antennae.type > Antennae.NONE) outputText("  Your antennae.type are being harshly pulled and twisted; some imps, in a crazy show of libertinism, start inserting your sensitive peduncles down their bloated urethrae. The intimate friction and the sudden jolts when the internal walls slather your appendages in slick, hot pre-cum are driving you mad with irregular shots of unbearable pleasure.");
 	//[if horns]
-	if(player.horns > 0) outputText("  You feel your horns being used as leverage to slap your head with even more rock-hard dick.  The impacts stun you until your whole forehead feels numb and coated with a mixture of ballsweat and pre-cum.");
+	if(player.horns.count > 0) outputText("  You feel your horns being used as leverage to slap your head with even more rock-hard dick.  The impacts stun you until your whole forehead feels numb and coated with a mixture of ballsweat and pre-cum.");
 	//[if vagina
 	if(player.hasVagina()) {
 		outputText("\n\nYou suddenly feel a sharp sensation: your womanhood is finally being penetrated.");
@@ -350,8 +351,8 @@ private function wakeUpAfterDemonGangBangs():void {
 	fatigue(20);
 	player.slimeFeed();
 	dynStats("str", -2,"tou", -2, "spe", -1, "int", -1, "lib", 1, "sen", 1, "lus=", 100, "cor", 3);
-	if (getGame().inCombat)
-		cleanupAfterCombat();
+    if (CoC.instance.inCombat)
+        cleanupAfterCombat();
 	else doNext(camp.returnToCampUseOneHour);
 	//PC is redirected to camp, next morning. No nightly camp scenes or dreams.
 }
@@ -533,7 +534,7 @@ private function rapeZeVapula():void {
 private function owcaMainScreenOn():void {
 	clearOutput();
 	
-	if(flags[kFLAGS.REBECCS_LAST_PLEA] == 1 && !kGAMECLASS.vapula.vapulaSlave()) {
+	if(flags[kFLAGS.REBECCS_LAST_PLEA] == 1 && !SceneLib.vapula.vapulaSlave()) {
 		rebeccsLastPlea();
 		return;
 	}
@@ -735,7 +736,7 @@ private function rebeccMenu():void {
 //Rebecc Appearance (Z)
 private function rebeccAppearance():void {
 	clearOutput();
-	outputText("Rebecc is a 5-foot, 7-inch sheep-girl, with a cute human visage decorated by two little nubby horn protrusions and plush and fuzzy curled white hair that cascades down over her shoulders.  Her face is expressive, with her glinting blue eyes and avid mouth accurately reflecting her whole range of emotions.  Her complexion is extremely pale, although the exposed parts of her body are rather tanned due to hours of labor under the scorching sun.  She is currently wearing a coarse peasant dress, a layer of thin white cloth that clearly outlines her appealing curves.  Her fine hips and legs sway with elegance when she walks and you can guess a bountiful wiggly rump hides behind the back of her gown.");
+	outputText("Rebecc is a 5-foot, 7-inch sheep-girl, with a cute human visage decorated by two little nubby horns protrusions and plush and fuzzy curled white hair that cascades down over her shoulders.  Her face is expressive, with her glinting blue eyes and avid mouth accurately reflecting her whole range of emotions.  Her complexion is extremely pale, although the exposed parts of her body are rather tanned due to hours of labor under the scorching sun.  She is currently wearing a coarse peasant dress, a layer of thin white cloth that clearly outlines her appealing curves.  Her fine hips and legs sway with elegance when she walks and you can guess a bountiful wiggly rump hides behind the back of her gown.");
 	outputText("\n\nShe has a pair of ample, barely concealed breasts.  Although you can't see them outright, her thin clothing leaves little doubt that they're D-cups.  Her 0.5 inch nipples point through her dress whenever she's aroused.");
 	outputText("\n\nShe has a pussy of dubious virginity but copious wetness between her legs.  Occasionally a damp patch will appear on her dress, betraying her arousal.");
 	outputText("\n\nYou can't see her asshole, but it's safe to assume it's placed between her squeezable buttocks, right where it belongs.");
@@ -824,9 +825,9 @@ private function rapeRebecc(outside:Boolean = false):void {
 	player.orgasm();
 	dynStats("lib", -2, "cor", 5);
 	flags[kFLAGS.OWCA_UNLOCKED] = -1;
-	
-	if (getGame().inCombat)
-		cleanupAfterCombat();
+
+if (CoC.instance.inCombat)
+        cleanupAfterCombat();
 	else doNext(camp.returnToCampUseOneHour);
 }
 
@@ -936,8 +937,8 @@ private function forgiveOwca():void {
 	flags[kFLAGS.OWCAS_ATTITUDE] = 60;
 	flags[kFLAGS.OWCA_ANGER_DISABLED] = 1;
 	//To main owca menu
-	if (getGame().inCombat)
-		cleanupAfterCombat(gangbangVillageStuff);
+    if (CoC.instance.inCombat)
+        cleanupAfterCombat(gangbangVillageStuff);
 	else doNext(gangbangVillageStuff);
 }
 //Option: Leave (Z)
@@ -945,8 +946,8 @@ private function fuckThisShit():void {
 	clearOutput();
 	outputText("You stare at the wretched, whimpering creature before you for a moment.  There's nothing to say.  Without a word, you head back to your camp, carefully closing Rebecc's door behind you as you leave.");
 	flags[kFLAGS.REBECCS_LAST_PLEA] = 1;
-	if (getGame().inCombat)
-		cleanupAfterCombat();
+    if (CoC.instance.inCombat)
+        cleanupAfterCombat();
 	else doNext(camp.returnToCampUseOneHour);
 }
 //Rebecc's Last Plea (Z)
@@ -1002,7 +1003,7 @@ private function slaveToVapulaBadEnd():void {
 	outputText("\n\nThese spontaneous, dirty words make the imp fucking you from behind instantly cum; with a powerful last push, he blasts you with his seed, filling and soaking your backside with thick white goo.  You reach for Vapula, helplessly hugging her tits and suckling her nipples as you sob in pleasure-induced humiliation.");
 	outputText("\n\n\"<i>Very well, slut.  Your former life as a villager is over.  It's time to move on to your new life; and trust me, it's going to be much more exciting.  Actually, I don't think you'll be willing to ever leave this place...</i>\"");
 	outputText("\n\nYou furiously nod in approval.");
-	getGame().gameOver();
+	EventParser.gameOver();
 }
 
 //Subdue Vapula Scene - begins Vapula Follower Content(Z)

@@ -1,10 +1,13 @@
 ﻿package classes.Scenes.Dungeons.DeepCave
 {
-	import classes.*;
-	import classes.internals.*;
-	import classes.GlobalFlags.kFLAGS;
+import classes.*;
+import classes.BodyParts.Butt;
+import classes.BodyParts.Hips;
+import classes.BodyParts.Wings;
+import classes.Scenes.SceneLib;
+import classes.internals.*;
 
-	public class ImpHorde extends Monster
+public class ImpHorde extends Monster
 	{
 		public function impGangAI():void {
 			if(hasStatusEffect(StatusEffects.ImpUber)) impGangUber();
@@ -17,9 +20,8 @@
 			//(½ chance during any round):
 			if(rand(2) == 0) {
 				outputText("\nOne of the tiny demons latches onto one of your [legs] and starts humping it.  You shake the little bastard off and keep fighting!");
-				game.dynStats("lus", 1);
+				player.dynStats("lus", 1);
 			}
-			combatRoundOver();
 		}
 		
 		public function impGangUber():void {
@@ -30,13 +32,13 @@
 			else {
 				//(OH SHIT IT GOES OFF) 
 				//+50 lust!
-				game.dynStats("lus", 50);
+				player.dynStats("lus", 50);
 				outputText("The imps in the back finish their spell-casting, and point at you in unison.  A wave of pure arousal hits you with the force of a freight train.   Your equipment rubs across your suddenly violently sensitive " + nippleDescript(0));
 				if(player.biggestLactation() > 1) outputText(" as they begin to drip milk");
 				outputText(".  The lower portions of your coverings ");
 				if(player.cockTotal() > 0) {
 					outputText("are pulled tight by your " + multiCockDescript() + ", ");
-					if(player.totalCocks() > 1) outputText("each ");
+					if(player.cockTotal() > 1) outputText("each ");
 					outputText("beading a drop of pre-cum at the tip");
 					if(player.hasVagina()) outputText(", and in addition, the clothes around your groin ");
 				}
@@ -108,7 +110,7 @@
 					if(damage == 3) outputText("Seed lands in your [hair], slicking you with demonic fluid.\n");
 					if(damage == 4) outputText("Another blast of jizz splatters against your face, coating your lips and forcing a slight taste of it into your mouth.\n");
 					if(damage == 5) outputText("The last eruption of cum soaks your thighs and the lower portions of your [armor], turning it a sticky white.\n");
-					game.dynStats("lus", (7+int(player.lib/40+player.cor/40)));
+					player.dynStats("lus", (7+int(player.lib/40+player.cor/40)));
 				}
 				lust -= 5;
 				hits--;
@@ -160,9 +162,9 @@
 					if(hits == 2) outputText("Another imp punches you in the gut, hard!");
 					if(hits == 1) outputText("Your arm is mauled by the clawing!");
 					damage = 20 - rand(player.tou/10);
-					if (damage <= 0) damage = 1;
+					if (damage <= 4) damage = 5;
 					outputText(" ");
-					damage = player.takeDamage(damage, true);
+					damage = player.takePhysDamage(damage, true);
 					outputText("\n");
 				}
 				hits--;
@@ -176,16 +178,16 @@
 		
 		override public function defeated(hpVictory:Boolean):void
 		{
-			game.dungeons.deepcave.impGangVICTORY();
+			SceneLib.dungeons.deepcave.impGangVICTORY();
 		}
 
 		override public function won(hpVictory:Boolean, pcCameWorms:Boolean):void
 		{
 			if(pcCameWorms){
 				outputText("\n\nYour foes don't seem put off enough to leave...");
-				doNext(game.endLustLoss);
+				doNext(SceneLib.combat.endLustLoss);
 			} else {
-				game.dungeons.deepcave.loseToImpMob();
+				SceneLib.dungeons.deepcave.loseToImpMob();
 			}
 		}
 
@@ -204,22 +206,23 @@
 			this.balls = 2;
 			this.ballSize = 1;
 			createBreastRow(0);
-			this.ass.analLooseness = ANAL_LOOSENESS_TIGHT;
-			this.ass.analWetness = ANAL_WETNESS_DRY;
+			this.ass.analLooseness = AssClass.LOOSENESS_TIGHT;
+			this.ass.analWetness = AssClass.WETNESS_DRY;
 			this.createStatusEffect(StatusEffects.BonusACapacity,10,0,0,0);
 			this.tallness = 36;
-			this.hipRating = HIP_RATING_SLENDER;
-			this.buttRating = BUTT_RATING_TIGHT;
+			this.hips.type = Hips.RATING_SLENDER;
+			this.butt.type = Butt.RATING_TIGHT;
 			this.skinTone = "red";
 			this.hairColor = "black";
 			this.hairLength = 1;
 			initStrTouSpeInte(50, 30, 25, 12);
-			initLibSensCor(45, 45, 100);
+			initWisLibSensCor(10, 45, 45, 100);
 			this.weaponName = "fists";
 			this.weaponVerb="punches";
-			this.weaponAttack = 12 + (3 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.weaponAttack = 12;
 			this.armorName = "skin";
-			this.armorDef = 6 + (1 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.armorDef = 6;
+			this.armorMDef = 1;
 			this.bonusHP = 800;
 			this.bonusLust = 150;
 			this.lust = 10;
@@ -229,18 +232,13 @@
 			this.gems = 30 + rand(30);
 			this.additionalXP = 100;
 			this.drop = new WeightedDrop(armors.NURSECL, 1);
-			this.wingType = WING_TYPE_IMP;
-			this.wingDesc = "imp wings";
+			this.wings.type = Wings.IMP;
+			this.wings.desc = "imp wings";
 			this.createPerk(PerkLib.InhumanDesireI, 0, 0, 0, 0);
 			this.createPerk(PerkLib.RefinedBodyI, 0, 0, 0, 0);
 			this.createPerk(PerkLib.Regeneration, 0, 0, 0, 0);
 			this.createPerk(PerkLib.EnemyGroupType, 0, 0, 0, 0);
-			this.str += 10 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.tou += 6 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.spe += 5 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.inte += 2 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];			
-			this.lib += 9 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.newgamebonusHP = 960;
+			this.createPerk(PerkLib.EnemyTrueDemon, 0, 0, 0, 0);
 			checkMonster();
 		}
 

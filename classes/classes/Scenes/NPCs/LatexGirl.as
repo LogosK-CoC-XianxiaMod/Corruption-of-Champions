@@ -1,9 +1,10 @@
 ﻿package classes.Scenes.NPCs{
-	import classes.*;
-	import classes.GlobalFlags.kFLAGS;
-	import classes.GlobalFlags.kGAMECLASS;
+import classes.*;
+import classes.GlobalFlags.kFLAGS;
+import classes.CoC;
+import classes.Scenes.SceneLib;
 
-	public class LatexGirl extends NPCAwareContent
+public class LatexGirl extends NPCAwareContent
 	{
 
 		public function LatexGirl()
@@ -129,8 +130,8 @@ private function gooTitSize():Number {
 
 //TF Scene:
 public function meanGooGirlRecruitment():void {
-	getGame().inCombat = false;
-	clearOutput();
+    CoC.instance.inCombat = false;
+    clearOutput();
 	flags[kFLAGS.GOO_TFED_MEAN] = 1;
 	flags[kFLAGS.GOO_EYES] = monster.skinTone;
 	if(player.hasItem(consumables.SUCMILK)) player.consumeItem(consumables.SUCMILK);
@@ -185,7 +186,7 @@ private function PCCarriedGooBackHome():void {
 	outputText("You set the once-goo down in a secluded section of your camp");
 	if(camp.companionsCount() > 0) outputText(", away from prying eyes");
 	outputText(".  She looks almost alien in a way... more than she did before, when she was just an aqueous blob with tits and faux hair.  Now, every facet of her being is shiny, reflective latex.  Even her vaginal secretions, which dribble freely, are liquid latex, glossy black juices that slowly harden into a flexible solid once freed from her body.");
-	if(player.totalCocks() > 1) outputText("  You can't help but wonder what it would feel like to let her sheath your [cocks] with her juices.");
+	if(player.cockTotal() > 1) outputText("  You can't help but wonder what it would feel like to let her sheath your [cocks] with her juices.");
 	outputText("\n\nSurprisingly, she has hair, or what passes for hair for a woman made entirely of supple, inorganic semi-solids.  Her tresses hang down past her shoulders, slender strands that are as reflective as her skin.  Unlike her skin, the latex-goo's hair seems perpetually oily, slippery and lubricated.  Hesitantly, you extend a hand to touch, carefully caressing a few of the rubbery strands.  Their texture is smooth and slick, unlike any hair you've ever had the pleasure of touching.");
 	outputText("\n\n\"<i>I can feel that, you know.</i>\"");
 	outputText("\n\nYou backpedal wildly, surprised at the sudden statement to such a degree that you nearly fall flat on your [butt].  Giggling laughter bubbles up in response, \"<i>Sorry, I didn't mean to scare you.</i>\"");
@@ -215,7 +216,7 @@ private function PCCarriedGooBackHomeII():void {
 }
 private function nameZeLatexGoo():void 
 {
-	if (kGAMECLASS.testingBlockExiting)
+	if (CoC.instance.testingBlockExiting)
 	{
 		// We're running under the testing script.
 		// Stuff a name in the box and go go go
@@ -326,8 +327,8 @@ private function encounterLeftBehindGooSlaveII():void {
 
 //Pure Characters Intro(F):
 public function pureGooRecruitmentStart():void {
-	getGame().inCombat = false;
-	clearOutput();
+    CoC.instance.inCombat = false;
+    clearOutput();
 	flags[kFLAGS.GOO_TFED_NICE] = 1;
 	flags[kFLAGS.GOO_EYES] = monster.skinTone;
 	if(player.hasItem(consumables.SUCMILK)) player.consumeItem(consumables.SUCMILK);
@@ -583,7 +584,7 @@ public function approachLatexy():void {
 	addButton(3,"Breast Size",setLatexysBustSize);
 	addButton(4, "Dick Options", changeGooDick);
 	
-	if (flags[kFLAGS.FOLLOWER_AT_FARM_LATEXY] == 1) addButton(14, "Back", kGAMECLASS.farm.farmCorruption.rootScene);
+	if (flags[kFLAGS.FOLLOWER_AT_FARM_LATEXY] == 1) addButton(14, "Back", SceneLib.farm.farmCorruption.rootScene);
 	
 	if (flags[kFLAGS.FOLLOWER_AT_FARM_LATEXY] == 0 && flags[kFLAGS.FARM_CORRUPTION_STARTED] == 1) addButton(5, "Farm Work", sendToFarm);
 	if (flags[kFLAGS.FOLLOWER_AT_FARM_LATEXY] == 1) addButton(5, "Go Camp", backToCamp);
@@ -615,7 +616,7 @@ private function backToCamp():void
 	flags[kFLAGS.FOLLOWER_AT_FARM_LATEXY] = 0;
 	
 	//[+1 Obedience and -1 Happiness every two days kept at the farm]
-	doNext(kGAMECLASS.farm.farmCorruption.rootScene);
+	doNext(SceneLib.farm.farmCorruption.rootScene);
 }
 
 private function useLatexy():void {
@@ -644,7 +645,7 @@ private function changeGooDick():void {
 		else outputText("I want you to order me to shift it often.  ");
 		outputText("Changing myself further, twisting my body into a sexual playground for you... that would be the ultimate thrill!</i>\"");
 		if(flags[kFLAGS.GOO_DICK_LENGTH] == 0) outputText("\n\n" + flags[kFLAGS.GOO_NAME] + " pulls a hand away from her pussy and says, \"<i>I'll need something masculine if you want me to grow a cock, [Master].  An incubi draft would work, or some minotaur blood, though the blood might make it a horsecock...</i>\"  She shudders and closes her eyes, imagining herself with a rigid equine pole.  Your goo must have a bit of a fetish.");
-		else outputText("\n\n" + flags[kFLAGS.GOO_NAME] + " pulls a hand away from her pussy and says, \"<i>What kind of penis would please you most?  I could probably do the human ones, dog dicks, horse cocks, cat pricks, tentacle wangs, or demon dongs.</i>\"  She gives a little shudder at the last one and licks her lips.  \"<i>You'll need to have an appropriate item to assist me though, [Master].  I'm not as flexible as I once was.");
+		else outputText("\n\n" + flags[kFLAGS.GOO_NAME] + " pulls a hand away from her pussy and says, \"<i>What kind of penis would please you most?  I could probably do the human ones, dog dicks, horse cocks, cat pricks, tentacle wangs, or demon dongs.</i>\"  She gives a little shudder at the last one and licks her lips.  \"<i>You'll need to have an appropriate item to assist me though, [Master].  I'm not as flexible as I once was.\"</i>");
 	}
 	//High Happiness + Whatever Obedience(F)
 	else if(gooHappiness() >= 70) {
@@ -653,7 +654,7 @@ private function changeGooDick():void {
 		else outputText("she'd like to change what kind of dick she has.");
 		outputText("  She beams and titters, \"<i>Omigod, I loved growing penises back before I changed!  It was so much fun to see how surprised it would make people and to make new shapes to see how they'd feel.  Let's do it!</i>\"");
 		if(flags[kFLAGS.GOO_DICK_LENGTH] == 0) outputText("\n\n" + flags[kFLAGS.GOO_NAME] + " taps her chin and says, \"<i>I'll need something masculine if you want me to grow a cock.  An incubi draft would work, or some minotaur blood, though the blood might make it a horsecock...</i>\"  She smiles wickedly.");
-		else outputText("\n\n" + flags[kFLAGS.GOO_NAME] + " taps her chin and says, \"<i>I can probably make almost any kind of penis, though I only really like the human ones, dog dicks, horse cocks, cat pricks, tentacle wangs, and demon dongs.</i>\"  She gives a little shudder at the last one and licks her lips.  \"<i>You'll need to have an appropriate item to assist me though, I'm not as flexible as I once was.");
+		else outputText("\n\n" + flags[kFLAGS.GOO_NAME] + " taps her chin and says, \"<i>I can probably make almost any kind of penis, though I only really like the human ones, dog dicks, horse cocks, cat pricks, tentacle wangs, and demon dongs.</i>\"  She gives a little shudder at the last one and licks her lips.  \"<i>You'll need to have an appropriate item to assist me though, I'm not as flexible as I once was.\"</i>");
 	}
 	//Low Obedience(F)
 	else {
@@ -907,9 +908,9 @@ private function feedLatexyCumIndirectly():void {
 	outputText(".");
 	if(player.cumQ() >= 1000) outputText("  Sadly, the copious jizz that puddled up has already been devoured by the dry ground.  It seems the dirt can drink faster than your latex slave.");
 	//{Boost her fluid quantity, bonus for over 250mL.}
-	temp = 20;
-	if(player.cumQ() >= 500) temp += 10;
-	gooFluid(temp);
+	var fluid:int = 20;
+	if(player.cumQ() >= 500) fluid += 10;
+	gooFluid(fluid);
 	//{Boost her happiness a tiny amount.}
 	gooHappiness(4);
 	player.orgasm();
@@ -948,12 +949,12 @@ private function feedLatexyGirlCumIndirectly():void {
 	outputText("\n\n" + flags[kFLAGS.GOO_NAME] + " dives into the bowl with gusto, greedily devouring every drop.  Her tongue hangs free, thrashing against the polished wood as more and more of her latex mouth-muscle spools free to help with the feeding.  In seconds, the bowl is emptied.");
 	if(player.wetness() >= 4) outputText("  Sadly, the copious vaginal lube that muddied the ground is already absorbed.  It seems the dirt can eat faster than your pet.");
 	//{Boost her fluid quantity, bonus for over 250mL.}
-	temp = 10;
-	if(player.wetness() >= 3) temp+=5;
-	if(player.wetness() >= 4) temp+=5;
-	if(player.wetness() >= 5) temp+=5;
+	var fluid:int = 10;
+	if(player.wetness() >= 3) fluid += 5;
+	if(player.wetness() >= 4) fluid += 5;
+	if(player.wetness() >= 5) fluid += 5;
 	player.orgasm();
-	gooFluid(temp);
+	gooFluid(fluid);
 	//{Boost her happiness a tiny amount.}
 	gooHappiness(4);
 	doNext(camp.returnToCampUseOneHour);
@@ -1087,9 +1088,9 @@ private function feedLatexyCumDirectly():void {
 		else outputText(" spatters");
 		outputText(" oily wetness onto the ground below at your affirmation, and she shudders with a submissive thrill.  You pat her on the head for a job well done and depart, secure in her obedience.");
 		//{Boost her fluid quantity, bonus for over 250mL.}
-		temp = 20;
-		if(player.cumQ() >= 500) temp += 5;
-		gooFluid(temp);
+		var fluid:int = 20;
+		if(player.cumQ() >= 500) fluid += 5;
+		gooFluid(fluid);
 		//{Boost her happiness a tiny amount.}
 		gooObedience(5);
 		player.orgasm();
@@ -1148,9 +1149,9 @@ private function maleDirectFeedLatexGooGoneWrong():void {
 private function feedCumDirectEpilogue():void {
 	clearOutput();
 	outputText("You wake with your mouth so dry that it feels like sandpaper.  Looking around, you see " + flags[kFLAGS.GOO_NAME] + " slumbering in the corner, looking rather... full and fecund, plump with weight.  You feel equally, obnoxiously empty.  Your groin is tingling painfully from the forceful draining.  Staggering away toward some water, you realize you'll have to raise her obedience if you want her to stop on command.  Letting her drink so deeply probably didn't help either.");
-	temp = 50
-	if(player.cumQ() >= 500) temp += 30;
-	gooFluid(temp);
+	var fluid:int = 50;
+	if(player.cumQ() >= 500) fluid += 30;
+	gooFluid(fluid);
 	
 	//{Boost her happiness a tiny amount.}
 	gooHappiness(5);
@@ -1203,7 +1204,7 @@ private function feedLatexyGirlCumDirect():void {
 	outputText("\n\nThe pleasure doesn't fade fast.  In fact, the aftershocks that wrack your muscles continue to assault you with every kiss of your pet's eager lips.  She doesn't slow or stop after your orgasm.  If anything, she suckles your nether-lips and [clit] that much harder, greedy more of your delectable juices.  You wriggle and squirm, putting a hand to " + flags[kFLAGS.GOO_NAME] + "'s forehead and commanding her to stop.");
 	//{OBEDIENT:}
 	if(gooObedience() >= 60) {
-		outputText("\n\nAt the sound of your order, a whimper rolls over your [vagina], but the undulating pleasure of her glossy tongue inside you gradually recedes.  Your [clit] pops free from the imprisoning puckers, joined by a web of inky spit and lady-cum.  " + flags[kFLAGS.GOO_NAME] + " breathes hard, as if she's been holding her breath all this time, and for all you know, she may have.  In any event, she mewls hungrily, licking her gooey liquids from your box to clean it.  Again, it feels so good that it nearly saps your strength, but you hold tight while she finishes lapping up the lubricants and saliva, leaving your entrance completely clean.")
+		outputText("\n\nAt the sound of your order, a whimper rolls over your [vagina], but the undulating pleasure of her glossy tongue inside you gradually recedes.  Your [clit] pops free from the imprisoning puckers, joined by a web of inky spit and lady-cum.  " + flags[kFLAGS.GOO_NAME] + " breathes hard, as if she's been holding her breath all this time, and for all you know, she may have.  In any event, she mewls hungrily, licking her gooey liquids from your box to clean it.  Again, it feels so good that it nearly saps your strength, but you hold tight while she finishes lapping up the lubricants and saliva, leaving your entrance completely clean.");
 		//Happy: 
 		if(gooHappiness() >= 66) outputText("\n\n\"<i>Thank you for the food, [Master],</i>\" " + flags[kFLAGS.GOO_NAME] + " coos, \"<i>A pet like me only needs what you allow, isn't that right, [Master]?</i>\"");
 		//Mediocre:
@@ -1215,11 +1216,11 @@ private function feedLatexyGirlCumDirect():void {
 		else outputText(" spatters");
 		outputText(" oily wetness onto the ground below at your affirmation, and she shudders with a submissive thrill.  You pat her on the head for a job well done and depart, secure in her obedience.");
 		//{Boost her fluid quantity, bonus for over 250mL.}
-		temp = 10;
-		if(player.wetness() >= 3) temp += 5;
-		if(player.wetness() >= 4) temp += 5;
-		if(player.wetness() >= 5) temp += 5;
-		gooFluid(temp);
+		var fluid:int = 10;
+		if(player.wetness() >= 3) fluid += 5;
+		if(player.wetness() >= 4) fluid += 5;
+		if(player.wetness() >= 5) fluid += 5;
+		gooFluid(fluid);
 		
 		//{Boost her happiness a tiny amount.}
 		gooObedience(4);
@@ -1324,11 +1325,11 @@ private function tryToAssertMaleDomWhileLatexGooDrains():void {
 	else if(gooHappiness() < 66) outputText("\n\n\"<i>I'm sorry I got so forceful, [name].  I enjoy serving you... I do.</i>\"");
 	//{High happiness}
 	else outputText("\n\n" + flags[kFLAGS.GOO_NAME] + " nuzzles against you, her head coming to rest on your [chest].  \"<i>Sorry, [name]. I didn't mean to try and force you.  I love you when you're so assertive, so... dominant.</i>\"");
-	temp = 30;
+	var fluid:int = 30;
 	player.orgasm();
 	dynStats("sen", -2);
-	if(player.cumQ() >= 500) temp += 20;
-	gooFluid(temp);
+	if(player.cumQ() >= 500) fluid += 20;
+	gooFluid(fluid);
 	//{Boost her happiness a tiny amount.}
 	gooHappiness(5);
 	gooObedience(5);
@@ -1498,6 +1499,7 @@ private function femalePCDomFucksLatexGooFuta():void {
 		outputText("\n\nYou nod, and then, before she can dwell on her punishment, you give her a kiss.  She blushes purple afterward, giggling into her palm.");
 	}
 	outputText("  You get dressed and leave with a swagger in your step.  A smiling, solid goo-girl sits in your wake.");
+	if (player.isGargoyle() && player.hasPerk(PerkLib.GargoyleCorrupted)) player.refillGargoyleHunger(30);
 	player.orgasm();
 	dynStats("sen", -2);
 	player.slimeFeed();
@@ -1599,14 +1601,14 @@ private function malePCDomFucksLatexGoo():void {
 	outputText(".  Every now and again, her butt lifts slightly and jiggles, then lowers.  She's whimpering and twitching, riding the aftershocks of her own orgasm.  You're exhausted, but you stand triumphant.  You fucked your latex slave in all three of her holes and outlasted her to boot.");
 	outputText("\n\nAs you get dressed, you realize your [cock] is totally clean.  It appears glossy, as if shined with spit, but there is no latex residue on it.  Somehow, her asshole must have absorbed her dried girl-cum and saliva back into her.  You didn't expect to get cleaner from anal sex, but it certainly let you end on a high note.  You get dressed with a swagger in your step and head back to the center of camp.");
 	outputText("\n\nIn your absence, a tired voice sighs, \"<i>That's... three.</i>\"");
-	temp = 15;
+	var fluid:int = 15;
 	player.orgasm();
 	dynStats("sen", -2);
-	if(player.cumQ() >= 500) temp += 10;
-	if(player.cumQ() >= 1000) temp += 10;
-	if(player.cumQ() >= 1500) temp += 10;
-	if(player.cumQ() >= 2000) temp += 10;
-	gooFluid(temp);
+	if(player.cumQ() >= 500) fluid += 10;
+	if(player.cumQ() >= 1000) fluid += 10;
+	if(player.cumQ() >= 1500) fluid += 10;
+	if(player.cumQ() >= 2000) fluid += 10;
+	gooFluid(fluid);
 	fatigue(10);
 	gooObedience(4);
 	gooHappiness(2);
@@ -1658,14 +1660,14 @@ private function feedLatexySomeMilk():void {
 	player.boostLactation(.5);
 	gooHappiness(5);
 	gooObedience(3);
-	temp = 15;
-	if(player.lactationQ() >= 200) temp += 10;
-	if(player.lactationQ() >= 500) temp += 10;
-	if(player.lactationQ() >= 1000) temp += 10;
-	if(player.lactationQ() >= 2000) temp += 10;
-	if(player.lactationQ() >= 4000) temp += 10;
-	if(player.lactationQ() >= 8000) temp += 10;
-	gooFluid(temp);
+	var fluid:int = 15;
+	if(player.lactationQ() >= 200) fluid += 10;
+	if(player.lactationQ() >= 500) fluid += 10;
+	if(player.lactationQ() >= 1000) fluid += 10;
+	if(player.lactationQ() >= 2000) fluid += 10;
+	if(player.lactationQ() >= 4000) fluid += 10;
+	if(player.lactationQ() >= 8000) fluid += 10;
+	gooFluid(fluid);
 	fatigue(5);
 	player.orgasm();
 	dynStats("sen", 2);

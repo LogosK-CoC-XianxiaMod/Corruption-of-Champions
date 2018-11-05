@@ -1,11 +1,12 @@
 package classes.Scenes.NPCs
 {
-	import classes.*;
-	import classes.GlobalFlags.kFLAGS;
-	import classes.GlobalFlags.kGAMECLASS;
-	import classes.GlobalFlags.kACHIEVEMENTS;
+import classes.*;
+import classes.BodyParts.Tail;
+import classes.GlobalFlags.kACHIEVEMENTS;
+import classes.GlobalFlags.kFLAGS;
+import classes.Scenes.SceneLib;
 
-	public class HelFollower extends NPCAwareContent
+public class HelFollower extends NPCAwareContent
 	{
 
 		public function HelFollower()
@@ -474,7 +475,10 @@ public function angryHelAndIzzyCampHelHereFirst():void {
 	doNext(camp.returnToCampUseOneHour);
 }
 
-
+public function heliaFollowerMenu2():void {
+	if ((flags[kFLAGS.LUNA_JEALOUSY] > 100 && rand(10) < 4) || (flags[kFLAGS.LUNA_JEALOUSY] > 150 && rand(10) < 8)) mishapsLunaHel();
+	else heliaFollowerMenu();
+}
 
 //Introduction -- Followers -> Helia
 public function heliaFollowerMenu(display:Boolean = true):void {
@@ -511,9 +515,9 @@ public function heliaFollowerMenu(display:Boolean = true):void {
 			addButton(2,"Threesomes",heliaThreesomes).hint("Invite someone for threesomes activity with Helia!");
 		}
 		addButton(4,"Talk",heliaOptions).hint("Discuss with Helia about various topics.");
-		if (!kGAMECLASS.helScene.pregnancy.isPregnant) addButton(5,"Spar",sparWithHeliaFirebuttsAreHot).hint("Do some quick fight sessions!");
+		if (!SceneLib.helScene.pregnancy.isPregnant && flags[kFLAGS.CAMP_UPGRADES_SPARING_RING] >= 2) addButton(5,"Spar",sparWithHeliaFirebuttsAreHot).hint("Do some quick fight sessions!");
 		else outputText("\n\n<b>Helia will not spar or box while pregnant.</b>");
-		if (!kGAMECLASS.helScene.pregnancy.isPregnant) addButton(6,"Box",boxWithInCampHel).hint("Box with Helia and train your strength and toughness.");
+		if (!SceneLib.helScene.pregnancy.isPregnant) addButton(6,"Box",boxWithInCampHel).hint("Box with Helia and train your strength and toughness.");
 		if (flags[kFLAGS.HEL_LOVE] == 1 || flags[kFLAGS.HEL_LOVE] == -1) {
 			if(player.hasCock() && player.cockThatFits(heliaCapacity()) >= 0 && player.lust >= 33 &&
 					!helPregnant() && flags[kFLAGS.HELSPAWN_AGE] == 0) addButton(7,"Have A Kid",helSpawnScene.haveAKid).hint("Get Helia pregnant and start a family with her.");
@@ -531,13 +535,13 @@ public function heliaFollowerMenu(display:Boolean = true):void {
 				if (display) outputText("\n\n<b>You are in Hardcore Mode. Are you sure you want to embark on the quest? You cannot return until you defeat the opponents and if you get defeated, your save file is permanently deleted.</b>");
 			}
 			//(Display Options: [Dungeon] [Not Yet])
-			simpleChoices("Dungeon", kGAMECLASS.dungeons.heltower.goToHeliaDungeon, "", null, "", null, "", null, "Not Yet", kGAMECLASS.dungeons.heltower.notYet);
+			simpleChoices("Dungeon", SceneLib.dungeons.heltower.goToHeliaDungeon, "", null, "", null, "", null, "Not Yet", SceneLib.dungeons.heltower.notYet);
 		}
 	}
 }
 
 private function heliaOptions():void {
-	if (kGAMECLASS.helScene.pregnancy.event >= 3 && flags[kFLAGS.HELIA_TALK_SEVEN] == 0) {
+	if (SceneLib.helScene.pregnancy.event >= 3 && flags[kFLAGS.HELIA_TALK_SEVEN] == 0) {
 		helSpawnScene.heliaTalkSeven();
 		return;
 	}
@@ -931,7 +935,7 @@ private function hugASmokeyTail():void {
 		outputText("As the sun sets over the camp, you see Helia standing over her hammock, stretching and yawning, ready to turn in for the night.  You approach her, sliding your arms around her supple waist and burying your face in her soft crimson locks, holding your lover close.  Hel giggles girlishly as you give her a long hug, nuzzling into the nape of her neck.");
 		outputText("\n\nWith a bit of effort, Hel turns around in your embrace and starts to fiddle with your [armor], slowly pulling it off, leaving your bare flesh pressed against her own.  You breathe in the woodsmoke scent of her hair; rub your " + player.skinFurScales() + " along her smooth flesh; gasp lightly as her long tail wraps lovingly around your [legs], drawing you even closer, letting your face rest against her yielding chest.");
 		outputText("\n\nKissing and nipping along your arm and neck, Hel gently pulls you into the hammock, leaving you resting atop the salamander, your limbs and tail");
-		if(player.tailType > TAIL_TYPE_NONE) outputText("s");
+		if(player.tailType > Tail.NONE) outputText("s");
 		outputText(" intertwined.  <i>\"Oh, this is nice,\"</i> Hel laughs, running her long, scaled fingers through your hair.  <i>\"So, you wanna stay with me tonight, lover mine?  I'd appreciate the company....\"</i>");
 
 		outputText("\n\nBefore you can give an answer, Hel presses her lips to yours, her breath coming hot against your face as her hands run across your back and [butt].");
@@ -1073,8 +1077,8 @@ private function heliaRoughSex(output:Boolean = true):void {
 		}
 	}
 	if (player.lust < 33) outputText("\n\n<b>You aren't turned on enough for sex right now.</b>");
-	if (getGame().inCombat)
-		addButton(14, "Leave", cleanupAfterCombat);
+    if (CoC.instance.inCombat)
+        addButton(14, "Leave", cleanupAfterCombat);
 	else addButton(14, "Back", heliaFollowerMenu);
 }
 
@@ -1173,8 +1177,8 @@ private function possessIzma():void {
 	
 	player.orgasm();
 	dynStats("sen", -1);
-	if (getGame().inCombat)
-		cleanupAfterCombat();
+    if (CoC.instance.inCombat)
+        cleanupAfterCombat();
 	else doNext(camp.returnToCampUseOneHour);
 }
 	
@@ -1214,8 +1218,8 @@ private function inCampHelNagaLuv():void {
 	
 	player.orgasm();
 	dynStats("sen", -1);
-	if (getGame().inCombat)
-		cleanupAfterCombat();
+    if (CoC.instance.inCombat)
+        cleanupAfterCombat();
 	else doNext(camp.returnToCampUseOneHour);
 }	
 
@@ -1245,8 +1249,8 @@ private function nagaCoilForHelCampWithGirls():void {
 	
 	player.orgasm();
 	dynStats("sen", -1);
-	if (getGame().inCombat)
-		cleanupAfterCombat();
+    if (CoC.instance.inCombat)
+        cleanupAfterCombat();
 	else doNext(camp.returnToCampUseOneHour);
 }	
 
@@ -1288,8 +1292,8 @@ private function centaurMountsCampHel():void {
 	
 	player.orgasm();
 	dynStats("sen", -1);
-	if (getGame().inCombat)
-		cleanupAfterCombat();
+    if (CoC.instance.inCombat)
+        cleanupAfterCombat();
 	else doNext(camp.returnToCampUseOneHour);
 }	
 
@@ -1322,8 +1326,8 @@ private function femtaurPlusCampHel():void {
 	outputText("\n\nBreathing heavily, you pat her on the cheek and stumble off to get cleaned up.");
 	player.orgasm();
 	dynStats("sen", -1);
-	if (getGame().inCombat)
-		cleanupAfterCombat();
+    if (CoC.instance.inCombat)
+        cleanupAfterCombat();
 	else doNext(camp.returnToCampUseOneHour);
 }
 
@@ -1348,8 +1352,8 @@ private function heliaFollowerTentafuck():void {
 	outputText("\n\nYou roll your eyes and go to get cleaned up.");
 	player.orgasm();
 	dynStats("sen", -1);
-	if (getGame().inCombat)
-		cleanupAfterCombat();
+    if (CoC.instance.inCombat)
+        cleanupAfterCombat();
 	else doNext(camp.returnToCampUseOneHour);
 }
 
@@ -2427,6 +2431,14 @@ outputText("\n\nYour hand slides across Sophie’s stomach to squeeze one of her
 	player.orgasm();
 	menu();
 	doNext(camp.returnToCampUseOneHour);
+}
+
+public function mishapsLunaHel():void {
+	clearOutput();
+	outputText("Helia is currently sleeping on her mats holding a bottle of firewater. You smell the bottle up and find clear sign of soporifics inside. Whoever did this wanted to get rid of her for a few hours. Regardless the result is the same and no matter what you do the lizard girl won’t wake up, might as well try again later.\n\n");
+	if (player.hasStatusEffect(StatusEffects.CampLunaMishaps2)) player.addStatusValue(StatusEffects.CampLunaMishaps2, 3, 1);
+	else player.createStatusEffect(StatusEffects.CampLunaMishaps2, 0, 0, 1, 0);
+	doNext(playerMenu);
 }
 	}
 }

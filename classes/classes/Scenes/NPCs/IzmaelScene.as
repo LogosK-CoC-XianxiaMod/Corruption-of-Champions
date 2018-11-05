@@ -1,9 +1,10 @@
 package classes.Scenes.NPCs 
 {
-	import classes.*;
-	import classes.GlobalFlags.*;
-	
-	/**
+import classes.*;
+import classes.GlobalFlags.*;
+import classes.Scenes.SceneLib;
+
+/**
 	 * Izmael by Nonesuch
 	 * @author Kitteh6660
 	 */
@@ -53,13 +54,13 @@ package classes.Scenes.NPCs
 		public function izmaelMenu():void {
 			menu();
 			addButton(0, "Appearance", izmaelAppearance).hint("Examine Izmael's appearance.");
-			addButton(1, "Books", getGame().izmaScene.IzmaCampBooks).hint("Ask Izmael if you can borrow his books.");
-			if (getGame().izmaScene.totalIzmaChildren() > 0) addButton(2, "Children", getGame().izmaScene.izmaKidsPlaytime);
-			if (player.lust >= 33) addButton(3, "Sex", izmaelSexMenu).hint("Do some romp with the tigershark!");
+            addButton(1, "Books", SceneLib.izmaScene.IzmaCampBooks).hint("Ask Izmael if you can borrow his books.");
+            if (SceneLib.izmaScene.totalIzmaChildren() > 0) addButton(2, "Children", SceneLib.izmaScene.izmaKidsPlaytime);
+            if (player.lust >= 33) addButton(3, "Sex", izmaelSexMenu).hint("Do some romp with the tigershark!");
 			else addButtonDisabled(3, "Sex", "You are not horny enough to consider that.");
 			addButton(4, "Talk", izmaelTalk).hint("Talk to Izmael about some stuff.");
-			addButton(5, "Tooth", getGame().izmaScene.gatASharkTooth);
-			addButton(6, "Toggle Herb", toggleIzmaelVirility).hint(flags[kFLAGS.IZMA_PREGNANCY_ENABLED] == 0 ? "Tell Izmael to stop taking the herbs so he can impregnate you vaginally.\n\nCurrently: ON" : "Tell Izmael to start taking the herbs so he can't impregnate you.\n\nCurrently: OFF");
+            addButton(5, "Tooth", SceneLib.izmaScene.gatASharkTooth);
+            addButton(6, "Toggle Herb", toggleIzmaelVirility).hint(flags[kFLAGS.IZMA_PREGNANCY_ENABLED] == 0 ? "Tell Izmael to stop taking the herbs so he can impregnate you vaginally.\n\nCurrently: ON" : "Tell Izmael to start taking the herbs so he can't impregnate you.\n\nCurrently: OFF");
 			if (player.hasItem(consumables.BIMBOLQ) && player.hasItem(consumables.DEBIMBO)) addButton(7, "Turn Back", revertIzmaelPrompt).hint("Turn Izmael back to Izma? This is an irreversible process and you then won't be able to remove her dick afterwards.");
 			else addButtonDisabled(7, "Turn Back", "You need 1 Bimbo Liqueur and 1 Debimbo to turn Izmael back into Izma.");
 			addButton(14, "Back", camp.campLoversMenu);
@@ -234,6 +235,7 @@ package classes.Scenes.NPCs
 			outputText("\n\nAt long last, after he has been going at you from behind for at least twenty minutes, he bites deliberately into your other shoulder and holds you there, grunting into your body as he gives you five final, long hard strokes. You grasp the ground as you feel one more orgasm tremble through you as your packed cunt milks Izmael of the very last drop of jizz his four balls contain. He finally withdraws with a long, gratified sigh; you feel a small waterfall of cum ooze out as he does so, and you fight back a moan.");
 			outputText("\n\n\"<i>That was freaking boss, alpha " + player.mf("bro", "chick") + "!</i>\" he says after he has gathered his breath, grinning at the person he's covered in his seed without the faintest trace of irony. You shakily sit yourself down, touch at the deep teeth marks he's left upon your shoulders and stare at him in faint disbelief. He sounds less like a man at the end of a sordid sexual marathon than one at the end of a really good work-out. \"<i>We're totally gonna do that again, right " + player.mf("boy", "girl") + "?</i>\" he enthuses. \"<i>You have the best ideas for calith... callous... for gym stuff. I normally have to force myself to do presses, but when you're involved...</i>\" a familiar stoned expression appears on the shark morph's face, and his semi-flaccid dick begins to swell again. You realize with a cold, almost frightened thrill that there is no exhausting this being you've created; you could fuck Izmael until he turned your vagina inside out, and he'd still be ready to do it all over again at the end of it. You dismiss him with a feeble wave of your hand before the idea can occur to him, and make your wobbly way to the stream for a thorough clean up.");
 			player.orgasm();
+			if (player.isGargoyle() && player.hasPerk(PerkLib.GargoyleCorrupted)) player.refillGargoyleHunger(30);
 			player.knockUp(PregnancyStore.PREGNANCY_IZMA, PregnancyStore.INCUBATION_IZMA);
 			doNext(camp.returnToCampUseOneHour);
 		}
@@ -302,6 +304,7 @@ package classes.Scenes.NPCs
 			outputText(" Eventually, finally, you come to and slowly unravel yourself from him, stand up and clamber, dripping out of the bath.");
 			if (player.isGoo()) outputText(" It takes a while to persuade much of your slimy bulk to follow you out of the pool, relaxed and diffused into the steaming waters as it is. You find yourself wondering how the lake slimes do it so effortlessly.");
 			outputText("\n\n<i>Alpha " + player.mf("dude", "chick") + "... I'm gonna need, like, 3 warm downs to get over this one,</i>\" he groans.  You laugh as you take in his exhausted, submerged frame.  The water has been polluted by the copious fluids the two of you have spurted out; you can smell the hot musk from here.  You suspect by the time Izmael himself manages to pull his frame out of the morass, he will be just as horny as he was when he got in.  Grinning, you saunter your steaming, naked self back to camp in search of something to towel yourself down.");
+			if (player.isGargoyle() && player.hasPerk(PerkLib.GargoyleCorrupted)) player.refillGargoyleHunger(30);
 			player.orgasm();
 			doNext(camp.returnToCampUseOneHour);
 		}
@@ -315,7 +318,7 @@ package classes.Scenes.NPCs
 			else outputText("\n\nYou smirk and with some difficulty sink as much of your monstrous half into the hot water as you can, perching yourself upon his chest, sighing as your lower half is encapsulated in wet heat.");
 			outputText("\n\nYou curl your fingers into Izmael's wet hair and begin to gently rub your [vagina] against the side of his face.  Your cunt is already softened and beading from the humidity which veils you, and it begins to glisten with anticipation as you enjoy the ever-so-slightly rough texture bouncing small shudders of pleasure into your [clit].  The realization that his shark skin makes him like one big piece of pumice stone to you sends shivers of delight down your spine; he groans and tries to shift himself as you rub your body gleefully against him up and down in the water, the satisfying scratching of his firm flesh upon your skin/scales/carapace/fur contrasting with the hot liquid relaxing your muscles.  He locks eyes with you again, not capable of understanding what you're doing or why you have rendered him so helpless, trapped under a weight of tired limbs, heat and fluid.  You hold his gaze as you gently press your pussy against his mouth.  \"<i>Open wide, beta.</i>\" Izmael is in no state to object.  You sigh as you feel his tongue push into your wet opening. ");
 			if (player.cockTotal() == 1) outputText("You sigh as you feel his tongue push into your wet opening, giggling lowly as your [cock] flops onto his head."); 
-			if (player.cockTotal() >= 2) ("You sigh as you feel his tongue push into your wet opening, your dicks sliding around his head, festooning his face and shoulders with your cock flesh.");
+			if (player.cockTotal() >= 2) outputText("You sigh as you feel his tongue push into your wet opening, your dicks sliding around his head, festooning his face and shoulders with your cock flesh.");
 			outputText("\n\nThe shark morph is clumsy at first; his teeth catch against your sensitive mons as you begin to gently thrust into his face, making you hiss slightly, and he laps at your inner flesh crudely; it feels like you're being gotten at by a dog.  You sigh in frustration at your unwieldy boy toy.");
 			outputText("\n\n\"<i>Cmon beta,</i>\" you rap out in your best gym instructor impression.  \"<i>Let's loosen that jaw and get that tongue moving! The warm down is just as important as the work-out, you should know that.  You want to thank your alpha for giving you such a vigorous work out the best you can, don't you?</i>\" The shark morph seems to be in a deep trance, but your words have the required effect: Izmael's jaw sags wider and you exhale in satisfaction as pointed edges disappear and he begins to twist his tongue into your depths with more care.  You begin to luxuriously ride his face, holding his head softly but firmly as you pump your [hips] in and out of the wet, sucking warmth, your thighs clenching into your beta's neck as you find a slow, indulgent rhythm, the gentle sound of the water filling your ears.");
 			outputText("\n\nThe shark morph is doubly sedated by your rough drill and steaming water, his mouth both relaxed and hot as he lavishes your pussy in attention, sliding his tongue as deep into your depths as he can at your inward push before licking at and testing every sensitive fold he can find, polishing your soft, dripping hole with his saliva, intermittently surrounding your labia with his soft lips and immersing your entire sex in soft, sucking pressure.  You reward him by inching your hand down his washboard stomach, enjoying each ripple of warm muscle along the way, bending back until you touch his trunk-like length.  Izmael groans long and low into your pussy, sending pleasurable vibrations running through you as you wrap one hand around his own cock and slowly begin to pull, letting your hand go soft and then clenching, working him up and down.  He closes his eyes again as you imprison him in pleasure.");
@@ -373,6 +376,7 @@ package classes.Scenes.NPCs
 			outputText("\n\nIt seems like he's been going at you for hours when Izmael finally makes a sound like a wounded bear, clenches down on you and thrusts as much as his dick as he can into your [asshole]. Your hand is a blur of motion on your own dick as his cock bulges obscenely, stretching you even wider before at last unleashing a torrent of cum into your depths. Warmth spreads through you as he continues to fuck you mindlessly, thrusting his seed deeper into your ass even as it dribbles back out onto your thighs and suddenly you are over the edge yourself, your dick flexing helplessly in time to the shark morph's own orgasm, spurting long lengths of cum onto the ground as you feel more and more of your boy's liquid love warm your lights.");
 			outputText("\n\nEventually, after spending a time joined together panting, your sweat drying on your skin, Izmael slowly retracts out of your abused [butt], his still-leaking dick flopping out and swinging like an obscene pendulum. You suppress the urge to moan as a small waterfall of cum oozes out of your backside and onto the ground. Izmael really busted a nut in you - or four. Slowly, trying to ignore the wet, warm looseness inundating your lower half, you get to your feet and manage a grin at the shark morph, who looks slightly dazed. You slide your arms around him, feeling warm and satiated as he gathers the few thoughts he has.");
 			outputText("\n\n\"<i>Woah s... bro, that was...</i>\" he sets his jaw thinks about it for a bit. With his balls emptied, he apparently can think clearly- at least for the next five minutes. \"..." + (silly() ? "Jawesome" : "Awesome") + ".\" He looks at you pressed into his chest and you see something different in his eyes - a hungry, predatory look which sends a small shiver down your spine. It is gone in the next instant though and he is clasping your shoulder, chummily punching you lightly across the face. \"<i>We are gonna have to do that again some time, bro. Cuz, I gotta be honest, you got one hell of a sweet ass.</i>\" You give him a coy smile and send him on his way with a slap to the butt. He stops halfway back to the stream as something slowly occurs to him. \"<i>Uh, no homo.</i>\"");
+			if (player.isGargoyle() && player.hasPerk(PerkLib.GargoyleCorrupted)) player.refillGargoyleHunger(30);
 			flags[kFLAGS.IZMAEL_ENTRAPPED]++;
 			player.orgasm();
 			doNext(camp.returnToCampUseOneHour);

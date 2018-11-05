@@ -9,7 +9,7 @@ package classes.Scenes.NPCs {
 	import classes.Scenes.Camp;
 	import classes.Scenes.NPCs.Kindra;
 	
-	use namespace kGAMECLASS;
+	use namespace CoC;
 	
 	public class KindraFollower extends NPCAwareContent {
 	//implements TimeAwareInterface {
@@ -77,6 +77,28 @@ public function wonFightWithKindra():void {
 	outputText("You tell her she don’t have to worry about her talent as an huntress either.\n\n");
 	outputText("\"<i>You don’t really get my point but it's fine perhaps you will get it eventually.</i>\"\n\n");
 	outputText("The both of you head back to camp.");
+	if (flags[kFLAGS.SPARRABLE_NPCS_TRAINING] == 2) {
+		if (flags[kFLAGS.KINDRA_DEFEATS_COUNTER] >= 1) flags[kFLAGS.KINDRA_DEFEATS_COUNTER]++;
+		else flags[kFLAGS.KINDRA_DEFEATS_COUNTER] = 1;
+		if (flags[kFLAGS.KINDRA_DEFEATS_COUNTER] == 8 && flags[kFLAGS.KINDRA_LVL_UP] == 6) {
+			if (player.hasStatusEffect(StatusEffects.CampSparingNpcsTimers2)) player.addStatusValue(StatusEffects.CampSparingNpcsTimers2, 1, 48);
+			else player.createStatusEffect(StatusEffects.CampSparingNpcsTimers2, 48, 0, 0, 0);
+			flags[kFLAGS.KINDRA_DEFEATS_COUNTER] = 0;
+			flags[kFLAGS.KINDRA_LVL_UP] = 7;
+		}
+		if (flags[kFLAGS.KINDRA_DEFEATS_COUNTER] == 9 && flags[kFLAGS.KINDRA_LVL_UP] == 7) {
+			if (player.hasStatusEffect(StatusEffects.CampSparingNpcsTimers2)) player.addStatusValue(StatusEffects.CampSparingNpcsTimers2, 1, 54);
+			else player.createStatusEffect(StatusEffects.CampSparingNpcsTimers2, 54, 0, 0, 0);
+			flags[kFLAGS.KINDRA_DEFEATS_COUNTER] = 0;
+			flags[kFLAGS.KINDRA_LVL_UP] = 8;
+		}
+		if (flags[kFLAGS.KINDRA_DEFEATS_COUNTER] == 10 && flags[kFLAGS.KINDRA_LVL_UP] == 8) {
+			if (player.hasStatusEffect(StatusEffects.CampSparingNpcsTimers2)) player.addStatusValue(StatusEffects.CampSparingNpcsTimers2, 1, 60);
+			else player.createStatusEffect(StatusEffects.CampSparingNpcsTimers2, 60, 0, 0, 0);
+			flags[kFLAGS.KINDRA_DEFEATS_COUNTER] = 0;
+			flags[kFLAGS.KINDRA_LVL_UP] = 9;
+		}
+	}
 	kindraAffection(1);
 	cleanupAfterCombat();
 	return;
@@ -96,7 +118,7 @@ public function meet2Kindra():void {
 	outputText("\"<i>What is it you wanted exactly [name]?</i>\"\n\n");
 	menu();
 	addButton(0, "Appearance", kindraAppearance).hint("Examine Kindra's detailed appearance.");
-	addButton(1, "Fight", fight2Kindra).hint("Fight her");
+	if (flags[kFLAGS.CAMP_UPGRADES_SPARING_RING] >= 2) addButton(1, "Fight", fight2Kindra).hint("Fight her");
 	if (player.statusEffectv1(StatusEffects.Kindra) < 150) addButton(2, "Training", trainingArcheryWithKindra).hint("Train your archery skills with her.");
 	else addButtonDisabled(2, "Training", "You finished advanced archery training.");
 	addButton(14, "Back", camp.campFollowers);
@@ -123,14 +145,14 @@ public function fight2Kindra():void {
 public function trainingArcheryWithKindra():void {
 	clearOutput();
 	if (flags[kFLAGS.KINDRA_DAILY_TRAINING] < 1) {
-		if (player.statusEffectv1(StatusEffects.Kindra) >= 145) {
+		if (player.statusEffectv1(StatusEffects.Kindra) >= 140) {
 			if (player.isArtifactBow()) {
 				outputText("You ready your magical bow and shoot putting both your dexterity and will at the task and pushing them to the limit. Your arrows all impale one another the last striking the target with such impossible power the target fissure by the center in a cross shape and falls ground in rubble.\n\n");
 				outputText("Kindra applaud you.\n\n");
 				outputText("\"<i>Well wow I didn’t expect you to not only manage this feat but also actually destroy the target in the process pup. I can hereby and without doubt call you one of Mareth best archer your training is complete.</i>\"\n\n");
 				outputText("\"<b>Learned Sidewinder ability!</b>\"\n\n");
 				if (!player.hasStatusEffect(StatusEffects.KnowsSidewinder)) player.createStatusEffect(StatusEffects.KnowsSidewinder, 0, 0, 0, 0);
-				bowSkill(5);
+				bowSkill(10);
 			}
 			else {
 				outputText("You head back to the archery field to resume training.\n\n");
@@ -140,7 +162,7 @@ public function trainingArcheryWithKindra():void {
 			flags[kFLAGS.KINDRA_DAILY_TRAINING] = 1;
 			doNext(camp.returnToCampUseFourHours);
 		}
-		if (player.statusEffectv1(StatusEffects.Kindra) >= 100 && player.statusEffectv1(StatusEffects.Kindra) < 145) {
+		if (player.statusEffectv1(StatusEffects.Kindra) >= 100 && player.statusEffectv1(StatusEffects.Kindra) < 140) {
 			if (flags[kFLAGS.KINDRA_ADV_ARCHERY] == 4) {
 				outputText("You head back to the archery field to resume training.\n\n");
 			}
@@ -156,15 +178,13 @@ public function trainingArcheryWithKindra():void {
 			outputText("Your aim is true but no matter how you do it your arrows tend to only shoot around the absolute center rather than in it. At least you improved your accuracy a little today.\n\n");
 			outputText("Kindra watch passively all the while but eventually calling it off for the day you both head back to camp.\n\n");
 			if (player.spe < 200) {
-				player.spe += 5;
-				statScreenRefresh();
+				dynStats("spe", 5);
 			}
 			if (player.inte < 200) {
-				player.inte += 5;
-				statScreenRefresh();
+				dynStats("inte", 5);
 			}
 			if (player.spe >= 150 && player.inte >= 120) flags[kFLAGS.KINDRA_ADV_ARCHERY] = 5;
-			bowSkill(5);
+			bowSkill(10);
 			flags[kFLAGS.KINDRA_DAILY_TRAINING] = 1;
 			doNext(camp.returnToCampUseFourHours);
 		}
@@ -180,21 +200,19 @@ public function trainingArcheryWithKindra():void {
 			outputText("This training is somewhat harder than anything you’ve tried so far. You shoot those targets for a while missing quite a few shots. After a few hour you indeed gain in accuracy and fluidity your arrows hitting the targets more often. ");
 			outputText("This doesn’t prevent Kindra mocking you when you fail at hitting targets entirely but strangely her taunts helps you push yourself harder and harder. Perhaps because you want to prove the sheep morph wrong.\n\n");
 			if (player.spe < 150) {
-				player.spe += 5;
-				statScreenRefresh();
+				dynStats("spe", 5);
 			}
 			if (player.inte < 120) {
-				player.inte += 5;
-				statScreenRefresh();
+				dynStats("inte", 5);
 			}
-			if (player.statusEffectv1(StatusEffects.Kindra) >= 95 && player.spe >= 150 && player.inte >= 120) {
+			if (player.statusEffectv1(StatusEffects.Kindra) >= 90 && player.spe >= 150 && player.inte >= 120) {
 				outputText("Kindra watch satisfied as your arrows hits the five consecutives targets right in their centers.\n\n");
 				outputText("\"<i>Good that will be all for today. I have a new training for you tomorrow that will push your skill to the limit. For now go rest pup you earned it.</i>\"\n\n");
 				outputText("\"<b>Learned Barrage ability!</b>\"\n\n");
 				if (!player.hasStatusEffect(StatusEffects.KnowsBarrage)) player.createStatusEffect(StatusEffects.KnowsBarrage, 0, 0, 0, 0);
 				flags[kFLAGS.KINDRA_ADV_ARCHERY] = 3;
 			}
-			bowSkill(5);
+			bowSkill(10);
 			flags[kFLAGS.KINDRA_DAILY_TRAINING] = 1;
 			doNext(camp.returnToCampUseFourHours);
 		}
@@ -212,15 +230,14 @@ public function trainingArcheryWithKindra():void {
 			outputText("You get at it for several hours until you're so tired you can no longer pull your bowstring.\n\n");
 			if (player.inte < 100) {
 				outputText("\"<i>That will do for today pup ask me tomorrow to resume training.</i>\"\n\n");
-				player.spe += 5;
-				player.inte += 5;
-				statScreenRefresh();
+				dynStats("spe", 5);
+				dynStats("inte", 5);
 			}
-			if (player.statusEffectv1(StatusEffects.Kindra) > 40) {
+			if (player.statusEffectv1(StatusEffects.Kindra) >= 40) {
 				outputText("\"<i>Not bad you're hitting the center as you should. We can move on to step two tomorrow, I expect you to be ready.</i>\"\n\n");
 			}
-			if (player.statusEffectv1(StatusEffects.Kindra) < 5) player.createStatusEffect(StatusEffects.Kindra,5,0,0,0);
-			else bowSkill(5);
+			if (player.statusEffectv1(StatusEffects.Kindra) < 10) player.createStatusEffect(StatusEffects.Kindra,10,0,0,0);
+			else bowSkill(10);
 			flags[kFLAGS.KINDRA_DAILY_TRAINING] = 1;
 			doNext(camp.returnToCampUseFourHours);
 		}

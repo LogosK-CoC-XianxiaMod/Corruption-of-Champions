@@ -1,10 +1,12 @@
 package classes.Scenes.Areas.Bog 
 {
-	import classes.*;
-	import classes.GlobalFlags.*;
-	import classes.Scenes.UniqueSexScenes;
-	
-	public class LizanRogueScene extends BaseContent
+import classes.*;
+import classes.BodyParts.LowerBody;
+import classes.BodyParts.Tail;
+import classes.GlobalFlags.*;
+import classes.Scenes.UniqueSexScenes;
+
+public class LizanRogueScene extends BaseContent
 	{
 		public var uniquuuesexscene:UniqueSexScenes = new UniqueSexScenes();
 		
@@ -81,10 +83,10 @@ package classes.Scenes.Areas.Bog
 				outputText("The lizan raises his hands in defeat and you celebrate with a victory dance. ");
 				if (player.lust >= 33) {
 					outputText("You wonder what you should do to the lizan.");
-					addButton(0, "Use Dick", rapeLizanInTheAss).hint("Anally penetrate him with your " + player.multiCockDescriptLight() + ".");
-					addButton(1, "Use Pussy", rapeLizanWithPussy).hint("Get on top of the lizan and stuff his cock into your " + player.vaginaDescript() + ".");
-					if (player.tailType == TAIL_TYPE_MANTICORE_PUSSYTAIL) addButton(2, "Tail Rape", uniquuuesexscene.manticoreTailRapeScene);
-					if (player.lowerBody == LOWER_BODY_TYPE_PLANT_FLOWER) addButton(3, "Get Pollinated", uniquuuesexscene.alrauneGetPollinatedScene);
+					if (player.hasCock()) addButton(0, "Use Dick", rapeLizanInTheAss).hint("Anally penetrate him with your " + player.multiCockDescriptLight() + ".");
+					if (player.hasVagina()) addButton(1, "Use Pussy", rapeLizanWithPussy).hint("Get on top of the lizan and stuff his cock into your " + player.vaginaDescript() + ".");
+					if (player.tailType == Tail.MANTICORE_PUSSYTAIL) addButton(2, "Tail Rape", uniquuuesexscene.manticoreTailRapeScene);
+					if (player.lowerBody == LowerBody.PLANT_FLOWER) addButton(3, "Get Pollinated", uniquuuesexscene.alrauneGetPollinatedScene);
 					addButton(4, "Leave", cleanupAfterCombat);
 					return;
 				}
@@ -100,8 +102,8 @@ package classes.Scenes.Areas.Bog
 				if (player.lust >= 33) {
 					outputText("<b>You could have sex with him if you like to.</b> ");
 					addButton(0, "Sex", haveSexWithLizan).hint("Have some fun with the oh-so-sexy lizan.");
-					if (player.tailType == TAIL_TYPE_MANTICORE_PUSSYTAIL) addButton(2, "Tail Rape", uniquuuesexscene.manticoreTailRapeScene);
-					if (player.lowerBody == LOWER_BODY_TYPE_PLANT_FLOWER) addButton(3, "Get Pollinated", uniquuuesexscene.alrauneGetPollinatedScene);
+					if (player.tailType == Tail.MANTICORE_PUSSYTAIL) addButton(2, "Tail Rape", uniquuuesexscene.manticoreTailRapeScene);
+					if (player.lowerBody == LowerBody.PLANT_FLOWER) addButton(3, "Get Pollinated", uniquuuesexscene.alrauneGetPollinatedScene);
 					addButton(4, "Leave", leaveLizanAfterCombat);
 					return;
 				}
@@ -183,8 +185,8 @@ package classes.Scenes.Areas.Bog
 			flags[kFLAGS.LIZAN_ROGUE_SEX_COUNTER]++;
 			player.orgasm();
 			doNext(camp.returnToCampUseOneHour);
-			if (getGame().inCombat) cleanupAfterCombat();
-		}
+            if (CoC.instance.inCombat) cleanupAfterCombat();
+        }
 		
 		public function consensualGetFucked():void {
 			clearOutput();
@@ -236,9 +238,10 @@ package classes.Scenes.Areas.Bog
 			player.createStatusEffect(StatusEffects.Eggs, rand(6), 0, rand(3) + 5, 0);
 			flags[kFLAGS.LIZAN_ROGUE_SEX_COUNTER]++;
 			player.orgasm();
+			if (player.isGargoyle() && player.hasPerk(PerkLib.GargoyleCorrupted)) player.refillGargoyleHunger(30);
 			doNext(camp.returnToCampUseOneHour);
-			if (getGame().inCombat) cleanupAfterCombat();
-		}
+            if (CoC.instance.inCombat) cleanupAfterCombat();
+        }
 		
 		public function consensualGetButtFucked():void {
 			clearOutput();
@@ -286,9 +289,10 @@ package classes.Scenes.Areas.Bog
 			outputText("\n\nYou spend some time cuddling, the lizan's still on your back with his warm cock in your [asshole]. Eventually, you get up and give him a deep kiss before you return to your camp.");
 			flags[kFLAGS.LIZAN_ROGUE_SEX_COUNTER]++;
 			player.orgasm();
+			if (player.isGargoyle() && player.hasPerk(PerkLib.GargoyleCorrupted)) player.refillGargoyleHunger(30);
 			doNext(camp.returnToCampUseOneHour);
-			if (getGame().inCombat) cleanupAfterCombat();
-		}
+            if (CoC.instance.inCombat) cleanupAfterCombat();
+        }
 		
 		public function consensualDoublePenetration():void {
 			clearOutput();
@@ -298,7 +302,7 @@ package classes.Scenes.Areas.Bog
 			else if (player.hasFuckableNipples()) outputText("\n\nWhen he reaches your [fullChest] he takes one look at your [nipples] and does a double take. For a moment he is at a loss for words but when you clear your throat he quickly collects his wits and sticks his tongue into your fuckable nipples. The sensation is similar to getting your pussy licked but much higher up. You groan as he suckles each nipple in turn while massaging your [chest].");
 			else outputText("\n\nWhen he reaches your [fullChest he takes one look at your [nipples] and dives right in. He makes a show of pulling one into his mouth. All you can see his his " + monster.skinTone + " lips but inside you can feel his tongue swirling around your sensitive nipples. He sucks off with a pop that sends a tingle down to your groin before he latches on to the next one and repeats this torturous practice.");
 			outputText("\n\nOnce he's finished with your [nipples] his lips find yours again and you can taste yourself on his tongue as it dives right into your mouth.");
-			if (player.wingType > 0) outputText("\n\nAs he kisses you his hands graze your [wings]. He lightly massages the base, causing an odd rolling sensation that is actually kind of pleasant. Despite this you get the feeling he's just curious to touch them. He's very tender with your [wings] as if he doesn't want to hurt you. Once his curiosity has been sated though he releases the base of your [wings] and pulls you into him, your lips still locked together.");
+			if (player.wings.type > 0) outputText("\n\nAs he kisses you his hands graze your [wings]. He lightly massages the base, causing an odd rolling sensation that is actually kind of pleasant. Despite this you get the feeling he's just curious to touch them. He's very tender with your [wings] as if he doesn't want to hurt you. Once his curiosity has been sated though he releases the base of your [wings] and pulls you into him, your lips still locked together.");
 			outputText("\n\nHis hands slide down to your [ass]. He gets a good grope in, massaging your rear and using it as a lever to pull you against him. " + (player.tailType > 0 ? "He even wraps his scaled hand around the base of your [tail], softly massaging the point where it meets your [ass].": "") + "");
 			if (player.hasCock()) outputText("\n\nYou gasps against his lips as he wraps a hand around your [cock]. He rubs its rigid surface, firmly tugging your [cock] as smacks your [ass]. As his hands massage and grips [eachCock] you can't help sliding your hands across his body, pulling him into you as your mouths remain locked together.");
 			outputText("\n\nOnce the touchy feely face sucky grope fest is over he takes you by the hips, whirling you around. Something about you is driving the lizan mad. His dual peckers split across your body, one sliding against your [vagina] while the other slides up into the crevice of your [ass]. He says something about fucking both your holes and with a grin you tell him to go for it.");
@@ -347,9 +351,10 @@ package classes.Scenes.Areas.Bog
 			player.createStatusEffect(StatusEffects.Eggs, rand(6), 0, rand(3) + 5, 0);
 			flags[kFLAGS.LIZAN_ROGUE_SEX_COUNTER]++;
 			player.orgasm();
+			if (player.isGargoyle() && player.hasPerk(PerkLib.GargoyleCorrupted)) player.refillGargoyleHunger(60);
 			doNext(camp.returnToCampUseOneHour);
-			if (getGame().inCombat) cleanupAfterCombat();
-		}
+            if (CoC.instance.inCombat) cleanupAfterCombat();
+        }
 		
 		public function consensualWatersports():void { //Yay watersports!
 			clearOutput();
@@ -381,12 +386,12 @@ package classes.Scenes.Areas.Bog
 			outputText(" You cuddle with the lizan for a moment before you have to part ways" + player.clothedOrNaked(" and redress yourself in your [armor]", "") + ".");
 			outputText("\n\n\"<i>I hope you come back later,</i>\" the lizan says with a smile. You give him a kiss before you return to your camp.");
 			doNext(camp.returnToCampUseOneHour);
-			if (getGame().inCombat) cleanupAfterCombat();
-		}
+            if (CoC.instance.inCombat) cleanupAfterCombat();
+        }
 		
 		public function rapeLizanInTheAss():void {
 			clearOutput();
-			if (monster.lust >= monster.eMaxLust()) {
+			if (monster.lust >= monster.maxLust()) {
 				outputText("The lizan does little to resist. He just continues his intense masturbation as you push him over to make his rectal passage more accessible. The horny guy even lifts his tail, eagerly giving you access to his back door. From the look of things he is neither a virgin nor a frequent taker. ");
 				outputText("\n\nWith his chest on the ground he continues to pump his cocks, his hole winking in invitation. When you slide your hands across his self parting ass cheeks he arches his back and groans, begging for it. Not being one to disappoint you spit into your hand while marveling at how simple lust has turned this pure creature into your hot little boy slut. After spit shining your [cock] you aim it towards the horny guy's back door, and enter without one thought of knocking.");
 				if (player.smallestCockLength() < 7) outputText("\n\nThe lizan groans as you sink into his heated tunnel. With your [cock] inside his anal ring flexes against you, tightening around your dick as he pushes back against you. You grab his hips and begin roughly pounding the lizan's hole. With every rough thrust the lizan spreads his legs and tail, attempting to allow you deeper access. As you wreck his ass with your [cock] he continues pumping his dual dicks, even as his chest and chin slide through the dirt. You toss your head back, lost in the sensation of his squeezing hole while he obviously loves the feeling of your [cock].");
@@ -447,6 +452,7 @@ package classes.Scenes.Areas.Bog
 			player.knockUp(PregnancyStore.PREGNANCY_OVIELIXIR_EGGS, PregnancyStore.INCUBATION_OVIELIXIR_EGGS);
 			player.createStatusEffect(StatusEffects.Eggs, rand(6), 0, rand(3) + 5, 0);
 			player.orgasm();
+			if (player.isGargoyle() && player.hasPerk(PerkLib.GargoyleCorrupted)) player.refillGargoyleHunger(30);
 			cleanupAfterCombat();
 		}
 	}

@@ -1,9 +1,12 @@
 ﻿package classes.Scenes.NPCs
 {
-	import classes.*;
-	import classes.GlobalFlags.kFLAGS;
+import classes.*;
+import classes.BodyParts.Butt;
+import classes.BodyParts.Hips;
+import classes.Scenes.SceneLib;
+import classes.StatusEffects.Combat.AmilyVenomDebuff;
 
-	/**
+/**
 	 * ...
 	 * @author ...
 	 */
@@ -23,11 +26,10 @@
 		public function amilyAttack():void {
 			var damage:Number;
 			//return to combat menu when finished
-			doNext(game.playerMenu);
+			doNext(EventParser.playerMenu);
 			//Blind dodge change
 			if(hasStatusEffect(StatusEffects.Blind) && rand(3) < 2) {
 				outputText(capitalA + short + " completely misses you with a blind attack!\n");
-				game.combatRoundOver();
 				return;
 			}
 			//Determine if dodged!
@@ -70,7 +72,7 @@
 			//Got hit!
 			else {
 				outputText("Amily dashes at you and swipes her knife, cutting you. ");
-				damage = player.takeDamage(damage, true);
+				damage = player.takePhysDamage(damage, true);
 			}
 			if(damage > 0) {
 				if(lustVuln > 0 && player.armorName == "barely-decent bondage straps") {
@@ -79,9 +81,8 @@
 					lust += 10 * lustVuln;
 				}
 			}
-			game.statScreenRefresh();
+			EngineCore.statScreenRefresh();
 			outputText("\n");
-			game.combatRoundOver();
 		}
 
 		//(Special Attacks)
@@ -90,7 +91,7 @@
 			var dodged:Number = 0;
 			var damage:Number = 0;
 			//return to combat menu when finished
-			doNext(game.playerMenu);
+			doNext(EventParser.playerMenu);
 			//Blind dodge change
 			if(hasStatusEffect(StatusEffects.Blind) && rand(3) < 2) {
 				dodged++;
@@ -126,13 +127,12 @@
 					if(dodged > 0) outputText("Amily dashes at you and quickly slashes you twice; you manage to avoid the first blow, but the second one hits home, cutting you");
 					else outputText("Amily dashes at you and slashes at you twice in the time it would take most to throw a single blow");
 					outputText("! ");
-					damage = player.takeDamage(damage, true);
+					damage = player.takePhysDamage(damage, true);
 				}
 			}
 			//Dodge all!
 			else outputText("Amily dashes at you and quickly slashes you twice, but you quickly sidestep her first blow and jump back to avoid any follow-ups.");
 
-			game.combatRoundOver();
 		}
 
 		//-Poison Dart: Deals speed and str damage to the PC. (Not constant)
@@ -142,13 +142,11 @@
 			if (player.hasStatusEffect(StatusEffects.WindWall)) {
 				outputText(capitalA + short + " attack from her dartgun stops at wind wall weakening it slightly.\n");
 				player.addStatusValue(StatusEffects.WindWall,2,-1);
-				game.combatRoundOver();
 				return;
 			}
 			//Blind dodge change
 			if (hasStatusEffect(StatusEffects.Blind) && rand(3) < 2) {
 				outputText(capitalA + short + " completely misses you with a blind attack from her dartgun!\n");
-				game.combatRoundOver();
 				return;
 			}
 			//Determine if dodged!
@@ -194,39 +192,15 @@
 			else {
 				outputText("Amily dashes at you and swipes her knife at you, surprisingly slowly.  You easily dodge the attack; but it was a feint - her other hand tries to strike at you with a poisoned dart. However, she only manages to scratch you, only causing your muscles to grow slightly numb.");
 				//Set status
-				if (!player.hasStatusEffect(StatusEffects.AmilyVenom)) player.createStatusEffect(StatusEffects.AmilyVenom, 0, 0, 0, 0);
-				var poison:Number = 2 + rand(5);
-				while (poison > 0) {
-					poison--;
-					if (player.str >= 2) {
-						player.str--;
-						showStatDown("str");
-						// strDown.visible = true;
-						// strUp.visible = false;
-						player.addStatusValue(StatusEffects.AmilyVenom, 1, 1);
-					}
-					if (player.spe >= 2) {
-						player.spe--;
-						showStatDown("spe");
-						// speDown.visible = true;
-						// speUp.visible = false;
-						player.addStatusValue(StatusEffects.AmilyVenom, 2, 1);
-					}
-				}
-				//If PC is reduced to 0 Speed and Strength, normal defeat by HP plays.
-				if (player.spe <= 2 && player.str <= 2) {
-					outputText("  You've become so weakened that you can't even make an attempt to defend yourself, and Amily rains blow after blow down upon your helpless form.");
-					player.takeDamage(8999);
-				}
+				var ase:AmilyVenomDebuff = player.createOrFindStatusEffect(StatusEffects.AmilyVenom) as AmilyVenomDebuff;
+				ase.increase();
 			}
-			game.combatRoundOver();
 		}
 
 		//Concentrate: always avoids the next attack. Can be disrupted by tease/seduce.
 		private function amilyConcentration():void {
 			outputText("Amily takes a deep breath and attempts to concentrate on your movements.");
 			createStatusEffect(StatusEffects.Concentration,0,0,0,0);
-			game.combatRoundOver();
 		}
 
 		//(if PC uses tease/seduce after this)
@@ -245,7 +219,7 @@
 
 		override public function defeated(hpVictory:Boolean):void
 		{
-			game.amilyScene.conquerThatMouseBitch();
+			SceneLib.amilyScene.conquerThatMouseBitch();
 		}
 
 		public function Amily()
@@ -255,24 +229,25 @@
 			this.imageName = "amily";
 			this.long = "You are currently fighting Amily. The mouse-morph is dressed in rags and glares at you in rage, knife in hand. She keeps herself close to the ground, ensuring she can quickly close the distance between you two or run away.";
 			// this.plural = false;
-			this.createVagina(false, VAGINA_WETNESS_NORMAL, VAGINA_LOOSENESS_NORMAL);
+			this.createVagina(false, VaginaClass.WETNESS_NORMAL, VaginaClass.LOOSENESS_NORMAL);
 			this.createStatusEffect(StatusEffects.BonusVCapacity, 48, 0, 0, 0);
 			createBreastRow(Appearance.breastCupInverse("C"));
-			this.ass.analLooseness = ANAL_LOOSENESS_VIRGIN;
-			this.ass.analWetness = ANAL_WETNESS_DRY;
+			this.ass.analLooseness = AssClass.LOOSENESS_VIRGIN;
+			this.ass.analWetness = AssClass.WETNESS_DRY;
 			this.tallness = 4*12;
-			this.hipRating = HIP_RATING_AMPLE;
-			this.buttRating = BUTT_RATING_TIGHT;
+			this.hips.type = Hips.RATING_AMPLE;
+			this.butt.type = Butt.RATING_TIGHT;
 			this.skin.growFur({color:"tawny"});
 			this.hairColor = "brown";
 			this.hairLength = 5;
 			initStrTouSpeInte(40, 40, 120, 80);
-			initLibSensCor(44, 45, 10);
+			initWisLibSensCor(80, 44, 45, 10);
 			this.weaponName = "knife";
 			this.weaponVerb="slash";
-			this.weaponAttack = 9 + (2 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.weaponAttack = 9;
 			this.armorName = "rags";
-			this.armorDef = 1 + (1 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.armorDef = 1;
+			this.armorMDef = 1;
 			this.bonusHP = 20;
 			this.bonusLust = 10;
 			this.lust = 20;
@@ -281,12 +256,6 @@
 			this.gems = 8 + rand(11);
 			this.drop = NO_DROP;
 			this.createPerk(PerkLib.EnemyBeastOrAnimalMorphType, 0, 0, 0, 0);
-			this.str += 8 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.tou += 8 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.spe += 24 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.inte += 16 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];			
-			this.lib += 8 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.newgamebonusHP = 1280;
 			checkMonster();
 		}
 		

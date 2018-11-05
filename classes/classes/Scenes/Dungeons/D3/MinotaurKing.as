@@ -1,16 +1,16 @@
 package classes.Scenes.Dungeons.D3
 {
-	import classes.Monster;
-	import classes.Appearance;
-	import classes.StatusEffects;
-	import classes.GlobalFlags.kGAMECLASS;
-	import classes.CockTypesEnum;
-	import classes.PerkLib;
-	import classes.GlobalFlags.kFLAGS;
-	import classes.internals.ChainedDrop;
-	import classes.internals.WeightedDrop;
+import classes.BodyParts.Butt;
+import classes.BodyParts.Hips;
+import classes.CockTypesEnum;
+import classes.GlobalFlags.kFLAGS;
+import classes.Monster;
+import classes.PerkLib;
+import classes.Scenes.SceneLib;
+import classes.StatusEffects;
+import classes.internals.WeightedDrop;
 
-	public class MinotaurKing extends Monster
+public class MinotaurKing extends Monster
 	{
 		public function MinotaurKing()
 		{
@@ -23,15 +23,16 @@ package classes.Scenes.Dungeons.D3
 			this.balls = 2;
 			this.ballSize = 4;
 			this.hoursSinceCum = 9999;
-			this.hipRating = HIP_RATING_SLENDER;
-			this.buttRating = BUTT_RATING_TIGHT;
+			this.hips.type = Hips.RATING_SLENDER;
+			this.butt.type = Butt.RATING_TIGHT;
 			initStrTouSpeInte(290, 290, 100, 70);
-			initLibSensCor(220, 10, 100);
+			initWisLibSensCor(60, 220, 10, 100);
 			this.weaponName = "axe";
-			this.weaponAttack = 90 + (19 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.weaponAttack = 90;
 			this.weaponVerb = "swing";
 			this.armorName = "rags";
-			this.armorDef = 80 + (9 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.armorDef = 80;
+			this.armorMDef = 8;
 			this.bonusHP = 2000;
 			this.bonusLust = 100;
 			this.gems = 600 + rand(200);
@@ -45,12 +46,6 @@ package classes.Scenes.Dungeons.D3
 			this.drop = NO_DROP;
 			drop = new WeightedDrop(consumables.PROMEAD, 1);
 			//I don’t know if we ever got multiple item drops set up for CoC. If we did, have this guy drop a five-stack of God’s Mead for the Lethice fight. Otherwise, perhaps drop a single item that will full heal once?
-			this.str += 87 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.tou += 87 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.spe += 30 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.inte += 21 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];			
-			this.lib += 66 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.newgamebonusHP = 14550;
 			this.checkMonster();
 			_lastSpellCastCount = flags[kFLAGS.SPELLS_CAST];
 		}
@@ -83,7 +78,7 @@ package classes.Scenes.Dungeons.D3
 				if (_milkDrinks == 0)
 				{
 				}
-				else if (_milkDrinks == 1) str += "\n\n<b>The King has been glancing appreciatively in your direction ever since he took a drink from his slave-slut’s nipples. Perhaps he’s more vulnerable to baser needs...</b>"
+				else if (_milkDrinks == 1) str += "\n\n<b>The King has been glancing appreciatively in your direction ever since he took a drink from his slave-slut’s nipples. Perhaps he’s more vulnerable to baser needs...</b>";
 				else str += "\n\n<b>The King’s nostrils flare as he stares at you. It’s clear that with every drink he takes from his slave-slut’s nipples, he becomes more receptive to your advances.</b>";
 				
 				return str;
@@ -95,23 +90,24 @@ package classes.Scenes.Dungeons.D3
 			if (_orgasms == 0 && !hpVictory)
 			{
 				lustDump();
-				combatRoundOver();
+				SceneLib.combat.combatRoundOver();
 				return;
 			}
 			
 			if (hpVictory)
 			{
 				hpRestore();
-				combatRoundOver();
+				SceneLib.combat.combatRoundOver();
 				return;
 			}
 			
-			game.d3.minotaurKing.theKingIsDeadLongLiveTheKing(hpVictory);
+			SceneLib.d3.minotaurKing.theKingIsDeadLongLiveTheKing(hpVictory);
 		}
 
 		override public function won(hpVictory:Boolean, pcCameWorms:Boolean):void
 		{
-			game.d3.minotaurKing.hailToTheKingBaby(hpVictory, pcCameWorms);
+			if (player.isGargoyle()) SceneLib.d3.gargoyleBadEndD3();
+			else SceneLib.d3.minotaurKing.hailToTheKingBaby(hpVictory, pcCameWorms);
 		}
 
 		private var _milkDrinks:int = 0;
@@ -145,7 +141,6 @@ package classes.Scenes.Dungeons.D3
 				atks[rand(atks.length)]();
 			}
 
-			combatRoundOver();
 		}
 
 		private function backhand():void
@@ -168,7 +163,7 @@ package classes.Scenes.Dungeons.D3
 			}
 			else
 			{
-				damage = player.takeDamage(damage);
+				damage = player.takePhysDamage(damage);
 				outputText(" Damn, that hurts! (" + damage +")");
 			}
 		}
@@ -194,7 +189,7 @@ package classes.Scenes.Dungeons.D3
 			else
 			{
 				_lastRoundStun = true;
-				damage = player.takeDamage(damage);
+				damage = player.takePhysDamage(damage);
 				outputText(" He impacts with stunning force, leaving you reeling! (" + damage +")");
 				//{Stun for one turn, minor HP damage}
 				if (player.findPerk(PerkLib.Resolute) < 0)
@@ -217,7 +212,7 @@ package classes.Scenes.Dungeons.D3
 				if (player.findPerk(PerkLib.MinotaurCumAddict) >= 0) outputText(" Delicious.");
 				else outputText(" Why did you do that? And why did it feel so good.");
 			}
-			game.dynStats("lus", 15 + player.lib/20);
+			player.dynStats("lus", 15 + player.lib/20);
 		}
 
 		private function battleaxe():void
@@ -230,14 +225,14 @@ package classes.Scenes.Dungeons.D3
 			}
 			else
 			{
-				damage = player.takeDamage(damage);
+				damage = player.takePhysDamage(damage);
 				outputText(". By the time you notice, it’s too late. ("+damage+")");
 			}
 		}
 
 		private function hpRestore():void
 		{
-			HP = eMaxHP();
+			HP = maxHP();
 			lustVuln += 0.15;
 
 			_milkDrinks++;
@@ -255,20 +250,20 @@ package classes.Scenes.Dungeons.D3
 				outputText("slapping into your face before you can react!  You wipe the slick snot-like stuff out of your eyes and nose, ");
 				if(player.lust > 75) {
 					outputText("swallowing it into your mouth without thinking.  ");
-					game.dynStats("lus", 15 + player.lib/10);
+					player.dynStats("lus", 15 + player.lib/10);
 				}
 				else {
 					outputText("feeling your heart beat with desire as your tongue licks the residue from your lips.  ");
-					game.dynStats("lus", 7.5 + player.lib/20);
+					player.dynStats("lus", 7.5 + player.lib/20);
 				}
 			}
 			else outputText("right past your head.  ");
 			outputText("The animalistic scent of it seems to get inside you, the musky aroma burning a path of liquid heat to your groin.");
-			game.dynStats("lus", 15 + player.lib/20);
+			player.dynStats("lus", 15 + player.lib/20);
 			if(player.findPerk(PerkLib.MinotaurCumAddict) >= 0 || flags[kFLAGS.MINOTAUR_CUM_ADDICTION_STATE] == 2) {
 				if(rand(2) == 0) outputText("\n<b>You shiver with need, wanting nothing more than to bury your face under that loincloth and slurp out every drop of goopey goodness.</b>");
 				else outputText("\n<b>You groan and lick your lips over and over, craving the taste of him in your mouth.</b>");
-				game.dynStats("lus", 5+rand(5));
+				player.dynStats("lus", 5+rand(5));
 			}
 		}
 
@@ -306,7 +301,7 @@ package classes.Scenes.Dungeons.D3
 					outputText("Excellia rises up onto her knees and arches her back to display her monumental mammaries, letting their chocolatey nipples jut accusingly in your direction. Her fingers travel to them, squeezing out thin flows of milk that she gathers and smears across each orb in turn, rubbing it into her skin like high-grade massage oil. When she’s finished, her tits are shining, and you’re a little hotter under the collar.");
 				}
 
-				game.dynStats("lus", 5);
+				player.dynStats("lus", 5);
 			}
 		}
 

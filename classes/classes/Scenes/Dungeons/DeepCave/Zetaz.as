@@ -1,10 +1,14 @@
 package classes.Scenes.Dungeons.DeepCave
 {
-	import classes.*;
-	import classes.internals.*;
-	import classes.GlobalFlags.kFLAGS;
+import classes.*;
+import classes.BodyParts.Butt;
+import classes.BodyParts.Hips;
+import classes.BodyParts.LowerBody;
+import classes.BodyParts.Wings;
+import classes.Scenes.SceneLib;
+import classes.internals.*;
 
-	public class Zetaz extends Monster
+public class Zetaz extends Monster
 	{
 		public function zetazAI():void {
 			//Zetaz taunts.
@@ -14,6 +18,7 @@ package classes.Scenes.Dungeons.DeepCave
 			//burns lust and clears statuses before continuing with 
 			//turn.
 			if(lust > 50 && (hasStatusEffect(StatusEffects.Fear) || hasStatusEffect(StatusEffects.Blind))) {
+				if (hasStatusEffect(StatusEffects.Fear)) this.spe += statusEffectv2(StatusEffects.Fear);
 				removeStatusEffect(StatusEffects.Fear);
 				removeStatusEffect(StatusEffects.Blind);
 				lust -= 10;
@@ -24,14 +29,13 @@ package classes.Scenes.Dungeons.DeepCave
 			if(hasStatusEffect(StatusEffects.Stunned)) {
 				outputText("Your foe is too dazed from your last hit to strike back!");
 				removeStatusEffect(StatusEffects.Stunned);
-				combatRoundOver();
 				return;
 			}
 			var select:Number=1;
 			var rando:Number=1;
 			//Exgartuan gets to do stuff!
 			if(player.hasStatusEffect(StatusEffects.Exgartuan) && player.statusEffectv2(StatusEffects.Exgartuan) == 0 && rand(3) == 0) {
-				game.exgartuan.exgartuanCombatUpdate();
+				SceneLib.exgartuan.exgartuanCombatUpdate();
 				outputText("\n\n");
 			}
 			if(hasStatusEffect(StatusEffects.Constricted)) {
@@ -42,7 +46,6 @@ package classes.Scenes.Dungeons.DeepCave
 					removeStatusEffect(StatusEffects.Constricted);
 				}
 				addStatusValue(StatusEffects.Constricted,1,-1);
-				combatRoundOver();
 				return;
 			}
 			//STANDARD COMBAT STATUS AFFECTS END HERE
@@ -50,9 +53,9 @@ package classes.Scenes.Dungeons.DeepCave
 			//--burns 20 lust to restore 20% hp. 
 			if(lust > 50 && HPRatio() <= .5) {
 				outputText("The imp lord shudders from his wounds and the pulsing member that's risen from under his tattered loincloth.  He strokes it and murmurs under his breath for a few moments.  You're so busy watching the spectacle of his masturbation that you nearly miss the sight of his bruises and wounds closing!  Zetaz releases his swollen member, and it deflates slightly.  He's used some kind of black magic to convert some of his lust into health!");
-				addHP(0.25 * eMaxHP());
+				addHP(0.25 * maxHP());
 				lust -= 20;
-				game.dynStats("lus", 2);
+				player.dynStats("lus", 2);
 			}
 			else {
 				var attackChoice:Number = rand(3);
@@ -81,7 +84,7 @@ package classes.Scenes.Dungeons.DeepCave
 					else {
 						var dmg:Number = 1 + rand(6);
 						outputText("wounding you slightly ");
-						dmg = player.takeDamage(dmg, true);
+						dmg = player.takePhysDamage(dmg, true);
 					}
 					outputText(" while the dust gets into your eyes, temporarily blinding you!");
 					player.createStatusEffect(StatusEffects.Blind,1,0,0,0);
@@ -93,12 +96,11 @@ package classes.Scenes.Dungeons.DeepCave
 					gigaArouse();
 				}
 			}
-			combatRoundOver();
 		}
 		
 		public function gigaArouse():void {
 			outputText("You see " + a + short + " make familiar arcane gestures at you, but his motions seem a lot more over the top than you'd expect from an imp.\n\n");
-			game.dynStats("lus", rand(player.lib/10)+player.cor/10+15);
+			player.dynStats("lus", rand(player.lib/10)+player.cor/10+15);
 			if(player.lust < 30) outputText("Your nethers pulse with pleasant warmth that brings to mind pleasant sexual memories.  ");
 			if(player.lust >= 30 && player.lust < 60) outputText("Blood rushes to your groin in a rush as your body is hit by a tidal-wave of arousal.  ");
 			if(player.lust >= 60) outputText("Your mouth begins to drool as you close your eyes and imagine yourself sucking off Zetaz, then riding him, letting him sate his desires in your inviting flesh.  The unnatural visions send pulses of lust through you so strongly that your body shivers.  ");
@@ -107,14 +109,13 @@ package classes.Scenes.Dungeons.DeepCave
 				if(player.lust >= 30 && player.lust < 60 && player.cocks.length == 1) outputText(player.SMultiCockDesc() + " hardens and twitches, distracting you further.  ");
 			}
 			if(player.vaginas.length > 0) {
-				if(player.lust >= 60 && player.vaginas[0].vaginalWetness == VAGINA_WETNESS_NORMAL && player.vaginas.length == 1) outputText("Your [vagina] dampens perceptibly, feeling very empty.  ");
-				if(player.lust >= 60 && player.vaginas[0].vaginalWetness == VAGINA_WETNESS_WET && player.vaginas.length > 0) outputText("Your crotch becomes sticky with girl-lust, making it clear to " + a + short + " just how welcome your body finds the spell.  ");
-				if(player.lust >= 60 && player.vaginas[0].vaginalWetness == VAGINA_WETNESS_SLICK && player.vaginas.length == 1) outputText("Your [vagina] becomes sloppy and wet, dribbling with desire to be mounted and fucked.  ");
-				if(player.lust >= 60 && player.vaginas[0].vaginalWetness == VAGINA_WETNESS_DROOLING && player.vaginas.length > 0) outputText("Thick runners of girl-lube stream down the insides of your thighs as your crotch gives into the demonic magics.  You wonder what " + a + short + "'s cock would feel like inside you?  ");
-				if (player.lust >= 60 && player.vaginas[0].vaginalWetness == VAGINA_WETNESS_SLAVERING && player.vaginas.length == 1) outputText("Your [vagina] instantly soaks your groin with the heady proof of your need.  You wonder just how slippery you could " + a + short + "'s dick when it's rammed inside you?  ");
+				if(player.lust >= 60 && player.vaginas[0].vaginalWetness == VaginaClass.WETNESS_NORMAL && player.vaginas.length == 1) outputText("Your [vagina] dampens perceptibly, feeling very empty.  ");
+				if(player.lust >= 60 && player.vaginas[0].vaginalWetness == VaginaClass.WETNESS_WET && player.vaginas.length > 0) outputText("Your crotch becomes sticky with girl-lust, making it clear to " + a + short + " just how welcome your body finds the spell.  ");
+				if(player.lust >= 60 && player.vaginas[0].vaginalWetness == VaginaClass.WETNESS_SLICK && player.vaginas.length == 1) outputText("Your [vagina] becomes sloppy and wet, dribbling with desire to be mounted and fucked.  ");
+				if(player.lust >= 60 && player.vaginas[0].vaginalWetness == VaginaClass.WETNESS_DROOLING && player.vaginas.length > 0) outputText("Thick runners of girl-lube stream down the insides of your thighs as your crotch gives into the demonic magics.  You wonder what " + a + short + "'s cock would feel like inside you?  ");
+				if (player.lust >= 60 && player.vaginas[0].vaginalWetness == VaginaClass.WETNESS_SLAVERING && player.vaginas.length == 1) outputText("Your [vagina] instantly soaks your groin with the heady proof of your need.  You wonder just how slippery you could " + a + short + "'s dick when it's rammed inside you?  ");
 			}
-			if(player.lust >= player.maxLust()) doNext(game.endLustLoss)
-			else combatRoundOver();
+			if(player.lust >= player.maxLust()) doNext(SceneLib.combat.endLustLoss);
 		}
 
 		
@@ -122,7 +123,7 @@ package classes.Scenes.Dungeons.DeepCave
 			if(!hasStatusEffect(StatusEffects.round)) {
 				createStatusEffect(StatusEffects.round,1,0,0,0);
 				outputText("Zetaz asks, \"<i>Do you even realize how badly you fucked up my life, ");
-				if(player.humanScore() >= 4) outputText("human");
+				if(player.humanScore() >= 14) outputText("human");
 				else outputText("'human'");
 				outputText("?  No, of course not.  That's the kind of attitude I'd expect from one of you!</i>\"");
 			}
@@ -146,16 +147,16 @@ package classes.Scenes.Dungeons.DeepCave
 		
 		override public function defeated(hpVictory:Boolean):void
 		{
-			game.dungeons.deepcave.defeatZetaz();
+			SceneLib.dungeons.deepcave.defeatZetaz();
 		}
 		
 		override public function won(hpVictory:Boolean, pcCameWorms:Boolean):void
 		{
 			if (pcCameWorms){
 				outputText("\n\nYour foe doesn't seem put off enough to care...");
-				doNext(game.endLustLoss);
+				doNext(SceneLib.combat.endLustLoss);
 			} else {
-				game.dungeons.deepcave.loseToZetaz();
+				SceneLib.dungeons.deepcave.loseToZetaz();
 			}
 		}
 
@@ -171,22 +172,23 @@ package classes.Scenes.Dungeons.DeepCave
 			this.cumMultiplier = 3;
 			this.hoursSinceCum = 20;
 			createBreastRow(0);
-			this.ass.analLooseness = ANAL_LOOSENESS_TIGHT;
-			this.ass.analWetness = ANAL_WETNESS_DRY;
+			this.ass.analLooseness = AssClass.LOOSENESS_TIGHT;
+			this.ass.analWetness = AssClass.WETNESS_DRY;
 			this.tallness = 4*12+1;
-			this.hipRating = HIP_RATING_BOYISH;
-			this.buttRating = BUTT_RATING_TIGHT;
-			this.lowerBody = LOWER_BODY_TYPE_KANGAROO;
+			this.hips.type = Hips.RATING_BOYISH;
+			this.butt.type = Butt.RATING_TIGHT;
+			this.lowerBody = LowerBody.KANGAROO;
 			this.skinTone = "red";
 			this.hairColor = "black";
 			this.hairLength = 5;
 			initStrTouSpeInte(125, 100, 70, 55);
-			initLibSensCor(55, 35, 100);
+			initWisLibSensCor(55, 55, 35, 100);
 			this.weaponName = "claws";
 			this.weaponVerb="claw-slash";
-			this.weaponAttack = 21 + (5 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.weaponAttack = 21;
 			this.armorName = "leathery skin";
-			this.armorDef = 14 + (2 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.armorDef = 14;
+			this.armorMDef = 7;
 			this.bonusHP = 600;
 			this.bonusLust = 50;
 			this.lust = 40;
@@ -196,19 +198,14 @@ package classes.Scenes.Dungeons.DeepCave
 			this.gems = rand(75) + 175;
 			this.additionalXP = 200;
 			this.drop = new WeightedDrop(consumables.BIMBOLQ, 1);
-			this.wingType = WING_TYPE_IMP;
-			this.wingDesc = "small";
+			this.wings.type = Wings.IMP;
+			this.wings.desc = "small";
 			this.createPerk(PerkLib.InhumanDesireI, 0, 0, 0, 0);
 			this.createPerk(PerkLib.DemonicDesireI, 0, 0, 0, 0);
 			this.createPerk(PerkLib.RefinedBodyI, 0, 0, 0, 0);
 			this.createPerk(PerkLib.Regeneration, 0, 0, 0, 0);
 			this.createPerk(PerkLib.EnemyBossType, 0, 0, 0, 0);
-			this.str += 37 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.tou += 30 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.spe += 21 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.inte += 16 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];			
-			this.lib += 16 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.newgamebonusHP = 4800;
+			this.createPerk(PerkLib.EnemyTrueDemon, 0, 0, 0, 0);
 			checkMonster();
 		}
 		

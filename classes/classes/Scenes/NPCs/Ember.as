@@ -1,13 +1,18 @@
 package classes.Scenes.NPCs
 {
-	import classes.*;
-	import classes.GlobalFlags.kFLAGS;
-	import classes.internals.ChainedDrop;
+import classes.*;
+import classes.BodyParts.Butt;
+import classes.BodyParts.Hips;
+import classes.BodyParts.Horns;
+import classes.BodyParts.Tail;
+import classes.GlobalFlags.kFLAGS;
+import classes.Scenes.SceneLib;
+import classes.internals.ChainedDrop;
 
-	public class Ember extends Monster
+public class Ember extends Monster
 	{
 		private function emberMF(male:String,female:String):String{
-			return game.emberScene.emberMF(male,female);
+			return SceneLib.emberScene.emberMF(male,female);
 		}
 		//The Actual Ember Fight (Z)
 		//PC can't use any sexual moves in this battle. This means anything that deals or affects Ember's lust in any way.
@@ -23,7 +28,7 @@ package classes.Scenes.NPCs
 			gems = 0;
 			XP = 0;
 			HP = 0;
-			game.cleanupAfterCombat();
+			SceneLib.combat.cleanupAfterCombatImpl();
 		}
 		//Ember Attacks:
 		private function emberAttack():void {
@@ -36,14 +41,19 @@ package classes.Scenes.NPCs
 			//Miss/dodge
 			else if(player.getEvasionRoll()) outputText("You dodge aside at the last second and Ember's claws whistle past you.");
 			else {
-				var damage:int = int((str + weaponAttack) - rand(player.tou) - player.armorDef);
+				var damage:Number = 0;
+				if (wrath >= 100) {
+					wrath -= 100;
+					damage += (((str + weaponAttack) * 2) - rand(player.tou) - player.armorDef);
+				}
+				else damage += ((str + weaponAttack) - rand(player.tou) - player.armorDef);
+				if (flags[kFLAGS.EMBER_LVL_UP] >= 1) damage += (1 + (flags[kFLAGS.EMBER_LVL_UP] * 0.1));
 				if(damage <= 0) outputText("Ember's claws scrape noisily but harmlessly off your [armor].");
 				else {
 					outputText("Ember's claws rip into you, leaving stinging wounds. ");
-					damage = player.takeDamage(damage, true);
+					damage = player.takePhysDamage(damage, true);
 				}
 			}
-			combatRoundOver();
 		}
 		
 		//Dragon Breath: Very rare attack, very high damage
@@ -52,28 +62,28 @@ package classes.Scenes.NPCs
 				//Blind Ember: 
 				outputText("The blinded dragon tracks you with difficulty as you sprint around the landscape; seeing an opportunity, you strafe around " + emberMF("his","her") + " side, planting yourself behind a large flat boulder near " + emberMF("him","her") + " and pelting " + emberMF("him","her") + " with a small rock.  The scream as the dragon turns the magical conflagration toward you, only to have it hit the rock and blow up in " + emberMF("his","her") + " face, is quite satisfying.");
 				//(Ember HP damage)
-				game.doDamage(50);
+				SceneLib.combat.doDamage(50);
 			}
 			else {
 				outputText("Ember inhales deeply, then "+ emberMF("his","her") + " jaws open up, releasing streams of fire, ice and lightning; magical rather than physical, the gaudy displays lose cohesion and amalgamate into a column of raw energy as they fly at you.");
 				if(player.getEvasionRoll()) outputText("  It's a narrow thing, but you manage to throw yourself aside at the last moment.  Fortunately, the energy whirling around and tearing up the soil blinds Ember to your escape until you have recovered and are ready to keep fighting.");
 				else {
+					var damage2:Number = 0;
 					if (player.hasStatusEffect(StatusEffects.Blizzard)) {
 						player.addStatusValue(StatusEffects.Blizzard, 1, -1);
 						outputText("  The pain as the deadly combination washes over you is indescribable.  Despite it wasn't pure fire attack surrounding you blizzard still managed to block prt of it power and you endure it somehow making even Ember looks amazed to see you still standing. ");
-						var damage2:Number = 70 + rand(70);
-						if (player.findPerk(PerkLib.FromTheFrozenWaste) >= 0 || player.findPerk(PerkLib.ColdAffinity) >= 0 || player.findPerk(PerkLib.FireAffinity) >= 0) damage *= 1.6;
-						damage2 = player.takeDamage(damage2, true);
+						damage2 += 140 + (this.inte * 1.5) + rand(140);
 					}
 					else {
 						outputText("  The pain as the deadly combination washes over you is indescribable.  It's a miracle that you endure it, and even Ember looks amazed to see you still standing. ");
-						var damage:Number = 100 + rand(100);
-						if (player.findPerk(PerkLib.FromTheFrozenWaste) >= 0 || player.findPerk(PerkLib.ColdAffinity) >= 0 || player.findPerk(PerkLib.FireAffinity) >= 0) damage *= 1.6;
-						damage = player.takeDamage(damage, true);
+						damage2 += 200 + (this.inte * 2) + rand(200);
 					}
+					if (player.findPerk(PerkLib.FromTheFrozenWaste) >= 0 || player.findPerk(PerkLib.ColdAffinity) >= 0 || player.findPerk(PerkLib.FireAffinity) >= 0) damage2 *= 1.6;
+					if (flags[kFLAGS.EMBER_LVL_UP] >= 1) damage2 *= (1 + (flags[kFLAGS.EMBER_LVL_UP] * 0.1));
+					damage2 = Math.round(damage2);
+					damage2 = player.takeMagicDamage(damage2, true);
 				}
 			}
-			combatRoundOver();
 		}
 		
 		//Tailslap: Rare attack, high damage, low accuracy
@@ -81,7 +91,6 @@ package classes.Scenes.NPCs
 			//Blind dodge change
 			if(hasStatusEffect(StatusEffects.Blind)) {
 				outputText(capitalA + short + " completely misses you with a blind tail-slap!");
-				combatRoundOver();
 				return;
 			}
 			outputText("Ember suddenly spins on "+ emberMF("his","her") + " heel, the long tail that splays behind " + emberMF("him","her") + " lashing out like a whip.  As it hurtles through the air towards you, your attention focuses on the set of spikes suddenly protruding from its tip!");
@@ -92,11 +101,12 @@ package classes.Scenes.NPCs
 				outputText(" the tail at the last moment, causing Ember to lose control of "+ emberMF("his","her") + " own momentum and stumble.");
 			}
 			else {
-				var damage:int = int((str + weaponAttack + 100) - rand(player.tou) - player.armorDef);
+				var damage3:Number = 0;
+				damage3 += ((str + weaponAttack + 100) - rand(player.tou) - player.armorDef);
+				if (flags[kFLAGS.EMBER_LVL_UP] >= 1) damage3 *= (1 + (flags[kFLAGS.EMBER_LVL_UP] * 0.1));
 				outputText("  The tail slams into you with bone-cracking force, knocking you heavily to the ground even as the spines jab you wickedly.  You gasp for breath in pain and shock, but manage to struggle to your feet again. ");
-				damage = player.takeDamage(damage, true);
+				damage3 = player.takePhysDamage(damage3, true);
 			}
-			combatRoundOver();
 		}
 				
 		//Dragon Force: Tainted Ember only
@@ -113,16 +123,15 @@ package classes.Scenes.NPCs
 					outputText("Your head swims - it'll take a moment before you can regain your balance. ");
 					player.createStatusEffect(StatusEffects.Stunned,0,0,0,0);
 				}
-				createStatusEffect(StatusEffects.StunCooldown,4,0,0,0);
-				var damage:Number = 10 + rand(10);
-				damage = player.takeDamage(damage, true);
+				createStatusEffect(StatusEffects.StunCooldown,2,0,0,0);
+				var damage4:Number = 10 + rand(10);
+				damage4 = player.takePhysDamage(damage4, true);
 			}
-			combatRoundOver();
 		}
 		
 		override protected function performCombatAction():void
 		{
-			if (lust >= (eMaxLust() * 0.4)) {
+			if (lust >= (maxLust() * 0.4)) {
 				emberReactsToLustiness();
 				return;
 			}
@@ -130,26 +139,27 @@ package classes.Scenes.NPCs
 				addStatusValue(StatusEffects.StunCooldown, 1, -1);
 				if (statusEffectv1(StatusEffects.StunCooldown) <= 0) removeStatusEffect(StatusEffects.StunCooldown);
 			}
-			else if (rand(3) == 0) {
-				dragonFarce();
-				return;
+			var choice:Number = rand(5);
+			if (choice == 0) embersSupahSpecialDragonBreath();
+			if (choice == 1) emberTailSlap();
+			if (choice == 2) {
+				if (hasStatusEffect(StatusEffects.StunCooldown)) emberTailSlap();
+				else dragonFarce();
 			}
-			if (rand(4) == 0) embersSupahSpecialDragonBreath();
-			else if (rand(3) == 0) emberTailSlap();
-			else emberAttack();
+			if (choice > 2) emberAttack();
 		}
 
 		override public function defeated(hpVictory:Boolean):void
 		{
 			//Hackers gonna hate. Tested and working as intended.
-			if (hpVictory) game.emberScene.beatEmberSpar();
+			if (hpVictory) SceneLib.emberScene.beatEmberSpar();
 			else emberReactsToLustiness();
 		}
 
 
 		override public function won(hpVictory:Boolean, pcCameWorms:Boolean):void
 		{
-			game.emberScene.loseToEmberSpar();
+			SceneLib.emberScene.loseToEmberSpar();
 		}
 
 		public function Ember()
@@ -173,43 +183,118 @@ package classes.Scenes.NPCs
 				// this.hoursSinceCum = 0;
 			}
 			if(gender >= 2) {
-				this.createVagina(game.flags[kFLAGS.EMBER_PUSSY_FUCK_COUNT] == 0, VAGINA_WETNESS_SLAVERING, VAGINA_LOOSENESS_LOOSE);
+				this.createVagina(game.flags[kFLAGS.EMBER_PUSSY_FUCK_COUNT] == 0, VaginaClass.WETNESS_SLAVERING, VaginaClass.LOOSENESS_LOOSE);
 				createBreastRow(Appearance.breastCupInverse("F"));
 			} else {
 				createBreastRow(Appearance.breastCupInverse("flat"));
 			}
-			this.ass.analLooseness = ANAL_LOOSENESS_NORMAL;
-			this.ass.analWetness = ANAL_WETNESS_DRY;
+			if (flags[kFLAGS.EMBER_LVL_UP] < 1) {
+				initStrTouSpeInte(120, 90, 100, 90);
+				initWisLibSensCor(90, 50, 35, game.flags[kFLAGS.EMBER_COR]);
+				this.weaponAttack = 36;
+				this.armorDef = 54;
+				this.armorMDef = 54;
+				this.bonusHP = 800;
+				this.level = 20;
+			}
+			if (flags[kFLAGS.EMBER_LVL_UP] == 1) {
+				initStrTouSpeInte(140, 110, 115, 105);
+				initWisLibSensCor(105, 60, 40, game.flags[kFLAGS.EMBER_COR]);
+				this.weaponAttack = 43;
+				this.armorDef = 73;
+				this.armorMDef = 73;
+				this.bonusHP = 900;
+				this.level = 26;
+			}
+			if (flags[kFLAGS.EMBER_LVL_UP] == 2) {
+				initStrTouSpeInte(165, 135, 130, 120);
+				initWisLibSensCor(120, 70, 45, game.flags[kFLAGS.EMBER_COR]);
+				this.weaponAttack = 50;
+				this.armorDef = 92;
+				this.armorMDef = 92;
+				this.bonusHP = 1000;
+				this.level = 32;
+			}
+			if (flags[kFLAGS.EMBER_LVL_UP] == 3) {
+				initStrTouSpeInte(190, 160, 145, 135);
+				initWisLibSensCor(135, 80, 50, game.flags[kFLAGS.EMBER_COR]);
+				this.weaponAttack = 57;
+				this.armorDef = 111;
+				this.armorMDef = 111;
+				this.bonusHP = 1200;
+				this.level = 38;
+			}
+			if (flags[kFLAGS.EMBER_LVL_UP] == 4) {
+				initStrTouSpeInte(220, 190, 160, 150);
+				initWisLibSensCor(150, 90, 55, game.flags[kFLAGS.EMBER_COR]);
+				this.weaponAttack = 64;
+				this.armorDef = 130;
+				this.armorMDef = 130;
+				this.bonusHP = 1400;
+				this.level = 44;
+			}
+			if (flags[kFLAGS.EMBER_LVL_UP] == 5) {
+				initStrTouSpeInte(250, 220, 175, 165);
+				initWisLibSensCor(165, 100, 60, game.flags[kFLAGS.EMBER_COR]);
+				this.weaponAttack = 71;
+				this.armorDef = 150;
+				this.armorMDef = 150;
+				this.bonusHP = 1600;
+				this.level = 50;
+			}
+			if (flags[kFLAGS.EMBER_LVL_UP] == 6) {
+				initStrTouSpeInte(280, 250, 190, 180);
+				initWisLibSensCor(180, 110, 65, game.flags[kFLAGS.EMBER_COR]);
+				this.weaponAttack = 78;
+				this.armorDef = 170;
+				this.armorMDef = 170;
+				this.bonusHP = 1800;
+				this.level = 56;
+			}
+			if (flags[kFLAGS.EMBER_LVL_UP] == 7) {
+				initStrTouSpeInte(310, 280, 205, 195);
+				initWisLibSensCor(195, 120, 70, game.flags[kFLAGS.EMBER_COR]);
+				this.weaponAttack = 85;
+				this.armorDef = 190;
+				this.armorMDef = 190;
+				this.bonusHP = 2000;
+				this.level = 62;
+			}
+			this.ass.analLooseness = AssClass.LOOSENESS_NORMAL;
+			this.ass.analWetness = AssClass.WETNESS_DRY;
 			this.tallness = rand(8) + 70;
-			this.hipRating = HIP_RATING_AMPLE+2;
-			this.buttRating = BUTT_RATING_LARGE;
+			this.hips.type = Hips.RATING_AMPLE + 2;
+			this.butt.type = Butt.RATING_LARGE;
 			this.skinTone = "red";
 			this.hairColor = "black";
 			this.hairLength = 15;
-			initStrTouSpeInte(100 + Math.floor(game.flags[kFLAGS.EMBER_AFFECTION] / 5), 90, 80 + Math.floor(game.flags[kFLAGS.EMBER_AFFECTION] / 5), 90);
-			initLibSensCor(50, 35, game.flags[kFLAGS.EMBER_COR]);
 			this.weaponName = "claws";
 			this.weaponVerb="claw";
-			this.weaponAttack = 36 + (8 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
 			this.armorName = "scales";
-			this.armorDef = 54 + (6 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
-			this.bonusHP = 600 + (game.flags[kFLAGS.EMBER_AFFECTION] * 2);
 			this.bonusLust = 10 + (game.flags[kFLAGS.EMBER_AFFECTION] / 5);
 			this.lust = 20;
-			this.lustVuln = .25;
 			this.temperment = TEMPERMENT_LOVE_GRAPPLES;
-			this.level = 20 + Math.round(game.flags[kFLAGS.EMBER_AFFECTION] / 20);
 			this.gems = 0;
-			this.hornType = HORNS_DRACONIC_X4_12_INCH_LONG;
-			this.horns = 4;
-			this.tailType = TAIL_TYPE_DRACONIC;
+			this.horns.type = Horns.DRACONIC_X4_12_INCH_LONG;
+			this.horns.count = 4;
+			this.tailType = Tail.DRACONIC;
 			this.drop = new ChainedDrop().add(useables.D_SCALE, 0.2);
-			this.str += 24 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.tou += 18 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.spe += 20 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.inte += 18 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];			
-			this.lib += 10 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.newgamebonusHP = 2700;
+			if (flags[kFLAGS.EMBER_LVL_UP] >= 1) this.createPerk(PerkLib.InhumanDesireI, 0, 0, 0, 0);
+			if (flags[kFLAGS.EMBER_LVL_UP] >= 2) {
+				this.createPerk(PerkLib.EnemyBossType, 0, 0, 0, 0);
+				this.createPerk(PerkLib.BasicSelfControl, 0, 0, 0, 0);
+			}
+			if (flags[kFLAGS.EMBER_LVL_UP] >= 3) this.createPerk(PerkLib.DemonicDesireI, 0, 0, 0, 0);
+			if (flags[kFLAGS.EMBER_LVL_UP] >= 4) {
+				this.createPerk(PerkLib.RefinedBodyI, 0, 0, 0, 0);
+				this.createPerk(PerkLib.HalfStepToImprovedSelfControl, 0, 0, 0, 0);
+			}
+			if (flags[kFLAGS.EMBER_LVL_UP] >= 5) this.createPerk(PerkLib.TankI, 0, 0, 0, 0);
+			if (flags[kFLAGS.EMBER_LVL_UP] >= 6) {
+				this.createPerk(PerkLib.GoliathI, 0, 0, 0, 0);
+				this.createPerk(PerkLib.ImprovedSelfControl, 0, 0, 0, 0);
+			}
+			if (flags[kFLAGS.EMBER_LVL_UP] >= 7) this.createPerk(PerkLib.CheetahI, 0, 0, 0, 0);
 			checkMonster();
 		}
 		

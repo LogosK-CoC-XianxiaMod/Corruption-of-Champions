@@ -1,14 +1,14 @@
 package classes.Scenes.Combat {
 import classes.*;
+import classes.BodyParts.Skin;
+import classes.BodyParts.Tail;
 import classes.GlobalFlags.*;
 import classes.Items.*;
-import classes.Scenes.Areas.GlacialRift.FrostGiant;
 import classes.Scenes.Dungeons.D3.*;
-import classes.Scenes.Dungeons.HelDungeon.*;
-import classes.Scenes.NPCs.*;
 import classes.Scenes.Places.TelAdre.UmasShop;
+import classes.Scenes.SceneLib;
 
-public class CombatTeases extends BaseContent {
+public class CombatTeases extends BaseCombatContent {
 	public function CombatTeases() {}
 
 	public function teaseAttack():void {
@@ -25,7 +25,8 @@ public class CombatTeases extends BaseContent {
 		}
 		else {
 			tease();
-			if (!combatRoundOver()) enemyAI();
+			if (combatIsOver()) return;
+			enemyAI();
 		}
 	}
 
@@ -47,7 +48,10 @@ public class CombatTeases extends BaseContent {
 			outputText("He is too focused on your eyes to pay any attention to your teasing moves, <b>looks like you'll have to beat him up.</b>\n\n");
 			return;
 		}
+		combat.wrathregeneration();
 		combat.fatigueRecovery();
+		combat.manaregeneration();
+		combat.soulforceregeneration();
 		if (monster.lustVuln == 0) {
 			outputText("You do your best to tease " + monster.a + monster.short + " with your body but it has no effect!  Your foe clearly does not experience lust in the same way as you.\n\n");
 			enemyAI();
@@ -72,9 +76,9 @@ public class CombatTeases extends BaseContent {
 		//==============================
 		//Determine basic success chance.
 		//==============================
-		chance = 60;
-		//5% chance for each tease level.
-		chance += player.teaseLevel * 5;
+		chance = 70;
+		//2% chance for each tease level.
+		chance += player.teaseLevel * 2;
 		//Extra chance for sexy undergarments.
 		chance += player.upperGarment.sexiness;
 		chance += player.lowerGarment.sexiness;
@@ -116,24 +120,22 @@ public class CombatTeases extends BaseContent {
 			damage += 5;
 			bimbo = true;
 		}
-		if (player.level < 30) damage += player.level;
-		else if (player.level < 60) damage += 30 + ((player.level - 30) / 2);
-		else damage += 45 + ((player.level - 60) / 5);
+		damage += scalingBonusLibido() * 0.1;
 		if (player.findPerk(PerkLib.JobSeducer) >= 0) damage += player.teaseLevel * 3;
 		else damage += player.teaseLevel * 2;
 		if (player.findPerk(PerkLib.JobCourtesan) >= 0 && monster.findPerk(PerkLib.EnemyBossType) >= 0) damage *= 1.2;
 		//partial skins bonuses
 		switch (player.coatType()) {
-			case SKIN_COAT_FUR:
+			case Skin.FUR:
 				damage += (1 + player.newGamePlusMod());
 				break;
-			case SKIN_COAT_SCALES:
+			case Skin.SCALES:
 				damage += (2 * (1 + player.newGamePlusMod()));
 				break;
-			case SKIN_COAT_CHITIN:
+			case Skin.CHITIN:
 				damage += (3 * (1 + player.newGamePlusMod()));
 				break;
-			case SKIN_COAT_BARK:
+			case Skin.BARK:
 				damage += (4 * (1 + player.newGamePlusMod()));
 				break;
 		}
@@ -193,6 +195,7 @@ public class CombatTeases extends BaseContent {
 		//44 Bikini Mail Tease
 		//45 Lethicite Armor Tease
 		//46 Alraune Tease
+		//47 Manticore Tailpussy Tease
 		//==============================
 		//BUILD UP LIST OF TEASE CHOICES!
 		//==============================
@@ -201,11 +204,11 @@ public class CombatTeases extends BaseContent {
 			//Once chance of butt.
 			choices[choices.length] = 4;
 			//Big butts get more butt
-			if (player.buttRating >= 7) choices[choices.length] = 4;
-			if (player.buttRating >= 10) choices[choices.length] = 4;
-			if (player.buttRating >= 14) choices[choices.length] = 4;
-			if (player.buttRating >= 20) choices[choices.length] = 4;
-			if (player.buttRating >= 25) choices[choices.length] = 4;
+			if (player.butt.type >= 7) choices[choices.length] = 4;
+			if (player.butt.type >= 10) choices[choices.length] = 4;
+			if (player.butt.type >= 14) choices[choices.length] = 4;
+			if (player.butt.type >= 20) choices[choices.length] = 4;
+			if (player.butt.type >= 25) choices[choices.length] = 4;
 			//Breast jiggle!
 			if (player.biggestTitSize() >= 2) choices[choices.length] = 5;
 			if (player.biggestTitSize() >= 4) choices[choices.length] = 5;
@@ -225,7 +228,7 @@ public class CombatTeases extends BaseContent {
 				if (player.vaginalCapacity() >= 75) choices[choices.length] = 6;
 			}
 			//Adj special!
-			if (player.hasVagina() && player.buttRating >= 8 && player.hipRating >= 6 && player.biggestTitSize() >= 4) {
+			if (player.hasVagina() && player.butt.type >= 8 && player.hips.type >= 6 && player.biggestTitSize() >= 4) {
 				choices[choices.length] = 7;
 				choices[choices.length] = 7;
 				choices[choices.length] = 7;
@@ -252,7 +255,7 @@ public class CombatTeases extends BaseContent {
 				if (player.tone >= 70) choices[choices.length] = 8;
 				if (player.tone >= 80) choices[choices.length] = 8;
 				if (player.tone >= 90) choices[choices.length] = 8;
-				if (player.tone == 100) choices[choices.length] = 8;
+				if (player.tone >= 100) choices[choices.length] = 8;
 			}
 			//9 Heroic Pose
 			if (player.tone >= 60 && player.str >= 50) {
@@ -281,11 +284,11 @@ public class CombatTeases extends BaseContent {
 			//Once chance of butt.
 			choices[choices.length] = 0;
 			//Big butts get more butt
-			if (player.buttRating >= 7) choices[choices.length] = 0;
-			if (player.buttRating >= 10) choices[choices.length] = 0;
-			if (player.buttRating >= 14) choices[choices.length] = 0;
-			if (player.buttRating >= 20) choices[choices.length] = 0;
-			if (player.buttRating >= 25) choices[choices.length] = 0;
+			if (player.butt.type >= 7) choices[choices.length] = 0;
+			if (player.butt.type >= 10) choices[choices.length] = 0;
+			if (player.butt.type >= 14) choices[choices.length] = 0;
+			if (player.butt.type >= 20) choices[choices.length] = 0;
+			if (player.butt.type >= 25) choices[choices.length] = 0;
 			//Breast jiggle!
 			if (player.biggestTitSize() >= 2) choices[choices.length] = 1;
 			if (player.biggestTitSize() >= 4) choices[choices.length] = 1;
@@ -370,7 +373,7 @@ public class CombatTeases extends BaseContent {
 			if (player.ass.analLooseness >= 5) choices[choices.length] = 16;
 		}
 		//17 Bee abdomen tease
-		if (player.tailType == TAIL_TYPE_BEE_ABDOMEN) {
+		if (player.tailType == Tail.BEE_ABDOMEN) {
 			choices[choices.length] = 17;
 			choices[choices.length] = 17;
 		}
@@ -398,7 +401,7 @@ public class CombatTeases extends BaseContent {
 			choices[choices.length] = 21;
 		}
 		//22 SPOIDAH SILK
-		if (player.tailType == TAIL_TYPE_SPIDER_ADBOMEN) {
+		if (player.tailType == Tail.SPIDER_ADBOMEN) {
 			choices[choices.length] = 22;
 			choices[choices.length] = 22;
 			choices[choices.length] = 22;
@@ -517,7 +520,7 @@ public class CombatTeases extends BaseContent {
 		//38 Kitsune Tease
 		//39 Kitsune Tease
 		//40 Kitsune Tease
-		if (player.kitsuneScore() >= 2 && player.tailType == TAIL_TYPE_FOX) {
+		if (player.kitsuneScore() >= 2 && player.tailType == Tail.FOX) {
 			choices[choices.length] = 37;
 			choices[choices.length] = 37;
 			choices[choices.length] = 37;
@@ -536,14 +539,14 @@ public class CombatTeases extends BaseContent {
 			choices[choices.length] = 40;
 		}
 		//41 Kitsune Gendered Tease
-		if (player.kitsuneScore() >= 2 && player.tailType == TAIL_TYPE_FOX) {
+		if (player.kitsuneScore() >= 2 && player.tailType == Tail.FOX) {
 			choices[choices.length] = 41;
 			choices[choices.length] = 41;
 			choices[choices.length] = 41;
 			choices[choices.length] = 41;
 		}
 		//42 Urta teases!
-		if (kGAMECLASS.urtaQuest.isUrta()) {
+		if (SceneLib.urtaQuest.isUrta()) {
 			choices[choices.length] = 42;
 			choices[choices.length] = 42;
 			choices[choices.length] = 42;
@@ -555,7 +558,7 @@ public class CombatTeases extends BaseContent {
 			choices[choices.length] = 42;
 		}
 		//43 - special mino + cowgirls
-		if (player.hasVagina() && player.lactationQ() >= 500 && player.biggestTitSize() >= 6 && player.cowScore() >= 3 && player.tailType == TAIL_TYPE_COW) {
+		if (player.hasVagina() && player.lactationQ() >= 500 && player.biggestTitSize() >= 6 && player.cowScore() >= 3 && player.tailType == Tail.COW) {
 			choices[choices.length] = 43;
 			choices[choices.length] = 43;
 			choices[choices.length] = 43;
@@ -600,12 +603,19 @@ public class CombatTeases extends BaseContent {
 			choices[choices.length] = 46;
 			choices[choices.length] = 46;
 		}
+		//47 - Manticore Tailpussy Tease
+		if (player.tailType == Tail.MANTICORE_PUSSYTAIL) {
+			choices[choices.length] = 47;
+			choices[choices.length] = 47;
+			choices[choices.length] = 47;
+			choices[choices.length] = 47;
+		}
 		//=======================================================
 		//    CHOOSE YOUR TEASE AND DISPLAY IT!
 		//=======================================================
 		select = choices[rand(choices.length)];
 		if (monster.short.indexOf("minotaur") != -1) {
-			if (player.hasVagina() && player.lactationQ() >= 500 && player.biggestTitSize() >= 6 && player.cowScore() >= 3 && player.tailType == TAIL_TYPE_COW)
+			if (player.hasVagina() && player.lactationQ() >= 500 && player.biggestTitSize() >= 6 && player.cowScore() >= 3 && player.tailType == Tail.COW)
 				select = 43;
 		}
 		if (player.hasStatusEffect(StatusEffects.AlrauneEntangle)) {
@@ -617,7 +627,7 @@ public class CombatTeases extends BaseContent {
 			case 0:
 				//Display
 				outputText("You slap your " + buttDescript());
-				if (player.buttRating >= 10 && player.tone < 60) outputText(", making it jiggle delightfully.");
+				if (player.butt.type >= 10 && player.tone < 60) outputText(", making it jiggle delightfully.");
 				else outputText(".");
 				//Mod success
 				ass = true;
@@ -694,7 +704,7 @@ public class CombatTeases extends BaseContent {
 			case 4:
 				outputText("You turn away and bounce your " + buttDescript() + " up and down hypnotically");
 				//Big butts = extra text + higher success
-				if (player.buttRating >= 10) {
+				if (player.butt.type >= 10) {
 					outputText(", making it jiggle delightfully.  " + monster.capitalA + monster.short + " even gets a few glimpses of the " + assholeDescript() + " between your cheeks.");
 					chance += 3;
 				}
@@ -1172,7 +1182,7 @@ public class CombatTeases extends BaseContent {
 						damage += 3;
 						break;
 					default:
-						outputText("Whoops, something derped! Please let Kitteh6660 know! Anyways, you put on a tease show.");
+						outputText("Whoops, something derped! Please let Ormael/Aimozg/Oxdeception know! Anyways, you put on a tease show.");
 				}
 				break;
 				//alraune teases
@@ -1185,8 +1195,15 @@ public class CombatTeases extends BaseContent {
 				 breasts = true;
 				 chance += 3;
 				 damage += 10;
-				 }
-				 */
+				 }*/
+				damage += scalingBonusToughness() * 0.1;
+				break;
+				//manticore tailpussy teases
+			case 47:
+				outputText("You suddenly open your tail pussy presenting your drooling hole to " + monster.a + monster.short + " and smirking.\n\n");
+				outputText("\"<i>Bet you want a shot at this, look how much this bad girl is ready for you.</i>\"");
+				chance += 3;
+				damage += 3;
 				break;
 		}
 		//===========================
@@ -1363,43 +1380,43 @@ public class CombatTeases extends BaseContent {
 				}
 			}
 			if (ass) {
-				if (player.buttRating >= 6) {
+				if (player.butt.type >= 6) {
 					bonusChance += .5;
 					bonusDamage += 1;
 				}
-				if (player.buttRating >= 10) {
+				if (player.butt.type >= 10) {
 					bonusChance += .5;
 					bonusDamage += 1;
 				}
-				if (player.buttRating >= 13) {
+				if (player.butt.type >= 13) {
 					bonusChance += .5;
 					bonusDamage += 1;
 				}
-				if (player.buttRating >= 16) {
+				if (player.butt.type >= 16) {
 					bonusChance += .5;
 					bonusDamage += 1;
 				}
-				if (player.buttRating >= 20) {
+				if (player.butt.type >= 20) {
 					bonusChance += .5;
 					bonusDamage += 1;
 				}
-				if (player.hipRating >= 6) {
+				if (player.hips.type >= 6) {
 					bonusChance += .5;
 					bonusDamage += 1;
 				}
-				if (player.hipRating >= 10) {
+				if (player.hips.type >= 10) {
 					bonusChance += .5;
 					bonusDamage += 1;
 				}
-				if (player.hipRating >= 13) {
+				if (player.hips.type >= 13) {
 					bonusChance += .5;
 					bonusDamage += 1;
 				}
-				if (player.hipRating >= 16) {
+				if (player.hips.type >= 16) {
 					bonusChance += .5;
 					bonusDamage += 1;
 				}
-				if (player.hipRating >= 20) {
+				if (player.hips.type >= 20) {
 					bonusChance += .5;
 					bonusDamage += 1;
 				}
@@ -1447,14 +1464,17 @@ public class CombatTeases extends BaseContent {
 			//NERF TEASE DAMAGE
 			damage *= .7;
 			bonusDamage *= .7;
-			if (player.findPerk(PerkLib.HistoryWhore) >= 0 || player.findPerk(PerkLib.PastLifeWhore) >= 0) {
-				damage *= 1.15;
-				bonusDamage *= 1.15;
-			}
+			var damagemultiplier:Number = 1;
+			if (player.hasPerk(PerkLib.ElectrifiedDesire)) damagemultiplier += player.lust100 * 0.01;
+			if (player.hasPerk(PerkLib.HistoryWhore) || player.hasPerk(PerkLib.PastLifeWhore)) damagemultiplier += 0.15;
+			if (player.hasPerk(PerkLib.DazzlingDisplay) && rand(100) < 10) damagemultiplier += 0.2;
+			if (player.hasPerk(PerkLib.SuperSensual) && chance > 100) damagemultiplier += (0.01 * (chance - 100));
+			damage *= damagemultiplier;
+			bonusDamage *= damagemultiplier;
 			//Determine if critical tease!
 			var crit:Boolean = false;
 			var critChance:int = 5;
-			if (player.findPerk(PerkLib.CriticalPerformance) >= 0) {
+			if (player.hasPerk(PerkLib.CriticalPerformance)) {
 				if (player.lib <= 100) critChance += player.lib / 5;
 				if (player.lib > 100) critChance += 20;
 			}
@@ -1463,10 +1483,10 @@ public class CombatTeases extends BaseContent {
 				crit = true;
 				damage *= 1.75;
 			}
-			if (player.findPerk(PerkLib.ChiReflowLust) >= 0) damage *= UmasShop.NEEDLEWORK_LUST_TEASE_DAMAGE_MULTI;
-			if (player.findPerk(PerkLib.ArouseTheAudience) >= 0 && player.findPerk(PerkLib.EnemyGroupType) >= 0) damage *= 1.5;
+			if (player.hasPerk(PerkLib.ChiReflowLust)) damage *= UmasShop.NEEDLEWORK_LUST_TEASE_DAMAGE_MULTI;
+			if (player.hasPerk(PerkLib.ArouseTheAudience) && player.hasPerk(PerkLib.EnemyGroupType)) damage *= 1.5;
 			damage = (damage + rand(bonusDamage)) * monster.lustVuln;
-			if (player.findPerk(PerkLib.DazzlingDisplay) >= 0 && rand(100) < 15) {
+			if (player.hasPerk(PerkLib.DazzlingDisplay) && rand(100) < 15) {
 				outputText("\n" + monster.a + monster.short + " is so mesmerised by your show that it stands there gawking.");
 				monster.createStatusEffect(StatusEffects.Stunned, 1, 0, 0, 0);
 			}
@@ -1476,18 +1496,17 @@ public class CombatTeases extends BaseContent {
 				monster.teased(damage);
 				if (crit == true) outputText(" <b>Critical!</b>");
 			}
-			if (flags[kFLAGS.PC_FETISH] >= 1 && !kGAMECLASS.urtaQuest.isUrta()) {
+			if (flags[kFLAGS.PC_FETISH] >= 1 && !SceneLib.urtaQuest.isUrta()) {
 				if (player.lust < (player.maxLust() * 0.75)) outputText("\nFlaunting your body in such a way gets you a little hot and bothered.");
 				else outputText("\nIf you keep exposing yourself you're going to get too horny to fight back.  This exhibitionism fetish makes it hard to resist just stripping naked and giving up.");
 				if (!justText) dynStats("lus", 2 + rand(3));
 			}
 			// Similar to fetish check, only add XP if the player IS the player...
-			if (!justText && !kGAMECLASS.urtaQuest.isUrta()) teaseXP(1);
+			if (!justText && !SceneLib.urtaQuest.isUrta()) teaseXP(1 + bonusExpAfterSuccesfullTease());
 		}
 		//Nuttin honey
 		else {
-			if (!justText && !kGAMECLASS.urtaQuest.isUrta()) teaseXP(5);
-
+			if (!justText && !SceneLib.urtaQuest.isUrta()) teaseXP(1);
 			if (monster is JeanClaude) (monster as JeanClaude).handleTease(0, false);
 			else if (monster is Doppleganger) (monster as Doppleganger).mirrorTease(0, false);
 			else if (!justText) outputText("\n" + monster.capitalA + monster.short + " seems unimpressed.");
@@ -1497,15 +1516,55 @@ public class CombatTeases extends BaseContent {
 
 	public function teaseXP(XP:Number = 0):void {
 		while (XP > 0) {
-			XP--;
-			player.teaseXP++;
+			if (XP == 1) {
+				player.teaseXP++;
+				XP--;
+			}
+			else {
+				player.teaseXP += XP;
+				XP -= XP;
+			}
 			//Level dat shit up!
-			if (player.teaseLevel < 5 && player.teaseXP >= 10 + (player.teaseLevel + 1) * 5 * (player.teaseLevel + 1)) {
+			if (player.teaseLevel < maxTeaseLevel() && player.teaseXP >= teaseExpToLevelUp()) {
 				outputText("\n<b>Tease skill leveled up to " + (player.teaseLevel + 1) + "!</b>");
 				player.teaseLevel++;
 				player.teaseXP = 0;
 			}
 		}
+	}
+	public function bonusExpAfterSuccesfullTease():Number {
+		var sucessBonusTeaseExp:Number = 1;
+		if (player.hasPerk(PerkLib.SuperSensual)) sucessBonusTeaseExp += 2;
+		if (player.hasPerk(PerkLib.Sensual)) sucessBonusTeaseExp += 1;
+		return sucessBonusTeaseExp;
+	}
+	public function maxTeaseLevel():Number {
+		var maxLevel:Number = 2;
+		if (player.hasPerk(PerkLib.SuperSensual)) {
+			if (player.level < 48) maxLevel += player.level;
+			else maxLevel += 48;
+		}
+		else {
+			if (player.level < 23) maxLevel += player.level;
+			else maxLevel += 23;
+		}
+		return maxLevel;
+	}
+	public function teaseExpToLevelUp():Number {
+		var expToLevelUp:Number = 10;
+		var expToLevelUp00:Number = player.teaseLevel + 1;
+		var expToLevelUp01:Number = 5;
+		var expToLevelUp02:Number = player.teaseLevel + 1;
+		if (player.hasPerk(PerkLib.ArouseTheAudience)) expToLevelUp00 -= 1;//2nd
+		//-2;//4th
+		//-3;//6th
+		if (player.hasPerk(PerkLib.Sensual)) expToLevelUp01 -= 2;
+		if (player.hasPerk(PerkLib.SuperSensual)) expToLevelUp01 -= 1;
+		if (player.hasPerk(PerkLib.DazzlingDisplay)) expToLevelUp02 -= 1;//1st
+		if (player.hasPerk(PerkLib.CriticalPerformance)) expToLevelUp02 -= 2;//3rd
+		//-3;//5th
+		expToLevelUp += expToLevelUp00 * expToLevelUp01 * expToLevelUp02;
+		return expToLevelUp;
 	}
 
 

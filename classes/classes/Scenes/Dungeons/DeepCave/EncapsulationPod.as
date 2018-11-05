@@ -1,10 +1,13 @@
 ﻿package classes.Scenes.Dungeons.DeepCave
 {
-	import classes.*;
-	import classes.internals.*;
-	import classes.GlobalFlags.kFLAGS;
+import classes.*;
+import classes.BodyParts.Butt;
+import classes.BodyParts.Hips;
+import classes.BodyParts.Skin;
+import classes.Scenes.SceneLib;
+import classes.internals.*;
 
-	/**
+/**
 	 * ...
 	 * @author Fake-Name
 	 */
@@ -28,7 +31,7 @@
 				else if(player.balls == 0) outputText("taint ");
 				outputText("as they climb ever-further up your body.  In spite of yourself, you feel the touch of arousal licking at your thoughts.\n");
 				if(player.lust < 35) {
-					game.dynStats("lus", 1);
+					player.dynStats("lus", 1);
 					player.lust = 35;
 					statScreenRefresh();
 				}
@@ -50,7 +53,7 @@
 						if(player.clitLength > 4) outputText("It brushes your [clit] then curls around it, squeezing and gently caressing it with a slow, pleasing rhythm.  ");
 					}
 					else {
-						outputText("prods your groin before curling around to circle your " + game.assholeDescript() + " playfully.  The entire tendril pulses in a pleasant, relaxing way.  ");
+						outputText("prods your groin before curling around to circle your " + Appearance.assholeDescript(player) + " playfully.  The entire tendril pulses in a pleasant, relaxing way.  ");
 					}
 				}
 				if(player.cockTotal() > 1) {
@@ -63,7 +66,7 @@
 					if(player.clitLength > 3) outputText("and once it discovers how large it is, it wraps around it and squeezes.  It feels good!  ");
 					else outputText("and it has quite an easy time making your bud grow hard and sensitive.  The constant rubbing feels good!  ");
 				}
-				outputText("One 'lucky' stalk manages to find your " + game.assholeDescript() + ".  As soon as it touches your rear 'entrance', it lunges forward to penetrate you.  The fluids coating the tentacle make your muscles relax, allowing it to slide inside you with ease.\n\n");
+				outputText("One 'lucky' stalk manages to find your " + Appearance.assholeDescript(player) + ".  As soon as it touches your rear 'entrance', it lunges forward to penetrate you.  The fluids coating the tentacle make your muscles relax, allowing it to slide inside you with ease.\n\n");
 				
 				outputText("The rest of the mass continues to crawl up you.  They tickle at your ");
 				if(player.pregnancyIncubation > 0 && player.pregnancyIncubation < 120) outputText("pregnant ");
@@ -72,7 +75,7 @@
 				else outputText("the underside of your " + allBreastsDescript());
 				outputText(".  Gods above, this is turning you on!  Your lower body is being violated in every conceivable way and it's only arousing you more.  Between the mind-numbing smell and the sexual assault you're having a hard time focusing.\n");
 				if(player.lust < 65) {
-					game.dynStats("lus", 1);
+					player.dynStats("lus", 1);
 					player.lust = 65;
 					statScreenRefresh();
 				}
@@ -85,20 +88,20 @@
 				
 				outputText("The tentacles that aren't busy with your [allbreasts] are already climbing higher, and the slime has reached your waist.  If anything it actually makes the constant violation more intense and relaxing.  You start to sink down into it, but catch yourself and pull yourself back up.  No! You've got to fight!\n");
 				if(player.lust < 85) {
-					game.dynStats("lus", 1);
+					player.dynStats("lus", 1);
 					player.lust = 85;
 					statScreenRefresh();
 				}
 			}
 			//[Round 4 Action]
 			else {
-				game.dynStats("lus", 1);
+				player.dynStats("lus", 1);
 				player.lust = player.maxLust();
 				statScreenRefresh();
-				outputText("What's happening to you definitely isn't rape.  Not any more.  You like it too much.  You lean back against a wall of the pod and thrust your " + game.hipDescript() + " pitifully against a phantom lover, moaning lewdly as you're forcibly pleasured.  You grab hold of the fleshy walls with your hands and try to hold yourself up, but your [legs] have the consistency of jello.   They fold neatly underneath you as you slide into the ooze and begin to float inside it.  It's comforting in an odd way, and while you're gasping in between moans, your balance finally gives out.  You sink deeper into the fluid and lose all sense of direction.  Up and down become meaningless constructs that no longer matter to you.\n\n");
+				outputText("What's happening to you definitely isn't rape.  Not any more.  You like it too much.  You lean back against a wall of the pod and thrust your " + Appearance.hipDescription(player) + " pitifully against a phantom lover, moaning lewdly as you're forcibly pleasured.  You grab hold of the fleshy walls with your hands and try to hold yourself up, but your [legs] have the consistency of jello.   They fold neatly underneath you as you slide into the ooze and begin to float inside it.  It's comforting in an odd way, and while you're gasping in between moans, your balance finally gives out.  You sink deeper into the fluid and lose all sense of direction.  Up and down become meaningless constructs that no longer matter to you.\n\n");
 				
 				outputText("The thick slime passes over your lips and nose as you sink into the rising tide of bliss, and you find yourself wondering how you'll breathe.  Instinctively, you hold your breath.  Even riddled with sexual bliss and thought-obliterating drugs, you won't let yourself open your mouth when 'underwater'.  The lack of oxygen makes your heart hammer in your chest");
-				if(player.totalCocks() > 0) {
+				if(player.cockTotal() > 0) {
 					outputText(", and [eachcock] bloats with blood, getting larger than ever");
 				}
 				outputText(".  Before you can pass out, the constant penetration forces a moan from your lips.\n\n");
@@ -107,7 +110,7 @@
 				
 				outputText("You're floating in pure liquid bliss.  Thoughts melt away before they can form, and every inch of your body is being caressed, squeezed, or penetrated by the warm, slime-slicked tentacles.  Nearly every muscle in your body goes completely slack as you're cradled with bliss.  Without your thoughts or stress bothering you, the pleasure swiftly builds to a crescendo.\n\n");
 				
-				outputText("The wave of need starts out inside your crotch, begging to be let out, but you can't even be bothered to move your " + game.hipDescript() + " anymore.  Without your help, release stays just out of reach, but the tentacles working your body seem intent on spurring it on.  The one inside your " + game.assholeDescript() + " begins to pump more quickly, and with the added pressure, you cum quickly.  ");
+				outputText("The wave of need starts out inside your crotch, begging to be let out, but you can't even be bothered to move your " + Appearance.hipDescription(player) + " anymore.  Without your help, release stays just out of reach, but the tentacles working your body seem intent on spurring it on.  The one inside your " + Appearance.assholeDescript(player) + " begins to pump more quickly, and with the added pressure, you cum quickly.  ");
 				if(!player.hasVagina()) {
 					outputText("Your body twitches weakly, too relaxed to move while it gets off from anal penetration.");
 				}
@@ -128,7 +131,7 @@
 					else outputText("thickening your fluid-filled prison with nutrients.");
 				}
 				//[NEXT – CHOOSE APPRORIATE]
-				doNext(game.dungeons.deepcave.loseToThisShitPartII);
+				doNext(SceneLib.dungeons.deepcave.loseToThisShitPartII);
 				return;
 			}
 			//Set flags for rounds
@@ -136,7 +139,6 @@
 				createStatusEffect(StatusEffects.Round,2,0,0,0);
 			}
 			else addStatusValue(StatusEffects.Round,1,1);
-			combatRoundOver();
 		}
 		
 		override protected function performCombatAction():void
@@ -146,7 +148,7 @@
 
 		override public function defeated(hpVictory:Boolean):void
 		{
-			game.dungeons.deepcave.encapsulationVictory();
+			SceneLib.dungeons.deepcave.encapsulationVictory();
 		}
 
 		override public function get long():String {
@@ -156,9 +158,9 @@
 			//[Round 2 Description]
 			else if(statusEffectv1(StatusEffects.Round) == 2) {
 				_long = "You're still trapped inside the pod!  By now the walls are totally soaked with some kind of viscous slime.  The smell of it is unbearably sweet and you have to put a hand against the wall to steady yourself.  Warm tentacles are curling and twisting underneath your armor, caressing every ";
-				if(player.hasFullCoatOfType(SKIN_COAT_FUR)) _long += "furry ";
-				if(player.hasFullCoatOfType(SKIN_COAT_SCALES)) _long += "scaley ";
-				_long += "inch of your [legs], crotch, and " + game.assDescript() + ".";
+				if(player.hasFullCoatOfType(Skin.FUR)) _long += "furry ";
+				if(player.hasFullCoatOfType(Skin.SCALES)) _long += "scaley ";
+				_long += "inch of your [legs], crotch, and " + Appearance.buttDescription(player) + ".";
 			}
 			//[Round 3 Description]
 			else if(statusEffectv1(StatusEffects.Round) == 3) {
@@ -167,7 +169,7 @@
 			//[Round 4 Description]
 			else {
 				_long = "You're trapped inside the pod and being violated by tentacles from the shoulders down!  The slime around your waist is rising even faster now.  It will probably reach ";
-				if(player.biggestTitSize() >= 1) _long += "the underside of your " + game.allBreastsDescript();
+				if(player.biggestTitSize() >= 1) _long += "the underside of your " + Appearance.allBreastsDescript(player);
 				else _long += "your chest";
 				_long += " in moments.  You're being fucked by a bevy of tentacles while your nipples are ";
 				if(!player.hasFuckableNipples()) _long += "fondled ";
@@ -208,18 +210,19 @@
 			initGenderless();
 			createBreastRow(0,0);
 			this.tallness = 120;
-			this.hipRating = HIP_RATING_SLENDER;
-			this.buttRating = BUTT_RATING_BUTTLESS;
-			this.skin.setBaseOnly({type:SKIN_BASE_PLAIN,color:"purple",desc:"covering"});
+			this.hips.type = Hips.RATING_SLENDER;
+			this.butt.type = Butt.RATING_BUTTLESS;
+			this.skin.setBaseOnly({type:Skin.PLAIN,color:"purple",desc:"covering"});
 			this.hairColor = "black";
 			this.hairLength = 0;
 			initStrTouSpeInte(180, 1, 1, 1);
-			initLibSensCor(1, 1, 100);
+			initWisLibSensCor(1, 1, 1, 100);
 			this.weaponName = "pod";
 			this.weaponVerb="pod";
-			this.weaponAttack = 4 + (1 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.weaponAttack = 4;
 			this.armorName = "pod";
-			this.armorDef = 4 + (1 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.armorDef = 4;
+			this.armorMDef = 0;
 			this.bonusHP = 1200;
 			this.lust = 10;
 			this.lustVuln = 0;
@@ -234,12 +237,6 @@
 			this.createPerk(PerkLib.Regeneration, 0, 0, 0, 0);
 			this.createPerk(PerkLib.FireVulnerability, 0, 0, 0, 0);
 			this.createPerk(PerkLib.EnemyPlantType, 0, 0, 0, 0);
-			this.str += 54 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.tou += 1 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.spe += 1 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.inte += 1 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];			
-			this.lib += 1 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.newgamebonusHP = 1740;
 			checkMonster();
 		}
 

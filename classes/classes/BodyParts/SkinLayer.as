@@ -3,11 +3,10 @@
  */
 package classes.BodyParts {
 import classes.Appearance;
-import classes.Creature;
 
 public class SkinLayer extends BodyPart {
 	private var _color:String  = "";
-	public var pattern:int   = PATTERN_NONE;
+	public var pattern:int   = Skin.PATTERN_NONE;
 	private var _desc:String = "";
 	private var _adj:String  = "";
 	private var _color2:String = "";
@@ -57,7 +56,7 @@ public class SkinLayer extends BodyPart {
 		if (type != value) {
 			super.type = value;
 			_desc      = "";
-			pattern    = PATTERN_NONE;
+			pattern    = Skin.PATTERN_NONE;
 			if (!_adj) _adj = defaultAdj();
 		}
 	}
@@ -91,13 +90,13 @@ public class SkinLayer extends BodyPart {
 	override public function loadFromObject(o:Object, ignoreErrors:Boolean):void {
 		super.loadFromObject(o, ignoreErrors);
 		if (_adj == "sexy tattooed") {
-			pattern = PATTERN_MAGICAL_TATTOO;
+			pattern = Skin.PATTERN_MAGICAL_TATTOO;
 		} else if (_adj == "covered with various intricate battle tattoos") {
-			pattern = PATTERN_BATTLE_TATTOO;
+			pattern = Skin.PATTERN_BATTLE_TATTOO;
 		} else if (color == "white and black") {
 			color = "white";
 			color2 = "black";
-			pattern = PATTERN_ORCA_UNDERBODY;
+			pattern = Skin.PATTERN_ORCA_UNDERBODY;
 		}
 	}
 }

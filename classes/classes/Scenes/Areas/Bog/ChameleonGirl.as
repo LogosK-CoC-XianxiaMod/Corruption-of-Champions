@@ -1,9 +1,12 @@
 package classes.Scenes.Areas.Bog
 {
-	import classes.*;
-	import classes.GlobalFlags.kFLAGS;
+import classes.*;
+import classes.BodyParts.Butt;
+import classes.BodyParts.Hips;
+import classes.BodyParts.Skin;
+import classes.Scenes.SceneLib;
 
-	public class ChameleonGirl extends Monster
+public class ChameleonGirl extends Monster
 	{
 
 		public function chameleonTongueAttack():void
@@ -16,7 +19,6 @@ package classes.Scenes.Areas.Bog
 			this.weaponAttack = 30;
 			this.weaponName = "claws";
 			this.weaponVerb = "claw";
-			combatRoundOver();
 		}
 
 		//Ignores armor
@@ -32,13 +34,11 @@ package classes.Scenes.Areas.Bog
 			else {
 				var damage:Number = int((str + weaponAttack) - rand(player.tou));
 				if (damage > 0) {
-					
 					outputText("The chameleon swings her arm at you, catching you with her claws.  You wince as they scratch your skin, leaving thin cuts in their wake. ");
-					damage = player.takeDamage(damage, true);
+					damage = player.takePhysDamage(damage, true);
 				}
 				else outputText("The chameleon swings her arm at you, catching you with her claws.  You defend against the razor sharp attack.");
 			}
-			combatRoundOver();
 		}
 
 		//Attack 3:
@@ -52,20 +52,18 @@ package classes.Scenes.Areas.Bog
 			else if (player.getEvasionRoll()) {
 				var damage2:Number = 1 + rand(10);
 				outputText("The chameleon girl leaps in your direction, rolls, and kicks at you.  You sidestep her flying charge and give her a push from below to ensure she lands face-first in the bog. ");
-				damage2 = game.doDamage(damage2, true);
+				damage2 = SceneLib.combat.doDamage(damage2, true);
 				outputText("<b>(<font color=\"#800000\">" + damage2 + "</font>)</b>");
 			}
 			//Get hit
 			else {
 				var damage:Number = int((str + weaponAttack) - rand(player.tou) - player.armorDef) + 25;
 				if (damage > 0) {
-					
 					outputText("The chameleon leaps in your direction, rolls, and kicks you square in the shoulder as she ascends, sending you reeling.  You grunt in pain as a set of sharp claws rake across your chest. ");
-					damage = player.takeDamage(damage, true);
+					damage = player.takePhysDamage(damage, true);
 				}
 				else outputText("The chameleon rolls in your direction and kicks up at your chest, but you knock her aside without taking any damage..");
 			}
-			combatRoundOver();
 		}
 
 		override protected function performCombatAction():void
@@ -80,7 +78,7 @@ package classes.Scenes.Areas.Bog
 
 		override public function defeated(hpVictory:Boolean):void
 		{
-			game.bog.chameleonGirlScene.defeatChameleonGirl();
+			SceneLib.bog.chameleonGirlScene.defeatChameleonGirl();
 		}
 
 
@@ -88,9 +86,9 @@ package classes.Scenes.Areas.Bog
 		{
 			if (pcCameWorms) {
 				outputText("\n\nThe chameleon girl recoils.  \"<i>Ew, gross!</i>\" she screetches as she runs away, leaving you to recover from your defeat alone.");
-				game.cleanupAfterCombat();
+				SceneLib.combat.cleanupAfterCombatImpl();
 			} else {
-				game.bog.chameleonGirlScene.loseToChameleonGirl();
+				SceneLib.bog.chameleonGirlScene.loseToChameleonGirl();
 			}
 		}
 
@@ -128,23 +126,24 @@ package classes.Scenes.Areas.Bog
 			this.imageName = "chameleongirl";
 			this.long = "You're faced with a tall lizard-like girl with smooth " + skinToneAdj[0] + " skin and long, " + skinToneAdj[1] + " stripes that run along her body from ankle to shoulder.  An abnormally large tail swishes behind her, and her hands are massive for her frame, built for easily climbing the trees.  A pair of small, cute horns grow from her temples, and a pair of perky B-cups push out through her skimpy drapings.  Large, sharp claws cap her fingers, gesturing menacingly at you.";
 			// this.plural = false;
-			this.createVagina(false, VAGINA_WETNESS_SLAVERING, VAGINA_LOOSENESS_LOOSE);
+			this.createVagina(false, VaginaClass.WETNESS_SLAVERING, VaginaClass.LOOSENESS_LOOSE);
 			createBreastRow(Appearance.breastCupInverse("B"));
-			this.ass.analLooseness = ANAL_LOOSENESS_NORMAL;
-			this.ass.analWetness = ANAL_WETNESS_DRY;
+			this.ass.analLooseness = AssClass.LOOSENESS_NORMAL;
+			this.ass.analWetness = AssClass.WETNESS_DRY;
 			this.tallness = rand(2) + 68;
-			this.hipRating = HIP_RATING_AMPLE + 2;
-			this.buttRating = BUTT_RATING_LARGE;
-			this.skin.setBaseOnly({color:skinToneAdj[0],adj:skinToneAdj[1],type:SKIN_BASE_PLAIN});
+			this.hips.type = Hips.RATING_AMPLE + 2;
+			this.butt.type = Butt.RATING_LARGE;
+			this.skin.setBaseOnly({color:skinToneAdj[0],adj:skinToneAdj[1],type:Skin.PLAIN});
 			this.hairColor = "black";
 			this.hairLength = 15;
 			initStrTouSpeInte(120, 120, 105, 95);
-			initLibSensCor(60, 45, 50);
+			initWisLibSensCor(100, 60, 45, 50);
 			this.weaponName = "claws";
 			this.weaponVerb="claw";
-			this.weaponAttack = 40 + (9 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.weaponAttack = 40;
 			this.armorName = "skin";
-			this.armorDef = 30 + (4 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.armorDef = 30;
+			this.armorMDef = 3;
 			this.bonusHP = 350;
 			this.bonusLust = 10;
 			this.lust = 30;
@@ -154,12 +153,6 @@ package classes.Scenes.Areas.Bog
 			this.gems = 50 + rand(60);
 			this.drop = NO_DROP;
 			this.createPerk(PerkLib.EnemyBeastOrAnimalMorphType, 0, 0, 0, 0);
-			this.str += 36 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.tou += 36 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.spe += 31 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.inte += 28 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];			
-			this.lib += 18 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.newgamebonusHP = 4470;
 			checkMonster();
 		}
 

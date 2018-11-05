@@ -1,11 +1,17 @@
 ﻿package classes.Scenes.Monsters
 {
-	import classes.*;
-	import classes.internals.*;
-	import classes.GlobalFlags.*;
+import classes.*;
+import classes.BodyParts.Butt;
+import classes.BodyParts.Hips;
+import classes.GlobalFlags.*;
+import classes.Scenes.SceneLib;
+import classes.Scenes.Places.HeXinDao;
+import classes.internals.*;
 
-	public class GoblinAssassin extends Monster
+public class GoblinAssassin extends Monster
 	{
+		public var adventure:HeXinDao = new HeXinDao();
+		
 		protected function goblinDrugAttack():void {
 			var temp2:Number = rand(5);
 			var color:String = "";
@@ -23,7 +29,7 @@
 				outputText(capitalA + short + " pulls out a blue vial and uncaps it, swiftly downing its contents.");
 				if(HPRatio() < 1) {
 					outputText("  She looks to have recovered from some of her wounds!\n");
-					addHP(eMaxHP() /4);
+					addHP(maxHP() / 4);
 				}
 				else outputText("  There doesn't seem to be any effect.\n");
 			}
@@ -50,9 +56,8 @@
 			//Increase fatigue
 			if(color == "black") {
 				outputText("\nThe black fluid splashes all over you and wicks into your skin near-instantly.  It makes you feel tired and drowsy.\n");
-				game.fatigue(10 + rand(25));
+				EngineCore.fatigue(10 + rand(25));
 			}
-			combatRoundOver();
 			return;
 		}
 		//Lust Needle
@@ -63,15 +68,14 @@
 			{
 				//Miss: 
 				outputText("\nYou’ve already prepared, however, as you hold your breath and grab the goblin by her sides. Unhindered by her advance, you take the opportunity to move backwards, throwing the goblin off balance and leaving you only faintly smelling of her pussy.");
-				game.dynStats("lus", rand(player.lib/10)+4);
+				player.dynStats("lus", rand(player.lib/10)+4);
 			}
 			//Hit: 
 			else 
 			{
 				outputText("\nYou’re far too distracted to notice the needle injected into the back of your neck, but by the time she flips back into her original position you already feel the contents of the syringe beginning to take effect.");
-				game.dynStats("lus", rand(player.lib/4)+20);
+				player.dynStats("lus", rand(player.lib/4)+20);
 			}
-			combatRoundOver();
 		}
 		//Dual Shot
 		protected function dualShot():void {
@@ -86,9 +90,8 @@
 				outputText("\nBefore you can do anything to stop her, she lifts her head and takes a swift lick of your crotch, taking a small moan from you and giving her enough time to stab into the back of your knees. She rolls out of the way just as you pluck the two needles out and throw them back to the ground. They didn’t seem to have anything in them, but the pain is enough to make you stagger. ");
 				//(Medium HP loss, small lust gain)
 				var damage:int = int((str + weaponAttack + 40) - rand(player.tou) - player.armorDef);
-				damage = player.takeDamage(damage, true);
+				damage = player.takePhysDamage(damage, true);
 			}
-			combatRoundOver();
 		}
 		//Explosion
 		protected function goblinExplosion():void {
@@ -96,59 +99,64 @@
 			outputText("\nYou shield yourself from the explosion, though the goblin has already lit a second needle which she throws behind you, launching your body forwards as it explodes behind your back. ");
 			//(High HP loss, no lust gain)
 			var damage:int = 25 + rand(75);
-			if (player.findPerk(PerkLib.FromTheFrozenWaste) >= 0 || player.findPerk(PerkLib.ColdAffinity) >= 0) damage *= 3;
-			if (player.findPerk(PerkLib.FireAffinity) >= 0) damage *= 0.3;
 			damage = Math.round(damage);
-			damage = player.takeDamage(damage, true);
-			combatRoundOver();
+			damage = player.takeFireDamage(damage, true);
 		}
 		override public function defeated(hpVictory:Boolean):void
 		{
-			game.goblinAssassinScene.gobboAssassinRapeIntro();
-			
+			if (player.hasStatusEffect(StatusEffects.SoulArenaGaunlet)) adventure.gaunletchallange2fight2();
+			else SceneLib.goblinAssassinScene.gobboAssassinRapeIntro();
 		}
 		override public function won(hpVictory:Boolean, pcCameWorms:Boolean):void
 		{
 			if (player.gender == 0 || flags[kFLAGS.SFW_MODE] > 0) {
 				outputText("You collapse in front of the goblin, too wounded to fight.  She growls and kicks you in the head, making your vision swim. As your sight fades, you hear her murmur, \"<i>Fucking dicks can't even bother to grow a dick or cunt.</i>\"");
-				game.cleanupAfterCombat();
+				SceneLib.combat.cleanupAfterCombatImpl();
 			} 
 			else {
-				game.goblinAssassinScene.gobboAssassinBeatYaUp();
+				SceneLib.goblinAssassinScene.gobboAssassinBeatYaUp();
 			}
 		}
 		public function GoblinAssassin(noInit:Boolean=false)
 		{
 			if (noInit) return;
 			this.a = "the ";
-			this.short = "goblin assassin";
+			if (player.hasStatusEffect(StatusEffects.SoulArenaGaunlet)) {
+				this.short = "goblin adventurer";
+				this.level = 9;
+				this.bonusHP = 70;
+			}
+			else {
+				this.short = "goblin assassin";
+				this.level = 10;
+				this.bonusHP = 100;
+			}
 			this.imageName = "goblinassassin";
 			this.long = "Her appearance is that of a regular goblin, curvy and pale green, perhaps slightly taller than the norm. Her wavy, untamed hair is a deep shade of blue, covering her pierced ears and reaching just above her shoulders. Her soft curves are accentuated by her choice of wear, a single belt lined with assorted needles strapped across her full chest and a pair of fishnet stockings reaching up to her thick thighs. She bounces on the spot, preparing to dodge anything you might have in store, though your eyes seem to wander towards her bare slit and jiggling ass. Despite her obvious knowledge in combat, she’s a goblin all the same – a hard cock can go a long way.";
 			// this.plural = false;
-			this.createVagina(false, VAGINA_WETNESS_DROOLING, VAGINA_LOOSENESS_NORMAL);
+			this.createVagina(false, VaginaClass.WETNESS_DROOLING, VaginaClass.LOOSENESS_NORMAL);
 			this.createStatusEffect(StatusEffects.BonusVCapacity, 90, 0, 0, 0);
 			createBreastRow(Appearance.breastCupInverse("E"));
-			this.ass.analLooseness = ANAL_LOOSENESS_NORMAL;
-			this.ass.analWetness = ANAL_WETNESS_DRY;
+			this.ass.analLooseness = AssClass.LOOSENESS_NORMAL;
+			this.ass.analWetness = AssClass.WETNESS_DRY;
 			this.createStatusEffect(StatusEffects.BonusACapacity,50,0,0,0);
 			this.tallness = 35 + rand(4);
-			this.hipRating = HIP_RATING_AMPLE+2;
-			this.buttRating = BUTT_RATING_LARGE;
+			this.hips.type = Hips.RATING_AMPLE + 2;
+			this.butt.type = Butt.RATING_LARGE;
 			this.skinTone = "dark green";
 			this.hairColor = "blue";
 			this.hairLength = 7;
 			initStrTouSpeInte(45, 55, 110, 95);
-			initLibSensCor(64, 35, 60);
+			initWisLibSensCor(95, 64, 35, 60);
 			this.weaponName = "needles";
 			this.weaponVerb = "stabbing needles";
-			this.weaponAttack = 2 + (1 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.weaponAttack = 2;
 			this.armorName = "leather straps";
-			this.armorDef = 1 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.bonusHP = 70;
+			this.armorDef = 1;
+			this.armorMDef = 1;
 			this.bonusLust = 20;
 			this.lust = 50;
 			this.temperment = TEMPERMENT_RANDOM_GRAPPLES;
-			this.level = 10;
 			this.gems = rand(50) + 25;
 			this.drop = new WeightedDrop().
 					add(consumables.GOB_ALE, 5).
@@ -157,12 +165,6 @@
 							consumables.BLUEDYE,
 							consumables.ORANGDY,
 							consumables.PURPDYE);// TODO this is a copy of goblin drop. consider replacement with higher-lever stuff
-			this.str += 9 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.tou += 11 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.spe += 22 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.inte += 19 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];			
-			this.lib += 12 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.newgamebonusHP = 1460;
 			checkMonster();
 		}
 

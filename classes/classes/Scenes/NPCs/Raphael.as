@@ -1,9 +1,11 @@
 ﻿package classes.Scenes.NPCs{
-	import classes.*;
-	import classes.GlobalFlags.kFLAGS;
-	import classes.GlobalFlags.kACHIEVEMENTS;
+import classes.*;
+import classes.BodyParts.LowerBody;
+import classes.BodyParts.Tail;
+import classes.GlobalFlags.kACHIEVEMENTS;
+import classes.GlobalFlags.kFLAGS;
 
-	public class Raphael extends NPCAwareContent implements TimeAwareInterface {
+public class Raphael extends NPCAwareContent implements TimeAwareInterface {
 
 //The event itself:
 //Requirement: Player has found Desert storage chest &
@@ -15,7 +17,7 @@
 //- Player does not have a cock or balls, for now
 
 		public function Raphael() {
-			CoC.timeAwareClassAdd(this);
+			EventParser.timeAwareClassAdd(this);
 		}
 		
 		private var checkedRussetRogue:int;
@@ -104,9 +106,9 @@ override public function RaphaelLikes():Boolean {
 	//({If player has below C cup breasts} 
 	if(player.biggestTitSize() < 3) return false;
 	//({If player has grown less than girly hips}
-	if(player.hipRating < 6) return false;
+	if(player.hips.type < 6) return false;
 	//({If player has gotten a massive butt} 
-	if(player.buttRating >= 16) return false;
+	if(player.butt.type >= 16) return false;
 	//({If female player has gotten bigger than 6 feet}
 	if(player.tallness > 72) return false;
 	//({If female player has gotten smaller than 4 feet}
@@ -309,7 +311,7 @@ private function RaphaelDressPtII():void {
 	
 	outputText("All over your body where the gossamer isn't reinforced with jacket or corset, the density of the delicate velvet web varies. Although the silk hugs across your " + vaginaDescript(0) + " and through the crack of your ass as a triple layer that guards against prying eyes, the surface of your hips and legs is clearly seen through the transparent motif of flowers swirling across the lace. The cheeks of your " + buttDescript() + " feel equally exposed despite the presence of four sweeping rosebranches stitched across them, but at least the jacket trails past your lower back and partly covers your buttocks with its parted tailflaps.");
 	//({If player has tail}
-	if(player.tailType > TAIL_TYPE_NONE) outputText("  Your tail peeks out through the cut.");
+	if(player.tailType > Tail.NONE) outputText("  Your tail peeks out through the cut.");
 	outputText("  You still can't help but feel that anyone standing behind you is given a generous glimpse of your ornate ass, however. The same goes for your " + breastDescript(0) + "; cupped, lifted and presented as they are to the outside world by grasping silk. Their ample curve and tender flesh are clearly visible through the red lace. The only thing saving their modesty is the tactical application of a sea of organic patterns across the lower half, with the curl of two roses covering your " + nippleDescript(0) + "s. The ensemble comes with a pair of red stiletto high heels, but you're not sure you're ready for them. Wearing them would only perk up your noticeable posterior even more. That your " + breastDescript(0) + " contrast above a slender waist is enough for now. Maybe on special occasions.\n\n");
 	
 	outputText("You blush as the wind breezes by, and with the exception of the upper jacket, feel like you're wearing nothing at all. This sensation is only aggravated when you can't help but slip a finger across your inner thigh and feel it glide up effortlessly across the textile. It's like you've only become more sensitive for wearing it. Much to your amazement, the triple layer across your " + vaginaDescript(0) + " doesn't provide quite as much protection as you assumed earlier; at least not so much against roving fingers. You find the fabric across your womanhood has a hidden opening to it. Rubbing through it is enough to part the velvet folds and set your finger upon your own. It's not apparent, but anyone aware of this shameful split would have easy access to your depths without even disrobing you. You feel nude.\n\n");
@@ -366,16 +368,16 @@ private function RaphaelEncounterIIDressFollowup():void {
 		outputText("\"<i>What terrible tragedy! The land has taken its toll on the once so beautiful.</i>\" He looks down on you.\n\n");
 
 		//({If player has no legs, or a centaur body.}
-		if(player.isNaga() || player.lowerBody == LOWER_BODY_TYPE_GOO || player.isTaur() || player.isDrider()) 
+		if(player.isNaga() || player.lowerBody == LowerBody.GOO || player.isTaur() || player.isDrider())
 			outputText("\"<i>You're missing half your body!</i>\" He refers to your morphed legs.\n\n");
 		//({If player has above E cup breasts} 
 		if(player.biggestTitSize() >= 7) outputText("\"<i>Your female curves... replaced with such... udders!</i>\" He looks at your bosom. \"<i>No woman could be elegant with such monstrosities up front!</i>\"\n\n");
 		//({If player has below C cup breasts} 
 		if(player.biggestTitSize() < 3) outputText("\"<i>Your female curves... gone!</i>\" He looks at your bosom. \"<i>It's hard to tell you apart from a little girl!</i>\"\n\n");
 		//({If player has grown less than girly hips}
-		if(player.hipRating < 6) outputText("\"<i>What happened to that fine hourglass shaped figure? Those comely hips?</i>\"\n\n");
+		if(player.hips.type < 6) outputText("\"<i>What happened to that fine hourglass shaped figure? Those comely hips?</i>\"\n\n");
 		//({If player has gotten a massive butt} 
-		if(player.buttRating >= 13) outputText("\"<i>Oh... my... Marae! [name], look at your butt. It is so big! You look one of those cat guy's girlfriends. Who understands those cat guys? You look like a total prostitute. I mean, your butt. It's just so big. I can't believe it's just so round and so out there! Gross!</i>\"  The fox shakes his head and breaks it down. \"<i>I hate big butts! So vulgar.</i>\"\n\n");
+		if(player.butt.type >= 13) outputText("\"<i>Oh... my... Marae! [name], look at your butt. It is so big! You look one of those cat guy's girlfriends. Who understands those cat guys? You look like a total prostitute. I mean, your butt. It's just so big. I can't believe it's just so round and so out there! Gross!</i>\"  The fox shakes his head and breaks it down. \"<i>I hate big butts! So vulgar.</i>\"\n\n");
 		//({If female player has gotten bigger than 6 feet}
 		if(player.tallness > 72) outputText("Raphael rolls his eyes across your giant body and looks intimidated. \"<i>I can forget about remaining unseen when I take someone of your size somewhere!</i>\"\n\n");
 		//({If female player has gotten smaller than 4 feet}
@@ -859,8 +861,8 @@ private function RaphaelPostFenceSex():void {
 	outputText("Finally, you can bear it no more with his hot breath across your neck.  Your body convulses limply around his upright impalement, the fox still standing tall and firm.  You try to close your leg or slip down his body, but with two firm hands Raphael holds you in climactic embrace like captured prey.  Only after you howl and rock your hips forth to the involuntary rhythm of orgasm does Raphael allow you to drop to the moss. The dew-dappled meadows feel like salvation, but little do you know that it does not end there.\n\n");
 	
 	outputText("With a victorious glint, Raphael rolls you on your back while you're still dazed.  The fox, taking the sash from his hips and tying either end around your knees, brings your legs towards your chest.  He holds them there without any effort on the part of either of you, by putting his chest down on the cloth tied between them and mounting you again, lying on top of you.  More deep thrusts follow, this time deep enough for the tip to titilate even your cervix, while the slender knot at his base parts the sensitive entrance a little wider with every bottoming bump into you.\n\n");
-
 	outputText("It is how you spend the rest of that morning, filled a thousands times over and constantly driven past the edge of orgasmic bliss by the master fencer's trained thrusts.  His civilized smile has long since given way to the mean smirk of a sexual victor driving his victim to the edge of madness.");
+	if (player.isGargoyle() && player.hasPerk(PerkLib.GargoyleCorrupted)) player.refillGargoyleHunger(30);
 	player.orgasm();
 	doNext(postRaphaelCoitus);
 
@@ -1509,8 +1511,8 @@ private function girlOnTopOfRedFoxesOhMy():void {
 	outputText("\n\nRaphael's cock is something else. It must be the bone running through it that gives it its firmness.  Instead of stuffing yourself with a nondescript roll of meat, you can clearly feel him penetrating you with his well defined and rock-hard shaft.  With the faintest twitch of the hip, you can change its angle and run it through in an entirely different manner and you eagerly start experimenting with what feels best.  Eventually you settle on jutting your ass backwards and pressing the middlemost of his solid length against the front wall of your [vagina] while the tip bottoms out against the back.  The position does not go unnoticed to Raph, and he trails his paws along your " + buttDescript() + ".  You begin to bounce around on top him, jamming him into you more firmly and more securely with every rut in.  Raphael supports you by either grabbing you by the ass or cupping your tits, playing with them with his sandy paws.  He sinks in heavily, smoothly, with every gulp of your tightening cunt accompanied by a little wet slush around his hard manhood.");
 	
 	outputText("\n\nDesperate for that little bit more, you reach down and start fondeling your " + clitDescript() + " too.  Your button brushing in against Raphael's soft white pubes tickles.");
-	
 	outputText("\n\nLooking him in the eyes again, you slaver on top of the fox.  Raphael simply lays back, lazily fondles your breasts and ass and looks at you to put in the effort around his cock.  Only after minutes of this, almost driving yourself towards the brink, does Raphael suddenly sit up sharply - an anguished snarl on his face - to hold you in a tight embrace and groan conceitedly.  You can feel his cock jerk up and grow an inch in size, before his passion escapes into your womanhood.  Allowing yourself as well, you follow him with a lazy orgasm and join him in his growl, while he squeezes you on your waist.");
+	if (player.isGargoyle() && player.hasPerk(PerkLib.GargoyleCorrupted)) player.refillGargoyleHunger(30);
 	player.orgasm();
 	dynStats("sen", -2);
 	doNext(camp.returnToCampUseOneHour);
@@ -1547,3 +1549,4 @@ private function raphaelOrphanageSexMenu():void {
 }
 }
 }
+

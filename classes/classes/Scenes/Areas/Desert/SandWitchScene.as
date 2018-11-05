@@ -1,14 +1,16 @@
 ﻿package classes.Scenes.Areas.Desert {
-	import classes.*;
-	import classes.GlobalFlags.kFLAGS;
-	import classes.GlobalFlags.kGAMECLASS;
+import classes.*;
+import classes.GlobalFlags.kFLAGS;
+import classes.CoC;
+import classes.Scenes.SceneLib;
 
-	public class SandWitchScene extends BaseContent implements TimeAwareInterface {
+public class SandWitchScene extends BaseContent implements TimeAwareInterface {
 
 //const EGG_WITCH_TYPE:int = 589;
 //const EGG_WITCH_COUNTER:int = 588;
 
 		public var pregnancy:PregnancyStore;
+		public static var rapedBefore:Boolean = false;
 
 		public function SandWitchScene()
 		{
@@ -17,7 +19,7 @@
 												//Event: 0 (= not pregnant), 1, 2 (< 96)
 			pregnancy.addPregnancyEventSet(PregnancyStore.PREGNANCY_DRIDER_EGGS, 96);
 												//Event: 0 (= not pregnant), 1, 2 (< 96)
-			CoC.timeAwareClassAdd(this);
+			EventParser.timeAwareClassAdd(this);
 		}
 
 		//Implementation of TimeAwareInterface
@@ -98,10 +100,10 @@
 					dynStats("lib", .5, "sen", 1, "lus", 10);
 				}
 				outputText("The sand-witch smiles and thanks you for your offering.  You notice her dress is damp in four spots on the front.  ");
-				if (getGame().sand == 0)
-					outputText("You wonder at what her robes conceal as she vanishes into the dunes.");
-				if (getGame().sand == 1) {
-					if (player.cor <= 33)
+                if (!rapedBefore)
+                    outputText("You wonder at what her robes conceal as she vanishes into the dunes.");
+                else {
+                    if (player.cor <= 33)
 						outputText("You are glad to avoid servicing her again as she vanishes into the dunes.");
 					else if (player.cor <= 66)
 						outputText("You wonder if you should've resisted and tried for some sex as she departs.");
@@ -155,11 +157,11 @@ internal function sandwitchRape():void {
 			}
 			if(player.averageNipplesPerBreast() < 1) {
 				outputText("A dark spot appears on each breast, rapidly forming into a sensitive nipple.  ");
-				temp = player.breastRows.length;
-				while(temp > 0) {
-					temp--;
+				var index:int = player.breastRows.length;
+				while(index > 0) {
+					index--;
 					//If that breast didnt have nipples reset length
-					if(player.breastRows[0].nipplesPerBreast < 1) player.breastRows[0].nippleLength = .2;
+					if(player.breastRows[0].nipplesPerBreast < 1) player.nippleLength = .2;
 					player.breastRows[0].nipplesPerBreast = 1;
 				}
 				dynStats("sen", 2, "lus", 1);
@@ -193,7 +195,7 @@ internal function sandwitchRape():void {
 		outputText("  You hear the soft impact of her robe upon the sands and cannot resist a peek at your captor.  You turn to behold a curvy, dark-skinned beauty, whose form is dominated by a quartet of lactating breasts.  Somewhere in your lust fogged mind you register the top two as something close to double-D's, and her lower pair to be about C's.  She smiles and leans over you, pushing you to the ground violently.\n\nShe turns over you and drops down, planting her slick honey-pot firmly against your mouth.  Her scent is strong, overpowering in its intensity.  Your tongue darts out for a taste and finds a treasure trove of sticky sweetness.  Instinctively you tongue-fuck her, greedily devouring her cunny-juice, shoving your tongue in as far as possible before suckling at her clit.  Dimly you feel the milk spattering over you, splashing off you and into the warm desert sands.  Everywhere the milk touches feels silky smooth and sensitive, and your hands begin stroking your body, rubbing it in as the witch sprays more and more of it.  You lose track of time, orgasming many times, slick and sticky with sexual fluids.");
 		player.slimeFeed();
 		dynStats("lib", 1, "sen", 5);
-		if(kGAMECLASS.sand == 0) kGAMECLASS.sand = 1;
+		rapedBefore = true;
 		cleanupAfterCombat();
 	}
 	//HP DEFEAT
@@ -237,7 +239,7 @@ private function sandWitchBadEndPartThree():void {
 		outputText("No sooner have you spoken than a huge torrent of milk spurts from each of your nipples. Between the sudden alleviation of your pain and the sensitivity of your nipples, you orgasm almost instantly with a huge groan of relief. When you can focus your eyes again, you see that the Sand Witch... your new Mistress... is bathing languidly in the basin, relaxing in a pool of your fresh breastmilk.\n\n");
 		outputText("The dusky-skinned witch catches your eye and smiles, this time more warmly than before. \"<i>See? You'll enjoy yourself more if you obey your Mistress. After all, I <b>ALWAYS</b> get what I want...</i>\"\n\nAs much as you hate to admit it, you realize that she's right. You're trapped here on top of your bloated bust, at the mercy of this perverse spellcaster. She has all the time in the world to train you, and between the pain of overfilled breasts and the orgasmic joy of being drained, it won't take her long to turn you into a perfectly obedient, even eager, milk-slave...");
 	}
-	getGame().gameOver();
+	EventParser.gameOver();
 }
 
 //Sandwitch gets raped
@@ -364,11 +366,11 @@ private function sandwitchCentaurBoning():void {
 		//[has breasts]
 		if(player.biggestTitSize() > 0) outputText("; your " + nippleDescript(0) + "s  become stiff");
 		//[cock only]
-		if(player.totalCocks() > 0 && !player.hasVagina()) outputText(" and your [cock] hardens.");
+		if(player.cockTotal() > 0 && !player.hasVagina()) outputText(" and your [cock] hardens.");
 		//[cunt only]
-		if(player.hasVagina() && player.totalCocks() == 0) outputText(" and your " + vaginaDescript(0) + " begins to drip with moisture.");
+		if(player.hasVagina() && player.cockTotal() == 0) outputText(" and your " + vaginaDescript(0) + " begins to drip with moisture.");
 		//[cock and cunt]
-		if(player.hasVagina() && player.totalCocks() > 0) outputText(" and your [cock] hardens as your " + vaginaDescript(0) + " begins to drip with moisture.");
+		if(player.hasVagina() && player.cockTotal() > 0) outputText(" and your [cock] hardens as your " + vaginaDescript(0) + " begins to drip with moisture.");
 		if(player.gender == 0) outputText(" her.");
 		outputText(" She seems hesitant at first, but soon approaches and begins to run her hands along your stomach and your " + hipDescript());
 		//[has breasts]
@@ -614,15 +616,15 @@ private function rapeSandwitchMultis():void {
 internal function beatSandwitch():void {
 	spriteSelect(50);
 	clearOutput();
-	if(monster.lust >= monster.eMaxLust()) outputText("You smile in satisfaction as the " + monster.short + " drops down on all fours and begins masturbating feverishly.  Sadly you realize your own needs have not been met.  Of course you could always fuck the horny witch...\n\nDo you rape her?");
+	if(monster.lust >= monster.maxLust()) outputText("You smile in satisfaction as the " + monster.short + " drops down on all fours and begins masturbating feverishly.  Sadly you realize your own needs have not been met.  Of course you could always fuck the horny witch...\n\nDo you rape her?");
 	else outputText("You smile in satisfaction as the " + monster.short + " drops down on all fours and struggles to rise.  Sadly you realize your own needs have not been met.  Of course, you could always fuck the witch...");
 	outputText("  Of course, just taunting, teasing, and humiliating her for her arrogance would be equally amusing, <b>but it would give her plenty of time to turn the tables...</b>");
 	var temp2:Function = null;
 	var temp3:Function = null;
 	if(silly()) temp3 = missingoSex;
-	if(player.hasKeyItem("Deluxe Dildo") >= 0) temp2 = getGame().sandwitchGetsDildoed;
-	var shouldra:Function = null;
-	if(kGAMECLASS.shouldraFollower.followerShouldra() && player.gender > 0) shouldra = kGAMECLASS.shouldraFollower.sandWitchGetsGhostly;
+    if (player.hasKeyItem("Deluxe Dildo") >= 0) temp2 = sandwitchGetsDildoed;
+    var shouldra:Function = null;
+	if(SceneLib.shouldraFollower.followerShouldra() && player.gender > 0) shouldra = SceneLib.shouldraFollower.sandWitchGetsGhostly;
 	//doYesNo(sandwitchRaped, cleanupAfterCombat);
 	var ovi:Function = null;
 	if(player.gender > 0 && player.canOviposit()) ovi = ovipositSandWitches;
@@ -630,6 +632,21 @@ internal function beatSandwitch():void {
 	choices("Yes", sandwitchRaped, "Dildo Rape", temp2, "Use 3i@-", temp3, "Use Shouldra", shouldra, "Lay Eggs", ovi,
 		"Taunt Her", sandwitchSpanking, "", null, "", null, "", null, "Leave", cleanupAfterCombat);
 }
+    //RAEP SAND-WITCH!
+    private function sandwitchGetsDildoed():void {
+        EngineCore.clearOutput();
+        EngineCore.outputText("You pull out Tamani's dildo, advancing on the helpless witch.   Her derriere makes an enticing target as you advance upon her, and the simple brown robe she wears does nothing to protect her body from your unusual attentions.\n\n");
+        EngineCore.outputText("Pushing her legs apart, you take the toy and shove it up one of her moistened fuck-holes.   She cries out, noisily screaming into the dunes, though you're unsure whether from pain or pleasure.  Whatever the case, she'll think twice about sending her vibrating stones after you now.  You shove the dildo further into her, hard enough to lift her knees out of the sand. She slams back down once you've crammed it the whole way inside her, wiggling her supple ass back and forth as if it would somehow assuage the pain of the rapid insertion.\n\n");
+        EngineCore.outputText("\"<i>This isn't what I wanted,</i>\" cries the defeated witch, but you can see the sand under her four tits darkening with moisture.  You roll her over, exposing the soaked, sand-covered front of her robe.  You tear it off savagely, exposing her quartette of glistening, tanned orbs.   Her sweaty bronze skin isn't marred by tan lines, and she glistens as she dribbles milk, as if she oiled up before coming out into the desert.\n\n");
+        EngineCore.outputText("After giving her a chance to adjust to the intrusion, you begin working the dildo faster and faster, watching her milk-bloated jugs wobble back in forth.  One handed, you grab her lower left-most tit and squeeze, feeling the soft flesh yield in your hand.  A geyser of milk bursts from her nipple, surprising you with the quantity and force of the stream, though it quickly tapers off.  Delighted with the perverse display, you move your hand onwards to the next swollen mound, squeezing each in turn until the sand witch's body is drizzled with white and her prominent nipples are hard as rocks.\n\n");
+        EngineCore.outputText("You can feel the toy slowly starting to puff up, like one of the fishes from the sea near your village, inflating as if to scare off a predator.  Only this is one growing for an entirely different purpose.  The witch's cunt fills with growing jiggly pinkness, and her hands move to her nipples, assisting you in your rather forceful milking.  Her legs open wide, as if it would somehow help her with the increasing pressure spreading her cunt.   Moaning and twisting under you like a bitch in heat, she's started to fall under the spell of the aphrodisiacs leaking from the twisted toy.\n\n");
+        EngineCore.outputText("Releasing her over-sized tits, you begin to play with her love-button with your free hand while maneuvering the toy with your other.   She cries out and begins thrashing underneath you, her shining nipples erupting with a torrent of milk.   Twitching in your hand, you feel the dildo convulsing as it unloads a potent dose of aphrodisiac into her cunt.  Before it can finish, you yank it out and jam it back into her second, neglected cunt, stretching it as wide as the first in one smooth motion while she's too doped up by orgasm to feel it.  Her eyes roll back, then close, her conscious mind totally wiped out by the powerful orgasm.\n\n");
+        EngineCore.outputText("You wiggle the toy about, enjoying having taken such advantage of your now-unconscious foe.  But you have places to be, and you pull out your toy, ");
+        if(player.cor > 50) EngineCore.outputText("lick it clean, ");
+        EngineCore.outputText("and head back towards camp, knowing full well you'll need to relieve some tension after such a hot encounter.");
+        player.dynStats("lus", (20+player.lib/5+player.cor/10));
+        cleanupAfterCombat();
+    }
 
 //This is a bonus scene for those who are playing Corruption of Champions with Silly Mode activated and defeat the Sand Witch by dropping her hit points and have the option of having their way with her. A special third(?) option appears that begins the encounter. The idea is that it breaks the 4th wall and gives the player the impression that they've stumbled upon a glitchy, incomplete scene. As a special note to anyone who does coding: all code tags (anything like \" + cockDescript(0) + \" but not my usual {code brackets} for example) are meant to be printed in game exactly as they were written on this document, pushing the idea that the player \"broke the game\".
 //{Player defeats Sand Witch and has enough Lust}
@@ -743,13 +760,13 @@ private function ovipositSandWitches():void {
 	else outputText("an uneasy curiosity to see what exactly you have planned.");
 	
 	//PC won through HP victory: 
-	if(monster.HP < 1) outputText("\n\nRolling your eyes, you offer a sympathetic hand to the defeated witch, showing her that you don't mean to hurt her any further, that you have something more... pleasurable in mind.  ")
+	if(monster.HP < 1) outputText("\n\nRolling your eyes, you offer a sympathetic hand to the defeated witch, showing her that you don't mean to hurt her any further, that you have something more... pleasurable in mind.  ");
 	outputText("The sand witch slows to a dead stop as she assesses your intentions, which are made all the more clear as you disrobe and toss your [armor] aside, exposing your ");
 	if(player.hasCock()) outputText("hardened  " + multiCockDescriptLight());
 	if(player.gender == 3) outputText(" and ");
 	if(player.hasVagina()) outputText(clitDescript());
 	outputText(" for her viewing consumption.  Making quite the persuasive argument of non-hostility as you do, the sand witch finally relents, removing her cloak and exposing her four-breasted, ");
-	if(player.totalCocks() > 1) outputText(num2Text(player.cockTotal() + 1));
+	if(player.cockTotal() > 1) outputText(num2Text(player.cockTotal() + 1));
 	else outputText("two");
 	outputText("-sexed form, allowing the sun to glisten off her bare body.");
 	
@@ -766,7 +783,7 @@ private function ovipositSandWitches():void {
 private function eggwitchForeplay():void {
 	clearOutput();
 	outputText("Knowing how the desert witch feels at this moment, you decide to help ease her into receiving your young.  Slowly, you slide your fingers up the uneasy woman's legs, the sensation of your hands along her delicate frame soliciting a pitiful gasp from the sand witch as she receives the caress.  Gradually working upwards, your palms curve and twist along the blonde beauty's thighs, all the while causing her to shudder from the stimulus, her ");
-	if(player.totalCocks() > 1) outputText(num2Text(player.cockTotal() + 1));
+	if(player.cockTotal() > 1) outputText(num2Text(player.cockTotal() + 1));
 	else outputText("two");
 	outputText(" clits all hard from the apparent promise of your carnal attentions.  Positioned between her thighs, your hands rest and you wait for the eager gaze of her eyes, the imploring of your continued progress.  The sand witch doesn't disappoint; her needy eyes beseech you to splay her legs open and get intimately acquainted with her naughty bits.");
 	
@@ -998,7 +1015,7 @@ private function sandwitchSpanking():void {
 	if(monster.HP < 1) outputText("  You can't even stand up!");
 	else outputText("  You can't even stop masturbating, can you?");
 	outputText("</i>\"  You kick her hand away, and she tumbles down into a distraught heap, crying softly");
-	if(monster.lust >= monster.eMaxLust()) outputText(" but still masturbating");
+	if(monster.lust >= monster.maxLust()) outputText(" but still masturbating");
 	outputText(".  It's time for some fun!");
 	outputText("\n\nYou grab the helpless witch and flop her onto her back.  She gasps, glaring defiantly up at you while her arms fold closed over the front of her robe, concealing what looks like four large tits beneath.  None of that!  You tickle her sides in a surprise attack, and she starts to laugh.  Then, you move your scurrying fingertips to her belly and down her thighs.  The spellcaster giggles uproariously and tries to bat your arms away, which gives you the opening you need.  You easily slide past her laughter-addled strikes to the course fabric of her brown robes, and with a quick flex of your muscles, you tear the fabric down the middle, exposing a sea of tanned breast-flesh capped with four prominent nipples.");
 	outputText("\n\n\"<i>Nooo,</i>\" the witch protests once her laughter dies down.  Smirking, you start to pinch and pull at her nipples, tweaking the tender nubs until drops of milk are rolling down all four of her ponderous jugs.  You milk her effortlessly, tugging and tweaking the teats idly while you ply her with questions, asking her if she has anything better to do than try to shove rocks up strangers' assholes.  Her tanned cheeks color in embarrassment, but she stays mute, glowering at you while you play with her nipples.");

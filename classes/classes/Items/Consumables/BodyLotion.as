@@ -1,11 +1,13 @@
 package classes.Items.Consumables 
 {
-	import classes.GlobalFlags.kGAMECLASS;
-	import classes.internals.Utils;
-	import classes.Items.Consumable;
-	import classes.Items.ConsumableLib;
-	
-	/**
+import classes.EngineCore;
+import classes.Items.Consumable;
+import classes.Items.ConsumableLib;
+import classes.Scenes.SceneLib;
+import classes.internals.Utils;
+import classes.PerkLib;
+
+/**
 	 * Body lotions, courtesy of Foxxling.
 	 * @author Kitteh6660
 	 */
@@ -17,9 +19,9 @@ package classes.Items.Consumables
 		{
 			this._adj = adj.toLowerCase();
 			var shortName:String = adj + " Ltn";
-			var longName:String = "a flask of " + this._adj + " lotion"
+			var longName:String = "a flask of " + this._adj + " lotion";
 			var value:int = ConsumableLib.DEFAULT_VALUE;
-			var description:String = "A small wooden flask filled with a " + longAdj + " . A label across the front says, \"" + adj + " Lotion.\""
+			var description:String = "A small wooden flask filled with a " + longAdj + " . A label across the front says, \"" + adj + " Lotion.\"";
 			super(id, shortName, longName, value, description);
 		}
 		
@@ -84,9 +86,9 @@ package classes.Items.Consumables
 		}
 		
 		override public function useItem():Boolean {
-			if (game.player.skinAdj == _adj) {
+			if (game.player.skinAdj == _adj || player.hasPerk(PerkLib.TransformationImmunity)) {
 				outputText("You " + game.player.clothedOrNaked("take a second to disrobe before uncorking the flask of lotion and rubbing", "uncork the flask of lotion and rub") + " the " + liquidDesc() + " across your body. Once you’ve finished you feel reinvigorated. ");
-				game.HPChange(10, true);
+				EngineCore.HPChange(10, true);
 			}
 			else {
 				if (game.player.hasGooSkin()) { //If skin is goo, don't change.
@@ -109,7 +111,7 @@ package classes.Items.Consumables
 							outputText("Soon the natural beauty of your " + game.player.skinFurScales() + " is revealed without anything extra or unnecessary.");
 							break;
 						default: //Failsafe
-							outputText("<b>This text should not happen. Please let Kitteh6660 know.</b>");
+							outputText("<b>This text should not happen. Please let Ormael/Aimozg/Oxdeception know.</b>");
 					}
 				} else if (game.player.hasFur()) {
 					outputText("" + game.player.clothedOrNaked("Once you’ve disrobed you take the lotion and", "You take the lotion and") + " begin massaging it into your skin despite yourself being covered with fur. It takes little effort but once you’ve finished... nothing happens. A few moments pass and then your skin begins to tingle. ");
@@ -127,7 +129,7 @@ package classes.Items.Consumables
 							outputText("Soon you part your fur to reveal the natural beauty of your " + game.player.skinFurScales() + " skin.");
 							break;
 						default: //Failsafe
-							outputText("<b>This text should not happen. Please let Kitteh6660 know.</b>");
+							outputText("<b>This text should not happen. Please let Ormael/Aimozg/Oxdeception know.</b>");
 					}
 				} else if (game.player.hasScales()) {
 					outputText("You " + game.player.clothedOrNaked("take a second to disrobe before uncorking the flask of lotion and rubbing", "uncork the flask of lotion and rub") + " the " + liquidDesc() + " across your body. As you rub the mixture into your arms and [chest], your whole body begins to tingle pleasantly.");
@@ -145,7 +147,7 @@ package classes.Items.Consumables
 							outputText("Soon you part your fur to reveal the natural beauty of your " + game.player.skinFurScales() + " skin.");
 							break;
 						default: //Failsafe
-							outputText("<b>This text should not happen. Please let Kitteh6660 know.</b>");
+							outputText("<b>This text should not happen. Please let Ormael/Aimozg/Oxdeception know.</b>");
 					}
 				} else if (game.player.hasGooSkin()) {
 					outputText("You take the lotion and pour the " + liquidDesc() + " into yourself. The concoction dissolves, leaving your gooey epidermis unchanged. As a matter of fact nothing happens at all.");
@@ -153,7 +155,7 @@ package classes.Items.Consumables
 					outputText("You " + game.player.clothedOrNaked("take a second to disrobe before uncorking the bottle of oil and rubbing", "uncork the bottle of oil and rub") + " the smooth liquid across your body. Even before you’ve covered your arms and [chest] your skin begins to tingle pleasantly all over. After your skin darkens a little, it begins to change until you have " + _adj + " skin.");
 				}
 			}
-			game.inventory.itemGoNext();
+			SceneLib.inventory.itemGoNext();
 			return true;
 		}
 	}

@@ -4,12 +4,11 @@
  */
 package classes.Scenes 
 {
-	import classes.*
-	import classes.BaseContent;
-	import classes.GlobalFlags.kFLAGS;
-	import classes.GlobalFlags.kGAMECLASS;
-	
-	public class Questlog extends BaseContent
+import classes.BaseContent;
+import classes.GlobalFlags.kFLAGS;
+import classes.StatusEffects;
+
+public class Questlog extends BaseContent
 	{
 		
 		public function Questlog() 
@@ -17,43 +16,80 @@ package classes.Scenes
 		
 		public function accessQuestlogMainMenu():void {
 			clearOutput();
-			outputText("List of all not-started, not yet complited and completed quests. After finishing each of them PC could pick reward but... <i>You only need to click once fool</i>\n");
+			outputText("List of all not-started, not yet completed and completed quests. After finishing each of them PC could pick reward but... <i>You only need to click once fool</i>\n");
+			outputText("\n<u><b>Main Quests</b></u>");
 			outputText("\n<b>Shut Down Everything:</b> ");
 			if (flags[kFLAGS.FACTORY_OMNIBUS_DEFEATED] == 2) outputText("Completed (Reward taken)");
-			else if (kGAMECLASS.dungeons.checkFactoryClear()) outputText("Completed");
+			else if (SceneLib.dungeons.checkFactoryClear()) outputText("Completed");
 			else if (flags[kFLAGS.FACTORY_FOUND] > 0) outputText("In Progress");
 			else outputText("Not Started");
 			outputText("\n<b>You're in Deep:</b> ");
 			if (flags[kFLAGS.DEFEATED_ZETAZ] > 1) outputText("Completed (Reward taken)");
-			else if (kGAMECLASS.dungeons.checkDeepCaveClear()) outputText("Completed");
+			else if (SceneLib.dungeons.checkDeepCaveClear()) outputText("Completed");
 			else if (flags[kFLAGS.DISCOVERED_DUNGEON_2_ZETAZ] > 0) outputText("In Progress");
 			else outputText("Not Started");
 			outputText("\n<b>End of Reign:</b> ");
 			if (flags[kFLAGS.LETHICE_DEFEATED] > 1) outputText("Completed (Reward taken)");
-			else if (kGAMECLASS.dungeons.checkLethiceStrongholdClear()) outputText("Completed");
-			else if (flags[kFLAGS.D3_DISCOVERED] > 0) outputText("In Progress");
+			else if (SceneLib.dungeons.checkLethiceStrongholdClear()) outputText("Completed");
+			else if (flags[kFLAGS.D3_DISCOVERED] > 0) outputText("In Progress (to complete this quest PC must beat Basilisk Boss even if they managed to pass him by on first run throu the dungeon)");
 			else outputText("Not Started");
+			outputText("\n\n<u><b>Side Quests</b></u>");
 			outputText("\n<b>Friend of the Sand Witches:</b> ");
 			if (flags[kFLAGS.DISCOVERED_WITCH_DUNGEON] == 2) outputText("Completed (Reward taken)");
-			else if (kGAMECLASS.dungeons.checkSandCaveClear()) outputText("Completed");
+			else if (SceneLib.dungeons.checkSandCaveClear()) outputText("Completed");
 			else if (flags[kFLAGS.DISCOVERED_WITCH_DUNGEON] > 0) outputText("In Progress");
 			else outputText("Not Started");
 			outputText("\n<b>Fall of the Phoenix:</b> ");
 			if (flags[kFLAGS.CLEARED_HEL_TOWER] == 2) outputText("Completed (Reward taken)");
-			else if (kGAMECLASS.dungeons.checkPhoenixTowerClear()) outputText("Completed");
+			else if (SceneLib.dungeons.checkPhoenixTowerClear()) outputText("Completed");
 			else outputText("Not Started");
 			outputText("\n<b>Tiger stalking the Dragon:</b> ");
-			if (flags[kFLAGS.HIDDEN_CAVE_BOSSES] == 3) outputText("Completed (Reward taken)");
-			else if (kGAMECLASS.dungeons.checkHiddenCaveClear()) outputText("Completed");
+			if (flags[kFLAGS.HIDDEN_CAVE_LOLI_BAT_GOLEMS] == 6) outputText("Completed (Reward taken)");
+			else if (SceneLib.dungeons.checkHiddenCaveClear()) outputText("Completed");
 			else if (flags[kFLAGS.HIDDEN_CAVE_FOUND] > 0) outputText("In Progress");
 			else outputText("Not Started");
+			outputText("\n<b>Tiger stalking the Dragon (Bonus Stage):</b> ");
+			if (flags[kFLAGS.HIDDEN_CAVE_BOSSES] == 3) outputText("Completed (Reward taken)");
+			else if (SceneLib.dungeons.checkHiddenCaveHiddenStageClear()) outputText("Completed");
+			else if (flags[kFLAGS.HIDDEN_CAVE_BOSSES] >= 1) outputText("In Progress");
+			else outputText("Not Started");
+			outputText("\n<b>Slain the Heroslayer:</b> ");
+			if (flags[kFLAGS.DEN_OF_DESIRE_QUEST] == 2) outputText("Completed (Reward taken)");
+			else if (SceneLib.dungeons.checkDenOfDesireClear()) outputText("Completed");
+			else if (flags[kFLAGS.DEN_OF_DESIRE_BOSSES] > 1) outputText("In Progress");
+			else outputText("Not Started");
+			outputText("\n\n<u><b>Adventure Guild Quests</b></u>");
+			outputText("\n<b>Imps Hunt:</b> ");
+			if (player.statusEffectv1(StatusEffects.AdventureGuildQuests1) == 2 || player.statusEffectv1(StatusEffects.AdventureGuildQuests1) == 4 || player.statusEffectv1(StatusEffects.AdventureGuildQuests1) == 7) outputText("Completed (for today)");
+			else if (player.statusEffectv1(StatusEffects.AdventureGuildQuests1) == 1 || player.statusEffectv1(StatusEffects.AdventureGuildQuests1) == 3 || player.statusEffectv1(StatusEffects.AdventureGuildQuests1) == 6) outputText("In Progress");
+			else outputText("Not Started");
+			outputText("\n<b>Demons Hunt:</b> ");
+			if (player.statusEffectv2(StatusEffects.AdventureGuildQuests1) == 2 || player.statusEffectv2(StatusEffects.AdventureGuildQuests1) == 4 || player.statusEffectv2(StatusEffects.AdventureGuildQuests1) == 7) outputText("Completed (for today)");
+			else if (player.statusEffectv2(StatusEffects.AdventureGuildQuests1) == 1 || player.statusEffectv2(StatusEffects.AdventureGuildQuests1) == 3 || player.statusEffectv2(StatusEffects.AdventureGuildQuests1) == 6) outputText("In Progress");
+			else outputText("Not Started");
+			outputText("\n<b>Feral Imps Hunt:</b> ");
+			if (player.statusEffectv2(StatusEffects.AdventureGuildQuests2) == 2 || player.statusEffectv2(StatusEffects.AdventureGuildQuests2) == 4 || player.statusEffectv2(StatusEffects.AdventureGuildQuests2) == 7) outputText("Completed (for today)");
+			else if (player.statusEffectv2(StatusEffects.AdventureGuildQuests2) == 1 || player.statusEffectv2(StatusEffects.AdventureGuildQuests2) == 3 || player.statusEffectv2(StatusEffects.AdventureGuildQuests2) == 6) outputText("In Progress");
+			else outputText("Not Started");
+			outputText("\n<b>Feral Tentacle Beasts Hunt:</b> ");
+			if (player.statusEffectv1(StatusEffects.AdventureGuildQuests2) == 2 || player.statusEffectv1(StatusEffects.AdventureGuildQuests2) == 4 || player.statusEffectv1(StatusEffects.AdventureGuildQuests2) == 7) outputText("Completed (for today)");
+			else if (player.statusEffectv1(StatusEffects.AdventureGuildQuests2) == 1 || player.statusEffectv1(StatusEffects.AdventureGuildQuests2) == 3 || player.statusEffectv1(StatusEffects.AdventureGuildQuests2) == 6) outputText("In Progress");
+			else outputText("Not Started");
+			outputText("\n<i><b>Feral Demons Hunt:</b> Soon</i>");
+			/*if () outputText("\n\n<u><b>Twilight of the Gods</b></u>");
+			else outputText("\n<b>???</b>");
+			if () outputText("\n\n<u><b>The New Dawn</b></u>");
+			else outputText("\n<b>???</b>");*/
 			menu();
-			if (kGAMECLASS.dungeons.checkFactoryClear() && flags[kFLAGS.FACTORY_OMNIBUS_DEFEATED] < 2) addButton(0, "Factory", takeRewardForFactory);
-			if (kGAMECLASS.dungeons.checkDeepCaveClear() && flags[kFLAGS.DEFEATED_ZETAZ] < 2) addButton(1, "Deep Cave", takeRewardForDeepCave);
-			if (kGAMECLASS.dungeons.checkLethiceStrongholdClear() && flags[kFLAGS.LETHICE_DEFEATED] < 2) addButton(2, "Stronghold", takeRewardForStronghold);
-			if (kGAMECLASS.dungeons.checkSandCaveClear() && flags[kFLAGS.DISCOVERED_WITCH_DUNGEON] < 2) addButton(5, "Sand Cave", takeRewardForSandCave);
-			if (kGAMECLASS.dungeons.checkPhoenixTowerClear() && flags[kFLAGS.CLEARED_HEL_TOWER] < 2) addButton(6, "Phoenix Tower", takeRewardForPhoenixTower);
-			if (kGAMECLASS.dungeons.checkHiddenCaveClear() && flags[kFLAGS.HIDDEN_CAVE_BOSSES] < 3) addButton(10, "Hidden Cave", takeRewardForHiddenCave);
+			if (SceneLib.dungeons.checkFactoryClear() && flags[kFLAGS.FACTORY_OMNIBUS_DEFEATED] < 2) addButton(0, "Factory", takeRewardForFactory);
+			if (SceneLib.dungeons.checkDeepCaveClear() && flags[kFLAGS.DEFEATED_ZETAZ] < 2) addButton(1, "Deep Cave", takeRewardForDeepCave);
+			if (SceneLib.dungeons.checkLethiceStrongholdClear() && flags[kFLAGS.LETHICE_DEFEATED] < 2) addButton(2, "Stronghold", takeRewardForStronghold);
+			if (SceneLib.dungeons.checkSandCaveClear() && flags[kFLAGS.DISCOVERED_WITCH_DUNGEON] < 2) addButton(5, "Sand Cave", takeRewardForSandCave);
+			if (SceneLib.dungeons.checkPhoenixTowerClear() && flags[kFLAGS.CLEARED_HEL_TOWER] < 2) addButton(6, "Phoenix Tower", takeRewardForPhoenixTower);
+			if (SceneLib.dungeons.checkHiddenCaveClear() && flags[kFLAGS.HIDDEN_CAVE_LOLI_BAT_GOLEMS] < 6) addButton(10, "Hidden Cave", takeRewardForHiddenCave);
+			if (SceneLib.dungeons.checkHiddenCaveHiddenStageClear() && flags[kFLAGS.HIDDEN_CAVE_BOSSES] < 3) addButton(10, "Hidden Cave(HS)", takeRewardForHiddenCaveHiddenStage).hint("Hidden Cave (Hidden Stage bonus)");
+			if (SceneLib.dungeons.checkDenOfDesireClear() && flags[kFLAGS.DEN_OF_DESIRE_QUEST] < 2) addButton(11, "Den of Desire", takeRewardForDenOfDesire);
+			//button 13 - Lia undersea chtulu dungeon
 			addButton(14, "Back", playerMenu);
 		}
 		
@@ -114,7 +150,27 @@ package classes.Scenes
 			player.perkPoints = player.perkPoints + 1;
 			player.statPoints = player.statPoints + 5;
 			statScreenRefresh();
+			flags[kFLAGS.HIDDEN_CAVE_LOLI_BAT_GOLEMS] = 6;
+			doNext(accessQuestlogMainMenu);
+		}
+		public function takeRewardForHiddenCaveHiddenStage():void {
+			clearOutput();
+			outputText("Your contribution in changing Mareth have been noticed.\n\n");
+			outputText("<b>Gained 1 perk points and 5 stat points</b>");
+			player.perkPoints = player.perkPoints + 1;
+			player.statPoints = player.statPoints + 5;
+			statScreenRefresh();
 			flags[kFLAGS.HIDDEN_CAVE_BOSSES] = 3;
+			doNext(accessQuestlogMainMenu);
+		}
+		public function takeRewardForDenOfDesire():void {
+			clearOutput();
+			outputText("Your contribution in changing Mareth have been noticed.\n\n");
+			outputText("<b>Gained 2 perk points and 10 stat points</b>");
+			player.perkPoints = player.perkPoints + 2;
+			player.statPoints = player.statPoints + 10;
+			statScreenRefresh();
+			flags[kFLAGS.DEN_OF_DESIRE_QUEST] = 2;
 			doNext(accessQuestlogMainMenu);
 		}
 	}

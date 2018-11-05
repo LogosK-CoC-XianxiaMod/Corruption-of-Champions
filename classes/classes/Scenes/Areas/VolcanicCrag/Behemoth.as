@@ -1,45 +1,47 @@
 package classes.Scenes.Areas.VolcanicCrag 
 {
-	import classes.*;
-	import classes.internals.WeightedDrop;
-	import classes.GlobalFlags.kFLAGS;
-	
-	public class Behemoth extends Monster
+import classes.*;
+import classes.BodyParts.Butt;
+import classes.BodyParts.Ears;
+import classes.BodyParts.Face;
+import classes.BodyParts.Hips;
+import classes.BodyParts.Horns;
+import classes.BodyParts.LowerBody;
+import classes.BodyParts.Tail;
+import classes.Scenes.SceneLib;
+
+public class Behemoth extends Monster
 	{
 		public function tailWhip():void {
 			outputText("The behemoth charges at you with his spiked tail raised!  ");
 			if (player.getEvasionRoll()) {
 				outputText("You manage to dodge in time to avoid his swinging tail!");
-				combatRoundOver();
 				return;
 			}
 			else {
 				outputText("You weren't aware of that and his tail hits you!  <b>Your defense has been reduced!</b>  ");
 				var damage:int = str + level;
-				damage = player.reduceDamage(damage)
-				player.takeDamage(damage, true);
+				player.takePhysDamage(damage, true);
 			}
 			if (hasStatusEffect(StatusEffects.TailWhip)) addStatusValue(StatusEffects.TailWhip, 1, 5);
 			else createStatusEffect(StatusEffects.TailWhip, 5, 0, 0, 0);
-			combatRoundOver();
 		}
 		
 		public function tease():void {
 			outputText("The behemoth lifts his loincloth to reveal his large prick and waves his cock left and right.  You blush from looking at his cock.");
-			game.dynStats("lus", 10 + (player.cor / 10) + (player.lib / 10));
-			combatRoundOver();
+			player.dynStats("lus", 10 + (player.cor / 10) + (player.lib / 10));
 		}
 		
 		override public function defeated(hpVictory:Boolean):void {
-			game.volcanicCrag.behemothScene.winAgainstBehemoth();
+			SceneLib.volcanicCrag.behemothScene.winAgainstBehemoth();
 		}
 		
 		override public function won(hpVictory:Boolean, pcCameWorms:Boolean):void {
 			if (pcCameWorms){
 				outputText("\n\nYour opponent doesn't seem to care.");
-				doNext(game.endLustLoss);
+				doNext(SceneLib.combat.endLustLoss);
 			} else {
-				game.volcanicCrag.behemothScene.loseToBehemoth();
+				SceneLib.volcanicCrag.behemothScene.loseToBehemoth();
 			}
 		}
 		
@@ -55,28 +57,29 @@ package classes.Scenes.Areas.VolcanicCrag
 			this.ballSize = 3;
 			this.cumMultiplier = 25;
 			createBreastRow(Appearance.breastCupInverse("flat"));
-			this.ass.analLooseness = ANAL_LOOSENESS_TIGHT;
-			this.ass.analWetness = ANAL_WETNESS_NORMAL;
+			this.ass.analLooseness = AssClass.LOOSENESS_TIGHT;
+			this.ass.analWetness = AssClass.WETNESS_NORMAL;
 			this.tallness = 9*12;
-			this.hipRating = HIP_RATING_BOYISH;
-			this.buttRating = BUTT_RATING_TIGHT;
+			this.hips.type = Hips.RATING_BOYISH;
+			this.butt.type = Butt.RATING_TIGHT;
 			this.skin.base.color = "purple";
 			this.skin.growFur({color:"purple"});
 			this.hairColor = "black";
 			this.hairLength = 8;
-			this.earType = EARS_ELFIN;
-			this.faceType = FACE_CAT;
-			this.horns = 7;
-			this.hornType = HORNS_DRACONIC_X2
-			this.lowerBody = LOWER_BODY_TYPE_CAT
-			this.tailType = TAIL_TYPE_BEHEMOTH
+			this.ears.type = Ears.ELFIN;
+			this.faceType = Face.CAT;
+			this.horns.count = 7;
+			this.horns.type = Horns.DRACONIC_X2;
+			this.lowerBody = LowerBody.CAT;
+			this.tailType = Tail.BEHEMOTH;
 			initStrTouSpeInte(180, 130, 100, 115);
-			initLibSensCor(35, 15, 15);
+			initWisLibSensCor(100, 35, 15, 15);
 			this.weaponName = "claws";
 			this.weaponVerb="claw";
-			this.weaponAttack = 34 + (7 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.weaponAttack = 34;
 			this.armorName = "loincloth";
-			this.armorDef = 12 + (2 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.armorDef = 12;
+			this.armorMDef = 2;
 			this.bonusHP = 900;
 			this.bonusLust = 20;
 			this.lust = 15;
@@ -88,12 +91,6 @@ package classes.Scenes.Areas.VolcanicCrag
 			this.special1 = tailWhip;
 			this.special2 = tease;
 			//this.special3 = aerialRave;
-			this.str += 54 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.tou += 39 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.spe += 30 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.inte += 34 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];			
-			this.lib += 10 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.newgamebonusHP = 6680;
 			checkMonster();
 		}
 		

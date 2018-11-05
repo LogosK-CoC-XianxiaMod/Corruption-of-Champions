@@ -4,12 +4,13 @@
  */
 package classes.Scenes.NPCs 
 {
-	import classes.*;
-	import classes.internals.*;
-	import classes.GlobalFlags.kGAMECLASS;
-	import classes.GlobalFlags.kFLAGS;
-	
-	use namespace kGAMECLASS;
+import classes.*;
+import classes.BodyParts.Butt;
+import classes.BodyParts.Hips;
+import classes.GlobalFlags.kFLAGS;
+import classes.internals.*;
+
+use namespace CoC;
 	
 	public class Kindra extends Monster
 	{
@@ -72,7 +73,6 @@ package classes.Scenes.NPCs
 			else {
 				var damage:Number = 0;
 				damage += eBaseSpeedDamage() * 0.2;
-				damage = player.reduceDamage(damage);
 				if (damage < 10) damage = 10;
 				//weapon bonus
 				if (this.weaponRangeAttack < 51) damage *= (1 + (this.weaponRangeAttack * 0.03));
@@ -80,7 +80,7 @@ package classes.Scenes.NPCs
 				else if (this.weaponRangeAttack >= 101 && this.weaponRangeAttack < 151) damage *= (3.75 + ((this.weaponRangeAttack - 100) * 0.02));
 				else if (this.weaponRangeAttack >= 151 && this.weaponRangeAttack < 201) damage *= (4.75 + ((this.weaponRangeAttack - 150) * 0.015));
 				else damage *= (5.5 + ((this.weaponRangeAttack - 200) * 0.01));
-				player.takeDamage(damage, true);
+				player.takePhysDamage(damage, true);
 			}
 			outputText("\n\n");
 			fatigue += bowShooting();
@@ -91,60 +91,74 @@ package classes.Scenes.NPCs
 			if (flags[kFLAGS.KINDRA_AFFECTION] < 5) outputText("Sheep-morph archer");
 			if (flags[kFLAGS.KINDRA_AFFECTION] >= 5) outputText("Kindra");
 			outputText(" gulps down a bottle of sheep milk.\n");
-			fatigue -= 60;
-			if (lust >= 21) lust -= 20;
-			else lust = 0;
+			if (flags[kFLAGS.KINDRA_LVL_UP] >= 7) {
+				fatigue -= 120;
+				if (lust >= 41) lust -= 40;
+				else lust = 0;
+			}
+			else {
+				fatigue -= 60;
+				if (lust >= 21) lust -= 20;
+				else lust = 0;
+			}
 		}
 		
 		override protected function performCombatAction():void
 		{
-			if (flags[kFLAGS.KINDRA_LVL_UP] == 6) {
-				if (fatigue < (eMaxFatigue() - (bowShooting() * 6))) KindraFireBow06();
+			if (flags[kFLAGS.KINDRA_LVL_UP] >= 7) {
+				if (fatigue < (maxFatigue() - (bowShooting() * 6))) {
+					if (rand(2) == 0) KindraFireBow04();
+					else {
+						if (rand(2) == 0) KindraFireBow05();
+						else KindraFireBow06();
+					}
+				}
 				else {
 					if (rand(3) == 0 && fatigue >= 60) KindraDrinkSheepMilk();
 					else eAttack();
 				}
-				combatRoundOver();
+			}
+			if (flags[kFLAGS.KINDRA_LVL_UP] == 6) {
+				if (fatigue < (maxFatigue() - (bowShooting() * 6))) KindraFireBow06();
+				else {
+					if (rand(3) == 0 && fatigue >= 60) KindraDrinkSheepMilk();
+					else eAttack();
+				}
 			}
 			if (flags[kFLAGS.KINDRA_LVL_UP] == 5) {
-				if (fatigue < (eMaxFatigue() - (bowShooting() * 5))) KindraFireBow05();
+				if (fatigue < (maxFatigue() - (bowShooting() * 5))) KindraFireBow05();
 				else {
 					if (rand(3) == 0 && fatigue >= 60) KindraDrinkSheepMilk();
 					else eAttack();
 				}
-				combatRoundOver();
 			}
 			if (flags[kFLAGS.KINDRA_LVL_UP] == 4) {
-				if (fatigue < (eMaxFatigue() - (bowShooting() * 4))) KindraFireBow04();
+				if (fatigue < (maxFatigue() - (bowShooting() * 4))) KindraFireBow04();
 				else {
 					if (rand(3) == 0 && fatigue >= 60) KindraDrinkSheepMilk();
 					else eAttack();
 				}
-				combatRoundOver();
 			}
 			if (flags[kFLAGS.KINDRA_LVL_UP] == 3) {
-				if (fatigue < (eMaxFatigue() - (bowShooting() * 3))) KindraFireBow03();
+				if (fatigue < (maxFatigue() - (bowShooting() * 3))) KindraFireBow03();
 				else {
 					if (rand(3) == 0 && fatigue >= 60) KindraDrinkSheepMilk();
 					else eAttack();
 				}
-				combatRoundOver();
 			}
 			if (flags[kFLAGS.KINDRA_LVL_UP] == 2) {
-				if (fatigue < (eMaxFatigue() - (bowShooting() * 2))) KindraFireBow02();
+				if (fatigue < (maxFatigue() - (bowShooting() * 2))) KindraFireBow02();
 				else {
 					if (rand(3) == 0 && fatigue >= 60) KindraDrinkSheepMilk();
 					else eAttack();
 				}
-				combatRoundOver();
 			}
 			if (flags[kFLAGS.KINDRA_LVL_UP] == 1) {
-				if (fatigue < (eMaxFatigue() - bowShooting())) KindraFireBow01();
+				if (fatigue < (maxFatigue() - bowShooting())) KindraFireBow01();
 				else {
 					if (rand(3) == 0 && fatigue >= 60) KindraDrinkSheepMilk();
 					else eAttack();
 				}
-				combatRoundOver();
 			}
 		}//używanie sheep milk w czasie walki czasami (daje -60 fat i -20 lust)
 		//nie zapomnieć używać KINDRA_ARROWS_SHOT flagi do śledzenia ile już strzał wystrzeliła kindra w celu zmniejszania kosztu ich
@@ -178,106 +192,133 @@ package classes.Scenes.NPCs
 			}
 			if (flags[kFLAGS.KINDRA_LVL_UP] == 1) {
 				initStrTouSpeInte(30, 50, 100, 80);
-				initLibSensCor(30, 40, 10);
+				initWisLibSensCor(80, 30, 40, 10);
+				this.weaponName = "dagger";
+				this.weaponAttack = 8;
+				this.weaponRangeName = "bow";
+				this.weaponRangeAttack = 20;
+				this.armorName = "clothes";
+				this.armorDef = 5;
+				this.armorMDef = 5;
 				this.bonusHP = 50;
 				this.level = 20;
-				this.str += 6 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-				this.tou += 10 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-				this.spe += 20 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-				this.inte += 16 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];			
-				this.lib += 6 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-				this.newgamebonusHP = 1740;
 			}
 			if (flags[kFLAGS.KINDRA_LVL_UP] == 2) {
-				initStrTouSpeInte(30, 50, 120, 100);
-				initLibSensCor(30, 40, 10);
+				initStrTouSpeInte(40, 65, 120, 100);
+				initWisLibSensCor(100, 30, 40, 10);
+				this.weaponName = "dagger";
+				this.weaponAttack = 8;
+				this.weaponRangeName = "bow";
+				this.weaponRangeAttack = 20;
+				this.armorName = "clothes";
+				this.armorDef = 5;
+				this.armorMDef = 5;
 				this.bonusHP = 100;
 				this.level = 25;
-				this.str += 6 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-				this.tou += 10 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-				this.spe += 24 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-				this.inte += 20 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];			
-				this.lib += 6 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-				this.newgamebonusHP = 1980;
 			}
 			if (flags[kFLAGS.KINDRA_LVL_UP] == 3) {
-				initStrTouSpeInte(30, 50, 140, 120);
-				initLibSensCor(30, 40, 10);
+				initStrTouSpeInte(50, 80, 140, 120);
+				initWisLibSensCor(120, 30, 40, 10);
+				this.weaponName = "dagger";
+				this.weaponAttack = 8;
+				this.weaponRangeName = "bow";
+				this.weaponRangeAttack = 20;
+				this.armorName = "clothes";
+				this.armorDef = 5;
+				this.armorMDef = 5;
 				this.bonusHP = 150;
 				this.level = 30;
-				this.str += 9 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-				this.tou += 15 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-				this.spe += 42 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-				this.inte += 36 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];			
-				this.lib += 9 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-				this.newgamebonusHP = 4440;
 			}
 			if (flags[kFLAGS.KINDRA_LVL_UP] == 4) {
-				initStrTouSpeInte(30, 50, 160, 140);
-				initLibSensCor(30, 40, 10);
+				initStrTouSpeInte(60, 95, 160, 140);
+				initWisLibSensCor(140, 30, 40, 10);
+				this.weaponName = "dagger";
+				this.weaponAttack = 8;
+				this.weaponRangeName = "bow";
+				this.weaponRangeAttack = 20;
+				this.armorName = "clothes";
+				this.armorDef = 5;
+				this.armorMDef = 5;
 				this.bonusHP = 200;
 				this.level = 35;
-				this.str += 9 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-				this.tou += 15 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-				this.spe += 48 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-				this.inte += 42 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];			
-				this.lib += 9 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-				this.newgamebonusHP = 4920;
 			}
 			if (flags[kFLAGS.KINDRA_LVL_UP] == 5) {
-				initStrTouSpeInte(30, 50, 180, 150);
-				initLibSensCor(30, 40, 10);
+				initStrTouSpeInte(70, 110, 180, 150);
+				initWisLibSensCor(150, 30, 40, 10);
+				this.weaponName = "dagger";
+				this.weaponAttack = 8;
+				this.weaponRangeName = "bow";
+				this.weaponRangeAttack = 20;
+				this.armorName = "clothes";
+				this.armorDef = 5;
+				this.armorMDef = 5;
 				this.bonusHP = 250;
 				this.level = 40;
-				this.str += 9 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-				this.tou += 15 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-				this.spe += 54 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-				this.inte += 45 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];			
-				this.lib += 9 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-				this.newgamebonusHP = 6660;
 			}
 			if (flags[kFLAGS.KINDRA_LVL_UP] == 6) {
-				initStrTouSpeInte(30, 50, 200, 150);
-				initLibSensCor(30, 40, 10);
+				initStrTouSpeInte(80, 130, 205, 150);
+				initWisLibSensCor(150, 30, 40, 10);
+				this.weaponName = "dagger";
+				this.weaponAttack = 8;
+				this.weaponRangeName = "bow";
+				this.weaponRangeAttack = 20;
+				this.armorName = "clothes";
+				this.armorDef = 5;
+				this.armorMDef = 5;
 				this.bonusHP = 300;
 				this.level = 45;
-				this.str += 9 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-				this.tou += 15 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-				this.spe += 60 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-				this.inte += 45 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];			
-				this.lib += 9 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-				this.newgamebonusHP = 6900;
 			}
-			if (flags[kFLAGS.KINDRA_LVL_UP] == 7) {		//niedokończone
-				initStrTouSpeInte(70, 100, 200, 150);
-				initLibSensCor(70, 40, 10);
+			if (flags[kFLAGS.KINDRA_LVL_UP] == 7) {
+				initStrTouSpeInte(100, 150, 235, 150);
+				initWisLibSensCor(150, 50, 50, 10);
+				this.weaponName = "sharp dagger";
+				this.weaponAttack = 16;
+				this.weaponRangeName = "long bow";
+				this.weaponRangeAttack = 50;
+				this.armorName = "light leather armor";
+				this.armorDef = 16;
+				this.armorMDef = 5;
 				this.bonusHP = 300;
-				this.level = 45;
-				this.str += 21 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-				this.tou += 30 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-				this.spe += 60 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-				this.inte += 45 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];			
-				this.lib += 21 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-				this.newgamebonusHP = 177 * 50;
+				this.level = 51;
 			}
-			this.createVagina(false, VAGINA_WETNESS_NORMAL, VAGINA_LOOSENESS_TIGHT);
+			if (flags[kFLAGS.KINDRA_LVL_UP] == 8) {
+				initStrTouSpeInte(120, 170, 270, 150);
+				initWisLibSensCor(150, 70, 60, 10);
+				this.weaponName = "sharp dagger";
+				this.weaponAttack = 17;
+				this.weaponRangeName = "long bow";
+				this.weaponRangeAttack = 55;
+				this.armorName = "light leather armor";
+				this.armorDef = 18;
+				this.armorMDef = 5;
+				this.bonusHP = 300;
+				this.level = 57;
+			}
+			if (flags[kFLAGS.KINDRA_LVL_UP] == 9) {
+				initStrTouSpeInte(140, 190, 310, 150);
+				initWisLibSensCor(150, 90, 70, 10);
+				this.weaponName = "sharp dagger";
+				this.weaponAttack = 18;
+				this.weaponRangeName = "long bow";//potem jak stanie sie wiecej niż sheep-morph kolejna zmiana łuku
+				this.weaponRangeAttack = 60;
+				this.armorName = "light leather armor";
+				this.armorDef = 20;
+				this.armorMDef = 5;
+				this.bonusHP = 300;
+				this.level = 63;
+			}
+			this.createVagina(false, VaginaClass.WETNESS_NORMAL, VaginaClass.LOOSENESS_TIGHT);
 			createBreastRow(Appearance.breastCupInverse("C"));
-			this.ass.analLooseness = ANAL_LOOSENESS_VIRGIN;
-			this.ass.analWetness = ANAL_WETNESS_DRY;
+			this.ass.analLooseness = AssClass.LOOSENESS_VIRGIN;
+			this.ass.analWetness = AssClass.WETNESS_DRY;
 			this.tallness = 64;
-			this.hipRating = HIP_RATING_BOYISH;
-			this.buttRating = BUTT_RATING_TIGHT;
+			this.hips.type = Hips.RATING_BOYISH;
+			this.butt.type = Butt.RATING_TIGHT;
 			this.skinTone = "white";
 			this.hairColor = "white";
 			this.hairLength = 4;
-			this.weaponName = "dagger";
 			this.weaponVerb= "stab";
-			this.weaponAttack = 8 + (2 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
-			this.weaponRangeName = "bow";//jak bedzie potem w camp to zrobić jej ulpszenie używanego łuku poza podnoszeniem lvl przez trening a potem jak stanie sie wiecej niż sheep-morph kolejna zmiana łuku
 			this.weaponRangeVerb= "shoot";
-			this.weaponRangeAttack = 20 + (5 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
-			this.armorName = "clothes";
-			this.armorDef = 5 + (1 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
 			this.bonusLust = 10;
 			this.lust = 20;
 			this.lustVuln = .95;
@@ -287,17 +328,30 @@ package classes.Scenes.NPCs
 					add(consumables.LG_SFRP,0.3).
 					add(consumables.SHEEPMK,0.6);
 			this.createPerk(PerkLib.JobRanger, 0, 0, 0, 0);
-			if (flags[kFLAGS.KINDRA_LVL_UP] >= 2) this.createPerk(PerkLib.JobSorcerer, 0, 0, 0, 0);
-			if (flags[kFLAGS.KINDRA_LVL_UP] >= 4) this.createPerk(PerkLib.JobHunter, 0, 0, 0, 0);
-			if (flags[kFLAGS.KINDRA_LVL_UP] >= 6) this.createPerk(PerkLib.PrestigeJobSoulArcher, 0, 0, 0, 0);
 			this.createPerk(PerkLib.BasicEndurance, 0, 0, 0, 0);
-			if (flags[kFLAGS.KINDRA_LVL_UP] >= 2) this.createPerk(PerkLib.HalfStepToImprovedEndurance, 0, 0, 0, 0);
-			if (flags[kFLAGS.KINDRA_LVL_UP] >= 3) this.createPerk(PerkLib.ImprovedEndurance, 0, 0, 0, 0);
-			if (flags[kFLAGS.KINDRA_LVL_UP] >= 4) this.createPerk(PerkLib.HalfStepToAdvancedEndurance, 0, 0, 0, 0);
-			if (flags[kFLAGS.KINDRA_LVL_UP] >= 5) this.createPerk(PerkLib.AdvancedEndurance, 0, 0, 0, 0);
 			this.createPerk(PerkLib.ArchersStaminaI, 0, 0, 0, 0);
-			if (flags[kFLAGS.KINDRA_LVL_UP] >= 4) this.createPerk(PerkLib.VitalShot, 0, 0, 0, 0);
 			this.createPerk(PerkLib.EnemyBeastOrAnimalMorphType, 0, 0, 0, 0);
+			if (flags[kFLAGS.KINDRA_LVL_UP] >= 1) this.createPerk(PerkLib.BasicSelfControl, 0, 0, 0, 0);
+			if (flags[kFLAGS.KINDRA_LVL_UP] >= 2) {
+				this.createPerk(PerkLib.JobSorcerer, 0, 0, 0, 0);
+				this.createPerk(PerkLib.HalfStepToImprovedEndurance, 0, 0, 0, 0);
+			}
+			if (flags[kFLAGS.KINDRA_LVL_UP] >= 4) {
+				this.createPerk(PerkLib.JobHunter, 0, 0, 0, 0);
+				this.createPerk(PerkLib.ImprovedEndurance, 0, 0, 0, 0);
+				this.createPerk(PerkLib.VitalShot, 0, 0, 0, 0);
+			}
+			if (flags[kFLAGS.KINDRA_LVL_UP] >= 6) {
+				this.createPerk(PerkLib.PrestigeJobArcaneArcher, 0, 0, 0, 0);
+				this.createPerk(PerkLib.HalfStepToAdvancedEndurance, 0, 0, 0, 0);
+			}
+			if (flags[kFLAGS.KINDRA_LVL_UP] >= 7) this.createPerk(PerkLib.ArchersStaminaI, 0, 0, 0, 0);
+			if (flags[kFLAGS.KINDRA_LVL_UP] >= 8) {
+				this.createPerk(PerkLib.AdvancedEndurance, 0, 0, 0, 0);
+				this.createPerk(PerkLib.HalfStepToImprovedSelfControl, 0, 0, 0, 0);
+			}
+			if (flags[kFLAGS.KINDRA_LVL_UP] >= 9) this.createPerk(PerkLib.ImprovedSelfControl, 0, 0, 0, 0);
+			//if (flags[kFLAGS.KINDRA_LVL_UP] >= ) this.createPerk(PerkLib.EnemyBossType, 0, 0, 0, 0);kiedy zacznie sie KindraQuest
 			checkMonster();
 		}
 		

@@ -1,13 +1,17 @@
 package classes.Scenes.Dungeons.HelDungeon
 {
-	import classes.*;
-	import classes.GlobalFlags.kFLAGS;
+import classes.*;
+import classes.BodyParts.Butt;
+import classes.BodyParts.Hips;
+import classes.BodyParts.LowerBody;
+import classes.BodyParts.Tail;
+import classes.Scenes.SceneLib;
 
-	public class HarpyMob extends Monster
+public class HarpyMob extends Monster
 	{
 		public function harpyHordeAI():void {
 			if(rand(3) == 0) harpyHordeLustAttack();
-			else if(rand(3) > 0) harpyHordeClawFlurry()
+			else if(rand(3) > 0) harpyHordeClawFlurry();
 			else harpyHordeGangBangAttack();
 		}
 		
@@ -17,7 +21,6 @@ package classes.Scenes.Dungeons.HelDungeon
 			//(Effect: Multiple light attacks)
 			createStatusEffect(StatusEffects.Attacks, 3 + rand(3),0,0,0);
 			eAttack();
-			combatRoundOver();
 		}
 		
 		//ATTACK TWO: Gangbang
@@ -35,14 +38,13 @@ package classes.Scenes.Dungeons.HelDungeon
 			if(rand(10) > 0 && player.str/5 + rand(20) < 23) {
 				var damage:Number = 80 + rand(40);
 				outputText("You struggle in the harpies' grasp, but can't quite get free.  The brood continues to hammer away at your defenseless self. ");
-				damage = player.takeDamage(damage, true);
+				damage = player.takePhysDamage(damage, true);
 			}
 			//Success: 
 			else {
 				player.removeStatusEffect(StatusEffects.HarpyBind);
 				outputText("With a mighty roar, you throw off the harpies grabbing you and return to the fight!");
 			}
-			combatRoundOver();
 		}
 		
 		//ATTACK THREE: LUSTY HARPIES!
@@ -51,12 +53,11 @@ package classes.Scenes.Dungeons.HelDungeon
 			if(player.findPerk(PerkLib.LuststickAdapted) >= 0) outputText("doing relatively little thanks to your adaptation");
 			else {
 				outputText("sending shivers of lust up your spine");
-				game.dynStats("lus", 5);
-				if(player.hasCock()) game.dynStats("lus", 15);
+				player.dynStats("lus", 5);
+				if(player.hasCock()) player.dynStats("lus", 15);
 			}
 			outputText(".");
-			game.dynStats("lus", 10);
-			combatRoundOver();
+			player.dynStats("lus", 10);
 		}
 		
 		override protected function performCombatAction():void
@@ -66,12 +67,13 @@ package classes.Scenes.Dungeons.HelDungeon
 		
 		override public function defeated(hpVictory:Boolean):void
 		{
-			game.dungeons.heltower.pcDefeatsHarpyHorde();
+			SceneLib.dungeons.heltower.pcDefeatsHarpyHorde();
 		}
 		
 		override public function won(hpVictory:Boolean, pcCameWorms:Boolean):void
 		{
-			game.dungeons.heltower.pcLosesToHarpyHorde();
+			if (player.isGargoyle()) SceneLib.dungeons.heltower.gargoyleBadEndPhoenixTower();
+			else SceneLib.dungeons.heltower.pcLosesToHarpyHorde();
 		}
 		
 		public function HarpyMob()
@@ -84,25 +86,26 @@ package classes.Scenes.Dungeons.HelDungeon
 			this.pronoun1 = "they";
 			this.pronoun2 = "them";
 			this.pronoun3 = "their";
-			this.createVagina(false, VAGINA_WETNESS_SLAVERING, VAGINA_LOOSENESS_GAPING_WIDE);
+			this.createVagina(false, VaginaClass.WETNESS_SLAVERING, VaginaClass.LOOSENESS_GAPING_WIDE);
 			createBreastRow(Appearance.breastCupInverse("B"));
-			this.ass.analLooseness = ANAL_LOOSENESS_STRETCHED;
-			this.ass.analWetness = ANAL_WETNESS_SLIME_DROOLING;
+			this.ass.analLooseness = AssClass.LOOSENESS_STRETCHED;
+			this.ass.analWetness = AssClass.WETNESS_SLIME_DROOLING;
 			this.tallness = rand(8) + 70;
-			this.hipRating = HIP_RATING_CURVY+2;
-			this.buttRating = BUTT_RATING_LARGE;
-			this.lowerBody = LOWER_BODY_TYPE_HARPY;
+			this.hips.type = Hips.RATING_CURVY + 2;
+			this.butt.type = Butt.RATING_LARGE;
+			this.lowerBody = LowerBody.HARPY;
 			this.skin.setBaseOnly({color:"red"});
 			this.skinDesc = "feathers";
 			this.hairColor = "black";
 			this.hairLength = 15;
 			initStrTouSpeInte(85, 100, 160, 50);
-			initLibSensCor(80, 45, 50);
+			initWisLibSensCor(50, 80, 45, 50);
 			this.weaponName = "claw";
 			this.weaponVerb="claw";
-			this.weaponAttack = 37 + (8 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.weaponAttack = 37;
 			this.armorName = "armor";
-			this.armorDef = 20 + (3 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.armorDef = 20;
+			this.armorMDef = 2;
 			this.bonusHP = 1000;
 			this.bonusLust = 100;
 			this.lust = 20;
@@ -111,15 +114,9 @@ package classes.Scenes.Dungeons.HelDungeon
 			this.level = 28;
 			this.gems = rand(25)+140;
 			this.additionalXP = 50;
-			this.tailType = TAIL_TYPE_HARPY;
+			this.tailType = Tail.HARPY;
 			this.drop = NO_DROP;
 			this.createPerk(PerkLib.EnemyGroupType, 0, 0, 0, 0);
-			this.str += 25 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.tou += 30 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.spe += 48 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.inte += 15 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];			
-			this.lib += 24 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.newgamebonusHP = 4260;
 			checkMonster();
 		}
 		

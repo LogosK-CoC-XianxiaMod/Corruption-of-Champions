@@ -1,11 +1,17 @@
 package classes.Scenes.Areas.HighMountains
 {
-	import classes.*;
+import classes.*;
+import classes.BodyParts.Butt;
+import classes.BodyParts.Hips;
+import classes.BodyParts.LowerBody;
 import classes.BodyParts.Skin;
+import classes.BodyParts.Tail;
+import classes.GlobalFlags.*;
+import classes.Scenes.SceneLib;
+import classes.StatusEffects.Combat.BasiliskSlowDebuff;
 import classes.internals.ChainedDrop;
-	import classes.GlobalFlags.*
-	
-	/**
+
+/**
 	 * ...
 	 * @author ...
 	 */
@@ -13,16 +19,8 @@ import classes.internals.ChainedDrop;
 	{
 
 		public static function basiliskSpeed(player:Player,amount:Number = 0):void {
-			if(player.spe - amount < 1) {
-				amount = player.spe - 1;
-				if(amount < 0) amount = 0;
-			}
-			player.spe -= amount;
-			if(player.hasStatusEffect(StatusEffects.BasiliskSlow)) player.addStatusValue(StatusEffects.BasiliskSlow,1,amount);
-			else player.createStatusEffect(StatusEffects.BasiliskSlow,amount,0,0,0);
-			showStatDown( 'spe' );
-			// speUp.visible = false;
-			// speDown.visible = true;
+			var bse:BasiliskSlowDebuff = player.createOrFindStatusEffect(StatusEffects.BasiliskSlow) as BasiliskSlowDebuff;
+			bse.applyEffect(amount);
 		}
 
 		//special 1: basilisk mental compulsion attack
@@ -38,11 +36,12 @@ import classes.internals.ChainedDrop;
 				}
 				else {
 					outputText("You can't help yourself... you glimpse the reptile's grey, slit eyes. You look away quickly, but you can picture them in your mind's eye, staring in at your thoughts, making you feel sluggish and unable to coordinate. Something about the helplessness of it feels so good... you can't banish the feeling that really, you want to look in the basilisk's eyes forever, for it to have total control over you.");
-					game.dynStats("lus", 3);
+					player.dynStats("lus", 3);
 					//apply status here
 					basiliskSpeed(player,20);
 					player.createStatusEffect(StatusEffects.BasiliskCompulsion,0,0,0,0);
-					if (player.findPerk(PerkLib.GorgonsEyes) >= 0) flags[kFLAGS.BASILISK_RESISTANCE_TRACKER] += 4;
+					if (player.findPerk(PerkLib.GorgonsEyesEvolved) >= 0) flags[kFLAGS.BASILISK_RESISTANCE_TRACKER] += 6;
+					else if (player.findPerk(PerkLib.GorgonsEyes) >= 0) flags[kFLAGS.BASILISK_RESISTANCE_TRACKER] += 4;
 					else flags[kFLAGS.BASILISK_RESISTANCE_TRACKER] += 2;
 				}
 			}
@@ -50,7 +49,6 @@ import classes.internals.ChainedDrop;
 			else {
 				outputText("You concentrate, focus your mind and resist the basilisk's psychic compulsion.");
 			}
-			game.combatRoundOver();
 		}
 
 
@@ -60,8 +58,7 @@ import classes.internals.ChainedDrop;
 			outputText("The basilisk suddenly whips its tail at you, swiping your [feet] from under you!  You quickly stagger upright, being sure to hold the creature's feet in your vision.  ");
 			if(damage == 0) outputText("The fall didn't harm you at all.  ");
 			var damage:Number = int((str + 20) - Math.random()*(player.tou+player.armorDef));
-			damage = player.takeDamage(damage, true);			
-			game.combatRoundOver();
+			damage = player.takePhysDamage(damage, true);			
 		}
 
 		//basilisk physical attack: With lightning speed, the basilisk slashes you with its index claws!
@@ -76,16 +73,16 @@ import classes.internals.ChainedDrop;
 
 		override public function defeated(hpVictory:Boolean):void
 		{
-			game.highMountains.basiliskScene.defeatBasilisk();
+			SceneLib.highMountains.basiliskScene.defeatBasilisk();
 		}
 
 		override public function won(hpVictory:Boolean, pcCameWorms:Boolean):void
 		{
 			if (pcCameWorms){
 				outputText("\n\nThe basilisk smirks, but waits for you to finish...");
-				doNext(game.endLustLoss);
+				doNext(SceneLib.combat.endLustLoss);
 			} else {
-				game.highMountains.basiliskScene.loseToBasilisk();
+				SceneLib.highMountains.basiliskScene.loseToBasilisk();
 			}
 		}
 
@@ -100,23 +97,24 @@ import classes.internals.ChainedDrop;
 			this.balls = 2;
 			this.ballSize = 2;
 			createBreastRow(0);
-			this.ass.analLooseness = ANAL_LOOSENESS_TIGHT;
-			this.ass.analWetness = ANAL_WETNESS_DRY;
+			this.ass.analLooseness = AssClass.LOOSENESS_TIGHT;
+			this.ass.analWetness = AssClass.WETNESS_DRY;
 			this.createStatusEffect(StatusEffects.BonusACapacity,30,0,0,0);
 			this.tallness = 6*12+2;
-			this.hipRating = HIP_RATING_SLENDER+1;
-			this.buttRating = BUTT_RATING_AVERAGE;
-			this.lowerBody = LOWER_BODY_TYPE_LIZARD;
-			this.skin.growCoat(SKIN_COAT_SCALES,{color:"gray"},Skin.COVERAGE_COMPLETE);
+			this.hips.type = Hips.RATING_SLENDER + 1;
+			this.butt.type = Butt.RATING_AVERAGE;
+			this.lowerBody = LowerBody.LIZARD;
+			this.skin.growCoat(Skin.SCALES,{color:"gray"},Skin.COVERAGE_COMPLETE);
 			this.hairColor = "none";
 			this.hairLength = 0;
 			initStrTouSpeInte(98, 107, 45, 80);
-			initLibSensCor(50, 35, 60);
+			initWisLibSensCor(80, 50, 35, 60);
 			this.weaponName = "claws";
 			this.weaponVerb="claw";
-			this.weaponAttack = 38 + (8 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.weaponAttack = 38;
 			this.armorName = "scales";
-			this.armorDef = 18 + (2 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.armorDef = 18;
+			this.armorMDef = 18;
 			this.armorPerk = "";
 			this.armorValue = 70;
 			this.bonusHP = 200;
@@ -128,15 +126,9 @@ import classes.internals.ChainedDrop;
 			this.gems = rand(20) + 40;
 			this.drop = new ChainedDrop().add(useables.EBONBLO,1/20)
 					.elseDrop(consumables.REPTLUM);
-			this.tailType = TAIL_TYPE_COW;
+			this.tailType = Tail.COW;
 			this.tailRecharge = 0;
 			this.createPerk(PerkLib.EnemyBeastOrAnimalMorphType, 0, 0, 0, 0);
-			this.str += 19 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.tou += 21 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.spe += 9 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.inte += 16 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];			
-			this.lib += 10 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.newgamebonusHP = 2250;
 			checkMonster();
 		}
 		

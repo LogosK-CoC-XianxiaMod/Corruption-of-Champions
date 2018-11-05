@@ -8,10 +8,10 @@ package classes.Scenes.Areas
 {
 	import classes.*;
 	import classes.GlobalFlags.kFLAGS;
-	import classes.GlobalFlags.kGAMECLASS;
+	import classes.CoC;
 	import classes.Scenes.Areas.DeepSea.*;
 	
-	use namespace kGAMECLASS;
+	use namespace CoC;
 	
 	public class DeepSea extends BaseContent
 	{
@@ -21,23 +21,32 @@ package classes.Scenes.Areas
 		}
 		
 		public function exploreDeepSea():void {
-			flags[kFLAGS.DISCOVERED_DEEP_SEA]++
+			flags[kFLAGS.DISCOVERED_DEEP_SEA]++;
 			
 			var choice:Array = [];
 			var select:int;
 			
 			//Build choice list!
-			choice[choice.length] = 0;	//Scylla
-			choice[choice.length] = 1;	//Kraken
+		//	choice[choice.length] = 0;	//Kraken
+			choice[choice.length] = 0;	//Shark Girls Pack
+			choice[choice.length] = 1;	//Tiger Shark Girls Pack
 			if (rand(4) == 0) choice[choice.length] = 2;	 //Find nothing! The rand will be removed from this once the Deep Sea is populated with more encounters.
 			
 			select = choice[rand(choice.length)];
 			switch(select) {
 			/*	case 0:
-					kGAMECLASS.exploration.genericImpEncounters2();
+					CoC.instance.exploration.genericDemonsEncounters1();
+					break;
+				case 01:
+					flags[kFLAGS.SHARK_OR_TIGERSHARK_GIRL] = 1;
+					sharkGirlScene.oceanSharkGirlEncounter();
 					break;
 				case 1:
-					kGAMECLASS.exploration.genericDemonsEncounters1();
+					flags[kFLAGS.SHARK_OR_TIGERSHARK_GIRL] = 2;
+					sharkGirlScene.oceanTigersharkGirlEncounter();
+					break;
+				case 3:
+					CoC.instance.exploration.genericImpEncounters2();
 					break;
 			*/	default:
 					clearOutput();

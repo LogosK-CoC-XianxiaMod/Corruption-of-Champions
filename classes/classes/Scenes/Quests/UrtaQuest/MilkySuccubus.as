@@ -1,12 +1,16 @@
 package classes.Scenes.Quests.UrtaQuest
 {
-	import classes.*;
-	import classes.GlobalFlags.kGAMECLASS;
-	import classes.GlobalFlags.kFLAGS;
-	import classes.Scenes.Monsters.AbstractSuccubus;
-	import classes.internals.*;
+import classes.*;
+import classes.BodyParts.Butt;
+import classes.BodyParts.Hips;
+import classes.BodyParts.Horns;
+import classes.BodyParts.LowerBody;
+import classes.BodyParts.Tail;
+import classes.BodyParts.Wings;
+import classes.Scenes.Monsters.AbstractSuccubus;
+import classes.Scenes.SceneLib;
 
-	use namespace kGAMECLASS;
+use namespace CoC;
 	
 	public class MilkySuccubus extends AbstractSuccubus
 	{
@@ -29,15 +33,14 @@ package classes.Scenes.Quests.UrtaQuest
 			if (rand(20) + 1 + player.spe / 20 > 17) {
 				outputText("With your trained reflexes, you manage to duck and roll, narrowly avoiding getting sprayed with milk.");
 				outputText("\n\n\"<i>Such a waste.</i>\"  The succubus pouts.  \"<i>No worries, I'll just have Fido clean it up later... perhaps I'll even have you do it later, when you become mine.</i>\"  The succubus giggles.");
-				kGAMECLASS.dynStats("lus", 6);
+				player.dynStats("lus", 6);
 			}
 			//Hit:
 			else {
 				outputText("All you manage to do is cover your face; the rest of you, however, gets completely soaked in the demon's corrupted milk.  Looking down at yourself, you realize that you are panting, and the places where the milk splashed your fur begin to heat up.  Oh no! <b>You'd better finish off this succubus before you succumb to your lusts!</b>");
-				kGAMECLASS.dynStats("lus", 15);
+				player.dynStats("lus", 15);
 				createStatusEffect(StatusEffects.MilkyUrta, 3, 0, 0, 0);
 			}
-			combatRoundOver();
 		}
 
 		private function drinkMinoCum():void
@@ -55,7 +58,6 @@ package classes.Scenes.Quests.UrtaQuest
 			else {
 				outputText("\n\nShe frowns and looks behind her, pouting slightly when she turns to look back at you.  \"<i>Seems like I'm all out of cum.</i>\"  She grins evilly.  \"<i>I'll just have to get more after I'm done with you.</i>\"");
 			}
-			combatRoundOver();
 		}
 
 		private function succubusTease():void
@@ -64,18 +66,17 @@ package classes.Scenes.Quests.UrtaQuest
 			else if (rand(3) == 0) outputText("The succubus squeezes her spotted, sweat-oiled breasts together, squirting out trickles of fresh, creamy, succubi milk.  Bending down, she laps at her own bounty, taking to meet your eyes, her own glowing violet.  You can feel her next words as much as hear them, reaching into your brain and stirring a familiar heat in your loins.  \"<i>Giving in would mean pleasure unending, my dear vixen.</i>\"");
 			else if (rand(2) == 0) outputText("The succubus turns slightly and slowly bends over, sliding her hands down the sides of her milk laden jugs. \"<i>Mmm, would you help a poor girl relax? These things need some attention,</i>\" she says with a lust filled moan as her hands reach her multitude of nipples.");
 			else outputText("The succubus leans forwards holding her tits, while wrapping her fingers around her nipples.  \"<i>My boobs are soo full.  Would you like to help me drain them?</i>\" she says with a husky voice.");
-			kGAMECLASS.dynStats("lus", 20);
-			combatRoundOver();
+			player.dynStats("lus", 20);
 		}
 
 		override public function defeated(hpVictory:Boolean):void
 		{
-			game.urtaQuest.urtaBeatsUpCowcubi();
+			SceneLib.urtaQuest.urtaBeatsUpCowcubi();
 		}
 
 		override public function won(hpVictory:Boolean, pcCameWorms:Boolean):void
 		{
-			game.urtaQuest.urtaLosesToCowCubi();
+			SceneLib.urtaQuest.urtaLosesToCowCubi();
 		}
 
 
@@ -94,27 +95,28 @@ package classes.Scenes.Quests.UrtaQuest
 			this.imageName = "milkysuccubus";
 			this.long = "You are fighting a milky, cow-like succubus.  She stands about seven feet tall and is hugely voluptuous, with breasts three times the size of her head, tipped with a cluster of four obscenely teat-like nipples.  Her hips flare out into an exaggerated hourglass shape, with a long tail tipped with a fleshy arrow-head spade that waves above her spankable butt.  A small cowbell is tied at the base of the arrow-head with a cute little ribbon.  Wide, cow-like horns, easily appropriate for a minotaur, rise from her head, and she flicks bovine ears about the sides of her head whilst sashaying from side to side on demonic, high-heeled feet.  Her skin is a vibrant purple with splotches of shiny black here and there, including one large spot covering her right eye.  She's using a leather whip as a weapon.";
 			// this.plural = false;
-			this.createVagina(false, VAGINA_WETNESS_SLAVERING, VAGINA_LOOSENESS_NORMAL);
+			this.createVagina(false, VaginaClass.WETNESS_SLAVERING, VaginaClass.LOOSENESS_NORMAL);
 			this.createStatusEffect(StatusEffects.BonusVCapacity, 300, 0, 0, 0);
 			createBreastRow(Appearance.breastCupInverse("G"));
-			this.ass.analLooseness = ANAL_LOOSENESS_STRETCHED;
-			this.ass.analWetness = ANAL_WETNESS_SLIME_DROOLING;
+			this.ass.analLooseness = AssClass.LOOSENESS_STRETCHED;
+			this.ass.analWetness = AssClass.WETNESS_SLIME_DROOLING;
 			this.tallness = 84;
-			this.hipRating = HIP_RATING_CURVY;
-			this.buttRating = BUTT_RATING_LARGE+1;
-			this.lowerBody = LOWER_BODY_TYPE_DEMONIC_HIGH_HEELS;
+			this.hips.type = Hips.RATING_CURVY;
+			this.butt.type = Butt.RATING_LARGE + 1;
+			this.lowerBody = LowerBody.DEMONIC_HIGH_HEELS;
 			this.skinTone = "blue";
 			this.hairColor = "black";
 			this.hairLength = 13;
 			initStrTouSpeInte(130, 100, 180, 120);
-			initLibSensCor(150, 60, 100);
+			initWisLibSensCor(120, 150, 60, 100);
 			this.weaponName = "whip";
 			this.weaponVerb="whipping";
-			this.weaponAttack = 34 + (7 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.weaponAttack = 34;
 			this.weaponPerk = "";
 			this.weaponValue = 150;
 			this.armorName = "demonic skin";
-			this.armorDef = 22 + (3 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.armorDef = 22;
+			this.armorMDef = 2;
 			this.bonusHP = 700;
 			this.bonusLust = 40;
 			this.lust = 40;
@@ -124,21 +126,16 @@ package classes.Scenes.Quests.UrtaQuest
 			this.gems = rand(40)+50;
 			this.additionalXP = 100;
 			this.drop = NO_DROP;
-			this.hornType = HORNS_COW_MINOTAUR;
-			this.horns = 2;
-			this.wingType = WING_TYPE_BAT_LIKE_TINY;
-			this.wingDesc = "tiny hidden";
-			this.tailType = TAIL_TYPE_DEMONIC;
+			this.horns.type = Horns.COW_MINOTAUR;
+			this.horns.count = 2;
+			this.wings.type = Wings.BAT_LIKE_TINY;
+			this.wings.desc = "tiny hidden";
+			this.tailType = Tail.DEMONIC;
 			this.special1 = kissAttack;
 			this.special2 = seduceAttack;
 			this.special3 = whipAttack;
 			this.drop = NO_DROP;
-			this.str += 39 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.tou += 30 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.spe += 54 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.inte += 36 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];			
-			this.lib += 45 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.newgamebonusHP = 8160;
+			this.createPerk(PerkLib.EnemyTrueDemon, 0, 0, 0, 0);
 			checkMonster();
 		}
 

@@ -1,12 +1,13 @@
 package classes.Scenes.Quests.UrtaQuest
 {
-	import classes.*;
-	import classes.GlobalFlags.kGAMECLASS;
-	import classes.GlobalFlags.kFLAGS;
-	import classes.Scenes.Areas.Desert.Naga;
-	import classes.internals.*;
+import classes.*;
+import classes.BodyParts.Butt;
+import classes.BodyParts.Hips;
+import classes.BodyParts.LowerBody;
+import classes.Scenes.Areas.Desert.Naga;
+import classes.Scenes.SceneLib;
 
-	public class Sirius extends Naga
+public class Sirius extends Naga
 	{
 
 		override public function eAttack():void
@@ -46,19 +47,17 @@ package classes.Scenes.Quests.UrtaQuest
 //Miss:
 			if (rand(10) == 0) {
 				outputText("  You blink and shake yourself free of the effects of the snake-man's penetrating gaze.");
-				combatRoundOver();
 			}
 //Hit (Blind):
 			if (hasStatusEffect(StatusEffects.Blind)) {
 				outputText("  Though your vision is still blurry, you feel yourself being sucked into the golden depths of those pupils, making you forget all your worries, if only for an instant.  All you can focus on is your growing arousal as you sink deeper into his gaze.  You shake your head, clearing your mind of the hypnotising effects the snake-man's eyes seem to possess, though the arousal remains.");
-				kGAMECLASS.dynStats("lus", (5 + player.lib / 10 - player.inte / 20));
+				player.dynStats("lus", (5 + player.lib / 10 - player.inte / 20));
 			}
 			//Hit:
 			else {
 				outputText("  Those pools of yellow suck you into their golden depths, making you forget all your worries, if only for an instant.  All you can focus on is your growing arousal as you sink deeper into his gaze.  You shake your head, clearing your mind of the hypnotising effects the snake-man's eyes seem to possess, though the arousal remains.");
-				kGAMECLASS.dynStats("lus", (10 + player.lib / 7 - player.inte / 20));
+				player.dynStats("lus", (10 + player.lib / 7 - player.inte / 20));
 			}
-			combatRoundOver();
 		}
 
 		private function nagaSpitAttack():void
@@ -71,7 +70,6 @@ package classes.Scenes.Quests.UrtaQuest
 			}
 			//Miss:
 			else outputText("You quickly lean to the side, narrowly avoiding being blinded by the snake-man's spit!");
-			combatRoundOver();
 		}
 
 		private function poisonBite():void
@@ -80,23 +78,21 @@ package classes.Scenes.Quests.UrtaQuest
 //Miss:
 			if (player.getEvasionRoll()) {
 				outputText("You dodge just in the nick of time, and deliver a punishing blow with the butt of your halberd as Sirius soars past, forcing him to slither past you to make himself ready to defend himself again.");
-				combatRoundOver();
 			}
 //Hit:
 			outputText("The snake-man moves too quickly for you to evade and he sinks long fangs into your flesh, leaving a wound that burns with horrific pain. ");
 			var damage:Number = 40 + rand(20);
-			damage = player.takeDamage(damage, true);
-			combatRoundOver();
+			damage = player.takePoisonDamage(damage, true);
 		}
 
 		override public function defeated(hpVictory:Boolean):void
 		{
-			game.urtaQuest.urtaBeatsUpSiriusRadio();
+			SceneLib.urtaQuest.urtaBeatsUpSiriusRadio();
 		}
 
 		override public function won(hpVictory:Boolean,pcCameWorms:Boolean):void
 		{
-			game.urtaQuest.urtaLosesToSirriusSnakeRadio();
+			SceneLib.urtaQuest.urtaLosesToSirriusSnakeRadio();
 		}
 
 		public function Sirius()
@@ -109,23 +105,24 @@ package classes.Scenes.Quests.UrtaQuest
 			this.plural = false;
 			this.createCock(14,2);
 			createBreastRow(0);
-			this.ass.analLooseness = ANAL_LOOSENESS_TIGHT;
-			this.ass.analWetness = ANAL_WETNESS_DRY;
+			this.ass.analLooseness = AssClass.LOOSENESS_TIGHT;
+			this.ass.analWetness = AssClass.WETNESS_DRY;
 			this.createStatusEffect(StatusEffects.BonusACapacity,10,0,0,0);
 			this.tallness = 5*12+10;
-			this.hipRating = HIP_RATING_AMPLE+2;
-			this.buttRating = BUTT_RATING_LARGE;
-			this.lowerBody = LOWER_BODY_TYPE_NAGA;
+			this.hips.type = Hips.RATING_AMPLE + 2;
+			this.butt.type = Butt.RATING_LARGE;
+			this.lowerBody = LowerBody.NAGA;
 			this.skinTone = "mediterranean-toned";
 			this.hairColor = "orange";
 			this.hairLength = 16;
 			initStrTouSpeInte(110, 90, 125, 92);
-			initLibSensCor(45, 35, 40);
+			initWisLibSensCor(92, 45, 35, 40);
 			this.weaponName = "fangs";
 			this.weaponVerb="bite";
-			this.weaponAttack = 37 + (8 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.weaponAttack = 37;
 			this.armorName = "scales";
-			this.armorDef = 31 + (4 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.armorDef = 31;
+			this.armorMDef = 31;
 			this.bonusHP = 400;
 			this.bonusLust = 20;
 			this.lust = 30;
@@ -136,12 +133,6 @@ package classes.Scenes.Quests.UrtaQuest
 			this.special1 = nagaPoisonBiteAttack;
 			this.special2 = nagaConstrict;
 			this.special3 = nagaTailWhip;
-			this.str += 22 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.tou += 18 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.spe += 25 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.inte += 18 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];			
-			this.lib += 9 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.newgamebonusHP = 2760;
 			checkMonster();
 		}
 

@@ -1,11 +1,10 @@
 package classes.Scenes.Areas.Beach 
 {
-	import classes.*;
-	import classes.GlobalFlags.kFLAGS;
-	import classes.GlobalFlags.kGAMECLASS;
-	import classes.Items.ArmorLib;
-	
-	public class GorgonScene extends BaseContent 
+import classes.*;
+import classes.BodyParts.Face;
+import classes.BodyParts.LowerBody;
+
+public class GorgonScene extends BaseContent
 	{
 		
 		public function GorgonScene() 
@@ -17,7 +16,7 @@ public function gorgonEncounter():void {
 	//Create status if needed
 	if(!player.hasStatusEffect(StatusEffects.Naga)) player.createStatusEffect(StatusEffects.Naga,0,0,0,0);
 	clearOutput();
-	if(player.lowerBody == LOWER_BODY_TYPE_NAGA) {
+	if(player.lowerBody == LowerBody.NAGA) {
 		//Set 'last fuck as naga'
 		player.changeStatusValue(StatusEffects.Naga,1,1);
 		//Not met as naga before
@@ -42,7 +41,7 @@ public function gorgonEncounter():void {
 		}
 		outputText("She lets out a soft moan and leans her head forward, pressing her lips against yours. You squeeze her body even more firmly against yours in response, the tips of your tails wrapping around one another. You open your mouth slightly and press your tongue against her lips. She offers no resistance and you begin caressing the inside of her mouth with your tongue, circling her fangs as she uses her own tongue to gently stroke ");
 		//[If player has fangs]
-		if(player.faceType == FACE_SNAKE_FANGS) outputText("your own.");
+		if(player.faceType == Face.SNAKE_FANGS) outputText("your own.");
 		//[player has no fangs]
 		else outputText("the inside of your mouth.");
 		outputText("\n\n");
@@ -69,19 +68,19 @@ public function gorgonEncounter():void {
 				else outputText("they start ");
 				outputText("to grow hard against the gorgon's soft belly. Feeling this, the gorgon gently pulls away, slowly letting your tongue out of her mouth as she does so. Her hands make their way over your shoulders, down your abs, and stop at your [cocks].\n\n");
 				//[player has one dick]
-				if(player.totalCocks() == 1) outputText("Gently she starts to stroke the length of your [cock] with one hand while circling the tip with the other. ");
+				if(player.cockTotal() == 1) outputText("Gently she starts to stroke the length of your [cock] with one hand while circling the tip with the other. ");
 				//[player has two dicks]
-				if(player.totalCocks() == 2) outputText("She takes one in each of her hands and gently strokes them up and down. Every few seconds she stops at the tip to rub her palms over them. ");
+				if(player.cockTotal() == 2) outputText("She takes one in each of her hands and gently strokes them up and down. Every few seconds she stops at the tip to rub her palms over them. ");
 				//[player has three or more dicks]
-				if(player.totalCocks() >= 3) outputText("She takes one in each hand, stroking them slowly and making sure to pay attention to the tip. Every so often she switches to a different dick to make sure that each and every one of your throbbing cocks has some love given to them. ");
+				if(player.cockTotal() >= 3) outputText("She takes one in each hand, stroking them slowly and making sure to pay attention to the tip. Every so often she switches to a different dick to make sure that each and every one of your throbbing cocks has some love given to them. ");
 				outputText("A hiss of pleasure escapes your lips as the gorgon strokes your [cocks], her talented fingers bringing you further into a state of arousal. She stops her caress and brings her hand to a scaly covering at her crotch, spreading it wide to reveal her soft pussy.\n\n");
 				
 				//[player has one dick] 
-				if(player.totalCocks() == 1) outputText("She carefully lines it up with your member and starts to tease the tip before gently inserting the first few inches. ");
+				if(player.cockTotal() == 1) outputText("She carefully lines it up with your member and starts to tease the tip before gently inserting the first few inches. ");
 				//[player has two dicks]
-				if(player.totalCocks() == 2) outputText("She carefully lines it up with both of your members and starts to tease their tips before gently inserting the first few inches. ");
+				if(player.cockTotal() == 2) outputText("She carefully lines it up with both of your members and starts to tease their tips before gently inserting the first few inches. ");
 				//[player has three or more dicks]
-				if(player.totalCocks() >= 3) outputText("She carefully lines it up with one of your members and starts to tease the tip before gently inserting the first few inches. ");
+				if(player.cockTotal() >= 3) outputText("She carefully lines it up with one of your members and starts to tease the tip before gently inserting the first few inches. ");
 				outputText("She pulls her hips back slightly before pushing them back down, swallowing a bit more of you into her.  As she pulls back the second time, she shifts her arms to rest on your shoulders and grips your back tightly as she pushes you deeper inside of her.\n\n");
 				outputText("Every thrust brings you deeper inside of her pussy, its soft walls massaging you. It seems like her pussy managed to swallow your entire cock in no time at all. The gorgon pauses for a moment, your hips pressed together, panting. You shift your arms up a little higher to rest at her waist and lower your head to nuzzle at her neck. The gorgon leans her head into yours and wraps one of her arms around your head. Once more she pulls back her hips before thrusting them back onto your cock. No longer is she slowly bringing you inside her, now she thrusts herself onto you, going faster and faster. Your tails tighten around each other as you reach climax. A sudden yell escapes your throat as you cum inside of her, your tail squeezing hard enough to crush a lesser being. The gorgon shudders in your grip as she reaches her own climax. ");
 				//[lots of jizz]
@@ -97,7 +96,7 @@ public function gorgonEncounter():void {
 		else if(player.hasVagina()) {
 			outputText("The kiss continues and you can feel your " + breastDescript(0) + " pressing against her own. You kiss her harder, pressing your body as close to her as you can, enjoying the feeling of your two bodies entwined together. You wrap your tail around hers, trying to make every part of your body touch every part of hers.  The feeling of her scaled tail rubbing against your body sends shivers of ecstasy down your spine. You pull away from her mouth and move your head to kiss at her neck, ");
 			//(if player has fangs)
-			if(player.faceType == FACE_SNAKE_FANGS) outputText("carefully nibbling at it so as to not break the skin.  ");
+			if(player.faceType == Face.SNAKE_FANGS) outputText("carefully nibbling at it so as to not break the skin.  ");
 			else outputText("nibbling gently at it.  ");
 			outputText("Traveling down, you pause at her collarbone, letting go of her hips to bring your hands up to her perfectly rounded breasts. A moan escapes the gorgon's lips as you massage her erect nipples. Your mouth continues its trek down the gorgon's supple body and you make sure to pause on each breast, circling inward and stopping on each nipple to suck gently on them.\n\n");
  			outputText("Once more your hands move down the gorgon's body, making their way across her sides as your mouth simultaneously kisses at the smooth flesh of her exposed belly. Goose pimples slowly begin to appear, denoting how much she enjoys it. You pause at her hips, hovering over the slit at her crotch. One of your hands slide down to the slit and you start to stroke at it gently as you kiss at the area around it. Your partner shudders a bit, overcome by the sensations. Slowly you slide a finger into her, hearing a gasp of pleasure as you move it around inside her.  ");
@@ -114,6 +113,7 @@ public function gorgonEncounter():void {
     		outputText("She returns your kiss, but while you are distracted she prepares herself to help you in the same way you helped her. She begins to rub her tail along your " + vaginaDescript(0) + ", getting it wet. As you feel her scaly member begin to slide inside your own " + vaginaDescript(0) + ", the very thought gets you excited. Although somewhat jumpy, she is able to push at a modest rate, slowly inching her tail inside you, very much like the way you did to her. As you continue to passionately kiss each other, your tongues wrapping around one another and your arms wrapped around each other's warm bodies, you cannot think of a better place to be. Soon, you and your partner are tail-fucking each other in unison, your lips never parting, your bodies never separating. The both of you collapse upon the sand, too focused on one another to care about the surroundings.  That is how it carried on for what seemed like a beautiful, passionate eternity. You wake up several hours later, lying on the sand next to your friend, and you can't help but notice how cute she looks asleep. Your tails are still buried within one another, testament to the intensity of your lovemaking. You loved until the both of you collapsed, side by side, juices dripping out into the dry beach sands. You slowly remove your tail from inside her body, and simultaneously pull hers from your " + vaginaDescript(0) + ". You kiss her on the cheek, and are just close enough to hear her whisper, \"<i>Will we ever meet again?</i>\"  You lean in close, and whisper a simple \"<i>Yes.</i>\" Then, you leave her to her well-deserved rest, and slowly meander back to your camp, your brain still intoxicated with passion.\n\n");
 			player.cuntChange(30,true,false,true);
 			player.orgasm();
+			if (isGargoyle() && hasPerk(PerkLib.GargoyleCorrupted)) refillGargoyleHunger(30);
 			outputText("You think it would be a very good idea to come to the beach more often.");
 			doNext(camp.returnToCampUseFourHours);
 			return;

@@ -1,17 +1,18 @@
 ﻿package classes.Scenes.Areas.HighMountains {
-	import classes.*;
-	import classes.GlobalFlags.kFLAGS;
-	import classes.GlobalFlags.kGAMECLASS;
-	import classes.GlobalFlags.kACHIEVEMENTS;
+import classes.*;
+import classes.BodyParts.Tongue;
+import classes.GlobalFlags.kACHIEVEMENTS;
+import classes.GlobalFlags.kFLAGS;
+import classes.Scenes.SceneLib;
 
-	public class MinervaScene extends BaseContent implements TimeAwareInterface {
+public class MinervaScene extends BaseContent implements TimeAwareInterface {
 
 		public var pregnancy:PregnancyStore;
 		
 		public function MinervaScene() {
 			pregnancy = new PregnancyStore(kFLAGS.MINERVA_PREGNANCY_TYPE, kFLAGS.MINERVA_PREGNANCY_INCUBATION, 0, 0);
 			pregnancy.addPregnancyEventSet(PregnancyStore.PREGNANCY_PLAYER, 216, 144, 72);
-			CoC.timeAwareClassAdd(this);
+			EventParser.timeAwareClassAdd(this);
 		}
 		
 //const MINERVA_LOVE:int = 813;
@@ -131,7 +132,7 @@ private function firstMinervaEncounter():void {
 	clearOutput();
 	outputText("Returning to the mountains, you begin to climb; the usual search for loot and, perhaps, some harpies driving your upward efforts.  Perhaps you'll run into");
 	//If Sophie Bimbo=0:
-	if(flags[kFLAGS.UNKNOWN_FLAG_NUMBER_00282] == 0 && flags[kFLAGS.UNKNOWN_FLAG_NUMBER_00283] == 0 && !kGAMECLASS.sophieFollowerScene.sophieFollower()) outputText(" that matronly harpy, Sophie");
+	if(flags[kFLAGS.UNKNOWN_FLAG_NUMBER_00282] == 0 && flags[kFLAGS.UNKNOWN_FLAG_NUMBER_00283] == 0 && !SceneLib.sophieFollowerScene.sophieFollower()) outputText(" that matronly harpy, Sophie");
 	else outputText(" something interesting");
 	outputText(", or get some good plunder from some of the local beasts");
 	//if minotaur cum addict:
@@ -324,7 +325,7 @@ private function goForASkyRideWithMinervaHeartBaring():void {
 	//Large wings: 
 	else {
 		outputText("  Minerva seems quite pleased that you accepted her offer.  Seeing you have powerful wings of your own, she slowly lets go, allowing your wings to spread out and beat as you hover next to her.  The pair of you fly out of the tower together, streaking through the air as you both zoom around the mountain, and it becomes almost like a playful race between you.");
-		outputText("\n\nThe sound of powerful wing beats and the rushing of air mixes with the sound of joyful laughter as you race and play with the flying siren.  Reaching out to you with a hand, Minerva decides to put on a show for you.  Beating her wings harder, she pushes ahead of you, twisting and twirling as she rolls above you, your eyes locking with hers for a fleeting moment and catching the look of joy in them.  Not one to be outdone in a race, you flap your " + player.wingDesc + " wings harder and harder, speeding ahead on the final turn as you both rush toward the tower.");
+		outputText("\n\nThe sound of powerful wing beats and the rushing of air mixes with the sound of joyful laughter as you race and play with the flying siren.  Reaching out to you with a hand, Minerva decides to put on a show for you.  Beating her wings harder, she pushes ahead of you, twisting and twirling as she rolls above you, your eyes locking with hers for a fleeting moment and catching the look of joy in them.  Not one to be outdone in a race, you flap your " + player.wings.desc + " wings harder and harder, speeding ahead on the final turn as you both rush toward the tower.");
 		outputText("\n\nSeeing you getting ahead brings a grin to Minerva's face.  Gritting her teeth, she pushes herself to catch up with you, her arms reaching out and grabbing you in a playful air tackle.");
 	}
 	//Lead in for Minerva opening her heart (All body types except Centaur and Drider)
@@ -845,8 +846,8 @@ private function fuckMinervasAsshole():void {
 	flags[kFLAGS.TIMES_BUTTFUCKED_MINERVA]++;
 	player.orgasm();
 	dynStats("sen", -1);
-	if (getGame().inCombat)
-		cleanupAfterCombat();
+    if (CoC.instance.inCombat)
+        cleanupAfterCombat();
 	else doNext(camp.returnToCampUseOneHour);
 }
 
@@ -951,8 +952,8 @@ private function minervaCowgirlSex():void {
 	flags[kFLAGS.TIMES_MINERVA_COWGIRLED]++;
 	player.orgasm();
 	dynStats("sen", -1);
-	if (getGame().inCombat)
-		cleanupAfterCombat();
+    if (CoC.instance.inCombat)
+        cleanupAfterCombat();
 	else doNext(camp.returnToCampUseOneHour);
 }
 
@@ -1041,8 +1042,8 @@ private function minervaLapSex():void {
 	flags[kFLAGS.TIMES_MINERVA_LAPSEXED]++;
 	player.orgasm();
 	dynStats("sen", -1);
-	if (getGame().inCombat)
-		cleanupAfterCombat();
+    if (CoC.instance.inCombat)
+        cleanupAfterCombat();
 	else doNext(camp.returnToCampUseOneHour);
 }
 
@@ -1073,7 +1074,7 @@ private function goDownOnAHermAndLoveItYouDirtySlutYou():void {
 	
 	outputText("\n\nNow ready to give her your full attention, you dive in, your lips pressing against her nethers as your tongue slides in, giving her a perverted tongue filled kiss.  Your teasing tongue slides in deep and pleasures her inner walls, licking and lapping at every sensitive surface it can reach.  As you lick, you can clearly feel the squirming cilia that cover the quivering depths of her cunt, the little squirming things tickling your tongue as you lick.  ");
 	//Dragon/Demon tongue
-	if(player.tongueType == TONGUE_DEMONIC || player.tongueType == TONGUE_DRACONIC) outputText("Your deliciously long tongue slithers deeper and deeper, reaching sensitive walls and nerves that only the deepest penetrations would reach.  The deep licking makes Minerva shudder and let out a long drawn out moan, \"<i>O-oh!  Your tongue is so... licking me so deep...</i>\"");
+	if(player.tongue.type == Tongue.DEMONIC || player.tongue.type == Tongue.DRACONIC) outputText("Your deliciously long tongue slithers deeper and deeper, reaching sensitive walls and nerves that only the deepest penetrations would reach.  The deep licking makes Minerva shudder and let out a long drawn out moan, \"<i>O-oh!  Your tongue is so... licking me so deep...</i>\"");
 	outputText("  The intimate vaginal kiss is working wonders for the siren.  Her sweet, slick juices leak over your tongue, giving you plenty of the peachy flavor that you crave.  As you tongue your lover's pussy and tease her clit, your hands work her thick, pulsating cock, pre-cum slowly coating your hands and making it easy for you to squeeze tighter and stroke her faster.");
 	
 	outputText("\n\nNot wanting her to cum too soon, you pull your mouth back from her tight, cilia-filled snatch, drawing a disappointed moan from Minerva, clearly missing having your tongue inside her.  Licking your lips, you can still taste her delightful juices.  With your face so close to her genitals and her so close to orgasm, you have a few options to push her over.  Dig back into her creamy cunt, or give her needy, swollen balls some attention.");
@@ -1122,8 +1123,8 @@ private function noBallsMinervaAndContinuation(clear:Boolean = true):void {
 	outputText("\n\nFor a long while, you just lay there, cuddled up with the mostly naked siren, the two of you idly chatting about various things that come to mind.  Eventually, you must leave the gentle embrace and return to your duties as a Champion.  Disentangling yourself from Minerva, you straighten your clothes out and, with a smile, tell her you had a wonderful time.  Grinning up at you, Minerva climbs back onto her feet and pulls you into a deep, tongue-tangling goodbye kiss.  \"<i>It was amazing, we have to do this again.  Perhaps next time, I can do you, hmm?</i>\" she suggests, not wanting to be greedy and get all the pleasure.  Giving you another peck on the cheek, the siren sends you on your way after telling you to come back and visit soon.");
 	
 	dynStats("lus", 20);
-	if (getGame().inCombat)
-		cleanupAfterCombat();
+    if (CoC.instance.inCombat)
+        cleanupAfterCombat();
 	else doNext(camp.returnToCampUseOneHour);
 }
 	
@@ -1200,8 +1201,8 @@ private function letMinervaSuckYouOff():void {
 	//PC returns to camp.
 	player.orgasm();
 
-	if (getGame().inCombat)
-		cleanupAfterCombat();
+if (CoC.instance.inCombat)
+        cleanupAfterCombat();
 	else doNext(camp.returnToCampUseOneHour);
 }
 
@@ -1269,8 +1270,8 @@ private function fuckMinervaWithHerHandsBehindHerBack():void {
 	//PC returns to camp
 	dynStats("sen", -1);
 	player.orgasm();
-	if (getGame().inCombat)
-		cleanupAfterCombat();
+    if (CoC.instance.inCombat)
+        cleanupAfterCombat();
 	else doNext(camp.returnToCampUseOneHour);
 }
 	
@@ -1348,8 +1349,8 @@ private function pcGetsEatenOutByMinerva():void {
 	// PC returns to camp
 	dynStats("sen", -2);
 	player.orgasm();
-	if (getGame().inCombat)
-		cleanupAfterCombat();
+    if (CoC.instance.inCombat)
+        cleanupAfterCombat();
 	else doNext(camp.returnToCampUseOneHour);
 }
 
@@ -1452,8 +1453,8 @@ private function getButtFuckedYouSlut():void {
 	flags[kFLAGS.TIMES_MINERVA_LAPSEXED]++;
 	player.orgasm();
 	dynStats("sen", -1);
-	if(getGame().inCombat) cleanupAfterCombat();
-	else doNext(camp.returnToCampUseOneHour);
+    if (CoC.instance.inCombat) cleanupAfterCombat();
+    else doNext(camp.returnToCampUseOneHour);
 }
 
 internal function loseToMinerva():void {
@@ -1549,7 +1550,7 @@ public function getADrinkYouBitch():void {
 private function drinkDirectly():void {
 	clearOutput();
 	outputText("Approaching the pristine pond, you kneel on the shore and dip your hands into the water, cupping them together and lifting them out to scoop up a decent drink.  The water is cool and sweet to the taste, and every swallow makes you feel calmer, cleaner, and refreshed.  You drink until your thirst is quenched, feeling purer in both mind and body.  ");
-	dynStats("lus", -25, "cor", -.5, "resisted", false);
+	dynStats("lus", -25, "cor", -.5, "scale", false);
 	player.refillHunger(15);
 	if(player.cor > 50) dynStats("cor", -1);
 	if(player.cor > 75) dynStats("cor", -1);
@@ -1588,14 +1589,14 @@ private function sleepWithMinervaII():void {
 }
 private function sleepWithMinervaProcess():void {
 	clearOutput();
-	kGAMECLASS.timeQ = 10;
+	CoC.instance.timeQ = 10;
 	goNext(timeQ, true);
 	sleepWithMinervaII();
 }
 private function sleepWithMinervaHeal():void {
-	kGAMECLASS.timeQ = 10;
+	CoC.instance.timeQ = 10;
 	camp.sleepRecovery(true);
-	kGAMECLASS.timeQ = 0;	
+	CoC.instance.timeQ = 0;	
 }
 
 /* IMPLEMENTED AT LAST!

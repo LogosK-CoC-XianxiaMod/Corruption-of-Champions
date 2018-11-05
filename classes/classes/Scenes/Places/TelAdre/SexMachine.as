@@ -248,9 +248,9 @@ private function useTheSexMachine():void {
 		flags[kFLAGS.TIMES_USED_SEX_MACHINE_AS_HERM]++;
 	}
 	//PREG IT UP!
-	if(player.hasVagina()) {
-		temp = rand(6);
-		switch(temp) {
+	if (player.hasVagina()) {
+		if (player.isGargoyle() && player.hasPerk(PerkLib.GargoyleCorrupted)) player.refillGargoyleHunger(30);
+		switch(rand(6)) {
 			case 0:
 				player.knockUp(PregnancyStore.PREGNANCY_MINOTAUR, PregnancyStore.INCUBATION_MINOTAUR);
 				break;

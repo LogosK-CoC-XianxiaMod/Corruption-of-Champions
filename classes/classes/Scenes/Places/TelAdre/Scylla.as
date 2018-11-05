@@ -1,9 +1,9 @@
 ﻿package classes.Scenes.Places.TelAdre{
-	import classes.*;
-	import classes.GlobalFlags.kFLAGS;
-	import classes.GlobalFlags.kGAMECLASS;
+import classes.*;
+import classes.GlobalFlags.kFLAGS;
+import classes.Scenes.SceneLib;
 
-	public class Scylla extends TelAdreAbstractContent {
+public class Scylla extends TelAdreAbstractContent {
 
 	public static const SCYLLA_NOT_PRESENT:int			= 0;
 	public static const SCYLLA_ACTION_FIRST_TALK:int	= 1;
@@ -79,17 +79,17 @@ public function scyllaBarSelectAction():void {
 		//All the following conditions are needed to see if she's fucking Urta
 		if (flags[kFLAGS.NUMBER_OF_TIMES_MET_SCYLLA] < 3) return; //Minimum Scylla meetings for Urta to fuck her
 		if (flags[kFLAGS.UNKNOWN_FLAG_NUMBER_00147] == 1 && flags[kFLAGS.UNKNOWN_FLAG_NUMBER_00145] == 1) return; //Together these are the 'No more Scylla' flag
-		if (!getGame().urta.urtaAtBar() || flags[kFLAGS.URTA_ANGRY_AT_PC_COUNTDOWN] > 0) return;
-		if (flags[kFLAGS.URTA_TIME_SINCE_LAST_CAME] > 0 || flags[kFLAGS.URTA_COMFORTABLE_WITH_OWN_BODY] <= 2 || flags[kFLAGS.TIMES_FUCKED_URTA] == 0) return;
+        if (!SceneLib.urta.urtaAtBar() || flags[kFLAGS.URTA_ANGRY_AT_PC_COUNTDOWN] > 0) return;
+        if (flags[kFLAGS.URTA_TIME_SINCE_LAST_CAME] > 0 || flags[kFLAGS.URTA_COMFORTABLE_WITH_OWN_BODY] <= 2 || flags[kFLAGS.TIMES_FUCKED_URTA] == 0) return;
 			//She only fucks Scylla if she's horny and you've fucked her enough to make her comfortable
 		if (flags[kFLAGS.UNKNOWN_FLAG_NUMBER_00143] == 0) { //Never fucked Scylla before
-			if (!getGame().urta.urtaDrunk()) return; //So she has to be drunk
-		}
-		else if (getGame().urta.urtaDrunk() && player.balls == 0) return; //Otherwise she has to be sober and you need to have balls (I'm not sure why, but it is so)
-		if (telAdre.katherine.needIntroductionFromScylla()) return;
+            if (!SceneLib.urta.urtaDrunk()) return; //So she has to be drunk
+        }
+        else if (SceneLib.urta.urtaDrunk() && player.balls == 0) return; //Otherwise she has to be sober and you need to have balls (I'm not sure why, but it is so)
+        if (telAdre.katherine.needIntroductionFromScylla()) return;
 		if (rand(3) == 0) scyllaAction = SCYLLA_ACTION_FUCKING_URTA; //And after all that there's still just a 1/3 chance it will happen
 		//Yay, Foursomes! - unless you're Scylla special
-		if (rand(2) == 0 && flags[kFLAGS.NUMBER_OF_TIMES_MET_SCYLLA] >= 3 && player.hasKeyItem("Opal Ring") < 0 && kGAMECLASS.urta.urtaAtBar() && player.longestCockLength() >= 8 && flags[kFLAGS.UNKNOWN_FLAG_NUMBER_00143] > 0) scyllaAction = SCYLLA_ACTION_FURRY_FOURSOME;
+		if (rand(2) == 0 && flags[kFLAGS.NUMBER_OF_TIMES_MET_SCYLLA] >= 3 && player.hasKeyItem("Opal Ring") < 0 && SceneLib.urta.urtaAtBar() && player.longestCockLength() >= 8 && flags[kFLAGS.UNKNOWN_FLAG_NUMBER_00143] > 0) scyllaAction = SCYLLA_ACTION_FURRY_FOURSOME;
 	}
 }
 
@@ -508,8 +508,8 @@ private function scyllaPtIVKissPtII():void {
 
 	outputText("You begin to feel light headed from the blood trapped in " + sMultiCockDesc() + " just as she finally releases the squeezing embrace. " + SMultiCockDesc() + " can take no more; your orgasm robs your muscles of control, your whole body shivers against Scylla's chest.  She hungrily coaxes your cum upward with her coiled tongue, and places a dainty kiss on your tip just as it bursts from you. She drinks load after load, yummy noises gurgling from her throat while her tongue laps up the leaking sperm that runs in thick rivulets from her mouth.\n\n");
 	//[2+ dicks only] -
-	if(player.totalCocks() > 1) {
-		if(player.totalCocks() == 2) outputText("Your other cock doesn't have the nun's eager mouth tending to it, but the pressure of her colossal tit fucking coaxes it to cum all the same. Jizz fountains in hot streams of white lust that splatter across the nun's blissful face and into her coal-dark hair. Gobs of it roll across her engorged tits, soaking you in the press of her cleavage as it rolls inward and leaks goopy tendrils that paint her alabaster skin whiter still. She runs her hands over the cum, gathering it between her fingers and massaging it into her flesh, every sensation drunk from the feeling of your sticky orgasm on her body.\n\n");
+	if(player.cockTotal() > 1) {
+		if(player.cockTotal() == 2) outputText("Your other cock doesn't have the nun's eager mouth tending to it, but the pressure of her colossal tit fucking coaxes it to cum all the same. Jizz fountains in hot streams of white lust that splatter across the nun's blissful face and into her coal-dark hair. Gobs of it roll across her engorged tits, soaking you in the press of her cleavage as it rolls inward and leaks goopy tendrils that paint her alabaster skin whiter still. She runs her hands over the cum, gathering it between her fingers and massaging it into her flesh, every sensation drunk from the feeling of your sticky orgasm on her body.\n\n");
 		else outputText("Your other cocks don't have the nun's eager mouth tending to them, but the pressure of her colossal tit fucking coaxes it to cum all the same. Jizz fountains in hot streams of white lust that splatter across the nun's blissful face and into her coal-dark hair. Gobs of it roll across her engorged tits, soaking you in the press of her cleavage as it rolls inward and leaks goopy tendrils that paint her alabaster skin whiter still. She runs her hands over the cum, gathering it between her fingers and massaging it into her flesh, every sensation drunk from the feeling of your sticky orgasm on her body.\n\n");
 	}
 	//[Next]
@@ -624,7 +624,7 @@ private function scyllaPtVTakeAdvantage():void {
 		scyllaVTakeAdvantageWithExgartuan();
 		return;
 	}
-	if(player.totalCocks() >= 3) {
+	if(player.cockTotal() >= 3) {
 		flags[kFLAGS.TIMES_MET_SCYLLA_IN_ADDICTION_GROUP]++;
 		flags[kFLAGS.TIMES_SCYLLA_ADDICT_GROUP_EXPLOITED]++;
 		addictionAdvantageMultiDickGreatTimeParty();
@@ -661,7 +661,7 @@ private function scyllaPtVTakeAdvantage():void {
 		outputText("Pastie finally figures out what's going on through her stupor and flies between the three of you, settling atop your " + cockDescript(x) + ", tiny stiletto heels digging into soft flesh like pins. \"<i>Don't fight, you two, this thing's gross,</i>\" she argues. Pouting, she stomps her foot down and the heel punches into your cockhead, drawing a scream from you that only makes Scylla and Abby tug all the harder.\n\n");
 		outputText("\"<i>Abylon, please,</i>\" Scylla starts, but the use of her given name infuriates the goblin girl, and she hurls the broken bottle at the nun, who ducks. It shatters on the wall, sending glass shards flying, several of them cutting your cock and giving you a half-dozen scrapes. The goblin releases your member and dives at the nun, snarling. They roll in a tangled cat fight, leather and cloth shredding under addiction-fueled claws. You swat Pastie from your dick and run out of the room, gingerly tending to your tormented groin.\n\n");
 	}
-	player.takeDamage(1);
+	player.takePhysDamage(1);
 	dynStats("lus", -99);
 	doNext(camp.returnToCampUseOneHour);
 }
@@ -906,7 +906,7 @@ private function scyllaPtVCumIV():void {
 	outputText(images.showImage("scylla-help-round-five-jizz-pt-four"));
 	var x:Number = player.biggestCockIndex();
 	//[2 DICKS]
-	if(player.totalCocks() >= 2) {
+	if(player.cockTotal() >= 2) {
 		if(player.balls > 0) outputText("Scylla is unable to keep herself away any longer, and she falls to her hands and knees, crawling toward the two of you. The nun kisses your [balls], the wet electricity of her swollen lips drawing away some of your pain. She licks along your " + cockDescript(1) + " as it bounces wildly against Abby's ass. It's far too hard to work its way up there now that your " + cockDescript(x) + " is fully plugged into the goblin, so Scylla perches her mouth over its head and whorls her tongue around the swell, the tip of her tongue playfully penetrating a few inches of your urethra. The pressure is just another sensation on your overtaxed body, so you hardly notice when she threads more and more of her snaking organ down your cock until her lips press against your head in a tight O. Your " + cockDescript(1) + " feels strange from the tongue-fucking, like a warm, moist pressure that slides down your shaft and into your gut. Pre-cum bubbles up, trying to clear the blockage, but she merely coils her tongue into a U-shape and slurps it up through your cock like a straw. She opens her jaw and pushes your cock into her cunt-tight mouth, sliding her tongue even deeper into your dick, sucking up the increasingly frantic globs from your [balls] as your climax builds.\n\n");
 		else outputText("Scylla is unable to keep herself away any longer, and she falls to her hands and knees, crawling toward the two of you. The nun kisses your flesh, the wet electricity of her swollen lips drawing away some of your pain. She licks along your " + cockDescript(1) + " as it bounces wildly against Abby's ass. It's far too hard to work its way up there now that your " + cockDescript(x) + " is fully plugged into the goblin, so Scylla perches her mouth over its head and whorls her tongue around the swell, the tip of her tongue playfully penetrating a few inches of your urethra. The pressure is just another sensation on your overtaxed body, so you hardly notice when she threads more and more of her snaking organ down your cock until her lips press against your head in a tight O. Your " + cockDescript(1) + " feels strange from the tongue-fucking, like a warm, moist pressure that slides down your shaft and into your gut. Pre-cum bubbles up, trying to clear the blockage, but she merely coils her tongue into a U-shape and slurps it up through your cock like a straw. She opens her jaw and pushes your cock into her cunt-tight mouth, sliding her tongue even deeper into your dick, sucking up the increasingly frantic globs from your prostate as your climax builds.\n\n");
 	}
@@ -914,7 +914,7 @@ private function scyllaPtVCumIV():void {
 	if(player.balls > 0) outputText("Just as darkness creeps at the edges of your vision, your balls quiver in orgasm, renewed fire shooting through your body. When cum finally erupts from you, it feels like snowballs bursting through a bonfire. Feeling your " + cockDescript(x) + " spasm within her, Abby finally releases her grip on your throat and you suck down air like you've never breathed before. She babbles in anticipation, feeling the cum wave's progress as it's pumped into her, up the front of her tight, green body. When it finally bursts from your cockhead, she screams bloody murder.  Her whole body vibrates in orgasm as she beats her fists against your shoulders, rocking up and down to milk every drop from your tortured testicles.  The combination of the orgasm denial from her nut-shot, the strangulation, and the subsequent bronco ride has made your orgasm the strongest you've felt in a while, and you almost can see yourself as a minotaur when your cock fire hoses the goblin's cunt, like it can't get your seed out fast enough.\n\n");
 	else outputText("Just as darkness creeps at the edges of your vision, your hips quiver in orgasm, renewed fire shooting through your body. When cum finally erupts from you, it feels like snowballs bursting through a bonfire. Feeling your " + cockDescript(x) + " spasm within her, Abby finally releases her grip on your throat and you suck down air like you've never breathed before. She babbles in anticipation, feeling the cum wave's progress as it's pumped into her, up the front of her tight, green body. When it finally bursts from your cockhead, she screams bloody murder.  Her whole body vibrates in orgasm as she beats her fists against your shoulders, rocking up and down to milk every drop from your tortured flesh.  The combination of the orgasm denial from her nut-shot, the strangulation, and the subsequent bronco ride has made your orgasm the strongest you've felt in a while, and you almost can see yourself as a minotaur when your cock fire hoses the goblin's cunt, like it can't get your seed out fast enough.\n\n");
 	//[2 DICKS ]
-	if(player.totalCocks() >= 2) {
+	if(player.cockTotal() >= 2) {
 		if(player.balls > 0) outputText("Your " + cockDescript(1) + " fires off just as Scylla's serpentine tongue reaches the root of your cock and its tip pokes into your [balls]. With her tongue fucking your urethra and her throat fucking your shaft, you feel her squeeze you from inside and out. Cum rushes up the nun's straw-like tongue and her windpipe convulses with each swallow, tasting its searing heat all the way up and savoring its creamy texture all the way down. She milks you up and down as the goblin's ass thrashes inches above her. After a minute of drinking straight from your [balls], she slowly withdraws, letting the cum push her tongue back into her mouth.  The blasting force of your orgasm lifts her throat from your cock until it slips free of her pulsing lips and sprays an ivory jet into her face, the force knocking her habit off her head and plastering her curly hair into a long, gooey mess. Her horns curl into the semblance of a blissful, bone halo above her head.\n\n");
 		else outputText("Your " + cockDescript(1) + " fires off just as Scylla's serpentine tongue reaches the root of your cock. With her tongue fucking your urethra and her throat fucking your shaft, you feel her squeeze you from inside and out. Cum rushes up the nun's straw-like tongue and her windpipe convulses with each swallow, tasting its searing heat all the way up and savoring its creamy texture all the way down. She milks you up and down as the goblin's ass thrashes inches above her. After a minute of drinking straight from your loins, she slowly withdraws, letting the cum push her tongue back into her mouth.  The blasting force of your orgasm lifts her throat from your cock until it slips free of her pulsing lips and sprays an ivory jet into her face, the force knocking her habit off her head and plastering her curly hair into a long, gooey mess. Her horns curl into the semblance of a blissful, bone halo above her head.\n\n");
 	}
@@ -1076,7 +1076,7 @@ private function addictionScyllaTakeAdvantageDicksBonusAndEpilogue():void {
 	//Array of all possible scenes
 	var blah:Array = new Array(0);
 	//Add possible scenes to array
-	if(player.totalCocks() >= 4) blah.push(4);
+	if(player.cockTotal() >= 4) blah.push(4);
 	if(player.tentacleCocks() > 0 || player.stamenCocks() > 0) blah.push(5);
 	if(player.demonCocks() > 0) blah.push(6);
 	//Pick an available scene and store it in select.
@@ -1103,9 +1103,9 @@ private function addictionScyllaTakeAdvantageDicksBonusAndEpilogue():void {
 		else outputText("An unfamiliar tingling starts at the base of your shaft and rushes to your tip in another second, sending cold chills through your frame. You can feel the bulbous protrusions of your infernal fuck-pole rippling inside Scylla's esophagus as she clenches down, muscles like a fist tightening on your prick. It almost feels like she's squeezing your flesh to its twitching core, milking your creamy center. The bumpy protrusions deforming the nun's neck flatten and deflate before your eyes and a spine-twisting rapture erupts from the tip of your cock. It's all you can do to grip the girl's curling horns to brace yourself from falling over. A sensation of teeth-clenching pleasure erupts from your abdomen like no orgasm you've ever experienced, making you rock back on your heels and slam the nun's face against your groin. Scylla's expression shifts from mindless joy to suffocating ecstasy , her eyes rolling up in her head, body vibrating with a rolling orgasm, tiny hacking gasps escaping her throat as your climax pours hot, liquid relief into her belly.\n\n");
 		outputText("When your crescendo finally ends, you notice that in your shuddering throes, you lost control of your other cocks, the slutty nun's blowjob drawing a pearl eruption from every member of your squirming mass of dicks. A gooey white glaze drips from the ceiling, splatters the walls, and soaks all three girls in sticky cocoons of seed. When you slide out of the cum-dump you've made of the nun's throat, a snarky comment about over-achievers dies on your lips. Your slippery, drool and spunk-soaked shaft has lost its fiendish features and has been smoothed down to a normal, flesh-colored penis. Scylla has literally sucked the corruption from your dick! A glossy blackness leaks from her plump lips, staining them ebony and she licks her pucker with a thrashing, serpentine tongue. She soundlessly mouths wordless prayers, trying to restrain the seething demonic taint boiling through her body, driven wild by the raw sexual stimulation overloading her saccharine-sweet demeanor. Probably best to get out of here before she gives into further temptation- you might not survive the next blowjob!\n\n");
 		//[Demon dick reverted to human dick. End bonus encounter]
-		temp = player.cocks.length;
-		while(temp > 0) {
-			temp--;
+		var i:int = player.cocks.length;
+		while(i > 0) {
+			i--;
 			if(player.cocks[0].cockType == CockTypesEnum.DEMON) {
 				player.cocks[0].cockType = CockTypesEnum.HUMAN;
 				dynStats("cor", -3);
@@ -1509,7 +1509,7 @@ private function shareTentaclesWithScylla2():void {
 		outputText("\n\nYou shift the cock wrapping around her body, slowly encircling Pastie just below the fairy's breasts, looping down her torso so that the tip can snake under her legs.  A steady stream of pre dribbles from the stimulated shaft as you flex around her petite hips, her cascading lubrication swiftly soaking her lower body, thighs to ankles.  Pressing the tip of your cock against her teensy toes, you push forward, your fluid-soaked urethra swallowing Pastie's wriggling feet.  Her fey-cum mixes with your own, sending a tingling wave of pressurized bliss through your loins and you push harder, sucking the fairy into your cock up to the knees.  The suckling sensation of being gradually engulfed by the voracious heat of your flesh robs the girl of the last of her faculties.  Mind broken by the taut compression of your dick's ravenous mass, Pastie moans and squirms, wriggling deeper into the embrace of your tentacle, until its swollen peak dilates at her hips.  Loosening your grip around her waist, you position your other cock directly above her, blobs of pre-cum bubbling down upon her head.  She looks up, blankly, and instantly understands.  Obediently, she raises her arms and slides her cum-slick hands into your urethra, tensing in a mindless orgasm as her arms slip into the mouth of her new god.  The bloated lips of your cock consume her wrists, elbows, and even her shoulders as Pastie's head vanishes into the drooling maw of your manhood.");
 	}
 	//[Next]
-	dynStats("lib", .5, "lus=", 100, "cor", .25, "resisted", false);
+	dynStats("lib", .5, "lus=", 100, "cor", .25, "scale", false);
 	menu();
 	addButton(0,"Next",shareTentaclesWithScylla3);
 }

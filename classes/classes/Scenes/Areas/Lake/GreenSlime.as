@@ -1,10 +1,14 @@
 ﻿package classes.Scenes.Areas.Lake
 {
-	import classes.*;
-	import classes.internals.*;
-	import classes.GlobalFlags.kFLAGS;
+import classes.*;
+import classes.BodyParts.Butt;
+import classes.BodyParts.Hips;
+import classes.BodyParts.LowerBody;
+import classes.GlobalFlags.kFLAGS;
+import classes.Scenes.SceneLib;
+import classes.internals.*;
 
-	public class GreenSlime extends Monster
+public class GreenSlime extends Monster
 	{
 		
 		override public function defeated(hpVictory:Boolean):void
@@ -15,20 +19,20 @@
 				//Eligable to rape
 				if(player.lust >= 33 && player.gender > 0) {
 					outputText("\n\nYou're horny enough to try and rape it, though you'd rather see how much milk you can squirt into it.  What do you do?");
-					game.simpleChoices("B.Feed",game.lake.greenSlimeScene.rapeOozeWithMilk,"Rape",game.lake.greenSlimeScene.slimeVictoryRape,"",null,"",null,"Leave",game.cleanupAfterCombat);
+					EngineCore.simpleChoices("B.Feed",SceneLib.lake.greenSlimeScene.rapeOozeWithMilk,"Rape",SceneLib.lake.greenSlimeScene.slimeVictoryRape,"",null,"",null,"Leave",SceneLib.combat.cleanupAfterCombatImpl);
 				}
 				//Rapes not on the table.
 				else {
 					outputText("\n\nYour nipples ache with the desire to forcibly breastfeed the gelatinous beast.  Do you?");
-					game.doYesNo(game.lake.greenSlimeScene.rapeOozeWithMilk,game.cleanupAfterCombat);
+					EngineCore.doYesNo(SceneLib.lake.greenSlimeScene.rapeOozeWithMilk,SceneLib.combat.cleanupAfterCombatImpl);
 				}
 			}
 			//Not a breastfeeder
 			else if(player.lust >= 33 && player.gender > 0 && flags[kFLAGS.SFW_MODE] <= 0) {
 				outputText("  Sadly you realize your own needs have not been met.  Of course, you could always play with the poor thing... Do you rape it?");
-				game.doYesNo(game.lake.greenSlimeScene.slimeVictoryRape, game.cleanupAfterCombat);
+				EngineCore.doYesNo(SceneLib.lake.greenSlimeScene.slimeVictoryRape, SceneLib.combat.cleanupAfterCombatImpl);
 			}
-			else game.cleanupAfterCombat();
+			else SceneLib.combat.cleanupAfterCombatImpl();
 		}
 
 		override public function won(hpVictory:Boolean, pcCameWorms:Boolean):void
@@ -36,19 +40,19 @@
 			if (pcCameWorms) {
 				outputText("\n\nThe slime doesn't even seem to notice.\n\n");
 			}
-			doNext(game.lake.greenSlimeScene.slimeLoss);
+			doNext(SceneLib.lake.greenSlimeScene.slimeLoss);
 		}
 		
 		private function lustAttack():void {
 			outputText("The creature surges forward slowly with a swing that you easily manage to avoid.  You notice traces of green liquid spurt from the creature as it does, forming a thin mist that makes your skin tingle with excitement when you inhale it.");
-			game.dynStats("lus", player.lib / 10 + 8);
-			doNext(game.playerMenu);
+			player.dynStats("lus", player.lib / 10 + 8);
+			doNext(EventParser.playerMenu);
 		}
 		
 		private function lustReduction():void {
 			outputText("The creature collapses backwards as its cohesion begins to give out, and the faint outline of eyes and a mouth form on its face.  Its chest heaves as if it were gasping, and the bolt upright erection it sports visibly quivers and pulses before relaxing slightly.");
 			lust -= 13;
-			doNext(game.playerMenu);
+			doNext(EventParser.playerMenu);
 		}
 		
 		public function GreenSlime()
@@ -66,20 +70,21 @@
 			this.pronoun2 = "it";
 			this.pronoun3 = "its";
 			createBreastRow(0);
-			this.ass.analLooseness = ANAL_LOOSENESS_STRETCHED;
-			this.ass.analWetness = ANAL_WETNESS_SLIME_DROOLING;
+			this.ass.analLooseness = AssClass.LOOSENESS_STRETCHED;
+			this.ass.analWetness = AssClass.WETNESS_SLIME_DROOLING;
 			this.tallness = rand(8) + 80;
-			this.hipRating = HIP_RATING_AMPLE;
-			this.buttRating = BUTT_RATING_LARGE;
-			this.lowerBody = LOWER_BODY_TYPE_GOO;
+			this.hips.type = Hips.RATING_AMPLE;
+			this.butt.type = Butt.RATING_LARGE;
+			this.lowerBody = LowerBody.GOO;
 			this.skinTone = "green";
 			initStrTouSpeInte(25, 30, 10, 5);
-			initLibSensCor(50, 60, 20);
+			initWisLibSensCor(5, 50, 60, 20);
 			this.weaponName = "hands";
 			this.weaponVerb = "slap";
-			this.weaponAttack = 3 + (1 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.weaponAttack = 3;
 			this.armorName = "gelatinous skin";
-			this.armorDef = 3 + (1 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.armorDef = 3;
+			this.armorMDef = 9;
 			this.bonusHP = 50;
 			this.bonusLust = 20;
 			this.lust = 30;
@@ -93,12 +98,7 @@
 			this.special2 = lustAttack;
 			this.special3 = lustAttack;
 			this.createPerk(PerkLib.FireVulnerability, 0, 0, 0, 0);
-			this.str += 5 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.tou += 6 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.spe += 2 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.inte += 1 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];			
-			this.lib += 10 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.newgamebonusHP = 240;
+			this.createPerk(PerkLib.EnemyGooType, 0, 0, 0, 0);
 			checkMonster();
 		}
 

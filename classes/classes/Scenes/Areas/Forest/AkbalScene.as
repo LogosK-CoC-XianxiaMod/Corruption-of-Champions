@@ -3,12 +3,13 @@
  */
 package classes.Scenes.Areas.Forest
 {
-	import classes.*;
-	import classes.GlobalFlags.kFLAGS;
-	import classes.GlobalFlags.kGAMECLASS;
-	import classes.Items.Armors.LustyMaidensArmor;
+import classes.*;
+import classes.BodyParts.LowerBody;
+import classes.BodyParts.Tail;
+import classes.GlobalFlags.kFLAGS;
+import classes.Items.Armors.LustyMaidensArmor;
 
-	public class AkbalScene extends BaseContent
+public class AkbalScene extends BaseContent
 	{
 		
 		
@@ -50,7 +51,7 @@ package classes.Scenes.Areas.Forest
 						buttFuck = rapeAkbal;
 					outputText("\n\nDo you rape him?");
 					//Rape / Don't Rape
-					kGAMECLASS.simpleChoices("Butt-fuck", buttFuck, "Take Vaginally", vagoo, "Force Lick", vagooLick, "B.Titfuck", bikiniTits, "Leave", cleanupAfterCombat);
+					EngineCore.simpleChoices("Butt-fuck", buttFuck, "Take Vaginally", vagoo, "Force Lick", vagooLick, "B.Titfuck", bikiniTits, "Leave", cleanupAfterCombat);
 					return;
 				}
 			}
@@ -144,12 +145,12 @@ package classes.Scenes.Areas.Forest
 				primary = 0;
 			clearOutput();
 			//Naga RAPPUUUUUU
-			if (player.lowerBody == LOWER_BODY_TYPE_NAGA)
+			if (player.lowerBody == LowerBody.NAGA)
 			{
 				outputText("You slither around the demon cat's form, wrapping him up until a scared whimper rises from his chest.  You continue to tighten your coils around Akbal until he's gasping for breath.  You ask him if he's going to be a good little demon for you.  He nods.\n\n");
 
 				//(If player has a dick)
-				if (player.totalCocks() > 0)
+				if (player.cockTotal() > 0)
 				{
 					outputText(images.showImage("akbal-deepwoods-male-naga-rapeakbal"));
 					//(Sm Penis: 7 inches or less)
@@ -225,7 +226,7 @@ package classes.Scenes.Areas.Forest
 				outputText("\"<i>Who's gonna submit now... bitch?</i>\"\n\n");
 
 				//(If player has a dick)
-				if (player.totalCocks() > 0)
+				if (player.cockTotal() > 0)
 				{
 					outputText(images.showImage("akbal-deepwoods-male-taur-rapeakbal"));
 					//(Sm Penis: 7 inches or less)
@@ -309,7 +310,7 @@ package classes.Scenes.Areas.Forest
 			outputText("You roughly grab the scruff of the demon's neck and give a gut-crushing blow to his stomach, causing him to call out in pain.");
 			outputText("\n\n\"<i>Who's gonna submit now, bitch?</i>\"\n\n");
 			//[Player has a dick]
-			if (player.totalCocks() > 0)
+			if (player.cockTotal() > 0)
 			{
 				outputText(images.showImage("akbal-deepwoods-male-rapeakbal"));
 				outputText("Akbal grunts as you smash his face into the ground.  At your command he raises his hind quarters, allowing you a perfect view of his tight pucker.  From the looks of it, his tightly sealed rim would look at home on a virgin.\n\n");
@@ -453,7 +454,7 @@ package classes.Scenes.Areas.Forest
 		private function girlsRapeAkbalPart2():void
 		{
 			clearOutput();
-			kGAMECLASS.hideUpDown();
+			EngineCore.hideUpDown();
 			//Centaur
 			outputText(images.showImage("akbal-deepwoods-female-taur-bindakbal"));
 			if (player.isTaur())
@@ -492,7 +493,7 @@ package classes.Scenes.Areas.Forest
 				//Imp pregnancy
 				//Preggers chance!
 				player.knockUp(PregnancyStore.PREGNANCY_IMP, PregnancyStore.INCUBATION_IMP, 101);
-
+				if (player.isGargoyle() && player.hasPerk(PerkLib.GargoyleCorrupted)) player.refillGargoyleHunger(30);
 				player.cuntChange(monster.cockArea(0), true, true, false);
 				player.orgasm();
 				dynStats("cor", 1);
@@ -589,6 +590,7 @@ package classes.Scenes.Areas.Forest
 				//Imp pregnancy
 				//Preggers chance!
 				player.knockUp(PregnancyStore.PREGNANCY_IMP, PregnancyStore.INCUBATION_IMP, 101);
+				if (player.isGargoyle() && player.hasPerk(PerkLib.GargoyleCorrupted)) player.refillGargoyleHunger(30);
 			}
 			cleanupAfterCombat();
 		}
@@ -802,14 +804,14 @@ package classes.Scenes.Areas.Forest
 			flags[kFLAGS.AKBAL_SUBMISSION_STATE] = 2;
 			flags[kFLAGS.AKBAL_BITCH_Q] = -1;
 			//Big booty special
-			if (flags[kFLAGS.AKBAL_SUBMISSION_COUNTER] > 5 && flags[kFLAGS.PLAYER_RESISTED_AKBAL] < 2 && player.buttRating >= 13 && player.tone < 80)
+			if (flags[kFLAGS.AKBAL_SUBMISSION_COUNTER] > 5 && flags[kFLAGS.PLAYER_RESISTED_AKBAL] < 2 && player.butt.type >= 13 && player.tone < 80)
 			{
 				akbalBigButtSubmit();
 				return;
 			}
 			clearOutput();
 			//Naga variant goez here
-			if (player.lowerBody == LOWER_BODY_TYPE_NAGA)
+			if (player.lowerBody == LowerBody.NAGA)
 			{
 				outputText(images.showImage("akbal-deepwoods-naga-sumbitanal"));
 				outputText("After a few moments of thinking you nod to Akbal and the masculine voice in your head commands you to disrobe. You take off your [armor], setting it aside moments before the demon is upon you.\n\n");
@@ -860,11 +862,12 @@ package classes.Scenes.Areas.Forest
 				//[+ 1-2 Speed]
 				dynStats("spe", 1 + rand(2));
 				player.orgasm();
+				if (player.isGargoyle() && player.hasPerk(PerkLib.GargoyleCorrupted)) player.refillGargoyleHunger(30);
 				//[Chance of butt growth]
-				if (player.buttRating < 8)
+				if (player.butt.type < 8)
 				{
 					outputText("\n\nIn your sleep, your ass plumps up slightly, growing to accomodate the demon's wishes...");
-					player.buttRating++;
+					player.butt.type++;
 				}
 				player.createStatusEffect(StatusEffects.PostAkbalSubmission, 0, 0, 0, 0);
 				doNext(camp.returnToCampUseEightHours);
@@ -879,7 +882,7 @@ package classes.Scenes.Areas.Forest
 				outputText("You watch with fascination as Akbal rises onto his hind legs, his body melting into a more humanoid form.  His long, demonic cat-dick is already rock-hard and jutting out of his sheath.  He walks past your top half, moving around your body while sliding his hand across your haunch.  His hands are oddly warm.");
 
 				//(if centaur player has a tail)
-				if (player.tailType > TAIL_TYPE_NONE)
+				if (player.tailType > Tail.NONE)
 					outputText("  As he makes his way to your hind quarters he grabs you by the tail, pulling it up and out the way with a feral, jaguar grin.  His free hand slides a finger across your " + assholeDescript() + " making you paw the ground with your hooves.");
 
 				//(No tail)
@@ -928,7 +931,7 @@ package classes.Scenes.Areas.Forest
 				outputText("After a few moments you realize Akbal isn't slowing down.  His piston pumping hips drive right through his orgasm and never stop slamming into your " + buttDescript() + ".  He continues until he's erupted no less than eight times, masterfully working your hole the entire time.\n\n");
 
 				outputText("After his last massive eruption you feel the jaguar demon pull out, releasing even more of his copious load from your happy hole in an oddly satisfying cascade of thick white cream that rushes like a waterfall down your legs");
-				if (player.totalCocks() > 0)
+				if (player.cockTotal() > 0)
 					outputText(" to join your own");
 				outputText(".\n\n");
 
@@ -938,11 +941,12 @@ package classes.Scenes.Areas.Forest
 				//[+ 1-2 Speed]
 				dynStats("spe", 1 + rand(2));
 				player.orgasm();
+				if (player.isGargoyle() && player.hasPerk(PerkLib.GargoyleCorrupted)) player.refillGargoyleHunger(30);
 				//[Chance of butt growth]
-				if (player.buttRating < 8)
+				if (player.butt.type < 8)
 				{
 					outputText("\n\nIn your sleep, your ass plumps up slightly, growing to accomodate the demon's wishes...");
-					player.buttRating++;
+					player.butt.type++;
 				}
 				player.createStatusEffect(StatusEffects.PostAkbalSubmission, 0, 0, 0, 0);
 				doNext(camp.returnToCampUseEightHours);
@@ -999,7 +1003,7 @@ package classes.Scenes.Areas.Forest
 			}
 
 			outputText("Akbal works his hips fast, piston-pumping his long demon cat-dick in and out of your " + assholeDescript() + ".  The rampant babbling coming from your mouth breaks with his every thrust, and your body is racked by orgasm after orgasm. You're soon on your chest and knees ");
-			if (player.hasVagina() || player.totalCocks() > 0)
+			if (player.hasVagina() || player.cockTotal() > 0)
 				outputText("in a pool of your own love juices");
 			else
 				outputText("in sexual bliss");
@@ -1018,11 +1022,12 @@ package classes.Scenes.Areas.Forest
 			//[+ 1-2 Speed]
 			dynStats("spe", 1 + rand(2));
 			player.orgasm();
+			if (player.isGargoyle() && player.hasPerk(PerkLib.GargoyleCorrupted)) player.refillGargoyleHunger(30);
 			//[Chance of butt growth]
-			if (player.buttRating < 8)
+			if (player.butt.type < 8)
 			{
 				outputText("\n\nIn your sleep, your ass plumps up slightly, growing to accomodate the demon's wishes...");
-				player.buttRating++;
+				player.butt.type++;
 			}
 			player.createStatusEffect(StatusEffects.PostAkbalSubmission, 0, 0, 0, 0);
 			doNext(camp.returnToCampUseEightHours);
@@ -1150,10 +1155,10 @@ package classes.Scenes.Areas.Forest
 			if (player.hasCock() && player.cumQ() >= 1000)
 				outputText("dry, ");
 			outputText("comfortable place.  Akbal wraps his arms around you, though one steals a quick squeeze of your [butt].  Invigorated by this, he docks his cat-cock back inside your spunk-oozing asshole to plug it and snuggles up to you.  You fall asleep like that, dreaming of him taking you again and again.");
-			if (player.buttRating < 20)
+			if (player.butt.type < 20)
 			{
 				outputText("  Tingling in your sleep, your [butt] bulges slightly as it grows bigger, changed by Akbal's saliva to serve him even more capably.");
-				player.buttRating++;
+				player.butt.type++;
 			}
 			else if (player.tone > 30)
 			{
@@ -1402,8 +1407,8 @@ package classes.Scenes.Areas.Forest
 			outputText("\n\nYou look back at your new bitch with a grin while he regains his senses.  As you leave the forest, you hear a promise from Akbal’s chorus of voices, \"<i>You will regret this... Champion.</i>\"");
 			player.orgasm();
 			dynStats("cor", 3);
-			if (player.hasVagina())
-				player.knockUp(PregnancyStore.PREGNANCY_IMP, PregnancyStore.INCUBATION_IMP, 101);
+			if (player.isGargoyle() && player.hasPerk(PerkLib.GargoyleCorrupted)) player.refillGargoyleHunger(30);
+			if (player.hasVagina()) player.knockUp(PregnancyStore.PREGNANCY_IMP, PregnancyStore.INCUBATION_IMP, 101);
 			doNext(camp.returnToCampUseOneHour);
 		}
 
@@ -1525,8 +1530,8 @@ package classes.Scenes.Areas.Forest
 
 				player.orgasm();
 				dynStats("cor", 3);
-				if (player.hasVagina())
-					player.knockUp(PregnancyStore.PREGNANCY_IMP, PregnancyStore.INCUBATION_IMP, 101);
+				if (player.isGargoyle() && player.hasPerk(PerkLib.GargoyleCorrupted)) player.refillGargoyleHunger(30);
+				if (player.hasVagina()) player.knockUp(PregnancyStore.PREGNANCY_IMP, PregnancyStore.INCUBATION_IMP, 101);
 				doNext(camp.returnToCampUseOneHour);
 			}
 		}
@@ -1622,8 +1627,8 @@ package classes.Scenes.Areas.Forest
 				if (player.gender == 0)
 					outputText("\n\nYour body begins to convulse as you call out. Your [ass] feels as though the demon’s dick is a lightning rod expelling a constant torrent of elation.");
 				outputText("\n\nYour [vagOrAss] is blissfully sore and crazy sensitive as you ease yourself off the demon’s wonderful dick.  With a smile on your [face] you gather your [armor] and turn to leave the forest.  Lost in giddy elation you walk, each movement sending an almost painful jolt of post orgasm pleasure through your [vagOrAss].  It isn’t until you hear the cackling of imps and goblins that you remember that you left Akbal bound and vulnerable... oops.");
-				if (player.hasVagina())
-					player.knockUp(PregnancyStore.PREGNANCY_IMP, PregnancyStore.INCUBATION_IMP, 101);
+				if (player.hasVagina()) player.knockUp(PregnancyStore.PREGNANCY_IMP, PregnancyStore.INCUBATION_IMP, 101);
+				if (player.isGargoyle() && player.hasPerk(PerkLib.GargoyleCorrupted)) player.refillGargoyleHunger(30);
 			}
 			player.orgasm();
 			dynStats("cor", 3);
@@ -1774,6 +1779,7 @@ package classes.Scenes.Areas.Forest
 				outputText("  As your orgasm subsides you allow the demon to grind his still erect dick around inside you for a moment. Without needing to threaten him again you rise, sending a cascade of spooge down your legs and onto Akbal’s lap.");
 
 				outputText("\n\nWithout a backwards glance, you gather your [armor] and leave the forest with a big smile on your [face].");
+				if (player.isGargoyle() && player.hasPerk(PerkLib.GargoyleCorrupted)) player.refillGargoyleHunger(30);
 			}
 			if (player.hasVagina())
 				player.knockUp(PregnancyStore.PREGNANCY_IMP, PregnancyStore.INCUBATION_IMP, 101);

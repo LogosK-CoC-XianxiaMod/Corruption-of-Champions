@@ -4,8 +4,11 @@
 package classes.Items
 {
 import classes.BaseContent;
+import classes.EngineCore;
 import classes.Items.Consumables.*;
 import classes.Player;
+import classes.Scenes.SceneLib;
+import classes.CoC;
 
 public final class ConsumableLib extends BaseContent
 	{
@@ -25,19 +28,20 @@ public final class ConsumableLib extends BaseContent
 		public const PSDELIT:SimpleConsumable = mk("PSDelit", "PSDelit", "an untainted bottle of \"Succubi's Delight\"", 20, "This precious fluid is often given to men a succubus intends to play with for a long time.  It has been partially purified by Rathazul to prevent corruption.", curry(m.succubisDelight, false));
 
 		//DYES
-		public const AUBURND:HairDye = new HairDye("AuburnD", "Auburn");
-		public const BLACK_D:HairDye = new HairDye("Black D", "Black");
-		public const BLOND_D:HairDye = new HairDye("Blond D", "Blond");
-		public const BLUEDYE:HairDye = new HairDye("BlueDye", "Blue");
-		public const BROWN_D:HairDye = new HairDye("Brown D", "Brown");
-		public const GRAYDYE:HairDye = new HairDye("GrayDye", "Gray");
-		public const GREEN_D:HairDye = new HairDye("Green D", "Green");
-		public const ORANGDY:HairDye = new HairDye("OrangDy", "Orange");
-		public const PINKDYE:HairDye = new HairDye("PinkDye", "Pink");
-		public const PURPDYE:HairDye = new HairDye("PurpDye", "Purple");
+		public const AUBURND:HairDye = new HairDye("AuburnD", "Auburn",	DEFAULT_VALUE);
+		public const BLACK_D:HairDye = new HairDye("Black D", "Black",	DEFAULT_VALUE);
+		public const BLOND_D:HairDye = new HairDye("Blond D", "Blond",	DEFAULT_VALUE);
+		public const BLUEDYE:HairDye = new HairDye("BlueDye", "Blue",	DEFAULT_VALUE);
+		public const BROWN_D:HairDye = new HairDye("Brown D", "Brown",	DEFAULT_VALUE);
+		public const GRAYDYE:HairDye = new HairDye("GrayDye", "Gray",	DEFAULT_VALUE);
+		public const GREEN_D:HairDye = new HairDye("Green D", "Green",	DEFAULT_VALUE);
+		public const ORANGDY:HairDye = new HairDye("OrangDy", "Orange",	DEFAULT_VALUE);
+		public const PINKDYE:HairDye = new HairDye("PinkDye", "Pink",	DEFAULT_VALUE);
+		public const PURPDYE:HairDye = new HairDye("PurpDye", "Purple",	DEFAULT_VALUE);
 		public const RAINDYE:HairDye = new HairDye("RainDye", "Rainbow", 100);
-		public const RED_DYE:HairDye = new HairDye("Red Dye", "Red");
-		public const WHITEDY:HairDye = new HairDye("WhiteDy", "White");
+		public const RED_DYE:HairDye = new HairDye("Red Dye", "Red",	DEFAULT_VALUE);
+		public const WHITEDY:HairDye = new HairDye("WhiteDy", "White",	DEFAULT_VALUE);
+		public const RUSSDYE:HairDye = new HairDye("RussetD", "Russet",	DEFAULT_VALUE);
 
 		//SKIN OILS & BODY LOTIONS
 		public const DARK_OL:SkinOil = new SkinOil("DarkOil", "Dark");
@@ -74,12 +78,17 @@ public final class ConsumableLib extends BaseContent
 		public const NPNKEGG:SimpleConsumable = mk("NPnkEgg", "NPnkEgg", "a neon pink egg", 6, "This is an oblong egg with an unnatural neon pink coloration.  It tingles in your hand with odd energies that make you feel as if you could jump straight into the sky.", curry(m.neonPinkEgg, false));
 
 		//FOOD & BEVERAGES
-		public const BC_BEER:SimpleConsumable = mk("BC Beer", "BC Beer", "a mug of Black Cat Beer", 1, "A capped mug containing an alcoholic drink secreted from the breasts of Niamh.  It smells tasty.", function (player:Player):void { getGame().telAdre.niamh.blackCatBeerEffects(player) });
-		public const BHMTCUM:SimpleConsumable = mk("BhmtCum", "BhmtCum", "a sealed bottle of behemoth cum", 15, "This bottle of behemoth cum looks thick and viscous.  You suspect that it might boost your strength and toughness.  It also has delicious taste.", m.behemothCum);
-		public const BIMBOCH:SimpleConsumable = mk("BimboCh", "BimboCh", "a bottle of bimbo champagne", 20, "A bottle of bimbo champagne. Drinking this might incur temporary bimbofication.", curry(function (player:Player):void {getGame().telAdre.niamh.bimboChampagne(player, true, true)}));
-		public const C_BREAD:CumBread         = new CumBread();
+        public const BC_BEER:SimpleConsumable = mk("BC Beer", "BC Beer", "a mug of Black Cat Beer", 1, "A capped mug containing an alcoholic drink secreted from the breasts of Niamh.  It smells tasty.", function (player:Player):void {
+            SceneLib.telAdre.niamh.blackCatBeerEffects(player)
+        });
+        public const BHMTCUM:SimpleConsumable = mk("BhmtCum", "BhmtCum", "a sealed bottle of behemoth cum", 15, "This bottle of behemoth cum looks thick and viscous.  You suspect that it might boost your strength and toughness.  It also has delicious taste.", m.behemothCum);
+        public const BIMBOCH:SimpleConsumable = mk("BimboCh", "BimboCh", "a bottle of bimbo champagne", 20, "A bottle of bimbo champagne. Drinking this might incur temporary bimbofication.", curry(function (player:Player):void {
+            SceneLib.telAdre.niamh.bimboChampagne(player, true, true)
+        }));
+        public const C_BREAD:CumBread         = new CumBread();
 		public const CCUPCAK:SimpleConsumable = mk("CCupcak", "CCupcak", "a gigantic, chocolate cupcake", 250, "A gigantic, chocolate cupcake. You could easily get full from eating this!", m.giantChocolateCupcake);
-		public const FISHFIL:SimpleConsumable = mk("FishFil", "FishFil", "a fish fillet", 6, "A perfectly cooked piece of fish.  You're not sure what type of fish is, since you're fairly certain \"delicious\" is not a valid species.", m.fishFillet);
+		public const FISHFIL:SimpleConsumable = mk("FishFil", "FishFil", "a fish fillet", 10, "A perfectly cooked piece of fish.  You're not sure what type of fish is, since you're fairly certain \"delicious\" is not a valid species.", m.fishFillet);
+		public const FREFISH:SimpleConsumable = mk("FreFish", "FreshFish", "a fresh fish", 6, "A fish freshly caugh from the waters of mareth.", m.freshFish);
 		public const FR_BEER:SimpleConsumable = mk("Fr Beer", "Fr Beer", "a mug of frothy beer", 6, "A bottle of beer from The Black Cock.", m.frothyBeer);
 		public const GODMEAD:SimpleConsumable = mk("GodMead", "GodMead", "a pint of god's mead", 6, "A horn of potent, honey-colored mead. A single whiff makes your head swim and your thoughts turn to violence and heroism.", m.godMead);
 		public const H_BISCU:SimpleConsumable = mk("H.Bisct", "H.Biscuits", "a pack of hard biscuits", 5, "These biscuits are tasteless, but they can stay edible for an exceedingly long time.", m.hardBiscuits);
@@ -118,7 +127,7 @@ public final class ConsumableLib extends BaseContent
 		public const LG_SFRP:SimpleConsumable = mk("LGSFRP", "LGSFRPill", "a low-grade Soulforce Recovery Pill", 5, "This low-grade recovery pill could help you recover some of the spent soulforce.  Naturaly it won't be much but in tight situation it could make a difference between won or lost fight.", m.lowgradesoulforcerecoverypill);
 		public const MG_SFRP:SimpleConsumable = mk("MGSFRP", "MGSFRPill", "a mid-grade Soulforce Recovery Pill", 30, "This mid-grade recovery pill could help you recover some of the spent soulforce.  It won't be much but still a few more time more than after using low-grade one version of this pill.", m.midgradesoulforcerecoverypill);
 		public const HG_SFRP:SimpleConsumable = mk("HGSFRP", "HGSFRPill", "a high-grade Soulforce Recovery Pill", 180, "This high-grade recovery pill could hep you recover some of the spent soulforce.  It can restore significant amount of soulforce compared to lower grade pills but still it's only an aid not a replacement for regular cultivation.", m.highgradesoulforcerecoverypill);
-		//public const SG_SFRP:SimpleConsumable = mk("SGSFRP", "SuperiorGradeSFRecovPill", "a superior-grade Soulforce Recovery Pill", m.superiorgradesoulforcerecoverypill, "This superior-grade recovery pill could hep you recover some of the spent soulforce.  Best possible to obtain pill to fast recover soulforce in tight situations when you not have time to cultivate.", 1080);
+		//public const SG_SFRP:SimpleConsumable = mk("SGSFRP", "SuperiorGradeSFRecovPill", "a superior-grade Soulforce Recovery Pill", 1080, "This superior-grade recovery pill could hep you recover some of the spent soulforce.  Best possible to obtain pill to fast recover soulforce in tight situations when you not have time to cultivate.", m.superiorgradesoulforcerecoverypill);
 
 		//SOUL SKILLS MANUALS
 		public const TRITMAN:SimpleConsumable = mk("TRITMAN", "TTManual", "a manual for Triple Thrust Soulskill", 50, "This manual would teach you how to use Triple Thrust soulskill.", m.triplethrustmanual);
@@ -126,10 +135,10 @@ public final class ConsumableLib extends BaseContent
 		public const DRASMAN:SimpleConsumable = mk("DRASMAN", "DSManual", "a manual for Draco Sweep Soulskill", 50, "This manual would teach you how to use Draco Sweep soulskill.", m.dracosweepmanual);
 		public const COMETMA:SimpleConsumable = mk("COMETMA", "COManual", "a manual for Comet Soulskill", 250, "This manual would teach you how to use Comet soulskill.", m.cometmanual);
 		public const VPTRMAN:SimpleConsumable = mk("VPTRMAN", "VPTManual", "a manual for Violet Pupil Transformation Soulskill", 250, "This manual would teach you how to use Violet Pupil Transformation soulskill.", m.violetpupiltransformationmanual);
-	/*	public const XXXXMAN:SimpleConsumable = mk("MAN", "Manual", "", m.xxx, ".", x);
-		public const XXXXMAN:SimpleConsumable = mk("MAN", "Manual", "", m.xxx, ".", x);
-		public const XXXXMAN:SimpleConsumable = mk("MAN", "Manual", "", m.xxx, ".", x);
-		public const XXXXMAN:SimpleConsumable = mk("MAN", "Manual", "", m.xxx, ".", x);*/
+		public const SOBLMAN:SimpleConsumable = mk("SOBLMAN", "SOBLManual", "a manual for Soul Blast Soulskill", 1000, "This manual would teach you how to use Soul Blast soulskill.", m.soulblastmanual);
+	/*	public const XXXXMAN:SimpleConsumable = mk("MAN", "Manual", "", x, ".", m.xxx);
+		public const XXXXMAN:SimpleConsumable = mk("MAN", "Manual", "", x, ".", m.xxx);
+		public const XXXXMAN:SimpleConsumable = mk("MAN", "Manual", "", x, ".", m.xxx);*/
 
 		//RARE ITEMS (Permanent effects, gives perks on consumption.)
 		public const BIMBOLQ:BimboLiqueur = new BimboLiqueur();
@@ -137,7 +146,9 @@ public final class ConsumableLib extends BaseContent
 		public const HUMMUS2:SimpleConsumable = mk("Hummus2", "S.Hummus", "a blob of cheesy-looking super hummus", 6, "This pile of hummus doesn't look that clean, and you really don't remember where you got it from.  It looks bland.  So bland that you feel blander just by looking at it.", m.superHummus);
 		public const P_PEARL:SimpleConsumable = mk("P.Pearl", "P.Pearl", "a pure pearl", 1000, "Marae gave you this pure pearl as a reward for shutting down the demonic factory.", m.purePearl);
 		public const EZEKFRU:SimpleConsumable = mk("EzekFru", "EzekielFruit", "a simple looking fruit", 300, "Evangeline gave you this fruit as means of showing her gratitude.", m.ezekielfruit);
-		public const E_PEARL:SimpleConsumable = mk("E.Pearl", "ElementalPearl", "a simple looking five-colored pearl", 400, "Pearl formed after defeating group of golems. It's surrounded by fait aura of elements.", m.elementalPearl);
+		public const E3PEARL:SimpleConsumable = mk("E3Pearl", "Elemen3CPearl", "a simple looking three-colored pearl", 200, "Pearl formed after defeating group of golems. It's surrounded by faint aura of elements.", m.lowgradeelementalPearl);
+		public const E_PEARL:SimpleConsumable = mk("E5Pearl", "Elemen5CPearl", "a simple looking five-colored pearl", 400, "Pearl formed after defeating obsidian gargoyle. It's surrounded by weak aura of elements.", m.middlegradeelementalPearl);
+		public const E7PEARL:SimpleConsumable = mk("E7Pearl", "Elemen7CPearl", "a simple looking seven-colored pearl", 800, "Pearl formed after defeating living statue. It's surrounded by aura of elements.", m.highgradeelementalPearl);
 
 		//NON-TRANSFORMATIVE ITEMS
 		public const AGILI_E:SimpleConsumable = mk("Agil.E.", "Agility E.", "an agility elixir", 6, "This greenish elixir is supposed to increase the user’s natural swiftness and agility.", m.agilityElixir);
@@ -147,11 +158,12 @@ public final class ConsumableLib extends BaseContent
 		public const C__MINT:Consumable = new Mint();
 		public const CERUL_P:Consumable = new CeruleanPotion();
 		public const COAL___:Consumable = new Coal();
+		public const CFISHS:SimpleConsumable = mk("CFishS.", "Cold Fish S.", "a bowl of cold fish soup", 20, "A soup made with fishes from the glacial rift. It is served cold to preserve the flavor and supposed calming effect which act as a lustkiller.", m.coldFishSoup);
 	//	public const DAO_DEW:SimpleConsumable = mk("Dao Dew", "Dao Dew", "a cup of vixen tea", 15, "An exotic tea made by kitsunes. This herbal infusion is rumored to improve your expertise and expand your sexual knowledge.", m.daoDew);
 		public const DEBIMBO:DeBimbo = new DeBimbo();
 		public const EXTSERM:HairExtensionSerum = new HairExtensionSerum();
 		public const F_DRAFT:SimpleConsumable = mk("F.Draft", "FuckDraft", "a vial of roiling red fluid labeled \"Fuck Draft\"", 6, "This vial of red fluid bubbles constantly inside the glass, as if eager to escape.  It smells very strongly, though its odor is difficult to identify.  The word \"Fuck\" is inscribed on the side of the vial.", curry(m.lustDraft, true));
-		public const INCOINS:SimpleConsumable = mk("incOIns", "incenOfIns", "an incense of Insight", 15, "These sticks, when burned, are rumored to fill an area with an incense that allows for deep meditation and granting greater insight.", m.incenseOfInsight);
+		public const INCOINS:SimpleConsumable = mk("IncOIns", "IncenOfIns", "an incense of Insight", 15, "These sticks, when burned, are rumored to fill an area with an incense that allows for deep meditation and granting greater insight.", m.incenseOfInsight);
 		public const H_PILL:Consumable = new HealPill();
 		public const HRBCNT:Consumable = new HerbalContraceptive();
 		public const ICICLE_:Consumable = new IceShard();
@@ -164,8 +176,14 @@ public final class ConsumableLib extends BaseContent
 		public const NUMBROX:Consumable = new NumbRocks();
 		public const NUMBOIL:Consumable = new NumbingOil();
 		public const OVIELIX:OvipositionElixir = new OvipositionElixir();
-		public const PEPPWHT:SimpleConsumable = mk("PeppWht", "PeppWht", "a vial of peppermint white", 120, "This tightly corked glass bottle gives of a pepperminty smell and reminds you of the winter holidays.  How odd.", function (player:Player):void {getGame().peppermintWhite(player)});
-		public const PPHILTR:Consumable = new PurityPhilter();
+        public const PEPPWHT:SimpleConsumable = mk("PeppWht", "PeppWht", "a vial of peppermint white", 120, "This tightly corked glass bottle gives of a pepperminty smell and reminds you of the winter holidays.  How odd.", function (player:Player):void {
+            EngineCore.clearOutput();
+            EngineCore.outputText("You pull the cork off the gift from the mysterious stranger.  The scent of alluring mint fills your nose once again.  You bring the head of the bottle to your lips and tip it back, the creamy white fluid hits your tongue and slips down your throat.  The liquid is surprisingly refreshing, the creamy mint flavor clings to your tongue and mouth, and makes your breath feel cool as you exhale over your lips.  You can feel the liquid drip down to your stomach and fill you with a pleasant warmth and holiday cheer.\n\n");
+            //Recovers health and fatigue, adds five to max health, and one to libido.*/
+            EngineCore.HPChange(EngineCore.maxHP(),true);
+            EngineCore.fatigue(-100);
+        });
+        public const PPHILTR:Consumable = new PurityPhilter();
 		public const PRNPKR :Consumable = new PrincessPucker();
 		public const SENSDRF:Consumable = new SensitivityDraft();
 		public const SMART_T:Consumable = new ScholarsTea();
@@ -176,6 +194,7 @@ public final class ConsumableLib extends BaseContent
 		//TRANSFORMATIVE ITEMS
 		public const ABYSSIN:SimpleConsumable = mk("AbyssIn", "AbyssalInk", "a vial of abyssal ink", 10, "Pitch black ink normaly used for writing consuming this doesnt seem like the best idea.", curry(m.scyllaInk, 3));
 		public const ALICORN:AbstractEquinum = new AbstractEquinum(2, "Alicorn", "Alicornum", "a vial of Alicornum", 200, "This is a long flared vial with a small label that reads, \"<i>Alicornum</i>\".  It is likely this potion is tied to alicorns in some way.");
+		public const ENIGMANIUM:Enigmanium = new Enigmanium();
 		public const AQUSEED:SimpleConsumable = mk("AquSeed", "AquaSeed", "an aqua seed", 20, "This seed looks and smells absolutely delicious.  Though it has an unusual color, the harpies prize these nuts as delicious treats.  Eating one might induce some physical transformations.", curry(m.goldenSeed, 0));
 		public const B_GOSSR:SimpleConsumable = mk("B.Gossr", "B.Gossr", "a bundle of black, gossamer webbing", 6, "These strands of gooey black gossamer seem quite unlike the normal silk that driders produce.  It smells sweet and is clearly edible, but who knows what it might do to you?", curry(m.sweetGossamer, 1));
 		public const BEEHONY:BeeHoney         = new BeeHoney(false, false);
@@ -205,6 +224,7 @@ public final class ConsumableLib extends BaseContent
 		public const HUMMUS_:SimpleConsumable = mk("Hummus ", "Hummus", "a blob of cheesy-looking hummus", 100, "This pile of hummus doesn't look that clean.  It looks bland.  So bland that you feel blander just by looking at it.", m.regularHummus);
 		public const IMPFOOD:SimpleConsumable = mk("ImpFood", "ImpFood", "a parcel of imp food", 6, "This is a small parcel of reddish-brown bread stuffed with some kind of meat.  It smells delicious.", m.impFood);
 		public const INFWINE:SimpleConsumable = mk("InfWine", "InfWine", "a bottle of infernal wine", 500, "This drink is made from satyr wine, incubus draft, and succubus milk. It reeks of corruption. Are you sure it would be a smart idea to drink this?", m.infernalWine);
+		public const JABBERS:SimpleConsumable = mk("JabberS", "JabberS", "a Jabberwocky scale", 100, "A scale of the so called rabbit dragon. It emits a faint glow of residual magic but are you sure you should be eating this?", m.jabberwockyScale);
 		public const KANGAFT:SimpleConsumable = mk("KangaFt", "KangaFruit", "a piece of kanga fruit", 6, "A yellow, fibrous, tubular pod.  A split in the end reveals many lumpy, small seeds inside.  The smell of mild fermentation wafts from them.", curry(m.kangaFruit, 0));
 		public const KNOTTYP:SimpleConsumable = mk("KnottyP", "KnottyP", "a knotty canine pepper", 10, "This knotted pepper is very swollen, with a massive, distended knot near the base.", curry(m.caninePepper, 4));
 		public const LABOVA_:SimpleConsumable = mk("LaBova ", "La Bova", "a bottle containing a misty fluid labeled \"LaBova\"", 6, "A bottle containing a misty fluid with a grainy texture, it has a long neck and a ball-like base.  The label has a stylized picture of a well endowed cowgirl nursing two guys while they jerk themselves off.", curry(m.laBova, true, false));
@@ -224,6 +244,8 @@ public final class ConsumableLib extends BaseContent
 		public const PRFRUIT:SimpleConsumable = mk("PrFruit", "PrFruit", "a purple fruit", 6, "This sweet-smelling produce looks like an eggplant, but feels almost squishy, and rubbery to the touch. Holding it to your ear, you think you can hear some fluid sloshing around inside.", m.purpleFruitEssrayle);
 		public const PROBOVA:SimpleConsumable = mk("ProBova", "ProBova", "a bottle containing a misty fluid labeled \"ProBova\"", 6, "This cloudy potion has been enhanced by the alchemist Lumi to imbue its drinker with cow-like attributes.", curry(m.laBova, true, true));
 		public const PURHONY:BeeHoney			= new BeeHoney(true, false);
+		public const RDRROOT:SimpleConsumable = mk("RdRRoot", "R.R.Root", "a red river root", 14, "A long, odd shaped root. It smells spicy but surprisingly tasty. Eating it would supposedly alter your body in unknown ways.", m.redRiverRoot);
+		public const REDVIAL:VampireBlood = new VampireBlood();
 		public const REPTLUM:SimpleConsumable = mk("Reptlum", "Reptilum", "a vial of Reptilum", 6, "This is a rounded bottle with a small label that reads, \"<i>Reptilum</i>\".  It is likely this potion is tied to reptiles in some way.", m.reptilum);
 		public const RINGFIG:SimpleConsumable = mk("RingFig", "RingFig", "a ringtail fig", 6, "A dried fig with two lobes and thin dark rings just below its stem.  The skin is wrinkly and it looks vaguely like a bulging scrotum.", m.ringtailFig);
 		public const RIZZART:RizzaRoot			= new RizzaRoot();
@@ -232,15 +254,20 @@ public final class ConsumableLib extends BaseContent
 		public const SATYR_W:SatyrWine        = new SatyrWine();
 		public const SCORICO:Scorpinum = new Scorpinum();
 		public const SHARK_T:SimpleConsumable = mk("Shark.T", "Shark.T", "a sharp shark tooth", 6, "A glinting white tooth, very sharp and intimidating.", curry(m.sharkTooth, 0));
+		public const SKYSEED:SimpleConsumable = mk("SkySeed", "SkybornSeed", "a skybornn seed", 10, "A smallish, ovular nut-like fruit, with a hard greenish-blue shell that gives off a pleasant aroma.", curry(m.skybornSeed, 0));
 		public const SNAKOIL:SimpleConsumable = mk("SnakOil", "SnakeOil", "a vial of snake oil", 6, "A vial the size of your fist made of dark brown glass. It contains what appears to be an oily, yellowish liquid. The odor is abominable.", m.snakeOil);
 		public const SPHONEY:Consumable		  = new BeeHoney(false, true);
 		public const TRAPOIL:SimpleConsumable = mk("TrapOil", "TrapOil", "a vial of trap oil", 6, "A round, opaque glass vial filled with a clear, viscous fluid.  It has a symbol inscribed on it, a circle with a cross and arrow pointing out of it in opposite directions.  It looks and smells entirely innocuous.", m.trapOil);
 		public const TSCROLL:TatteredScroll = new TatteredScroll();
 		public const TSTOOTH:SimpleConsumable = mk("TSTooth", "TSTooth", "a glowing tiger shark tooth", 6, "This looks like a normal shark tooth, though with an odd purple glow.", curry(m.sharkTooth, 1));
 		public const UNICORN:AbstractEquinum = new AbstractEquinum(1, "Unicorn", "Unicornum", "a vial of Unicornum", 40, "This is a long flared vial with a small label that reads, \"<i>Unicornum</i>\".  It is likely this potion is tied to unicorns in some way.");
+		public const VAMPBLD:VampireBlood = new VampireBlood(true);
 		public const VIXVIGR:SimpleConsumable = mk("VixVigr", "VixVigr", "a bottle labelled \"Vixen's Vigor\"", 30, "This small medicine bottle contains something called \"Vixen's Vigor\", supposedly distilled from common fox-berries.  It is supposed to be a great deal more potent, and a small warning label warns of \"extra boobs\", whatever that means.", curry(m.foxTF, true));
+		public const VOLTTOP:SimpleConsumable = mk("VoltTop", "VoltTopaz", "a Voltage topaz", 6, "This glittering jewel sparkles with a wondrous light. With such beauty, it would probably fetch a fair amount of gems in various markets. A faint static tingle warms your [hands] as a light flush travels up your arms...", curry(m.voltageTopaz, true));
 		public const VOUIOIL:SimpleConsumable = mk("VouiOil", "VouivreOil", "a vial of vouivre oil", 70, "A vial the size of your fist made of light green glass. It contains what appears to be an oily, purple liquid. The odor is strange.", curry(m.evolvedNagaOil, 1));
-		public const W_FRUIT:SimpleConsumable = mk("W.Fruit", "W.Fruit", "a piece of whisker-fruit", 6, "This small, peach-sized fruit has tiny whisker-like protrusions growing from the sides.", m.catTransformation);
+		public const W_FRUIT:SimpleConsumable = mk("W.Fruit", "W.Fruit", "a piece of whisker-fruit", 6, "This small, peach-sized fruit has tiny whisker-like protrusions growing from the sides.", curry(m.catTransformation, 0));
+		public const WOFRUIT:SimpleConsumable = mk("WoFruit", "WonderFruit", "a Wonder fruit", 10, "A strange whisker fruit from what appears to be a different dimension. Its skin is dyed with all the color of the rainbow.", curry(m.catTransformation, 2));
+	//	public const W_FRUIT:SimpleConsumable = mk("W.Fruit", "W.Fruit", "a piece of whisker-fruit", 10, "Nekomanta TF item", curry(m.catTransformation, 1));
 		public const WETCLTH:SimpleConsumable = mk("WetClth", "WetCloth", "a wet cloth dripping with slippery slime", 6, "Dripping with a viscous slime, you've no doubt rubbing this cloth on your body would have some kind of strange effect.", m.gooGasmic);
 		public const WHITEIN:SimpleConsumable = mk("WhiteIn", "WhiteInk", "a vial of white ink", 50, "Pearly white ink normaly used for writing consuming this doesnt seem like the best idea.", curry(m.scyllaInk, 2));
 		//Wolf Pepper chyba jest nieużywanym itemem ale jesli jednak gdzie byl uzyty zostawie go nie wycietego a w przyszłosci zrobic z niego prawdziwy wolf TF ^^

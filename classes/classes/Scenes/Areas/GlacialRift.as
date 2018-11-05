@@ -1,24 +1,22 @@
 /**
- * Created by Kitteh6660. Glacial Rift is a new endgame area with level 23-27 encounters, guaranteed to help you grind to level 38.
+ * Created by Kitteh6660. Glacial Rift is a new area with level 30-40 encounters
  * Currently a Work in Progress.
  * 
  * Please see this project. (This is not mine.) http://forum.fenoxo.com/thread-10719.html
  */
-
-/*
- * TODO
- * 
- */ 
 package classes.Scenes.Areas 
 {
-	import classes.*;
-	import classes.GlobalFlags.kFLAGS;
-	import classes.GlobalFlags.kGAMECLASS;
-	import classes.Scenes.Areas.GlacialRift.*;
-	import classes.Scenes.Areas.Forest.AlrauneScene;
-	import classes.Scenes.NPCs.GooArmor;
+import classes.*;
+import classes.BodyParts.Eyes;
+import classes.BodyParts.RearBody;
+import classes.GlobalFlags.kFLAGS;
+import classes.Scenes.Areas.Forest.AlrauneScene;
+import classes.Scenes.Areas.GlacialRift.*;
+import classes.Scenes.Holidays;
+import classes.Scenes.NPCs.GooArmor;
+import classes.Scenes.SceneLib;
 
-	use namespace kGAMECLASS;
+use namespace CoC;
 	
 	public class GlacialRift extends BaseContent
 	{
@@ -49,22 +47,27 @@ package classes.Scenes.Areas
 			if ((flags[kFLAGS.HARPY_QUEEN_EXECUTED] != 0 || flags[kFLAGS.HEL_REDUCED_ENCOUNTER_RATE] > 0) && flags[kFLAGS.VALARIA_AT_CAMP] == 0 && flags[kFLAGS.TOOK_GOO_ARMOR] == 0 && player.armor != armors.GOOARMR) choice[choice.length] = 6; //Valeria
 			if (rand(3) == 0) choice[choice.length] = 7; //Freebie items!
 			if (rand(15) == 0 && player.hasKeyItem("Camp - Ornate Chest") < 0) choice[choice.length] = 8; //Ornate Chest
-			if (player.faceType == 24 && player.earType == 18 && player.armType == 10 && player.lowerBody == 33 && player.tailType == 29 && player.hasFur() && player.hairColor == "glacial white" && player.coatColor == "glacial white" && player.hasKeyItem("Fenrir Collar") < 0) choice[choice.length] = 9; //Fenrir ruined shrine
+			if (player.faceType == 24 && player.ears.type == 18 && player.arms.type == 10 && player.lowerBody == 33 && player.tailType == 29 && player.hasFur() && player.hairColor == "glacial white" && player.coatColor == "glacial white" && player.hasKeyItem("Fenrir Collar") < 0) choice[choice.length] = 9; //Fenrir ruined shrine
 			choice[choice.length] = 10; //Find nothing!
 			
 			//DLC april fools
 			if (isAprilFools() && flags[kFLAGS.DLC_APRIL_FOOLS] == 0) {
-				getGame().DLCPrompt("Extreme Zones DLC", "Get the Extreme Zones DLC to be able to visit Glacial Rift and Volcanic Crag and discover the realms within!", "$4.99");
-				return;
+                Holidays.DLCPrompt("Extreme Zones DLC", "Get the Extreme Zones DLC to be able to visit Glacial Rift and Volcanic Crag and discover the realms within!", "$4.99");
+                return;
 			}
 			//Helia monogamy fucks
-			if (flags[kFLAGS.PC_PROMISED_HEL_MONOGAMY_FUCKS] == 1 && flags[kFLAGS.HEL_RAPED_TODAY] == 0 && rand(10) == 0 && player.gender > 0 && !kGAMECLASS.helScene.followerHel()) {
-				kGAMECLASS.helScene.helSexualAmbush();
+			if (flags[kFLAGS.PC_PROMISED_HEL_MONOGAMY_FUCKS] == 1 && flags[kFLAGS.HEL_RAPED_TODAY] == 0 && rand(10) == 0 && player.gender > 0 && !SceneLib.helScene.followerHel()) {
+				SceneLib.helScene.helSexualAmbush();
 				return;
 			}
 			//Etna
 			if (flags[kFLAGS.ETNA_FOLLOWER] < 1 && flags[kFLAGS.ETNA_TALKED_ABOUT_HER] == 2 && rand(5) == 0) {
-				kGAMECLASS.etnaScene.repeatYandereEnc();
+				SceneLib.etnaScene.repeatYandereEnc();
+				return;
+			}
+			//Anzu
+			if (flags[kFLAGS.ANZU_PALACE_UNLOCKED] < 1 && rand(5) == 0) {
+				SceneLib.anzu.initialPalaceEncounter();
 				return;
 			}
 			select = choice[rand(choice.length)];
@@ -119,6 +122,7 @@ package classes.Scenes.Areas
 					} else {
 						alrauneScene.alrauneGlacialRift();
 					}
+					break;
 				case 6: //Find Valeria! She can be found there if you rejected her offer initially at Tower of the Phoenix or didn't find her. She can never be Lost Forever.
 					spriteSelect(79);
 					flags[kFLAGS.VALERIA_FOUND_IN_GLACIAL_RIFT] = 1;
@@ -126,7 +130,7 @@ package classes.Scenes.Areas
 					outputText("As you make your way across the Rift's icy extremities, you hear a metallic CLANK CLANK approaching through the snow flurries. You turn in time to see a suit of plated mail charging toward you, its helm and limbs filled with bright blue goo. It skids to a stop a few yards away, a greatsword forming from the goo of its hand. A beautiful, feminine face appears beneath the armor’s visor grinning at you. You suddenly recognize her face!\n\n");
 					outputText("\"<i>This is my territory!</i>\" she shouts, bringing her two-handed sword to bare. \"<i>You’ll give me your fluids, or I’ll take them.</i>\"");
 					addButton(0, "Fight", fightValeria);
-					addButton(1, "Submit", kGAMECLASS.valeria.pcWinsValeriaSparDefeat, true);
+					addButton(1, "Submit", SceneLib.valeria.pcWinsValeriaSparDefeat, true);
 					break;
 				case 7: //Find item!
 					clearOutput();
@@ -136,7 +140,7 @@ package classes.Scenes.Areas
 						inventory.takeItem(consumables.ICICLE_, camp.returnToCampUseOneHour);
 					}
 					else if (itemChooser == 1) {
-						outputText("As you make your way across the icy wastes, you notice a small corked ivory horn half-buried under the snow, filled with a thick sweet-looking liquor. You stop and dig it up, sniffing curiously at the liquid. The scent reminds you of the honey secreted by the bee-girls of Mareth, though with hints of alcohol and... something else. You place the horn of mead in your bag and continue on your way. ");
+						outputText("As you make your way across the icy wastes, you notice a small corked ivory horns half-buried under the snow, filled with a thick sweet-looking liquor. You stop and dig it up, sniffing curiously at the liquid. The scent reminds you of the honey secreted by the bee-girls of Mareth, though with hints of alcohol and... something else. You place the horns of mead in your bag and continue on your way. ");
 						inventory.takeItem(consumables.GODMEAD, camp.returnToCampUseOneHour);					
 					}
 					break;
@@ -179,7 +183,7 @@ package classes.Scenes.Areas
 					break;
 				default:
 					clearOutput();
-					outputText("You spend an hour trudging through the bleak and bitingly cold glaciers but you don’t find anything interesting. But on your way back you feel you're a little more used to traveling throu this harsh area.");
+					outputText("You spend an hour trudging through the bleak and bitingly cold glaciers but you don’t find anything interesting. But on your way back you feel you're a little more used to traveling through this harsh area.");
 					dynStats("tou", .5);
 					doNext(camp.returnToCampUseOneHour);
 			}
@@ -199,8 +203,8 @@ package classes.Scenes.Areas
 			outputText("\n\nFor a few second cold air wash on your eyes and no matter how much you try to cover them with your hands to end the freezing sensation it won't stop. As your eyes begins to water the chilling finally end, you remove your hand as everything before you looks way clearer especially the snow which no longer blinds you. As you look at your reflection in the water you discover that not only your eyes glow with an unsettling blue aura, from your eyes now emanate a pair of bluish smoke of cold air contrasting with the ambient heat. <b>You now have glowing icy eyes.</b>");
 			outputText("\n\nYou feel the air freeze and condensate around you specifically behind your shoulder blades and all on the length of your spine. Jagged Ice spikes seems to have covered your back but oddly enough you don't feel the cold. <b>Your back is now covered with sharp ice spike constantly cooling the air around you. (Gained Frozen Waste and Cold Mastery perks)</b>");
 			outputText("\n\nYou suddenly feel something raging in you wanting to be unleashed as it slowly climbs out of your chest. It rushes through your throat and you scream a titanic primordial roar as the air in front of you ondulate with a massive drop of temperature and everything covers with a thick layer of solid ice. You massage your throat for a moment noticing as thin volume of condensation constantly escape from your maw. <b>You can now use Freezing Breath and Frostbite.</b>");
-			getGame().mutations.setEyeTypeAndColor(EYES_FENRIR,"blue");
-			player.rearBody = REAR_BODY_FENRIR_ICE_SPIKES;
+            CoC.instance.mutations.setEyeTypeAndColor(Eyes.FENRIR, "blue");
+            player.rearBody.type = RearBody.FENRIR_ICE_SPIKES;
 			player.createPerk(PerkLib.ColdMastery, 0, 0, 0, 0);
 			player.createPerk(PerkLib.FreezingBreath, 0, 0, 0, 0);
 			player.createPerk(PerkLib.FromTheFrozenWaste, 0, 0, 0, 0);

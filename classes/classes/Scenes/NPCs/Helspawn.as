@@ -1,9 +1,14 @@
 package classes.Scenes.NPCs
 {
-	import classes.*;
-	import classes.GlobalFlags.kFLAGS;
+import classes.*;
+import classes.BodyParts.Butt;
+import classes.BodyParts.Hips;
+import classes.BodyParts.Tail;
+import classes.GlobalFlags.kFLAGS;
+import classes.Scenes.SceneLib;
+import classes.StatusEffects.Combat.CalledShotDebuff;
 
-	public class Helspawn extends Monster
+public class Helspawn extends Monster
 	{
 
 		override public function doAI():void
@@ -23,7 +28,6 @@ package classes.Scenes.NPCs
 			choices[rand(choices.length)]();
 			//Tail Whip
 			if(rand(4) == 0) tailWhipShitYo();
-			combatRoundOver();
 		}
 
 //Basic Attack - Twin Strike
@@ -45,29 +49,9 @@ private function calledShot():void {
 	if(damage <= 0 || (rand(2) == 0 && (player.getEvasionRoll()))) outputText("\nYou avoid the hit!");
 	else {
 		outputText("\nOne of her arrows smacks right into your [leg], nearly bowling you over.  God DAMN that hurt! You're going to be limping for a while! ");
-		var affect:int = 20 + rand(5);
-		if(player.hasStatusEffect(StatusEffects.CalledShot)) {
-			while(affect > 0 && player.spe >= 2) {
-				affect--;
-				player.addStatusValue(StatusEffects.CalledShot,1,1);
-				player.spe--;
-				showStatDown( 'spe' );
-				// speDown.visible = true;
-				// speUp.visible = false;
-			}
-		}
-		else {
-			player.createStatusEffect(StatusEffects.CalledShot,0,0,0,0);
-			while(affect > 0 && player.spe >= 2) {
-				affect--;
-				player.addStatusValue(StatusEffects.CalledShot,1,1);
-				player.spe--;
-				showStatDown( 'spe' );
-				// speDown.visible = true;
-				// speUp.visible = false;
-			}
-		}
-		damage = player.takeDamage(damage, true);
+		var sec:CalledShotDebuff = player.createOrFindStatusEffect(StatusEffects.CalledShot) as CalledShotDebuff;
+		sec.increase();
+		damage = player.takePhysDamage(damage, true);
 	}
 }
 
@@ -89,7 +73,7 @@ private function calledShot():void {
 			if(damage <= 0 || player.getEvasionRoll()) outputText("\nYou evade the strike.");
 			else {
 				outputText("\nHer shield catches you right in the face, sending you tumbling to the ground and leaving you open to attack! ");
-				damage = player.takeDamage(damage, true);
+				damage = player.takePhysDamage(damage, true);
 				if(rand(2) == 0 && !player.hasStatusEffect(StatusEffects.Stunned)) {
 					player.createStatusEffect(StatusEffects.Stunned,0,0,0,0);
 					outputText(" <b>The hit stuns you.</b>");
@@ -106,7 +90,7 @@ private function calledShot():void {
 			if(damage <= 0 || player.getEvasionRoll()) outputText("\nYou evade the strike.");
 			else {
 				outputText("\n" + flags[kFLAGS.HELSPAWN_NAME] + "'s tail catches you as you try to dodge.  Your [armor] sizzles, and you leap back with a yelp as she gives you a light burning. ");
-				damage = player.takeDamage(damage, true);
+				damage = player.takeFireDamage(damage, true);
 			}
 		}
 
@@ -134,18 +118,18 @@ private function calledShot():void {
 			outputText("Seeing a momentary lull in the melee, " + flags[kFLAGS.HELSPAWN_NAME] + " slips out of reach, stumbling back and clutching at the bruises forming all over her body.  \"<i>Come on, " + flags[kFLAGS.HELSPAWN_NAME] + ", you can do this. Focus, focus,</i>\" she mutters, trying to catch her breath.  A moment later and she seems to have taken a second wind as she readies her weapon with a renewed vigor.");
 			lust -= 30;
 			if(lust < 0) lust = 0;
-			addHP(eMaxHP() / 3.0);
+			addHP(maxHP() / 3.0);
 		}
 
 		override public function defeated(hpVictory:Boolean):void
 		{
-			game.helSpawnScene.beatUpYourDaughter();
+			SceneLib.helSpawnScene.beatUpYourDaughter();
 		}
 
 
 		override public function won(hpVictory:Boolean, pcCameWorms:Boolean):void
 		{
-			game.helSpawnScene.loseSparringToDaughter();
+			SceneLib.helSpawnScene.loseSparringToDaughter();
 		}
 
 		public function Helspawn()
@@ -166,28 +150,29 @@ private function calledShot():void {
 							}[ weapon] +
 							".  Pacing around you, the well-built young warrior intently studies her mentor's defenses, readying for your next attack.";
 			// this.plural = false;
-			this.createVagina(false, VAGINA_WETNESS_NORMAL, VAGINA_LOOSENESS_NORMAL);
+			this.createVagina(false, VaginaClass.WETNESS_NORMAL, VaginaClass.LOOSENESS_NORMAL);
 			this.createStatusEffect(StatusEffects.BonusVCapacity, 85, 0, 0, 0);
 			createBreastRow(Appearance.breastCupInverse("E+"));
-			this.ass.analLooseness = ANAL_LOOSENESS_VIRGIN;
-			this.ass.analWetness = ANAL_WETNESS_DRY;
+			this.ass.analLooseness = AssClass.LOOSENESS_VIRGIN;
+			this.ass.analWetness = AssClass.WETNESS_DRY;
 			this.createStatusEffect(StatusEffects.BonusACapacity,85,0,0,0);
 			this.tallness = 90;
-			this.hipRating = HIP_RATING_CURVY+2;
-			this.buttRating = BUTT_RATING_LARGE+1;
+			this.hips.type = Hips.RATING_CURVY + 2;
+			this.butt.type = Butt.RATING_LARGE + 1;
 			this.skinTone = "dusky";
 			this.hairColor = "red";
 			this.hairLength = 13;
 			initStrTouSpeInte(60, 60, 64, 50);
-			initLibSensCor(45, 55, 20);
+			initWisLibSensCor(50, 45, 55, 20);
 			this.weaponName = weapon;
 			this.weaponVerb = {
 				'bow': "blunted arrow",
 				'scimitar': "slash",
 				'scimitar and shield': "slash"}[weapon];
-			this.weaponAttack = 20 + (1 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.weaponAttack = 20;
 			this.armorName = "scales";
-			this.armorDef = 12 + (1 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.armorDef = 12;
+			this.armorMDef = 1;
 			this.armorPerk = "";
 			this.armorValue = 50;
 			this.bonusHP = 175;
@@ -197,18 +182,12 @@ private function calledShot():void {
 			this.temperment = TEMPERMENT_RANDOM_GRAPPLES;
 			this.level = 18;
 			this.gems = 10 + rand(5);
-			this.tailType = TAIL_TYPE_SALAMANDER;
+			this.tailType = Tail.SALAMANDER;
 			this.tailRecharge = 0;
 			this.createStatusEffect(StatusEffects.Keen, 0, 0, 0, 0);
 			this.drop = NO_DROP;
 			this.createPerk(PerkLib.IceVulnerability, 0, 0, 0, 0);
 			if (flags[kFLAGS.HELSPAWN_WEAPON] == "scimitar and shield") this.createPerk(PerkLib.ShieldWielder, 0, 0, 0, 0);
-			this.str += 12 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.tou += 12 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.spe += 12 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.inte += 10 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];			
-			this.lib += 9 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.newgamebonusHP = 1100;
 			checkMonster();
 		}
 

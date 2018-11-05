@@ -1,10 +1,12 @@
 package classes.Scenes.Areas.Plains
 {
-	import classes.*;
-	import classes.internals.*;
-	import classes.GlobalFlags.kFLAGS;
+import classes.*;
+import classes.BodyParts.Butt;
+import classes.BodyParts.Hips;
+import classes.Scenes.SceneLib;
+import classes.internals.*;
 
-	/**
+/**
 	 * ...
 	 * @author ...
 	 */
@@ -16,7 +18,7 @@ package classes.Scenes.Areas.Plains
 			var damage:Number = 0;
 			var attack:Number = rand(6);
 			//return to combat menu when finished
-			doNext(game.playerMenu);
+			doNext(EventParser.playerMenu);
 			//Blind dodge change
 			if(hasStatusEffect(StatusEffects.Blind) && rand(3) < 2) {
 				outputText(capitalA + short + " completely misses you with a blind attack!\n");
@@ -84,9 +86,9 @@ package classes.Scenes.Areas.Plains
 						outputText("The gnoll waves her club threateningly, but it's her foot that snaps up from the dusty plain to connect with your gut.");
 					}
 					outputText(" ");
-					player.takeDamage(damage, true);
+					player.takePhysDamage(damage, true);
 				}
-				game.statScreenRefresh();
+				EngineCore.statScreenRefresh();
 			}
 		}
 		
@@ -120,7 +122,7 @@ package classes.Scenes.Areas.Plains
 				outputText("The gnoll dances forward, then back, her whole body alive with sensual movement.  She catches the way you watch her and smirks, throwing in a hip-shake just for you.");
 				bonus += 6;
 			}
-			game.dynStats("lus", (bonus + 10 + player.lib/20 + rand(player.cor/20)));
+			player.dynStats("lus", (bonus + 10 + player.lib/20 + rand(player.cor/20)));
 			outputText("\n");
 		}
 
@@ -129,7 +131,7 @@ package classes.Scenes.Areas.Plains
 			var damage:Number = 0;
 			var attack:Number = rand(6);
 //return to combat menu when finished
-			doNext(game.playerMenu);
+			doNext(EventParser.playerMenu);
 //Blind dodge change
 			if (hasStatusEffect(StatusEffects.Blind) && rand(3) < 2) {
 				outputText(capitalA + short + " completely misses you with a blind attack!\n");
@@ -197,9 +199,9 @@ package classes.Scenes.Areas.Plains
 						outputText("The gnoll waves her club threateningly, but it's her foot that snaps up from the dusty plain to connect with your gut.");
 					}
 					outputText(" ");
-					player.takeDamage(damage, true);
+					player.takePhysDamage(damage, true);
 				}
-				game.statScreenRefresh();
+				EngineCore.statScreenRefresh();
 			}
 		}
 
@@ -209,15 +211,16 @@ package classes.Scenes.Areas.Plains
 				if (plural) outputText("Your foes are too dazed from your last hit to strike back!");
 				else outputText("Your foe is too dazed from your last hit to strike back!");
 				removeStatusEffect(StatusEffects.Stunned);
-				combatRoundOver();
 			}
 			if (hasStatusEffect(StatusEffects.Fear)) {
 				if (statusEffectv1(StatusEffects.Fear) == 0) {
 					if (plural) {
+						this.spe += statusEffectv2(StatusEffects.Fear);
 						removeStatusEffect(StatusEffects.Fear);
 						outputText("Your foes shake free of their fear and ready themselves for battle.");
 					}
 					else {
+						this.spe += statusEffectv2(StatusEffects.Fear);
 						removeStatusEffect(StatusEffects.Fear);
 						outputText("Your foe shakes free of its fear and readies itself for battle.");
 					}
@@ -227,13 +230,12 @@ package classes.Scenes.Areas.Plains
 					if (plural) outputText(capitalA + short + " are too busy shivering with fear to fight.");
 					else outputText(capitalA + short + " is too busy shivering with fear to fight.");
 				}
-				combatRoundOver();
 			}
 			var select:Number = 1;
 			var rando:Number = 1;
 //Exgartuan gets to do stuff!
 			if (player.hasStatusEffect(StatusEffects.Exgartuan) && player.statusEffectv2(StatusEffects.Exgartuan) == 0 && rand(3) == 0) {
-				game.exgartuan.exgartuanCombatUpdate();
+				SceneLib.exgartuan.exgartuanCombatUpdate();
 				outputText("\n\n");
 			}
 			if (hasStatusEffect(StatusEffects.Constricted)) {
@@ -244,7 +246,6 @@ package classes.Scenes.Areas.Plains
 					removeStatusEffect(StatusEffects.Constricted);
 				}
 				addStatusValue(StatusEffects.Constricted, 1, -1);
-				combatRoundOver();
 			}
 
 			if (rand(2) == 0) gnollTease();
@@ -252,7 +253,7 @@ package classes.Scenes.Areas.Plains
 				var damage:Number = 0;
 				var attack:Number = rand(6);
 //return to combat menu when finished
-				doNext(game.playerMenu);
+				doNext(EventParser.playerMenu);
 //Blind dodge change
 				if (hasStatusEffect(StatusEffects.Blind) && rand(3) < 2) {
 					outputText(capitalA + short + " completely misses you with a blind attack!\n");
@@ -320,13 +321,12 @@ package classes.Scenes.Areas.Plains
 							outputText("The gnoll waves her club threateningly, but it's her foot that snaps up from the dusty plain to connect with your gut.");
 						}
 						outputText(" ");
-						player.takeDamage(damage);
+						player.takePhysDamage(damage);
 					}
-					game.statScreenRefresh();
+					EngineCore.statScreenRefresh();
 				}
 				gnollAttackText();
 			}
-			combatRoundOver();
 		}
 
 
@@ -334,22 +334,22 @@ package classes.Scenes.Areas.Plains
 		{
 			if(hasStatusEffect(StatusEffects.PhyllaFight)) {
 				removeStatusEffect(StatusEffects.PhyllaFight);
-				game.desert.antsScene.phyllaPCBeatsGnoll();
+				SceneLib.desert.antsScene.phyllaPCBeatsGnoll();
 				return;
 			}
-			game.plains.gnollScene.defeatHyena();
+			SceneLib.plains.gnollScene.defeatHyena();
 		}
 
 		override public function won(hpVictory:Boolean, pcCameWorms:Boolean):void
 		{
 			if(hasStatusEffect(StatusEffects.PhyllaFight)) {
 				removeStatusEffect(StatusEffects.PhyllaFight);
-				game.desert.antsScene.phyllaGnollBeatsPC();
+				SceneLib.desert.antsScene.phyllaGnollBeatsPC();
 			} else if(pcCameWorms) {
 				outputText("\n\nYour foe doesn't seem put off enough to leave...");
-				doNext(game.endLustLoss);
+				doNext(SceneLib.combat.endLustLoss);
 			} else {
-				game.plains.gnollScene.getRapedByGnoll();
+				SceneLib.plains.gnollScene.getRapedByGnoll();
 			}
 		}
 
@@ -360,26 +360,27 @@ package classes.Scenes.Areas.Plains
 			this.imageName = "gnoll";
 			this.long = "This lanky figure is dappled with black spots across rough, tawny fur. Wiry muscle ripples along long legs and arms, all of it seeming in perpetual frenetic motion: every moment half flinching and half lunging.  The head bears a dark muzzle curled in a perpetual leer and bright orange eyes watching with a savage animal cunning.  Between the legs hang what appears at first to be a long, thin dong; however, on closer inspection it is a fused tube of skin composed of elongated pussy lips and clitoris.  The hyena girl is sporting a pseudo-penis, and judging by the way it bobs higher as she jinks back and forth, she's happy to see you!\n\nShe wears torn rags scavenged from some other, somewhat smaller, creature, and in one hand clutches a twisted club.";
 			// this.plural = false;
-			this.createVagina(false, VAGINA_WETNESS_DROOLING, VAGINA_LOOSENESS_LOOSE);
+			this.createVagina(false, VaginaClass.WETNESS_DROOLING, VaginaClass.LOOSENESS_LOOSE);
 			createBreastRow(Appearance.breastCupInverse("C"));
-			this.ass.analLooseness = ANAL_LOOSENESS_STRETCHED;
-			this.ass.analWetness = ANAL_WETNESS_DRY;
+			this.ass.analLooseness = AssClass.LOOSENESS_STRETCHED;
+			this.ass.analWetness = AssClass.WETNESS_DRY;
 			this.createStatusEffect(StatusEffects.BonusACapacity,25,0,0,0);
 			this.tallness = 6*12;
-			this.hipRating = HIP_RATING_AMPLE;
-			this.buttRating = BUTT_RATING_TIGHT;
+			this.hips.type = Hips.RATING_AMPLE;
+			this.butt.type = Butt.RATING_TIGHT;
 			this.skin.growFur({color:"tawny"});
 			this.hairColor = "black";
 			this.hairLength = 22;
 			initStrTouSpeInte(90, 75, 75, 60);
-			initLibSensCor(64, 25, 60);
+			initWisLibSensCor(60, 64, 25, 60);
 			this.weaponName = "twisted club";
 			this.weaponVerb="smash";
-			this.weaponAttack = 11 + (3 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.weaponAttack = 11;
 			this.weaponPerk = "";
 			this.weaponValue = 25;
 			this.armorName = "skin";
-			this.armorDef = 7 + (1 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.armorDef = 7;
+			this.armorMDef = 1;
 			this.bonusHP = 600;
 			this.bonusLust = 10;
 			this.lust = 30;
@@ -391,12 +392,6 @@ package classes.Scenes.Areas.Plains
 					add(consumables.REDUCTO,1/5).
 					add(consumables.SUCMILK,1/2).
 					elseDrop(consumables.BLACK_D);
-			this.str += 18 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.tou += 15 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.spe += 15 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.inte += 12 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];			
-			this.lib += 12 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.newgamebonusHP = 1440;
 			checkMonster();
 		}
 		

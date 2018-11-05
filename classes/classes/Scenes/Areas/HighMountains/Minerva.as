@@ -1,10 +1,14 @@
 package classes.Scenes.Areas.HighMountains
 {
-	import classes.*;
-	import classes.GlobalFlags.kFLAGS;
-	import classes.internals.*;
+import classes.*;
+import classes.BodyParts.Butt;
+import classes.BodyParts.Hips;
+import classes.BodyParts.Wings;
+import classes.GlobalFlags.kFLAGS;
+import classes.Scenes.SceneLib;
+import classes.internals.*;
 
-	public class Minerva extends Monster
+public class Minerva extends Monster
 	{
 
 		//Normal Attacks for all Minerva Types
@@ -24,9 +28,8 @@ package classes.Scenes.Areas.HighMountains
 			//[if attack lands]
 			else {
 				outputText("  Her teeth dig right into your arm!  It's a bit of a struggle, but you're able to free yourself.  The damage doesn't look too serious. ");
-				player.takeDamage(damage, true);
+				player.takePhysDamage(damage, true);
 			}
-			combatRoundOver();
 		}
 
 //Flying kick:
@@ -44,10 +47,9 @@ package classes.Scenes.Areas.HighMountains
 			//[if attack lands]
 			else {
 				outputText("  She hits you square in the chest, knocking you to the ground as her entire weight lands on you.  The bombshell of a woman jumps off your chest, ready to keep fighting. ");
-				damage = player.takeDamage(damage, true);
+				damage = player.takePhysDamage(damage, true);
 			}
 			spe += 70;
-			combatRoundOver();
 		}
 
 //Tail-whip
@@ -64,11 +66,10 @@ package classes.Scenes.Areas.HighMountains
 				outputText("  Her shark tail whacks you, knocking you to the ground.  You quickly struggle back into position");
 				if (player.armorDef > 0) outputText(", but your defense has been reduced");
 				outputText("! ");
-				player.takeDamage(damage, true);
+				player.takePhysDamage(damage, true);
 				if (hasStatusEffect(StatusEffects.TailWhip)) addStatusValue(StatusEffects.TailWhip, 1, 10);
 				else createStatusEffect(StatusEffects.TailWhip, 10, 0, 0, 0);
 			}
-			combatRoundOver();
 		}
 
 //Halberd stab:
@@ -85,9 +86,8 @@ package classes.Scenes.Areas.HighMountains
 			//[if attack lands]
 			else {
 				outputText("  She pierces you right in the shoulder!  You wince in pain and step back, out of her reach again.");
-				player.takeDamage(damage, true);
+				player.takePhysDamage(damage, true);
 			}
-			combatRoundOver();
 		}
 
 //Halberd CHOP:
@@ -104,17 +104,14 @@ package classes.Scenes.Areas.HighMountains
 			//[if attack lands]
 			else {
 				outputText("  You don't have time to avoid the downward chop and the axe head lands right in your shoulder blade!  You cry out in pain, but you can still move your arm despite the brutal blow.");
-				player.takeDamage(damage, true);
+				player.takePhysDamage(damage, true);
 			}
-			combatRoundOver();
 		}
 
 //White Fire
 		private function kiteFire():void
 		{
 			var damage:int = int(10 + (inte / 3 + rand(inte / 2)) * 1.5);
-			if (player.findPerk(PerkLib.FromTheFrozenWaste) >= 0 || player.findPerk(PerkLib.ColdAffinity) >= 0) damage *= 3;
-			if (player.findPerk(PerkLib.FireAffinity) >= 0) damage *= 0.3;
 			damage = Math.round(damage);
 			if (player.hasStatusEffect(StatusEffects.Blizzard)) {
 				player.addStatusValue(StatusEffects.Blizzard,1,-1);
@@ -125,8 +122,7 @@ package classes.Scenes.Areas.HighMountains
 				outputText("The siren holds her hand out, flashing you a cunning smirk and snapping her fingers.  Your entire body is engulfed in white-hot flames, searing flesh and burning your [armor].  The sudden flash of heat and fire elicit panic from deep within you, causing you to cry out and roll on the ground to put the fires out.  The burns aren't too severe, but you know you can't keep getting hit like that! ");
 			}
 			damage = Math.round(damage);
-			player.takeDamage(damage, true);
-			combatRoundOver();
+			player.takeFireDamage(damage, true);
 		}
 
 //Lust Attacks for tainted Minerva
@@ -134,8 +130,7 @@ package classes.Scenes.Areas.HighMountains
 		private function bootyShortInYoFaceSon():void
 		{
 			outputText("The blue beauty turns around and bends over so far that she uses her halberd like a pole to support herself.  She lifts her shark tail up so you can see her short-shorts hugging perfectly against her ample bottom.  Her tail waves to the left and to the right as she does a little booty shake for you.  The siren gives her big ass a nice, hard slap that echoes off the tower walls, and making it jiggle even more.  She quickly turns around to face you, smirking at what she just did. ");
-			game.dynStats("lus", 20 + player.lib / 10 + rand(5));
-			combatRoundOver();
+			player.dynStats("lus", 20 + player.lib / 10 + rand(5));
 		}
 
 //Lust Attacks for all Minervas
@@ -143,8 +138,7 @@ package classes.Scenes.Areas.HighMountains
 		private function lickDatPole():void
 		{
 			outputText("Minerva stands, holding her halberd straight up next to her as she looks it over with a seductive stare.  Giving you a suggestive look she rolls out a two-foot long tongue from her mouth, licking a good length of the massive weapon, even wrapping her tongue around it a few times.  Suddenly she sucks her tongue back into her mouth and gives you a little smirk, almost to say \"<i>Yeah, I can do that... and more.</i>\" ");
-			game.dynStats("lus", 20 + player.lib / 10 + rand(5));
-			combatRoundOver();
+			player.dynStats("lus", 20 + player.lib / 10 + rand(5));
 		}
 
 //Special attack
@@ -164,11 +158,10 @@ package classes.Scenes.Areas.HighMountains
 				//No wait - insta loss:
 				else {
 					outputText("  Your mind clouds over as the song flows through your ears and fills your mind with sweet bliss.  You lower your [weapon] and dreamily walk into the siren's sweet embrace.  You absent-mindedly disrobe yourself as you move in closer, the song getting louder with each step you take, until you finally bury yourself into the siren's soft bosom and she wraps her feathery arms around your body.  She stops singing her beautiful song and whispers into your ear, \"<i>You're all mine now.</i>\"");
-					game.dynStats("lus", 999);
+					player.dynStats("lus", 999);
 				}
 				removeStatusEffect(StatusEffects.SirenSong);
 			}
-			combatRoundOver();
 		}
 
 		override protected function performCombatAction():void
@@ -191,12 +184,12 @@ package classes.Scenes.Areas.HighMountains
 
 		override public function defeated(hpVictory:Boolean):void
 		{
-			game.highMountains.minervaScene.beatUpDatSharpie();
+			SceneLib.highMountains.minervaScene.beatUpDatSharpie();
 		}
 
 		override public function won(hpVictory:Boolean,pcCameWorms:Boolean):void
 		{
-			game.highMountains.minervaScene.loseToMinerva();
+			SceneLib.highMountains.minervaScene.loseToMinerva();
 		}
 
 		public function Minerva()
@@ -219,30 +212,31 @@ package classes.Scenes.Areas.HighMountains
 			if (flags[kFLAGS.MINERVA_PURIFICATION_PROGRESS] >= 10 || flags[kFLAGS.MINERVA_CORRUPTION_PROGRESS] >= 10) ballSize += 2;
 			this.cumMultiplier = 3;
 			// this.hoursSinceCum = 0;
-			this.createVagina(false, VAGINA_WETNESS_SLICK, VAGINA_LOOSENESS_NORMAL);
+			this.createVagina(false, VaginaClass.WETNESS_SLICK, VaginaClass.LOOSENESS_NORMAL);
 			//Set breast size based on pure/corrupt
 			if (flags[kFLAGS.MINERVA_PURIFICATION_PROGRESS] >= 10) createBreastRow(Appearance.breastCupInverse("G"));
 			else if (flags[kFLAGS.MINERVA_CORRUPTION_PROGRESS] >= 10) createBreastRow(Appearance.breastCupInverse("E"));
 			else createBreastRow(Appearance.breastCupInverse("DD"));
-			this.ass.analLooseness = ANAL_LOOSENESS_TIGHT;
-			this.ass.analWetness = ANAL_WETNESS_DRY;
+			this.ass.analLooseness = AssClass.LOOSENESS_TIGHT;
+			this.ass.analWetness = AssClass.WETNESS_DRY;
 			this.tallness = 8*12+4;
-			this.hipRating = HIP_RATING_CURVY;
-			this.buttRating = BUTT_RATING_LARGE+1;
+			this.hips.type = Hips.RATING_CURVY;
+			this.butt.type = Butt.RATING_LARGE + 1;
 			this.skinTone = "blue";
 			this.hairColor = "red";
 			this.hairLength = 25;
 			initStrTouSpeInte(64, 80, 110, 75);
-			initLibSensCor(30, 25, 45);
+			initWisLibSensCor(70, 30, 25, 45);
 			if (flags[kFLAGS.MINERVA_PURIFICATION_PROGRESS] >= 10) cor = 0; //Set to 0 corruption if purified.
 			if (flags[kFLAGS.MINERVA_CORRUPTION_PROGRESS] >= 10) cor = 80; //Set to 80 corruption if corrupted.
 			this.weaponName = "halberd";
 			this.weaponVerb="slash";
-			this.weaponAttack = 50 + (11 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.weaponAttack = 50;
 			this.weaponPerk = "";
 			this.weaponValue = 150;
 			this.armorName = game.armors.TUBETOP.name;
-			this.armorDef = 7 + (1 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.armorDef = 7;
+			this.armorMDef = 2;
 			this.armorPerk = "";
 			this.armorValue = 5;
 			this.bonusHP = 470;
@@ -254,14 +248,8 @@ package classes.Scenes.Areas.HighMountains
 			this.gems = rand(40)+25;
 			this.additionalXP = 50;
 			this.drop = new WeightedDrop(consumables.PURPEAC, 1);
-			this.wingType = WING_TYPE_HARPY;
-			this.wingDesc = "fluffy feathery";
-			this.str += 12 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.tou += 16 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.spe += 22 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.inte += 15 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];			
-			this.lib += 6 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.newgamebonusHP = 2130;
+			this.wings.type = Wings.HARPY;
+			this.wings.desc = "fluffy feathery";
 			checkMonster();
 		}
 		

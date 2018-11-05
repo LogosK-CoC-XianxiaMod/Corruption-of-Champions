@@ -1,10 +1,13 @@
 ﻿package classes.Scenes.Places.TelAdre 
 {
-	import classes.*;
-	import classes.GlobalFlags.*;
-	import classes.Scenes.NPCs.Urta;
+import classes.*;
+import classes.GlobalFlags.*;
+import classes.Scenes.NPCs.Urta;
+import classes.Scenes.SceneLib;
+import classes.lists.BreastCup;
+import classes.lists.Gender;
 
-	public class KatherineThreesome extends TelAdreAbstractContent
+public class KatherineThreesome extends TelAdreAbstractContent
 	{
 
 		public function KatherineThreesome() {}
@@ -13,7 +16,7 @@
 
 		public function get katherine():Katherine { return telAdre.katherine; }
 
-		public function get urta():Urta { return kGAMECLASS.urta; }
+		public function get urta():Urta { return SceneLib.urta; }
 
 		/*
 		Contains the following scenes:
@@ -204,7 +207,7 @@
 				outputText(".  May Marae help your innards.</i>”");
 			}
 			outputText("\n\nYou’re not in a position to argue.  Once you’re naked Urta sits on top of you and ");
-			if (player.biggestTitRow() > BREAST_CUP_DD)
+			if (player.biggestTitRow() > BreastCup.DD)
 				outputText("massages the sides of your breasts");
 			else if (player.balls > 0)
 				outputText("massages your nutsack");
@@ -283,6 +286,7 @@
 			}
 			outputText("\n\nKath collapses on top of you, spent.  Urta twists you around enough to give you and Kath each a kiss.  “<i>Thanks [name], that’s exactly what I needed.</i>”\n\n");
 			outputText("“<i>Me too,</i>” purrs Kath as she snuggles up against your back for a nap.  You stick around long enough for " + katherine.cockMultiple("Katherine’s knot", "Kath’s knots") + " to slide out, then you’re on your way - leaving Kath and Urta to take care of each other.");
+			if (player.isGargoyle() && player.hasPerk(PerkLib.GargoyleCorrupted)) player.refillGargoyleHunger(60);
 			player.orgasm();
 			katherine.orgasm();
 			katherine.katherineAndUrtaHadSex(false);
@@ -438,6 +442,7 @@
 			outputText("“<i>Again?</i>” says Urta, “<i>No, no, I can’t do it again!  I’ve already cum twice.</i>”\n\n");
 
 			outputText("Kath laughs and continues to gently fuck Urta.  You pull off Urta’s cock and wait for her massive load to finish gushing from your " + (player.hasVagina() ? "pussy" : "ass") + " before putting on your clothes.  Before you leave you give Urta a kiss and squeeze her belly a little.  Her only reply is to moan.  You tell Kath to take good care of Urta and then leave.  You know that if you stay much longer their display will get you excited enough that you’d stay around all afternoon and unfortunately you’ve got things you need to do.\n\n");
+			if (player.isGargoyle() && player.hasPerk(PerkLib.GargoyleCorrupted)) player.refillGargoyleHunger(30);
 			player.orgasm();
 			flags[kFLAGS.URTA_COMFORTABLE_WITH_OWN_BODY]++;
 			flags[kFLAGS.URTA_TIME_SINCE_LAST_CAME] = 8 + rand(2);
@@ -515,7 +520,7 @@
 			outputText("Urta moans and lifts Kath high enough to plant her cockhead against Kath’s pussy.  “<i>You were asking for this all through our last shift,</i>” she growls in Kath’s ear.  Urta roughly yanks Kath back again, this time impaling her on Urta’s massive shaft.  Urta closes her eyes and starts talking to herself as she lifts Kath’s hips up and down.  “<i>Always flicking your thin black tail at me,</i>” she says, “<i>giving me that big toothy smile when you hand in your paperwork" + (flags[kFLAGS.KATHERINE_URTA_AFFECTION] > 20 ? ", then ‘I’ll see you at the bar’, and that cute little wave goodbye" : "") + ".  Admit it - you’ve been gagging for a nice fat cock.</i>”\n\n");
 			outputText("Kath just bites her lip as Urta’s jackhammering forces her hole open wider and wider.  At last the pain in her face eases up and she gives you a grin before saying, “<i>Maybe.</i>”\n\n");
 			outputText("“<i>Not maybe!</i>” bellows Urta.  “<i>You’re the sexiest little kitty in the Watch and you spend all day teasing me.  Don’t give me maybe.</i>”\n\n");
-			outputText("Kath has started to fuck back and she pulls Urta’s hands away from her hips.  With her cat-like flexibility she manages to turn around and face Urta while still grinding atop her cock.  “<i>Okay,</i>” she says, teasingly, “<i>maybe a lot.</i>”  She takes Urta’s hands and places them against " + (katherine.breasts.cupSize > BREAST_CUP_DD ? "the sides of " : "") + "her " + katherine.breasts.adj() + " breasts.\n\n");
+			outputText("Kath has started to fuck back and she pulls Urta’s hands away from her hips.  With her cat-like flexibility she manages to turn around and face Urta while still grinding atop her cock.  “<i>Okay,</i>” she says, teasingly, “<i>maybe a lot.</i>”  She takes Urta’s hands and places them against " + (katherine.breasts.cupSize > BreastCup.DD ? "the sides of " : "") + "her " + katherine.breasts.adj() + " breasts.\n\n");
 			outputText("Urta looks like she’s getting close to blowing her load.  She pants “<i>Does that turn you on?  Getting your captain all hot and bothered?</i>”\n\n");
 			outputText("Kath reaches between her legs and you realize she’s rolling Urta’s balls between her fingers.  “<i>Maybe,</i>” she replies again, infuriating Urta, who bites the back of Kath’s neck.  A few more deep thrusts and Urta’s hands go to Kath’s shoulders so she can pull Kath’s whole body down once more.  Her head tips back and bangs the wall.  At the same time Kath puts a hand against her belly and purrs as you watch it bulge with Urta’s copious seed.\n\n");
 			outputText("Once Urta is finished Kath gives Urta a poke and says, “<i>Aren’t you going to help me?  I still haven’t got off, you know.</i>”\n\n");
@@ -542,7 +547,7 @@
 				outputText("Urta shudders and her hands move back to Kath's hips.  “<i>Oh, fuck!  You're not gonna be able to walk after this.</i>”\n\n");
 				outputText("“<i>Promises, promises,</i>” Kath says in a dreamy voice.  She holds her already filled belly and lets Urta do most of the work.  Then Katherine's legs give out, leaving her totally at Urta's mercy as the fox jackhammers her cunt.  You watch Kath cum half a dozen times in a row, her body held in place only by the rock-hard flagpole inside her belly.  With one last burst of energy Urta rams home and you see her balls shrink and pull upward, driving every last drop into Kath's cum crammed belly.\n\n");
 			}
-			outputText("You " + (player.gender == GENDER_NONE ? "rub your featureless groin unhappily, wishing you could have been part of this.  Then you" : "") + "give each of your tired lovers a kiss and tell them to look after each other.  That earns a guilty look from Urta who says, “<i>We can have any kind of sex you want next time [name] - or maybe you want to stick around and have your fill?</i>”\n\n");
+			outputText("You " + (player.gender == Gender.GENDER_NONE ? "rub your featureless groin unhappily, wishing you could have been part of this.  Then you" : "") + "give each of your tired lovers a kiss and tell them to look after each other.  That earns a guilty look from Urta who says, “<i>We can have any kind of sex you want next time [name] - or maybe you want to stick around and have your fill?</i>”\n\n");
 			outputText("Much as you’d like to you have to check on the portal once more, so you just tell them you’re going to take them up on that offer, probably sooner rather than later.");
 			katherine.orgasm();
 			katherine.katherineAndUrtaHadSex(true);
@@ -641,6 +646,7 @@
 				outputText("expanding against " + (player.isTaur() ? "your rump" : "the small of your back") + ".  The air is forced from Urta’s lungs and you get pushed to the ground as both your lovers collapse against you.\n\nYou smile to yourself and flex " + (player.hasVagina() ? "the muscles in your pussy" : "your sphincter") + ", milking Urta’s cock.  She may be packed with Kath’s sperm but Urta is still Urta.  She responds by gripping your " + (player.isTaur() ? "flanks" : "hips") + " once more");
 			outputText(".\n\nDespite her cum-stuffed belly she starts fucking you at a blistering pace, determined to fill you as she has been filled.  The feeling is exquisite and when you look " + (player.isNaga() ? "down" : "back") + " you see that Kath has taken Urta’s balls in hand.  She grins at you and starts massaging them while she whispers encouragement in Urta’s ear.\n\n");
 			outputText("At last you feel the delightful blast of cum inside you.  Urta pulls your body against hers and floods you with her hot, sticky juices.  Your stomach muscles give out, unable to contain the load Urta pumps inside you.  Her throbbing cock brings you release and you cum, joining your lovers in ecstasy." + (player.hasCock() ? "  Your own cock contributes to the mess by spraying the floorboards with your wasted seed." : ""));
+			if (player.isGargoyle() && player.hasPerk(PerkLib.GargoyleCorrupted)) player.refillGargoyleHunger(30);
 			sandwichCommonEnd(); //Play the common end
 		}
 
@@ -792,6 +798,7 @@
 			outputText("Using one of the room’s columns as support Urta pulls herself upright and surveys the damage.  “<i>I’m going to have to sort this out.  Oh yeah, this was worth it, but now I’m going to need to sweep it all under the rug.  Yeesh.</i>”\n\n");
 			outputText("She tosses a spermy bit of your clothing to you and says, “<i>You should get out of here [name].  Don’t you worry, I’ll take care of this.</i>”  Poking Katherine with her foot, she adds, “<i>Besides, Kath needs a bit more education on the subject of Watch paperwork.</i>”\n\n");
 			outputText("“<i>Aw - not paperwork,</i>” groans Kath as you wave and escape out the door.");
+			if (player.isGargoyle() && player.hasPerk(PerkLib.GargoyleCorrupted)) player.refillGargoyleHunger(100);
 			player.orgasm();
 			katherine.orgasm();
 			katherine.katherineAndUrtaHadSex(true);

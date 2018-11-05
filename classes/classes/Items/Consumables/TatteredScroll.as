@@ -3,6 +3,7 @@
  */
 package classes.Items.Consumables {
 import classes.Items.Consumable;
+import classes.PerkLib;
 
 public class TatteredScroll extends Consumable {
 	public static const ITEM_VALUE:int = 6;
@@ -15,7 +16,7 @@ public class TatteredScroll extends Consumable {
 	override public function useItem():Boolean {
 		clearOutput();
 		outputText("Your wobbly [legs] give out underneath you as your body's willpower seems to evaporate, your mouth reading the words on the scroll with a backwards sounding sing-song voice.\n\n");
-		if (player.hairColor == "sandy blonde") {
+		if (player.hairColor == "sandy blonde" && player.findPerk(PerkLib.TransformationImmunity) < 0) {
 			outputText("Your mouth forms a smile of its own volition, reading, \"<i>Tresed eht retaw llahs klim ruoy.</i>\"\n\n");
 			if (player.breastRows.length == 0 || player.biggestTitSize() == 0) {
 				outputText("You grow a perfectly rounded pair of C-cup breasts!  ");
@@ -36,7 +37,7 @@ public class TatteredScroll extends Consumable {
 				while (temp > 0) {
 					temp--;
 					//If that breast didnt have nipples reset length
-					if (player.breastRows[0].nipplesPerBreast < 1) player.breastRows[0].nippleLength = .2;
+					if (player.breastRows[0].nipplesPerBreast < 1) player.nippleLength = .2;
 					player.breastRows[0].nipplesPerBreast = 1;
 				}
 				dynStats("sen", 2, "lus", 1);

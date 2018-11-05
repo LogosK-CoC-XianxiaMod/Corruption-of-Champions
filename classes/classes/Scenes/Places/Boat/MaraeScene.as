@@ -1,13 +1,15 @@
 ﻿package classes.Scenes.Places.Boat
 {
-	import classes.*;
-	import classes.GlobalFlags.kFLAGS;
-	import classes.GlobalFlags.kACHIEVEMENTS;
+import classes.*;
+import classes.BodyParts.LowerBody;
+import classes.BodyParts.Wings;
+import classes.GlobalFlags.kACHIEVEMENTS;
+import classes.GlobalFlags.kFLAGS;
 
-	public class MaraeScene extends AbstractBoatContent implements TimeAwareInterface {
+public class MaraeScene extends AbstractBoatContent implements TimeAwareInterface {
 
 		public function MaraeScene() {
-			CoC.timeAwareClassAdd(this);
+			EventParser.timeAwareClassAdd(this);
 		}
 		
 		//Implementation of TimeAwareInterface
@@ -140,7 +142,7 @@ public function encounterMarae():void {
 					addButton(1, "Lethicite", maraeStealLethicite);
 					addButton(2, "Accept", maraeBadEnd);
 					addButton(3, "Prank", maraeStealLethicite, true, null, null, "Play a practical joke on the corrupted goddess and pretend to steal her Lethicite. Why would you do this?", "Practical Joke");
-					addButton(4, "FIGHT!", promptFightMarae1, encounterMarae);
+					addButton(4, "FIGHT!", promptFightMarae1);
 
 			}
 			//Repeat corrupt meeting
@@ -283,8 +285,8 @@ private function alraunezeMeYes0():void {
 		player.cocks[9].cockType = CockTypesEnum.STAMEN;
 	}
 	if (!player.hasStatusEffect(StatusEffects.AlrauneFlower)) player.createStatusEffect(StatusEffects.AlrauneFlower,0,0,0,0);
-	if (player.wingType == WING_TYPE_PLANT) player.wingType = WING_TYPE_NONE;
-	player.lowerBody = LOWER_BODY_TYPE_PLANT_FLOWER;
+	if (player.wings.type == Wings.PLANT) player.wings.type = Wings.NONE;
+	player.lowerBody = LowerBody.PLANT_FLOWER;
 	player.legCount = 12;
 	doNext(camp.returnToCampUseTwoHours);
 }
@@ -414,19 +416,8 @@ private function maraeBadEnd():void {
 	else {
 		outputText("You drink deeply, suckling her thick syrupy milk with strength born of an instantaneous addiction.  The desire to attain more of her 'milk' overrides any other thoughts, clouding over them like a dense morning fog.  The slick nipples feel like they tense and squirm in your mouth as you draw every last bit of their delicious cargo into your greedy gullet.  You " + hipDescript() + " twitch and squirm, throbbing and hard, making your [cocks] bob in the air.   Heedless of your groin's incessant begging, you work the nipple in your mouth as if it was your whole world, trying to pleasure as much as suckle.  You can feel your [cocks] squirming in the air  as if reaching for her.  Wait, squirming!?  You're pulled back from her nipple and given the chance to look down, where ");
 		if(player.tentacleCocks() < player.cockTotal()) {
-			//Single cawks
-			if(player.cocks.length == 1) {
-				//Set primary cock flag
-				player.cocks[0].cockType = CockTypesEnum.TENTACLE;
-			}
-			//multi
-			if(player.cockTotal() > 1) {
-				temp = player.cocks.length;
-				//Set cock flags
-				while(temp > 0) {
-					temp--;
-					player.cocks[temp].cockType = CockTypesEnum.TENTACLE;
-				}
+			for(var i:int = player.cocks.length; i >= 0; i--){
+				player.cocks[i].cockType = CockTypesEnum.TENTACLE;
 			}
 		}
 		outputText("<b>you see your [cocks] waving around, seeking a nearby orifice to fuck!</b>\n\n");
@@ -438,7 +429,7 @@ private function maraeBadEnd():void {
 	outputText("<b>Some time passes...</b>\n\n");
 	outputText("You're still on the island with Marae impaled on two of the wriggling monstrosities you call your cocks.    You haven't pulled free in days, but why would you?  Your bodies are made for each other, a pile of wriggling fuckmeat with holes that drink your cum like the desert drinks water, and a once-hero who lives to sate his mass of seething tentacles.   The two of you are two halves of the same puzzle, locked together in an endless orgy.  You fondly remember watching the shining liquid that was once your soul drip from the wet folds of her flower-petals, crystallizing into a tiny rock much smaller than Marae's own.");
 	if(player.hasStatusEffect(StatusEffects.CampMarble)) outputText("\n\nOn the shore, Marble looks out on the lake, wondering what happened to the one whom she loved.");
-	getGame().gameOver();
+	EventParser.gameOver();
 }
 
 	private function maraeStealLethicite(deliberate:Boolean = false):void {
@@ -591,7 +582,7 @@ private function MaraeIIStageII():void {
 		outputText("  Both are dripping and giving tiny squirts of sweet pleasure that simultaneously dull the mind and reinforce your worship of this sexually-charged deity.\n\n");
 
 		outputText("Marae grunts and pulls on ");
-		if(player.horns > 0) outputText("your horns");
+		if(player.horns.count > 0) outputText("your horns");
 		else outputText("your " + hairDescript());
 		outputText(", shoving her thick clit-cock deep inside your throat.  You reflexively swallow down the bulging fuck-meat and ");
 		if(player.cor < 33) outputText("struggle to ");
@@ -665,8 +656,8 @@ private function MaraeIIStageII():void {
 		}
 		outputText("\n\n");
 
-		if(player.vaginas[0].vaginalWetness < VAGINA_WETNESS_WET) outputText("Sticky wetness glistens between your thighs");
-		else if(player.vaginas[0].vaginalWetness < VAGINA_WETNESS_DROOLING) outputText("Drops of feminine arousal run down your thighs");
+		if(player.vaginas[0].vaginalWetness < VaginaClass.WETNESS_WET) outputText("Sticky wetness glistens between your thighs");
+		else if(player.vaginas[0].vaginalWetness < VaginaClass.WETNESS_DROOLING) outputText("Drops of feminine arousal run down your thighs");
 		else outputText("Trails of viscous feminine fluid leak from your " + vaginaDescript(0));
 		outputText(", reminding you of your unused femsex.  Marae grunts underneath you, and while at first you assume it's from the penetration, the prodding of two cock-like protrusions at your lusty holes corrects your misguided assumptions.  You pull back and begin to fuck her in earnest, and with each long rock back, you can see she's grown tentacles from underneath her ass, like two prehensile tails.  They push forwards and spear you, arresting your movement while you try to cope with the sudden stretching of two of your orifices.  Warmth radiates from the twin intruders along with a slippery fullness.  They're pumping something inside you that tingles and makes " + sMultiCockDesc() + " bounce and drip.");
 		player.cuntChange(12,true,true,false);
@@ -845,7 +836,7 @@ public function level3MaraeEncounter():void {
 private function grabHerBoob():void {
 	clearOutput();
 	outputText("You reach forward to cop a feel. The goddess' eyes go wide with fury as a massive branch swings down, catching you in the sternum. It hits you hard enough that you land in your boat and float back a few feet into the water. Nothing to do but leave and hope for another chance at her breasts...");
-	player.takeDamage(player.HP - 1);
+	player.takePhysDamage(player.HP - 1);
 	doNext(camp.returnToCampUseOneHour);
 }
 

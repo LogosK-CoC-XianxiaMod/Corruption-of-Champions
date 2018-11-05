@@ -3,11 +3,16 @@
  */
 package classes.Scenes.Places.Owca
 {
-	import classes.*;
-	import classes.internals.WeightedDrop;
-	import classes.GlobalFlags.kFLAGS;
+import classes.*;
+import classes.BodyParts.Butt;
+import classes.BodyParts.Hips;
+import classes.BodyParts.Horns;
+import classes.BodyParts.Tail;
+import classes.GlobalFlags.kFLAGS;
+import classes.Scenes.SceneLib;
+import classes.internals.WeightedDrop;
 
-	public class LustyDemons extends Monster
+public class LustyDemons extends Monster
 	{
 
 		override protected function performCombatAction():void
@@ -19,21 +24,20 @@ package classes.Scenes.Places.Owca
 			str = 140;
 			this.weaponAttack = 56 + (12 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
 			eAttack();
-			combatRoundOver();
 		}
 
 		override public function defeated(hpVictory:Boolean):void
 		{
-			game.owca.defeetVapulasHorde();
+			SceneLib.owca.defeetVapulasHorde();
 		}
 
 		override public function won(hpVictory:Boolean, pcCameWorms:Boolean):void
 		{
 			if (pcCameWorms){
 				outputText("\n\nThe demons smile to one at another as they watch your display, then close in...");
-				doNext(game.endLustLoss);
+				doNext(SceneLib.combat.endLustLoss);
 			} else {
-				game.owca.loseOrSubmitToVapula();
+				SceneLib.owca.loseOrSubmitToVapula();
 			}
 		}
 
@@ -61,23 +65,24 @@ package classes.Scenes.Places.Owca
 			this.ballSize = 1;
 			this.cumMultiplier = 3;
 			// this.hoursSinceCum = 0;
-			this.createVagina(false, VAGINA_WETNESS_SLICK, VAGINA_LOOSENESS_LOOSE);
+			this.createVagina(false, VaginaClass.WETNESS_SLICK, VaginaClass.LOOSENESS_LOOSE);
 			createBreastRow(0);
-			this.ass.analLooseness = ANAL_LOOSENESS_STRETCHED;
-			this.ass.analWetness = ANAL_WETNESS_SLIME_DROOLING;
+			this.ass.analLooseness = AssClass.LOOSENESS_STRETCHED;
+			this.ass.analWetness = AssClass.WETNESS_SLIME_DROOLING;
 			this.tallness = rand(8) + 70;
-			this.hipRating = HIP_RATING_AMPLE+2;
-			this.buttRating = BUTT_RATING_LARGE;
+			this.hips.type = Hips.RATING_AMPLE + 2;
+			this.butt.type = Butt.RATING_LARGE;
 			this.skinTone = "red";
 			this.hairColor = "black";
 			this.hairLength = 15;
 			initStrTouSpeInte(180, 100, 10, 10);
-			initLibSensCor(120, 60, 100);
+			initWisLibSensCor(10, 120, 60, 100);
 			this.weaponName = "claws";
 			this.weaponVerb="claw";
-			this.weaponAttack = 4 + (1 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.weaponAttack = 4;
 			this.armorName = "demonic skin";
-			this.armorDef = 8 + (1 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.armorDef = 8;
+			this.armorMDef = 1;
 			//6 attacks: 5 from demons (10 damage each), 1 from Vapula (80 damage), 200 gems, 200 xp, 700 hp*/
 			this.bonusHP = 1200;
 			this.bonusLust = 350;
@@ -86,11 +91,11 @@ package classes.Scenes.Places.Owca
 			this.temperment = TEMPERMENT_LOVE_GRAPPLES;
 			this.level = 28;
 			this.gems = 500 + rand(250);
-			this.special1 = game.combat.packAttack;
-			this.special2 = game.combat.lustAttack;
-			this.tailType = TAIL_TYPE_DEMONIC;
-			this.hornType = HORNS_DEMON;
-			this.horns = 2;
+			this.special1 = SceneLib.combat.packAttack;
+			this.special2 = SceneLib.combat.lustAttack;
+			this.tailType = Tail.DEMONIC;
+			this.horns.type = Horns.DEMON;
+			this.horns.count = 2;
 			this.drop = new WeightedDrop().
 					add(weapons.PSWHIP,5).
 					add(weapons.SUCWHIP,4).
@@ -98,13 +103,8 @@ package classes.Scenes.Places.Owca
 					add(armors.BONSTRP,2).
 					add(consumables.IMPFOOD, 1);
 			this.createPerk(PerkLib.EnemyGroupType, 0, 0, 0, 0);
+			this.createPerk(PerkLib.EnemyTrueDemon, 0, 0, 0, 0);
 			createStatusEffect(StatusEffects.Vapula,0,0,0,0);
-			this.str += 54 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.tou += 30 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.spe += 3 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.inte += 3 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];			
-			this.lib += 36 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.newgamebonusHP = 3780;
 			checkMonster();
 		}
 	}

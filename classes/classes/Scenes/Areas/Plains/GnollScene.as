@@ -94,6 +94,7 @@ package classes.Scenes.Areas.Plains
 			}
 			outputText("The hyena girl slumps against your body, but only for a moment.  Then she's suddenly up again, sliding her bizarre member out of you with an obscene slurp.  She leans down to pat your cheek and giggles, \"<i>Thanks, lover.</i>\"   Then she sprints off towards the horizon.");
 			outputText("  A whimper bubbles up your throat and comes out as a half-giggle as you slump down unconscious.");
+			if (player.isGargoyle() && player.hasPerk(PerkLib.GargoyleCorrupted)) player.refillGargoyleHunger(30);
 			player.orgasm();
 			cleanupAfterCombat();
 		}
@@ -161,10 +162,10 @@ package classes.Scenes.Areas.Plains
 			if (rand(2) == 0) {
 				outputText("The gnoll must be taught a lesson, but you're staying the hell away from her freaky anatomy.  You roughly roll her onto her belly and pull her lean ass up into the air.  You line up your " + cockDescript(x) + " and ram it home into her tiny puckered entrance, eliciting a half-conscious gasp from the hyena girl.\n\n");
 				//(if cockTotal>1)
-				if (player.totalCocks() > 1 && player.cockArea(x) < monster.analCapacity() && y != -1) {
+				if (player.cockTotal() > 1 && player.cockArea(x) < monster.analCapacity() && y != -1) {
 					outputText("With a smirk, you pound away for a few minutes to get her loosened up.  Then you reach down and slap another " + Appearance.cockNoun(CockTypesEnum.HUMAN) + " alongside the first.  With a grunt and a thrust, you shove both of them inside.");
 					//(if cockTotal>2)
-					if (player.totalCocks() > 2 && player.cockArea(x) + player.cockArea(y) < monster.analCapacity()) outputText("  A few thrusts more, and you slow again.  As you gather up your third cock, the gnoll whimpers quietly, fearing what she knows will come next.  You slowly push forward, sinking your rigid meat into her ass.  When all three are in, it's very slow going, but you don't let up.");
+					if (player.cockTotal() > 2 && player.cockArea(x) + player.cockArea(y) < monster.analCapacity()) outputText("  A few thrusts more, and you slow again.  As you gather up your third cock, the gnoll whimpers quietly, fearing what she knows will come next.  You slowly push forward, sinking your rigid meat into her ass.  When all three are in, it's very slow going, but you don't let up.");
 					//(if cockTotal>3)
 					if (player.cockTotal() > 3 && player.cockArea(0) + player.cockArea(1) + player.cockArea(2) < monster.analCapacity()) outputText("  From there it's some time before her anus is stretched wide enough for more.  By now you can feel your orgasm on the horizon, so you're less careful with your fourth " + cockDescript(y) + ".  You slap it into the bundle of dicks and then ram it home.");
 					//(if cockTotal>4)
@@ -325,14 +326,14 @@ package classes.Scenes.Areas.Plains
 		 (increase clitLength)
 
 		 Hyena Spot Effect #2
-		 (if hipRating>0)
+		 (if hips.type>0)
 		 You cry out as your pelvis suddenly cave inward, crumpling narrower at the top of your legs to form " + hipDescript()
-		 (decrease hipRating)
+		 (decrease hips.type)
 
 		 Hyena Spot Effect #3
-		 (if buttRating>0)
+		 (if butt.type>0)
 		 You seem to bounce on your feet as you drop a few pounds in your rear.  With your new, light " + buttDescript() + ", you feel like you can fly across the plains.
-		 (decrease buttRating)
+		 (decrease butt.type)
 
 		 Hyena Spot Effect #4
 		 Your muscles seem to quiver underneath your " + skinDescript() + ", growing leaner and quicker.

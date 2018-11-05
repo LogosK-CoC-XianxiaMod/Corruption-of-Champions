@@ -14,7 +14,6 @@ package classes.Scenes.Monsters
 				//Blind dodge change
 				if (hasStatusEffect(StatusEffects.Blind)) {
 					outputText(capitalA + short + " swings her whip at you wildly, totally missing due to her blindness!!");
-					combatRoundOver();
 					return;
 				}
 				outputText("Grinning deviously, the ");
@@ -27,7 +26,7 @@ package classes.Scenes.Monsters
 				if (temp == 0) {
 					outputText("ass");
 					damage = 4;
-					game.dynStats("lus", 6 + int(player.sens / 20));
+					player.dynStats("lus", 6 + int(player.sens / 20));
 				}
 				//Whip yo tits!
 				if (temp == 1) {
@@ -38,7 +37,7 @@ package classes.Scenes.Monsters
 						outputText(" but you feel no pain thanks to your protection");
 						damage = 0;
 					}
-					game.dynStats("lus", 4 + int(player.sens / 15));
+					player.dynStats("lus", 4 + int(player.sens / 15));
 				}
 				//Whip yo groin
 				if (temp == 2) {
@@ -76,25 +75,23 @@ package classes.Scenes.Monsters
 								outputText("! Of course, it would have been worse if you didn't wear groin protection");
 								damage = int(damage / (groinProtection + 1));
 							}
-							damage = player.reduceDamage(damage);
 							if (damage < 20) damage = 10;
-							game.dynStats("lus", -15);
+							player.dynStats("lus", -15);
 						}
 						if (player.gender == 2) {
 							outputText("groin, making your " + vaginaDescript(0) + " sting with pain");
 							damage = 10;
-							game.dynStats("lus", -8);
+							player.dynStats("lus", -8);
 						}
 						if (player.gender == 3) {
 							outputText("groin, dealing painful damage to your [cocks] and " + player.vaginaDescript(0) + ", doubling you over in agony");
-							damage = int((player.maxHP()) / 3)
+							damage = int((player.maxHP()) / 3);
 							if (groinProtection > 0) {
 								outputText("! Of course, it would have been worse if you didn't wear groin protection");
 								damage = int(damage / (groinProtection + 1));
 							}
-							damage = player.reduceDamage(damage);
 							if (damage < 30) damage = 30;
-							game.dynStats("lus", -20);
+							player.dynStats("lus", -20);
 						}
 					}
 				}
@@ -114,7 +111,7 @@ package classes.Scenes.Monsters
 					damage = 24;
 				}
 				outputText("! ");
-				player.takeDamage(damage, true);
+				player.takePhysDamage(damage, true);
 			}
 			else {
 				outputText("The ");
@@ -126,7 +123,6 @@ package classes.Scenes.Monsters
 				this.weaponName = "whip";
 				this.weaponVerb = "brutal whip-crack";
 			}
-			combatRoundOver();
 		}
 
 		public function AbstractSuccubus()
@@ -143,14 +139,13 @@ package classes.Scenes.Monsters
 			//avoid!
 			if (player.spe > spe && rand(4) == 0 || (player.findPerk(PerkLib.Evade) >= 0 && rand(4) == 0) || (player.findPerk(PerkLib.Misdirection) >= 0 && rand(4) == 0 && player.armorName == "red, high-society bodysuit")) {
 				outputText("  You start to sidestep and realize it's a feint.   Ducking low, you slide under her real attack... a kiss?!  ");
-				if (player.lust >= 70) outputText("  Maybe you shouldn't have bothered to move, it might have been fun.");
+				if (player.lust >= maxLust() * 0.7) outputText("  Maybe you shouldn't have bothered to move, it might have been fun.");
 			}
 			//get hit
 			else {
 				outputText("  You start to dodge to the side, but she shifts direction expertly and plants a wet kiss on your lips.  She spins and dodges away with a ballet dancer's grace, leaving you to wonder what just happened.  ");
 				if (!player.hasStatusEffect(StatusEffects.KissOfDeath)) player.createStatusEffect(StatusEffects.KissOfDeath, 0, 0, 0, 0);
 			}
-			combatRoundOver();
 		}
 
 		protected function seduceAttack():void
@@ -161,11 +156,11 @@ package classes.Scenes.Monsters
 			//Butt slap!
 			if (temp == 0) {
 				outputText(capitalA + short + " slaps her " + Appearance.buttDescriptionShort(this));
-				if (buttRating >= 10) {
+				if (butt.type >= 10) {
 					outputText(", making it jiggle delightfully.");
 					//85% success rate for the jiggly girls
 					if (rand(100) <= 95) {
-						game.dynStats("lus", rand(buttRating) + 10);
+						player.dynStats("lus", rand(butt.type) + 10);
 						outputText("\nThe display is quite arousing.");
 					}
 					else outputText("\nYou're unimpressed.\n\n");
@@ -173,8 +168,8 @@ package classes.Scenes.Monsters
 				else {
 					outputText(".");
 					//50%ish chance of success for the tight butted.
-					if (rand(100) <= (70 + buttRating * 2)) {
-						game.dynStats("lus", rand(buttRating) + 9);
+					if (rand(100) <= (70 + butt.type * 2)) {
+						player.dynStats("lus", rand(butt.type) + 9);
 						outputText("\nThe display is quite arousing.");
 					}
 					else outputText("\nYou're unimpressed.\n\n");
@@ -187,9 +182,9 @@ package classes.Scenes.Monsters
 				if (breastRows.length == 1) {
 					//50+ breastsize% success rate
 					outputText(capitalA + short + " caresses some of her ample chest-flesh before shaking it from side to side enticingly.");
-					if (lust >= 50) outputText("  " + pronoun2 + " hard nipples seem to demand your attention.");
+					if (lust >= maxLust() * 0.5) outputText("  " + pronoun2 + " hard nipples seem to demand your attention.");
 					if (rand(100) <= (65 + biggestTitSize())) {
-						game.dynStats("lus", rand(breastRows[0].breastRating) + breastRows.length + 10);
+						player.dynStats("lus", rand(breastRows[0].breastRating) + breastRows.length + 10);
 						outputText("\nThe display is quite arousing.");
 					}
 					else outputText("\nYou're unimpressed.\n\n");
@@ -197,10 +192,10 @@ package classes.Scenes.Monsters
 				if (breastRows.length > 1) {
 					//50 + 10% per breastRow + breastSize%
 					outputText(capitalA + short + " caresses " + pronoun2 + " some of her rows of ample chest-flesh before shaking it all from side to side enticingly.");
-					if (lust >= 50) outputText(", your " + nippleDescript(0) + "s painfully visible.");
+					if (lust >= maxLust() * 0.5) outputText(", your " + nippleDescript(0) + "s painfully visible.");
 					else outputText(".");
 					if (rand(100) <= (54 + (breastRows.length - 1) * 15 + breastRows[0].breastRating)) {
-						game.dynStats("lus", rand(breastRows[0].breastRating) + breastRows.length * breastRows[0].breasts + 5);
+						player.dynStats("lus", rand(breastRows[0].breastRating) + breastRows.length * breastRows[0].breasts + 5);
 						outputText("\nThe display is quite arousing.");
 					}
 					else outputText("\nYou're unimpressed.\n\n");
@@ -213,12 +208,11 @@ package classes.Scenes.Monsters
 				//Success = 50% + 10% times each cock/vagina
 				//rand(vaginas*2 + cocks*2) + wetness and/or length/6
 				if (rand(101) <= (65 + vaginas.length * 10 + cocks.length * 10)) {
-					game.dynStats("lus", rand(vaginas.length * 2 + cocks.length * 2) + 13);
+					player.dynStats("lus", rand(vaginas.length * 2 + cocks.length * 2) + 13);
 					outputText("\nThe display is quite arousing.");
 				}
 				else outputText("\nYou're unimpressed.\n\n");
 			}
-			combatRoundOver();
 		}
 	}
 }

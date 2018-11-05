@@ -1,11 +1,15 @@
 package classes.Scenes.NPCs
 {
-	import classes.*;
-	import classes.GlobalFlags.kFLAGS;
-	import classes.Scenes.Areas.Lake.GooGirl;
-	import classes.internals.*;
+import classes.*;
+import classes.BodyParts.Butt;
+import classes.BodyParts.Hair;
+import classes.BodyParts.Hips;
+import classes.BodyParts.Skin;
+import classes.GlobalFlags.kFLAGS;
+import classes.Scenes.Areas.Lake.GooGirl;
+import classes.Scenes.SceneLib;
 
-	public class GooArmor extends GooGirl
+public class GooArmor extends GooGirl
 	{
 		public function gooArmorAI():void {
 			if(rand(2) == 0 && !player.hasStatusEffect(StatusEffects.GooArmorSilence)) gooSilenceAttack();
@@ -32,15 +36,13 @@ package classes.Scenes.NPCs
 				outputText("The goo-armor rushes forward and swings her sword in a mighty arc.  You aren't quite quick enough to dodge her blow, and the goopy sword slams into you, throwing you back and leaving a nasty welt. ");
 				var damage:Number = Math.round((str + weaponAttack) - rand(player.tou) - player.armorDef);
 				if(damage <= 0) damage = 1;
-				damage = player.takeDamage(damage, true);
+				damage = player.takePhysDamage(damage, true);
 			}
-			combatRoundOver();
 		}
 		//ATTACK TWO: Goo Consume
 		public function gooArmorAttackTwoGooConsume():void {
 			outputText("Suddenly, the goo-girl leaks half-way out of her heavy armor and lunges at you.  You attempt to dodge her attack, but she doesn't try and hit you - instead, she wraps around you, pinning your arms to your chest.  More and more goo latches onto you - you'll have to fight to get out of this.");
 			player.createStatusEffect(StatusEffects.GooArmorBind,0,0,0,0);
-			combatRoundOver();
 		}
 		//(Struggle)
 		public function struggleAtGooBind():void {
@@ -50,25 +52,18 @@ package classes.Scenes.NPCs
 				outputText("You try and get out of the goo's grasp, but every bit of goop you pull off you seems to be replaced by twice as much!");
 				//(If fail 5 times, go to defeat scene)
 				player.addStatusValue(StatusEffects.GooArmorBind,1,1);
-				if(player.statusEffectv1(StatusEffects.GooArmorBind) >= 5) {
-					if(hasStatusEffect(StatusEffects.Spar)) game.valeria.pcWinsValeriaSparDefeat();
-					else game.dungeons.heltower.gooArmorBeatsUpPC();
-					return;
-				}
 			}
 			//If succeed: 
 			else {
 				outputText("You finally pull the goop off of you and dive out of her reach before the goo-girl can re-attach herself to you.  Pouting, she refills her suit of armor and reassumes her fighting stance.");
 				player.removeStatusEffect(StatusEffects.GooArmorBind);
 			}
-			combatRoundOver();
 		}
 		//ATTACK THREE: Goo Silence
 		public function gooSilenceAttack():void {
 			outputText("The goo pulls a hand off her greatsword and shoots her left wrist out towards you.  You recoil as a bit of goop slaps onto your mouth, preventing you from speaking - looks like you're silenced until you can pull it off!");
 			//(No spells until PC passes a moderate STR check or burns it away)
 			player.createStatusEffect(StatusEffects.GooArmorSilence,0,0,0,0);
-			combatRoundOver();
 		}
 		
 		override protected function performCombatAction():void
@@ -78,18 +73,21 @@ package classes.Scenes.NPCs
 		
 		override public function defeated(hpVictory:Boolean):void
 		{
-			if (hasStatusEffect(StatusEffects.Spar)) game.valeria.pcWinsValeriaSpar();
-			else game.dungeons.heltower.beatUpGooArmor();
+			if (hasStatusEffect(StatusEffects.Spar)) SceneLib.valeria.pcWinsValeriaSpar();
+			else SceneLib.dungeons.heltower.beatUpGooArmor();
 		}
 		
 		override public function won(hpVictory:Boolean, pcCameWorms:Boolean):void
 		{
 			if (pcCameWorms){
 				outputText("\n\nThe armored goo sighs while you exhaust yourself...");
-				doNext(game.endLustLoss);
+				doNext(SceneLib.combat.endLustLoss);
 			} else {
-				if(hasStatusEffect(StatusEffects.Spar)) game.valeria.pcWinsValeriaSparDefeat();
-				else game.dungeons.heltower.gooArmorBeatsUpPC();
+				if(hasStatusEffect(StatusEffects.Spar)) SceneLib.valeria.pcWinsValeriaSparDefeat();
+				else {
+					if (player.isGargoyle()) SceneLib.dungeons.heltower.gargoyleBadEndPhoenixTower();
+					else SceneLib.dungeons.heltower.gooArmorBeatsUpPC();
+				}
 			}
 		}
 		
@@ -105,24 +103,25 @@ package classes.Scenes.NPCs
 			this.imageName = "gooarmor";
 			this.long = "Before you stands a suit of plated mail armor filled with a bright blue goo, standing perhaps six feet off the ground.  She has a beautiful, feminine face, and her scowl as she stands before you is almost cute.  She has formed a mighty greatsword from her goo, and has assumed the stance of a well-trained warrior.";
 			// this.plural = false;
-			this.createVagina(false, VAGINA_WETNESS_SLAVERING, VAGINA_LOOSENESS_GAPING_WIDE);
+			this.createVagina(false, VaginaClass.WETNESS_SLAVERING, VaginaClass.LOOSENESS_GAPING_WIDE);
 			createBreastRow(Appearance.breastCupInverse("C"));
-			this.ass.analLooseness = ANAL_LOOSENESS_STRETCHED;
-			this.ass.analWetness = ANAL_WETNESS_SLIME_DROOLING;
+			this.ass.analLooseness = AssClass.LOOSENESS_STRETCHED;
+			this.ass.analWetness = AssClass.WETNESS_SLIME_DROOLING;
 			this.tallness = rand(8) + 70;
-			this.hipRating = HIP_RATING_AMPLE+2;
-			this.buttRating = BUTT_RATING_LARGE;
-			this.skin.setBaseOnly({color:"blue",type:SKIN_BASE_GOO});
+			this.hips.type = Hips.RATING_AMPLE + 2;
+			this.butt.type = Butt.RATING_LARGE;
+			this.skin.setBaseOnly({color:"blue",type:Skin.GOO});
 			this.hairColor = "black";
 			this.hairLength = 15;
-			this.hairType = HAIR_GOO;
+			this.hairType = Hair.GOO;
 			initStrTouSpeInte(120, 110, 100, 80);
-			initLibSensCor(90, 35, 50);
+			initWisLibSensCor(80, 90, 35, 50);
 			this.weaponName = "goo sword";
 			this.weaponVerb="slash";
-			this.weaponAttack = 70 + (15 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.weaponAttack = 70;
 			this.armorName = "armor";
-			this.armorDef = 60 + (7 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.armorDef = 60;
+			this.armorMDef = 5;
 			this.bonusHP = 500;
 			this.bonusLust = 20;
 			this.lustVuln = .35;
@@ -130,12 +129,7 @@ package classes.Scenes.NPCs
 			this.level = 30;
 			this.gems = rand(50)+80;
 			this.drop = NO_DROP;
-			this.str += 36 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.tou += 33 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.spe += 30 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.inte += 24 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];			
-			this.lib += 27 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.newgamebonusHP = 6000;
+			this.createPerk(PerkLib.EnemyGooType, 0, 0, 0, 0);
 			checkMonster();
 		}
 		

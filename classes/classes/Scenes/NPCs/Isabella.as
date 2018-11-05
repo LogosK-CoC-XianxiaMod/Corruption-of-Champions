@@ -1,9 +1,13 @@
 package classes.Scenes.NPCs
 {
-	import classes.*;
-	import classes.GlobalFlags.kFLAGS;
+import classes.*;
+import classes.BodyParts.Butt;
+import classes.BodyParts.Hips;
+import classes.BodyParts.Tail;
+import classes.GlobalFlags.kFLAGS;
+import classes.Scenes.SceneLib;
 
-	public class Isabella extends Monster
+public class Isabella extends Monster
 	{
 
 		//IZZY AI:
@@ -35,17 +39,21 @@ package classes.Scenes.NPCs
 			}
 			else {
 				var damage:Number;
-				damage = Math.round((weaponAttack + str + 20) - rand(player.tou+player.armorDef));
-				if(damage < 0) {
+				if (flags[kFLAGS.ISABELLA_LVL_UP] >= 1) damage = Math.round(((weaponAttack + str + 20) * flags[kFLAGS.ISABELLA_LVL_UP]) - rand(player.tou+player.armorDef));
+				else damage = Math.round((weaponAttack + str + 20) - rand(player.tou + player.armorDef));
+				if (wrath >= 100) {
+					wrath -= 100;
+					damage *= 2;
+				}
+				if (damage < 0) {
 					outputText("You brace yourself and catch her shield in both hands, dragging through the dirt as you slow her charge to a stop.  She gapes down, completely awestruck by the show of power.");
 				}
 				else {
 					outputText("She's coming too fast to dodge, and you're forced to try to stop her.  It doesn't work.  Isabella's shield hits you hard enough to ring your ears and knock you onto your back with bruising force. ");
-					damage = player.takeDamage(damage, true);
+					damage = player.takePhysDamage(damage, true);
 					outputText("\n");
 				}
 			}
-			combatRoundOver();
 		}
 
 		public function isabellaStun():void {
@@ -74,7 +82,8 @@ package classes.Scenes.NPCs
 			}
 			else {
 				var damage:Number = 0;
-				damage = Math.round((weaponAttack + str) - rand(player.tou+player.armorDef));
+				if (flags[kFLAGS.ISABELLA_LVL_UP] >= 1) damage = Math.round(((weaponAttack + str) * (1 + (flags[kFLAGS.ISABELLA_LVL_UP] * 0.1))) - rand(player.tou+player.armorDef));
+				else damage = Math.round((weaponAttack + str) - rand(player.tou+player.armorDef));
 				if(damage < 0) {
 					outputText("You deflect her blow away, taking no damage.\n");
 					damage = 0;
@@ -85,12 +94,11 @@ package classes.Scenes.NPCs
 				}
 				else {
 					outputText("You try to avoid it, but her steely attack connects, rocking you back.  You stagger about while trying to get your bearings, but it's all you can do to stay on your feet.  <b>Isabella has stunned you!</b> ");
-					damage = player.takeDamage(damage, true);
+					damage = player.takePhysDamage(damage, true);
 					outputText("\n");
 					player.createStatusEffect(StatusEffects.IsabellaStunned,0,0,0,0);
 				}
 			}
-			combatRoundOver();
 		}
 
 		public function isabellaThroatPunch():void {
@@ -118,7 +126,8 @@ package classes.Scenes.NPCs
 			}
 			else {
 				var damage:Number;
-				damage = Math.round(str - rand(player.tou+player.armorDef));
+				if (flags[kFLAGS.ISABELLA_LVL_UP] >= 1) damage = Math.round((str * (1 + (flags[kFLAGS.ISABELLA_LVL_UP] * 0.1))) - rand(player.tou+player.armorDef));
+				else damage = Math.round(str - rand(player.tou+player.armorDef));
 				if(damage <= 0) {
 					outputText("You manage to block her with your own fists.\n");
 				}
@@ -127,27 +136,26 @@ package classes.Scenes.NPCs
 				}
 				else {
 					outputText("You try your best to stop the onrushing fist, but it hits you square in the throat, nearly collapsing your windpipe entirely.  Gasping and sputtering, you try to breathe, and while it's difficult, you manage enough to prevent suffocation. <b>It will be impossible to focus to cast a spell in this state!</b> ");
-					damage = player.takeDamage(damage, true);
+					damage = player.takePhysDamage(damage, true);
 					outputText("\n");
 					player.createStatusEffect(StatusEffects.ThroatPunch,2,0,0,0);
 				}
 			}
-			combatRoundOver();
 		}
 
 		//[Milk Self-Heal]
 		public function drankMalkYaCunt():void {
 			outputText("Isabella pulls one of her breasts out of her low-cut shirt and begins to suckle at one of the many-tipped nipples. Her cheeks fill and hollow a few times while you watch with spellbound intensity.  She finishes and tucks the weighty orb away, blushing furiously.  The quick drink seems to have reinvigorated her, and watching it has definitely aroused you.");
-			HP += 100;
+			if (flags[kFLAGS.ISABELLA_LVL_UP] >= 1) HP += 100 * flags[kFLAGS.ISABELLA_LVL_UP];
+			else HP += 100;
 			lust += 5;
-			game.dynStats("lus", (10+player.lib/20));
-			combatRoundOver();
+			player.dynStats("lus", (10+player.lib/20));
 		}
 
 		override protected function performCombatAction():void
 		{
 			//-If below 70% HP, 50% chance of milk drinking
-			if (HPRatio() < .7 && rand(3) == 0) drankMalkYaCunt();
+			if (HPRatio() < .7 && rand(2) == 0) drankMalkYaCunt();
 			//if PC has spells and isn't silenced, 1/3 chance of silence.
 			else if (player.hasSpells() && !player.hasStatusEffect(StatusEffects.ThroatPunch) && rand(3) == 0) {
 				isabellaThroatPunch();
@@ -161,16 +169,16 @@ package classes.Scenes.NPCs
 
 		override public function defeated(hpVictory:Boolean):void
 		{
-			game.isabellaScene.defeatIsabella();
+			SceneLib.isabellaScene.defeatIsabella();
 		}
 
 		override public function won(hpVictory:Boolean, pcCameWorms:Boolean):void
 		{
 			if(pcCameWorms){
 				outputText("\n\n\"<i>Ick,</i>\" Isabella tuts as she turns to leave...");
-				game.cleanupAfterCombat();
+				SceneLib.combat.cleanupAfterCombatImpl();
 			} else {
-				game.isabellaScene.isabellaDefeats();
+				SceneLib.isabellaScene.isabellaDefeats();
 			}
 		}
 
@@ -181,45 +189,121 @@ package classes.Scenes.NPCs
 			this.imageName = "isabella";
 			this.long = "Isabella is a seven foot tall, red-headed tower of angry cow-girl.  She's snarling at you from behind her massive shield, stamping her hooves in irritation as she prepares to lay into you.  Her skin is dusky, nearly chocolate except for a few white spots spattered over her body.  She wears a tight silk shirt and a corset that barely supports her bountiful breasts, but it's hard to get a good look at them behind her giant shield.";
 			// this.plural = false;
-			this.createVagina(false, VAGINA_WETNESS_DROOLING, VAGINA_LOOSENESS_GAPING);
+			this.createVagina(false, VaginaClass.WETNESS_DROOLING, VaginaClass.LOOSENESS_GAPING);
 			this.createStatusEffect(StatusEffects.BonusVCapacity, 45, 0, 0, 0);
 			createBreastRow(Appearance.breastCupInverse("EE+"));
-			this.ass.analLooseness = ANAL_LOOSENESS_VIRGIN;
-			this.ass.analWetness = ANAL_WETNESS_DRY;
+			this.ass.analLooseness = AssClass.LOOSENESS_VIRGIN;
+			this.ass.analWetness = AssClass.WETNESS_DRY;
 			this.createStatusEffect(StatusEffects.BonusACapacity,38,0,0,0);
 			this.tallness = 7*12+6;
-			this.hipRating = HIP_RATING_CURVY+2;
-			this.buttRating = BUTT_RATING_LARGE+1;
+			this.hips.type = Hips.RATING_CURVY + 2;
+			this.butt.type = Butt.RATING_LARGE + 1;
 			this.skinTone = "dusky";
 			this.hairColor = "red";
 			this.hairLength = 13;
-			initStrTouSpeInte(80, 108, 75, 64);
-			initLibSensCor(64, 25, 40);
+			if (flags[kFLAGS.ISABELLA_LVL_UP] < 1) {
+				initStrTouSpeInte(80, 108, 75, 64);
+				initWisLibSensCor(64, 64, 25, 40);
+				this.weaponAttack = 18;
+				this.armorDef = 18;
+				this.armorMDef = 3;
+				this.bonusHP = 600;
+				this.level = 20;
+			}
+			if (flags[kFLAGS.ISABELLA_LVL_UP] == 1) {
+				initStrTouSpeInte(100, 130, 85, 73);
+				initWisLibSensCor(73, 70, 30, 40);
+				this.weaponAttack = 21;
+				this.armorDef = 24;
+				this.armorMDef = 4;
+				this.bonusHP = 800;
+				this.level = 26;
+			}
+			if (flags[kFLAGS.ISABELLA_LVL_UP] == 2) {
+				initStrTouSpeInte(120, 155, 100, 82);
+				initWisLibSensCor(82, 80, 35, 40);
+				this.weaponAttack = 24;
+				this.armorDef = 30;
+				this.armorMDef = 5;
+				this.bonusHP = 1000;
+				this.level = 32;
+			}
+			if (flags[kFLAGS.ISABELLA_LVL_UP] == 3) {
+				initStrTouSpeInte(140, 180, 115, 91);
+				initWisLibSensCor(91, 90, 40, 40);
+				this.weaponAttack = 27;
+				this.armorDef = 36;
+				this.armorMDef = 6;
+				this.bonusHP = 1200;
+				this.level = 38;
+			}
+			if (flags[kFLAGS.ISABELLA_LVL_UP] == 4) {
+				initStrTouSpeInte(160, 210, 130, 100);
+				initWisLibSensCor(100, 100, 45, 40);
+				this.weaponAttack = 30;
+				this.armorDef = 42;
+				this.armorMDef = 7;
+				this.bonusHP = 1400;
+				this.level = 44;
+			}
+			if (flags[kFLAGS.ISABELLA_LVL_UP] == 5) {
+				initStrTouSpeInte(180, 240, 145, 110);
+				initWisLibSensCor(110, 110, 50, 40);
+				this.weaponAttack = 33;
+				this.armorDef = 48;
+				this.armorMDef = 8;
+				this.bonusHP = 1600;
+				this.level = 50;
+			}
+			if (flags[kFLAGS.ISABELLA_LVL_UP] == 6) {
+				initStrTouSpeInte(200, 270, 160, 120);
+				initWisLibSensCor(120, 120, 55, 40);
+				this.weaponAttack = 36;
+				this.armorDef = 54;
+				this.armorMDef = 9;
+				this.bonusHP = 1800;
+				this.level = 56;
+			}
+			if (flags[kFLAGS.ISABELLA_LVL_UP] == 7) {
+				initStrTouSpeInte(220, 300, 175, 130);
+				initWisLibSensCor(130, 130, 60, 40);
+				this.weaponAttack = 39;
+				this.armorDef = 60;
+				this.armorMDef = 10;
+				this.bonusHP = 2000;
+				this.level = 62;
+			}
 			this.weaponName = "giant shield";
 			this.weaponVerb="smash";
-			this.weaponAttack = 18 + (4 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
 			this.armorName = "giant shield";
-			this.armorDef = 18 + (2 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
 			this.armorPerk = "";
 			this.armorValue = 70;
-			this.bonusHP = 700;
 			this.bonusLust = 20;
 			this.lust = 30;
 			this.lustVuln = .35;
 			this.temperment = TEMPERMENT_RANDOM_GRAPPLES;
-			this.level = 20;
 			this.gems = rand(10) + 25;
-			this.tailType = TAIL_TYPE_COW;
+			this.tailType = Tail.COW;
 			this.tailRecharge = 0;
 			this.drop = NO_DROP;
 			this.createPerk(PerkLib.ShieldWielder, 0, 0, 0, 0);
 			this.createPerk(PerkLib.EnemyBeastOrAnimalMorphType, 0, 0, 0, 0);
-			this.str += 16 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.tou += 21 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.spe += 15 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.inte += 12 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];			
-			this.lib += 12 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.newgamebonusHP = 2280;
+			if (flags[kFLAGS.ISABELLA_LVL_UP] >= 1) this.createPerk(PerkLib.EnemyBossType, 0, 0, 0, 0);
+			if (flags[kFLAGS.ISABELLA_LVL_UP] >= 2) {
+				this.createPerk(PerkLib.Lifeline, 0, 0, 0, 0);
+				this.createPerk(PerkLib.BasicTranquilness, 0, 0, 0, 0);
+			}
+			if (flags[kFLAGS.ISABELLA_LVL_UP] >= 3) this.createPerk(PerkLib.RefinedBodyI, 0, 0, 0, 0);
+			if (flags[kFLAGS.ISABELLA_LVL_UP] >= 4) {
+				this.createPerk(PerkLib.TankI, 0, 0, 0, 0);
+				this.createPerk(PerkLib.HalfStepToImprovedTranquilness, 0, 0, 0, 0);
+			}
+			if (flags[kFLAGS.ISABELLA_LVL_UP] >= 5) this.createPerk(PerkLib.Regeneration, 0, 0, 0, 0);
+			if (flags[kFLAGS.ISABELLA_LVL_UP] >= 6) {
+				this.createPerk(PerkLib.GoliathI, 0, 0, 0, 0);
+				this.createPerk(PerkLib.ImprovedTranquilness, 0, 0, 0, 0);
+			}
+			if (flags[kFLAGS.ISABELLA_LVL_UP] >= 7) this.createPerk(PerkLib.CheetahI, 0, 0, 0, 0);
 			checkMonster();
 		}
 		

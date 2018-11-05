@@ -1,17 +1,18 @@
 //Dungeon 1: Factory
 package classes.Scenes.Dungeons 
 {
-	import classes.*;
-	import classes.GlobalFlags.kFLAGS;
-	import classes.GlobalFlags.kGAMECLASS;
-	import classes.BaseContent;
-	import classes.Scenes.Dungeons.DungeonAbstractContent;
-	import classes.Scenes.Dungeons.DungeonEngine;
-	import classes.Scenes.Dungeons.Factory.*;
-	
-	import coc.model.GameModel;
-	
-	use namespace kGAMECLASS;
+import classes.*;
+import classes.BodyParts.Antennae;
+import classes.BodyParts.Ears;
+import classes.BodyParts.Face;
+import classes.BodyParts.Horns;
+import classes.BodyParts.LowerBody;
+import classes.BodyParts.Tail;
+import classes.GlobalFlags.kFLAGS;
+import classes.Scenes.Dungeons.Factory.*;
+import classes.lists.Gender;
+
+use namespace CoC;
 	
 	public class Factory extends DungeonAbstractContent
 	{
@@ -32,7 +33,7 @@ package classes.Scenes.Dungeons
 		public function enterDungeon():void {
 			clearOutput();
 			outputText(images.showImage("dungeon-entrance-factory"));
-			kGAMECLASS.inDungeon = true;
+			inDungeon = true;
 			//Shutdown state
 			if (flags[kFLAGS.FACTORY_SHUTDOWN] == 2) outputText("Rounding a bend in the mountainous foothills, you stumble upon a large, rusted and eerily silent iron structure with a number of tall gray smokestacks.  A bevy of green-tinged copper pipes stem from the rear of the building, climbing up the steep mountainside toward a jagged hole in its face.  Most of these are cracked open along their seams and both the pipes and mountainside are glazed with pink tinted runoff.");
 			else if (flags[kFLAGS.FACTORY_SHUTDOWN] == 1) outputText("Rounding a bend in the mountainous foothills, you stumble upon a large, rusted and eerily silent iron structure with a number of tall gray smokestacks.  A bevy of green-tinged copper pipes stem from the rear of the building, climbing up the steep mountainside and disappearing into a hole in its face.");
@@ -49,7 +50,7 @@ package classes.Scenes.Dungeons
 		}
 		
 		private function exitDungeon():void {
-			kGAMECLASS.inDungeon = false;
+			inDungeon = false;
 			clearOutput();
 			outputText("You slip out the door and disappear, heading back towards your camp, leaving the hellish factory behind.");
 			doNext(camp.returnToCampUseOneHour);	
@@ -123,6 +124,33 @@ package classes.Scenes.Dungeons
 			flags[kFLAGS.FACTORY_TAKEN_LACTAID]++;
 			inventory.takeItem(consumables.LACTAID, roomPremiumStorage);
 		}
+		private function takeWardTome():void {
+			clearOutput();
+			outputText("These drugs aside, maybe there is something else here that can be of use?  A quick search becomes a not so quick search as you realize how much junk is in these boxes.");
+			if (player.inte < 50) {
+				outputText(" Sadly, everything is either useless, corruptive or both.");
+			}
+			else {
+				outputText(" While most of this stuff is either dangerous to use or just plain junk, you stumble on a book of spells.  This appears to be a tome on the theories behind magical wards.  This could be useful!");
+                outputText("You open the tome and begin to read.  The first chapter is a primer on white magic, while most of it is already familiar to you it briefly goes over a handful of theories that are new to you.");
+                if (player.inte < 100) {
+                    outputText(" You feel yourself smarter for this.");
+                    dynStats("int", 1 + rand(4));
+                }
+                else outputText(" However, this does little for your already considerable intellect.");
+                if (!player.hasStatusEffect(StatusEffects.KnowsChargeA)) {
+                    outputText(" After rereading the chapter a few times and a few experiments, you’ve worked out how to put these theories to use in combat.  <b>You have learned a new spell: Charged Armor</b>");
+                    player.createStatusEffect(StatusEffects.KnowsChargeA, 0, 0, 0, 0);
+                }
+                else outputText(" As interesting as the theory is, you already have mastered the practical applications");
+                outputText(".  The final few chapters...  After a quick skim, you believe that with enough stone and some time, you could set up a ward around your camp.");
+                if (player.statusEffectv1(StatusEffects.TelAdre) >= 1) outputText("  Sort of like Tel’Adre’s defences in miniature.");
+
+                player.createKeyItem("Warding Tome", 0, 0, 0, 0);
+                flags[kFLAGS.CAMP_UPGRADES_MAGIC_WARD] = 1;
+			}
+            doNext(roomPremiumStorage);
+		}
 		
 		private function drinkCoffee():void {
 			spriteSelect(96);
@@ -162,18 +190,18 @@ package classes.Scenes.Dungeons
 					outputText("  ");
 				}
 				outputText("You glance over to the pile of glistening entwined bodies as they writhe in pleasure, and find yourself drawn in to the mass.  You spend the next four hours suckling tainted breast milk, fucking gaping pussies, and doing your damnedest to milk as much cum from the dick-girls around you.  Eventually the drugs work their way out of your system, leaving you to recover on the floor.  Cum, milk, and sweat drip from your nude form as you try to clean up and get dressed.");
+				if (player.isGargoyle() && player.hasPerk(PerkLib.GargoyleCorrupted)) player.refillGargoyleHunger(30);
 				player.orgasm();
 				dynStats("int", -player.cor/10, "lib", 2*player.cor, "cor", 20);
 				player.slimeFeed();
-
 				player.createPerk(PerkLib.ProductivityDrugs,0,0,0,0);
 				player.addPerkValue(PerkLib.ProductivityDrugs, 1, player.cor);	//minlibido += CURRENT cor
 				player.addPerkValue(PerkLib.ProductivityDrugs, 2, 10);			//mincorruption += 10
 				player.addPerkValue(PerkLib.ProductivityDrugs, 3, player.lib);	//cumproduction += CURRENT lib (same as cum witch blessing)
-				player.addPerkValue(PerkLib.ProductivityDrugs, 4, player.lib);//milkproduction += CURRENT lib (same as level1 milkmaid)
+				player.addPerkValue(PerkLib.ProductivityDrugs, 4, player.lib);	//milkproduction += CURRENT lib (same as level1 milkmaid)
 			}
 			//Second/third times...
-			else if (player.getAllMinStats().lib < player.getAllMaxStats().lib) {
+			else if (player.getAllMinStats()["lib"] < player.getAllMaxStats()["lib"]) {
 				//[[2nd time]] 
 				outputText("You eagerly put on the modified harness and let them inject you with more of those body-altering chemicals.  As they fill you with artificial lust and desire, you cry out and beg for more.  They oblige you and give you a larger dose than the first time.  ");
 				//Grow dick!
@@ -181,18 +209,18 @@ package classes.Scenes.Dungeons
 					player.lengthChange(player.increaseCock(0, 5), player.cocks.length);
 					if(player.averageCockLength() >= 9 && player.averageCockThickness() < 2) {
 						outputText("You feel yourself gain in thickness as well, to match your new length.  ");
-						temp = player.cocks.length;
-						while(temp > 0) {
-							temp--;
-							if(player.cocks[temp].cockThickness < 2) player.cocks[temp].cockThickness++;
+						var i:int = player.cocks.length;
+						while(i > 0) {
+							i--;
+							if(player.cocks[i].cockThickness < 2) player.cocks[i].cockThickness++;
 						}
 					}
 					else if(player.averageCockLength() >= 15 && player.averageCockThickness() < 3) {
 						outputText("You feel yourself gain in thickness as well, to match your new length.  ");
-						temp = player.cocks.length;
-						while(temp > 0) {
-							temp--;
-							if(player.cocks[temp].cockThickness < 3) player.cocks[temp].cockThickness++;
+						i = player.cocks.length;
+						while(i > 0) {
+							i--;
+							if(player.cocks[i].cockThickness < 3) player.cocks[i].cockThickness++;
 						}
 					}
 				}
@@ -217,10 +245,10 @@ package classes.Scenes.Dungeons
 				//HERM
 				if(player.vaginas.length > 0 && player.cocks.length > 0) outputText("You feel your " + multiCockDescript() + " getting milked by many wet holes, though you are too busy sucking cocks and moaning in ecstasy to notice who they belong to.  ");
 				outputText("The next eight hours are lost to your desires as you cum over and over, feeling mind-shattering pleasure.  You recover a while on the floor, soaked with a mixture of milk, cum, and pussy-juice.  Getting dressed is a bit troublesome with the recent changes, but you manage to squeeze back into your [armor].  You walk away while still feeling horny, and the moaning of the girls behind you doesn't help.  Maybe you could stay for another round...");
+				if (player.isGargoyle() && player.hasPerk(PerkLib.GargoyleCorrupted)) player.refillGargoyleHunger(30);
 				player.orgasm();
-				dynStats("int", -player.cor/10, "lib", 2*player.cor, "cor", 20);
+				dynStats("int", -player.cor / 10, "lib", 2 * player.cor, "cor", 20);
 				player.slimeFeed();
-
 				player.addPerkValue(PerkLib.ProductivityDrugs, 1, player.cor);	//minlibido += CURRENT cor
 				player.addPerkValue(PerkLib.ProductivityDrugs, 2, 10);			//mincorruption += 10
 				player.addPerkValue(PerkLib.ProductivityDrugs, 3, player.lib);	//cumproduction += CURRENT lib (same as cum witch blessing)
@@ -290,7 +318,7 @@ package classes.Scenes.Dungeons
 				else {
 					outputText("gushing with fluids as it shapes itself into a hungry demonic cunt.");
 					player.createVagina();
-					player.vaginas[0].vaginalWetness = VAGINA_WETNESS_SLICK;
+					player.vaginas[0].vaginalWetness = VaginaClass.WETNESS_SLICK;
 				}
 				outputText("\n\n\"<i>Much better,</i>\" the demon coos, licking her lips as your ");
 			}
@@ -363,7 +391,7 @@ package classes.Scenes.Dungeons
 				else outputText("You gasp as it curls around each of your " + nippleDescript(0) + "s in turn, tugging them lewdly.\n\n");
 				outputText("She fucks you like that for hours, until the table collapses under the pair of you and dumps you both on the floor. More than anything you find yourself craving release, and over time you cave in further and further to the need.  You start to feel the block weakening, melting, and eroding.  Your life has been distilled down into this one moment, this one desire, and this need for release.  The block shatters, melting away under the force of your need as you explosively orgasm.\n\n");
 				outputText("Sparkling pink fluid splatters between the two of you as you cum, squirting hard");
-				if(player.vaginas[0].vaginalWetness < VAGINA_WETNESS_SLAVERING) outputText(" for the first time");
+				if(player.vaginas[0].vaginalWetness < VaginaClass.WETNESS_SLAVERING) outputText(" for the first time");
 				outputText(".  The succubus throws back her head and lets loose a moan of ecstasy, her entire body shivering with your own as both of your heads fill with fireworks of pleasure.  Nervelessly, she rolls off of you, her tail contracting hard around your leg while the two of you share the moment.\n\n");
 				outputText("The succubus interrupts your delight by recovering far faster than you, rolling up to a standing position and watching something between your legs.  You prop yourself up on your elbows to see what the fuss is about.  Between your legs something curious is happening – a trickle of pinkish fluid is still escaping your nethers, rolling towards a rapidly expanding pool, along with every other drop of the pink goop.  Before your very eyes the pool grows until every drop of pink fluid has collected together, and it grows upwards, solidifying into a sparkling crystalline shape.\n\n");
 				outputText("Before you can react, she grasps the newly-formed lethicite and noisily begins eating it, her eyes glowing with newfound power.  Watching her makes you more than a little jealous and angry with yourself.  You should've taken the lethicite and gained its power!  No use fretting about it, you can still fuck this succubus for a few hours before you go out in search of your own victims...\n\n");
@@ -418,7 +446,7 @@ package classes.Scenes.Dungeons
 			//MALE
 			if(player.cocks.length > 0 && (player.gender != 3 || rand(2))) {
 				//(LUSTY) 
-				if(monster.lust >= monster.eMaxLust()) outputText("Panting hotly, the succubus staggers towards you, her eyes fixated on the bulge in your crotch.  Dark viscous liquid drips from her dusky folds as her hips undulate hypnotically.  Blue fingers smear the corrupted lubricants over the smooth outer folds of her sex as she lies back enticingly, giving up on anything but bedding you.  In moments your [armor] are on the floor and you approach your prize.\n\n");
+				if(monster.lust >= monster.maxLust()) outputText("Panting hotly, the succubus staggers towards you, her eyes fixated on the bulge in your crotch.  Dark viscous liquid drips from her dusky folds as her hips undulate hypnotically.  Blue fingers smear the corrupted lubricants over the smooth outer folds of her sex as she lies back enticingly, giving up on anything but bedding you.  In moments your [armor] are on the floor and you approach your prize.\n\n");
 				//(HP) 
 				else outputText("The succubus collapses on the floor, groaning in pain.  Most of her clothes have been destroyed by the combat and her blue skin is marked with deep purple bruises and bloody lacerations.  You undress, straddling your conquest and gazing down on her helpless, curvaceous form.  She looks up at you and forces a smile, licking the blood from a cracked lip and beginning to masturbate for you.\n\n");
 				//START ZE RAEP CANNONZ
@@ -533,10 +561,9 @@ package classes.Scenes.Dungeons
 			else outputText(" feels hungrier than ever.  ");
 			outputText("You shove your crotch into your milk-dazed foe's white-stained visage, grinding your " + vaginaDescript(0) + " into her mouth until you cum all over her");
 			if(player.cocks.length == 0) {
-				temp = rand(3);
-				if(player.vaginas[0].vaginalWetness >= VAGINA_WETNESS_SLAVERING) outputText(", soaking her with girl-cum.");
+				if(player.vaginas[0].vaginalWetness >= VaginaClass.WETNESS_SLAVERING) outputText(", soaking her with girl-cum.");
 				else {
-					if(player.vaginas[0].vaginalWetness <= VAGINA_WETNESS_WET) outputText(", slicking her face with girlish cum.");
+					if(player.vaginas[0].vaginalWetness <= VaginaClass.WETNESS_WET) outputText(", slicking her face with girlish cum.");
 					else outputText(", drenching her with a deluge of girlcum.");
 				}
 			}
@@ -696,6 +723,7 @@ package classes.Scenes.Dungeons
 				player.refillHunger(100);
 				player.orgasm();
 				dynStats("cor", 20);
+				if (player.isGargoyle() && player.hasPerk(PerkLib.GargoyleCorrupted)) player.refillGargoyleHunger(30);
 				if (flags[kFLAGS.LETHICE_DEFEATED] > 0) outputText("\n\n\"<i>You're lucky I've decided to let you go since you've overthrown Lethice,</i>\" the incubus grumbles.");
 				if(flags[kFLAGS.FACTORY_SHUTDOWN] <= 0) doNext(doBadEndGeneric);
 				else cleanupAfterCombat();
@@ -745,6 +773,7 @@ package classes.Scenes.Dungeons
 					player.orgasm();
 					dynStats("cor", 25);
 					player.buttChange(monster.cockArea(0), true);
+					if (player.isGargoyle() && player.hasPerk(PerkLib.GargoyleCorrupted)) player.refillGargoyleHunger(30);
 					if (flags[kFLAGS.D3_GARDENER_DEFEATED] > 0 && flags[kFLAGS.D3_CENTAUR_DEFEATED] > 0 && flags[kFLAGS.D3_STATUE_DEFEATED] > 0) outputText("\n\n\"<i>You're lucky I've decided to let you go since you've overthrown Lethice,</i>\" the incubus grumbles.");
 					if(flags[kFLAGS.FACTORY_SHUTDOWN] <= 0) doNext(doBadEndGeneric);
 					else cleanupAfterCombat();
@@ -778,6 +807,7 @@ package classes.Scenes.Dungeons
 					player.refillHunger(100);
 					player.buttChange(monster.cockArea(0), true);
 					player.orgasm();
+					if (player.isGargoyle() && player.hasPerk(PerkLib.GargoyleCorrupted)) player.refillGargoyleHunger(30);
 					if (flags[kFLAGS.D3_GARDENER_DEFEATED] > 0 && flags[kFLAGS.D3_CENTAUR_DEFEATED] > 0 && flags[kFLAGS.D3_STATUE_DEFEATED] > 0) outputText("\n\n\"<i>You're lucky I've decided to let you go since you've overthrown Lethice,</i>\" the incubus grumbles.");
 					dynStats("cor", 25);
 					if(flags[kFLAGS.FACTORY_SHUTDOWN] <= 0) doNext(doBadEndGeneric);
@@ -854,12 +884,13 @@ package classes.Scenes.Dungeons
 				//(set cocksize = to 80% vaginalCapacity).
 				
 				outputText("Thankful for the gesture, you sink down onto him, letting the nubs of his crown stimulate your lips and the underside of your " + clitDescript() + ".  ");
-				if(player.vaginas[0].vaginalWetness >= VAGINA_WETNESS_SLICK) outputText("In no time flat your drooling fluids soak him in slippery wetness.  ");
-				if(player.vaginas[0].vaginalWetness < VAGINA_WETNESS_SLICK && player.vaginas[0].vaginalWetness != VAGINA_WETNESS_DRY) outputText("Before long, you've lubricated a fair portion of his tool with wetness.  ");
-				if(player.vaginas[0].vaginalWetness == VAGINA_WETNESS_DRY) outputText("Despite your usual light lubrication, you manage to moisten the top-half of his tool with wetness.  ");
+				if(player.vaginas[0].vaginalWetness >= VaginaClass.WETNESS_SLICK) outputText("In no time flat your drooling fluids soak him in slippery wetness.  ");
+				if(player.vaginas[0].vaginalWetness < VaginaClass.WETNESS_SLICK && player.vaginas[0].vaginalWetness != VaginaClass.WETNESS_DRY) outputText("Before long, you've lubricated a fair portion of his tool with wetness.  ");
+				if(player.vaginas[0].vaginalWetness == VaginaClass.WETNESS_DRY) outputText("Despite your usual light lubrication, you manage to moisten the top-half of his tool with wetness.  ");
 				outputText("Relaxing the muscles in your [legs], you let a few inches of his length slip inside you, every nub and nodule of his corrupted prick filling the walls of your love-canal with inhuman pleasures that make your knees weak.  A particularly delightful bump brushes your " + clitDescript() + ", causing your [legs] to finally give out. The incubus' nubbly cock plunges entirely inside you.\n\n");
 				outputText("You gasp and moan like a cheap whore, disgusted by yourself and yet so turned on by the total loss of self-control.  The incubus is leering up at you, having regained some of his lost confidence.  Despite the lust, desire and pleasure burning through the hot pole buried in your abdomen, you work up enough rage to grip his neck with your left hand and practically choke him out.  You work your hips quickly as you feel his pre start to drip into your canal, spreading tingling warmth in the deepest parts of your passage and into your cervix.  You tighten your grip as you forcibly take your pleasure, barking in displeasure at the demon, \"<i>Don't look like you're enjoying this too much bitch, or I'll take it out of your hide.</i>\"  Satisfied at the renewed look of fear in his eyes, you return to using his magnificent tool as a masturbation aid.\n\n");
 				outputText("Unable to contain your body's desires due to either the demon's aura or his wonderful penis, you slam your " + vaginaDescript(0) + " onto his member with impunity, twitching and squeezing involuntarily.  His tainted pre-cum begins seeping deep inside your uterus and you cry out with orgasmic intensity.  Your entire body clenches down, even the hand clamped on the incubus' windpipe. You feel his demon-cock swell up inside you in response to his stress, stretching your cunt taut.  His skin darkens from the lack of oxygen as he begins cumming HARD inside you.  Your womb immediately fills with his demon-seed, leaving ribbons of spunk to drip from your tightly-stretched cunt.  You sigh in delight as your muscles slowly stop quivering.  With a pleasured gasp, you rise off the distended demon-prick, and realize that you've choked your foe into unconsciousness. Still, you did let him cum, so maybe he won't mind too much when he wakes.  Feeling sensual and sated, you redress and prepare to explore the rest of the factory. ");
+				if (player.isGargoyle() && player.hasPerk(PerkLib.GargoyleCorrupted)) player.refillGargoyleHunger(30);
 				player.cuntChange(player.vaginalCapacity()*.8, true);
 				player.orgasm();
 				dynStats("cor", 2);
@@ -911,7 +942,7 @@ package classes.Scenes.Dungeons
 		//Choose your poison
 		public function winAgainstOmnibus():void {
 			clearOutput();
-			if(monster.lust >= monster.eMaxLust()) {
+			if(monster.lust >= monster.maxLust()) {
 				outputText("The omnibus trembles where she stands, her proud demonic dick twitching and pulsating as her desires totally overwhelm her.  The tainted nodules covering the purplish hermaphrodite's member ripple and swell from the base towards the tip, culminating with an explosive eruption of sticky, white demon-seed.  She moans with shame and pleasure, pumping larger and larger volumes of cum onto her office's floor.  She drops to her knees, too exhausted and ashamed by her premature orgasm to continue fighting.\n\n");
 				outputText("\"<i>Ooooh no.  You can't tell the other demons I got off so easily!  I'll never live it down,</i>\" she cries, \"<i>You've beaten me, please if you let me go and promise not to tell the other demons I'll use my magic to give you a gift!  My magic is powerful, I can do nearly ANYTHING with it when the subject desires the changes.</i>\"\n\n");
 			}
@@ -923,7 +954,7 @@ package classes.Scenes.Dungeons
 			menu();
 			addButton(0, "Grow Breasts", chooseBreasts).hint("Grow a new pair of breasts if flat-chested or grow existing breasts. \n\nAnd receive something else.");
 			addButton(1, "Grow Dick", chooseDick).hint("Grow a new penis. Somehow, you have a feeling that the new cock you'll receive won't be a normal cock. \n\nAnd receive something else.");
-			addButton(2, "Normal Face", normalFace).hint("Normalize your face. This will also remove your horns or antennae and change your ears back to human ears! \n\nAnd receive something else.");
+			addButton(2, "Normal Face", normalFace).hint("Normalize your face. This will also remove your horns or antennae.type and change your ears back to human ears! \n\nAnd receive something else.");
 			addButton(3, "Normal Chest", normalChest).hint("Normalize your chest. This will shrink breasts larger than E-cup to a reasonable size and remove their other unusual traits, if you have it. This will also change your skin to human skin. \n\nAnd receive something else.");
 			addButton(4, "Normal Groin", normalGroin).hint("Normalize your groin, removing any extra cocks and reset remaining cock to normal, if you have any. Or grow genitalia for genderless. \n\nAnd receive something else.");
 			addButton(5, "Normal Legs", normalLegs).hint("Turn your legs back to normal. This will also remove your tail, if you have any! \n\nAnd receive something else.");
@@ -938,7 +969,7 @@ package classes.Scenes.Dungeons
 			clearOutput();
 			outputText("The demon pouts at you. <i>Fiiiiine. All I've got on me is some processed lethicite. You'll need my help to absorb it.</i> The demoness reaches into her incredible skimpy chest band and pulls out a vial she had somehow managed to conceal there.\n\nShe unscrews the top, and then holds it before her and blows across it. A cloud of sparkling purplish black powder burst from the vial, flying right at you!");
 			outputText("\n\nYou stumble back in surprise, as the demoness makes a quick arcane gesture. The cloud glows, and then flies at your face, flowing into your mouth and nose before you can react.\n\n Your vision flashes purple, and a burning heat seems to spread through both your body and soul.\n\nThe heat in your body quickly turns into arousal, but the heat in your soul mostly dissapears- though what remains is making it feel like your soul is aroused! You realize that <b>your sex drive is increasing your soulforce, and you feel more demonic!</b>\n(Perk Gained - Demonic Lethicite - Soulforce increased and you are permanently slightly demonic!)");
-			dynStats("lus",player.maxLust)
+			dynStats("lus",player.maxLust);
 			player.createPerk(PerkLib.DemonicLethicite,0,0,0,0);
 			postOmnibusBoon();
 		}
@@ -1007,8 +1038,8 @@ package classes.Scenes.Dungeons
 					player.cocks[0].cockLength += 3 + rand(5);
 					player.cocks[0].thickenCock(2);
 					player.cocks[0].cockType = CockTypesEnum.DEMON;
-					if(player.cor < 50) outputText("Corrupt nodules begin to spring up over its entire length.  <b>Your penis is transforming into a [cock]!<\b>  The new nubs wriggle about as they sprout over every inch of surface, save for the head.  Unable to do anything but groan with forced pleasure and horror, you can only watch.  One last batch of nodules forms in a ring around the crown of your [cock], seemingly completing its transformation, until you notice, almost throwing up, that your testicles are also getting covered in black veins under your powerless eyes!  ");
-					else outputText("As you watch expectantly, tiny wriggling nodules begin to erupt from the purplish skin, like those magnificent cocks you saw on demons!  <b>Your penis is transforming into a [cock]!<\b>  You pant and moan in happiness as it lengthens one last time.  As you stroke all of its amazing length with both hands, the excitement of possessing such a beautiful pleasure tool makes you cum.  As one last ring of nodules forms around the edge of your [cock]'s crown, you notice that the squirts getting out of your cock-slit are not completely white and gradually become darker, the last drops being pitch-black! Your new [cock] pulsates darkly with each beat of your heart, but the thick, throbbing veins that are finishing to cover your testicles do not contain blood, but a black liquid which apparently has perverted them. You ponder what its purpose might be, but then you decide, as you stroke the huge, dark, bumpy shaft, that if this feels as good as this looks, it doesn't really matter.  ");
+					if(player.cor < 50) outputText("Corrupt nodules begin to spring up over its entire length.  <b>Your penis is transforming into a [cock]!</b>  The new nubs wriggle about as they sprout over every inch of surface, save for the head.  Unable to do anything but groan with forced pleasure and horror, you can only watch.  One last batch of nodules forms in a ring around the crown of your [cock], seemingly completing its transformation, until you notice, almost throwing up, that your testicles are also getting covered in black veins under your powerless eyes!  ");
+					else outputText("As you watch expectantly, tiny wriggling nodules begin to erupt from the purplish skin, like those magnificent cocks you saw on demons!  <b>Your penis is transforming into a [cock]!</b>  You pant and moan in happiness as it lengthens one last time.  As you stroke all of its amazing length with both hands, the excitement of possessing such a beautiful pleasure tool makes you cum.  As one last ring of nodules forms around the edge of your [cock]'s crown, you notice that the squirts getting out of your cock-slit are not completely white and gradually become darker, the last drops being pitch-black! Your new [cock] pulsates darkly with each beat of your heart, but the thick, throbbing veins that are finishing to cover your testicles do not contain blood, but a black liquid which apparently has perverted them. You ponder what its purpose might be, but then you decide, as you stroke the huge, dark, bumpy shaft, that if this feels as good as this looks, it doesn't really matter.  ");
 				}
 				else {
 					outputText("Your [cock] leaps forwards, taking to the dark magic with ease.  Inch after inch of new length erupts from your groin as your [cock] gets longer and thicker.  It pulsates, as if promising dark pleasure as it settles into its new enhanced size.");
@@ -1020,11 +1051,11 @@ package classes.Scenes.Dungeons
 				//Already has demoncocks
 				if(player.demonCocks() == player.cockTotal()) {
 					outputText("Your [cocks] leap forwards, taking to the dark magic with ease.  Inch after inch of new length erupts from your groin as your [cocks] get longer and thicker.  They pulsate, as if promising dark pleasure as they settle into their new enhanced size.");
-					temp = player.cocks.length;
-					while(temp > 0) {
-						temp--;
-						player.cocks[temp].cockLength += 6 + rand(10);
-						player.cocks[temp].thickenCock(3);	
+					var i:int = player.cocks.length;
+					while(i > 0) {
+						i--;
+						player.cocks[i].cockLength += 6 + rand(10);
+						player.cocks[i].thickenCock(3);
 					}
 				}
 				//Not yet full of demoncocks...
@@ -1033,12 +1064,12 @@ package classes.Scenes.Dungeons
 					if(player.cor < 80) outputText(" in horror");
 					else outputText(" curiously");
 					outputText(" as the skin of your [cocks] turns shiny and purplish-black.  Corrupt nodules begin to spring up over the entire length of each dick.  ");
-					temp = player.cocks.length;
-					while(temp > 0) {
-						temp--;
-						player.cocks[temp].cockLength += 3 + rand(5);
-						player.cocks[temp].thickenCock(2);
-						player.cocks[temp].cockType = CockTypesEnum.DEMON;
+					i = player.cocks.length;
+					while(i > 0) {
+						i--;
+						player.cocks[i].cockLength += 3 + rand(5);
+						player.cocks[i].thickenCock(2);
+						player.cocks[i].cockType = CockTypesEnum.DEMON;
 					}
 					if(player.cor < 50) outputText("<b>Your dicks are transforming into [cocks]!</b>  The new nubs wriggle about as they sprout over every inch of surface, save for the heads.  Unable to do anything but groan with forced pleasure and horror, you can only watch.  One last batch of nodules forms in a ring around the crowns of your [cocks], seemingly completing its transformation, until you notice, almost throwing up, that your testicles are also getting covered in black veins under your powerless eyes!  ");
 					else outputText("<b>Your dicks are transforming into [cocks]!</b>  The new nubs wriggle about as they sprout over every inch of surface, save for the heads.  You pant and moan in happiness as they lengthen one last time.  As you stroke all of their amazing length with both hands, the excitement of possessing such a magnificent pleasure tool makes you cum. You lick your fingers eagerly, tasting your new cum, while a last ring of nodules forms around the crowns of your beautiful [cocks].   Your new [cocks] pulsate darkly with each beat of your heart, but the thick, throbbing veins that are finishing to cover your testicles do not contain blood, but a black liquid which apparently has perverted them. You ponder what its purpose might be, but then you decide, as you stroke a huge, dark, bumpy shaft, that if they feel as good as they look, it doesn't really matter.  ");
@@ -1050,34 +1081,34 @@ package classes.Scenes.Dungeons
 		private function normalFace():void {
 			spriteSelect(16);
 			clearOutput();
-			if(player.horns > 0 || player.antennae > ANTENNAE_NONE) {
+			if(player.horns.count > 0 || player.antennae.type > Antennae.NONE) {
 				outputText("Your forehead itches intensely.  You cannot help but stratch madly at it.  ");
-				if(player.horns > 0 && player.hornType != HORNS_ORCHID) {
+				if(player.horns.count > 0 && player.horns.type != Horns.ORCHID) {
 					outputText("Your horns fall off, landing on the floor with a heavy thud.  ");
-					player.horns = 0;
-					player.hornType = HORNS_NONE;
+					player.horns.count = 0;
+					player.horns.type = Horns.NONE;
 				}
-				if(player.antennae > ANTENNAE_NONE) {
+				if(player.antennae.type > Antennae.NONE) {
 					outputText("Antennae pop free, and float lightly down towards the floor.  ");
-					player.antennae = ANTENNAE_NONE;
+					player.antennae.type = Antennae.NONE;
 				}
 			}
 			//EARS
-			if(player.earType != EARS_HUMAN) {
+			if(player.ears.type != Ears.HUMAN) {
 				outputText("Pain erupts from both sides of your head as your ears reform and move, returning to look like your old human ears!  ");
-				player.earType = EARS_HUMAN;
+				player.ears.type = Ears.HUMAN;
 			}
 			//Face
-			if(player.faceType != FACE_HUMAN) {
+			if(player.faceType != Face.HUMAN) {
 				outputText("Your facial structure rearranges itself into a normal human visage, exactly like yours was before you came to this horrid place.");
-				player.faceType = FACE_HUMAN;
+				player.faceType = Face.HUMAN;
 			}
 			postOmnibusBoon();
 		}
 		private function normalChest():void {
 			spriteSelect(16);
 			clearOutput();
-			temp = 0;
+			var changes:int = 0;
 			if(player.breastRows.length > 1) {
 				player.removeBreastRow(1,player.breastRows.length-1);
 				outputText("Your chest tingles and begins to feel lighter.  You hastily pull open your [armor] and realize you only have [allbreasts] now!  ");
@@ -1085,91 +1116,90 @@ package classes.Scenes.Dungeons
 					outputText("Your nipples shrink down to a more normal size.  ");
 					player.nippleLength = .75;
 				}
-				temp++;
+				changes++;
 			}
 			//Size!
 			if(player.breastRows[0].breastRating > 7) {
 				outputText("The weighty flesh that constantly hangs from your chest gets lighter and lighter, vanishing rapidly.  ");
 				player.breastRows[0].breastRating = 3 + rand(5);
 				outputText("You now have [allbreasts].  ");
-				temp++;
+				changes++;
 			}
 			//Fix nips
 			if(player.nippleLength > 1) {
 				outputText("Your nipples shrink down to a more normal size.  ");
 				player.nippleLength = .75;
-				temp++;
+				changes++;
 			}
 			if(player.hasFuckableNipples()) {
 				outputText("The vagina-like openings in your nipples close, sealing themselves shut.  ");
 				player.breastRows[0].fuckable = false;
-				temp++;
+				changes++;
 			}
 			if(!player.skin.hasPlainSkinOnly()) {
 				outputText("The skin on your body itches intensely as it sheds it's [skin.type], revealing " + player.skinTone + " skin.  ");
 				player.skin.restore();
-				temp++;
+				changes++;
 			}
 			//Nothing changed
-			if(temp == 0) {
+			if(changes == 0) {
 				outputText("You tingle briefly but feel no obvious change.  Your chest is already fairly human.");
 			}
 			postOmnibusBoon();
 		}
 		private function normalGroin():void {
 			spriteSelect(16);
-			//Temp used to track changes
-			temp = 0;
+			var changes:int = 0;
 			clearOutput();
 			outputText("You feel a strange shivering sensation pass through you.  ");
 			//Remove multiple.
 			if(player.cocks.length > 1) {
 				outputText("Your [cocks] shiver and retract back towards your body.  When the process finishes you are left with only your [cock].  ");
 				player.removeCock(1,player.cocks.length-1);
-				temp++;
+				changes++;
 			}
 			//Super long nerf
 			if(player.hasCock()) {
 				if(player.cocks[0].cockLength > 12) {
 					outputText("A tingling sensation worms through your [cock] as it shrinks down to a more modest eleven inches.  ");
 					player.cocks[0].cockLength = 11;
-					temp++;
+					changes++;
 				}
 				//Super thick nerf
 				if(player.cocks[0].cockThickness > 2) {
 					outputText("Your [cock]'s obscene thickness withers down to roughly two inches of girth.  ");
 					player.cocks[0].cockThickness = 2;
-					temp++;
+					changes++;
 				}
 				//Humanitize
 				if(player.cocks[0].cockType != CockTypesEnum.HUMAN && player.cocks[0].cockType != CockTypesEnum.DEMON) {
 					outputText("The inhuman appearance of your [cock] shifts, the flesh rearranging itself into a more human configuration.  After a few seconds you have a very normal looking penis.  ");
 					player.cocks[0].cockType = CockTypesEnum.HUMAN;
-					temp++;
+					changes++;
 				}
 				//If demon cocked....
 				if(player.cocks[0].cockType == CockTypesEnum.DEMON) {
 					outputText("Your [cock] tingles as the bumps begin to fade.  After a moment the flesh darkens, and every single nodule reappears.  <b>Your corrupt penis resisted the magic!</b>  ");
-					temp++;
+					changes++;
 				}
 			}
 			//Balls shrink
 			if(player.ballSize > 5) {
-				temp++;
+				changes++;
 				outputText("The [balls] that constantly pull so heavily on your groin tingle and shrink down to a more managable size.  ");
 				player.ballSize = 2 + rand(3);
 			}
-			if(temp > 0) outputText("\n\n");
+			if(changes > 0) outputText("\n\n");
 			//Vajajay
 			if(player.vaginas.length > 0) {
-				if(player.vaginas[0].vaginalWetness >= VAGINA_WETNESS_SLICK) {
+				if(player.vaginas[0].vaginalWetness >= VaginaClass.WETNESS_SLICK) {
 					outputText("The constant fluids leaking from your " + vaginaDescript(0) + " slow down, then stop.  ");
-					player.vaginas[0].vaginalWetness = VAGINA_WETNESS_WET;
-					temp++;
+					player.vaginas[0].vaginalWetness = VaginaClass.WETNESS_WET;
+					changes++;
 				}		
 			}
 			//Being genderless isn't normal too...
-			if (player.gender == GENDER_NONE) {
+			if (player.gender == Gender.GENDER_NONE) {
 				if (player.balls > 0 || player.femininity < 35 || rand(3) == 0) {
 					player.createCock();
 					player.cocks[0].cockType = CockTypesEnum.DEMON;
@@ -1188,18 +1218,18 @@ package classes.Scenes.Dungeons
 					player.createVagina();
 					outputText("An itching starts in your crotch and spreads vertically.  You reach down and discover an opening.  You have grown a <b>new " + vaginaDescript(0) + "</b>!");
 				}
-				temp++;
+				changes++;
 				outputText("\n\n");
 			}
 			//Reduce excessive anal wetness
-			if (player.ass.analWetness >= ANAL_WETNESS_SLIMY) { 
+			if (player.ass.analWetness >= AssClass.WETNESS_SLIMY) {
 				outputText("The constant fluids leaking from your " + assDescript() + " slow down, then stop.  ");
-				player.ass.analWetness = ANAL_WETNESS_MOIST;
-				temp++;
+				player.ass.analWetness = AssClass.WETNESS_MOIST;
+				changes++;
 			}
 
 			//Nothing changed
-			if(temp == 0) {
+			if(changes == 0) {
 				outputText("You tingle briefly but feel no obvious change.  Your crotch isn't really in need of becoming more human.");
 			}
 			postOmnibusBoon();
@@ -1207,13 +1237,13 @@ package classes.Scenes.Dungeons
 		private function normalLegs():void {
 			spriteSelect(16);
 			clearOutput();
-			if(player.lowerBody == LOWER_BODY_TYPE_HUMAN) outputText("You feel as if you should slap yourself for stupidy.  Your legs are already normal!  You flush hotly as the corrupt magics wash over you, changing nothing.");
+			if(player.lowerBody == LowerBody.HUMAN) outputText("You feel as if you should slap yourself for stupidy.  Your legs are already normal!  You flush hotly as the corrupt magics wash over you, changing nothing.");
 			else outputText("You collapse as your [legs] are unable to support you.  The sounds of bones breaking and reshaping fills the room, but oddly you feel no pain, only mild arousal.  You blink your eyes and sigh, and when you look down again <b>you have normal human legs</b>!");
-			player.lowerBody = LOWER_BODY_TYPE_HUMAN;
+			player.lowerBody = LowerBody.HUMAN;
 			player.legCount = 2;
-			if(player.tailType > TAIL_TYPE_NONE) {
+			if(player.tailType > Tail.NONE) {
 				outputText("  A moment later, your feel something detach from above your backside.  <b>You no longer have a tail!</b>");
-				player.tailType = TAIL_TYPE_NONE;
+				player.tailType = Tail.NONE;
 				player.tailCount = 0;
 				player.tailVenom = 0;
 				player.tailRecharge = 5;
@@ -1301,7 +1331,7 @@ package classes.Scenes.Dungeons
 			
 			outputText("<b>This kind of treatment continues for a few days, until sucking, fucking and getting fucked is the only thing you desire. As your mind is now broken, injections are no longer necessary to keep you in a perfect pleasure state. After a month, they even untie you, since you are now their complete cum-puppet, eager only to please and obey.</b>");
 			//The style on this part wasn't up to par with the rest, so I rewrote some of it, while keeping the meaning
-			getGame().gameOver();
+			EventParser.gameOver();
 		}
 		
 		public function doBadEndSuccubusPart1():void {
@@ -1332,7 +1362,7 @@ package classes.Scenes.Dungeons
 				//big clit
 				if(player.clitLength > 1 && player.clitLength < 4.5) outputText("A wave of pleasure erupts from between your legs as your " + clitDescript() + " pops free.    You squeeze your legs tightly together, hungry for the additional sensations.  ");
 				//slick
-				if(player.vaginas[0].vaginalWetness >= VAGINA_WETNESS_SLICK) outputText("Squishing wetly, your bottoms become soggy with the flood of fluids leaking from your " + vaginaDescript(0) + ".   Your legs spread apart on their own, begging for any kind of intrusion.  ");
+				if(player.vaginas[0].vaginalWetness >= VaginaClass.WETNESS_SLICK) outputText("Squishing wetly, your bottoms become soggy with the flood of fluids leaking from your " + vaginaDescript(0) + ".   Your legs spread apart on their own, begging for any kind of intrusion.  ");
 				//normal
 				else outputText("Groaning softly, you feel yourself getting wetter and wetter with arousal.  You wish your sticky bottoms were off so you could let something into your " + vaginaDescript(0) + ".  ");
 			}
@@ -1391,7 +1421,7 @@ package classes.Scenes.Dungeons
 			else outputText("Later on, in a moment of clarity, you look around and realize you aren't alone.  ");
 			outputText("In rows alongside you are a large number of other captives, every single one endowed with freakishly sized breasts, and nearly all gifted with throbbing demonic dicks.  Some small analytical part of you notes that the farther down the line they are, the older and larger they have become.   You look down and see your own massive tits, shiny tainted nipples still pumping out streams of milk.  The huge throbbing demon-cock between your legs begins to get hard as the machines crank back up, filling you full of happy horniness.");
 			if(player.statusEffectv3(StatusEffects.Marble) == 1 || player.hasStatusEffect(StatusEffects.CampMarble)) outputText("  With Marble here too, you'll be around for a long time.");
-			getGame().gameOver();
+			EventParser.gameOver();
 		}
 		
 		private function doBadEndOmnibusPart1():void {
@@ -1458,7 +1488,7 @@ package classes.Scenes.Dungeons
 				else outputText("Your mistress looks down with approval and speaks, \"<i>Very good.  ");
 				outputText("I want you to stay here and cum 'til morning.  My pet needs lots of nutrition to recharge, and I have plans for new ways to teach you to obey tomorrow.</i>\"\n\n");
 				outputText("Happy to have such a wonderful task, you spend the next day being bathed in drugged aphrodisiacs, cumming over and over and over.  Every morning the creature flashes you into obedience while the voice teaches you more and more about how to think.  After a week you're the perfect pet.  By the end of your first month of servitude, any memories of your past life are gone.  You spend the rest of your days feeding your mistress and her pet, and helping her refine and breed her pets in order to teach others the way.");
-				getGame().gameOver();
+				EventParser.gameOver();
 				return;
 			}
 			//Dick version
@@ -1496,7 +1526,7 @@ package classes.Scenes.Dungeons
 				outputText("Your mistress pats your head and whispers commands in your ear while the now-sated slave-making creature devours your cum, turning it into more 'reward'.  You don't pay attention to her words, what's important is serving mistress and cumming for your panty-toy as often as possible.  You don't need to worry, she will tell you what to think.  She's just so perfect and amazing, you don't know why anyone would want to harm her or her wonderful creations.  'Gods it feels good to obey' is the last thought your mind ever thinks for itself.\n\n");
 				outputText("In the days to come, you spend your time being teased by your new mistress until you feel as if you'll burst, then being brought to sudden explosive orgasms that fill your panty-prison to capacity.  After every session you black out, but each time you mind less and less.  You wanted to be here, having these wonderful orgasms and obeying your beautiful mistress.\n\n");
 				outputText("After a month she starts letting you live without your favorite panties.  You beg her to put them back on you, but she often makes you crawl around the factory, pooling pre-cum everywhere from your swollen prick as you beg her to be put back into the pleasure-panties.  Sometimes, if you're lucky, she'll fuck you, or send you out to catch another adventurer.  There is nothing you love more than cumming into your tentacle-panties while another one of your mistress' creations teaches a slut how to embrace her true nature.");
-				getGame().gameOver();
+				EventParser.gameOver();
 				return;
 			}
 			//(Female) 
@@ -1509,8 +1539,8 @@ package classes.Scenes.Dungeons
 				else outputText("The demoness smiles with wicked intent and yanks your [armor]'s bottom the rest of the way off.  She leans close, smiling and inhaling the scent of your sex, savoring it like a aroma of a fine wine.  Licking her perfect lips with anticipation, she inverts the panties and holds them up for you to see.\n\n");
 				outputText("They aren't panties at all, but instead some living creature.  The entire inside surface of the living garment is covered with fleshy pink nodules that wriggle constantly, practically dripping with a pungent lubricant that smells not unlike your own juices.  Horrifyingly, there is a large lump of flesh towards the front.  Its surface is ribbed and pulses, constantly swelling and shrinking.  It's clearly designed to enter the passage of anyone who wears it.  Worse yet is a smaller narrower protrusion on the backside.  This... creature... will certainly do its best to plug both your holes.\n\n");
 				outputText("Your captor pulls it back and leans closer, letting the scent of her own fragrant puss fill the air.  It smells tangy and sweet and makes you ");
-				if(player.vaginas[0].vaginalWetness <= VAGINA_WETNESS_WET) outputText("wet ");
-				else if(player.vaginas[0].vaginalWetness <= VAGINA_WETNESS_DROOLING) outputText("drip on the chair ");
+				if(player.vaginas[0].vaginalWetness <= VaginaClass.WETNESS_WET) outputText("wet ");
+				else if(player.vaginas[0].vaginalWetness <= VaginaClass.WETNESS_DROOLING) outputText("drip on the chair ");
 				else outputText("soak the chair ");
 				outputText("from the heady taste that clings to your nostrils.  She speaks with confidence, \"<i>You needn't worry my dear.  I call this little creature my slut-panties.  You see, when you wear them they will stimulate every part of you.  They'll suck on your clit while the two large mounds grow inside you, filling you with wriggling pleasure.  Their slime is a wonderful lubricant and a mild aphrodisiac.  Between the constant touches and its secretions, you'll be horny and on the edge of orgasm in no time.</i>\"\n\n");
 				outputText("You shake your head in desperate denial and start to cry as you realize she intends to keep you locked in some kind of hellish pleasure-prison.  The panties slide up your legs with ease, and with a swift movement, the demon lifts your ass up and slips them into position with a wet 'SQUELCH'.  You moan as it goes to work, wrapping your " + clitDescript() + " in slippery tightness.  The two 'lumps' you observed elongate, the ridged surfaces making your " + vaginaDescript(0) + " quiver and dance with pleasure.  In mere seconds you're panting hotly and ready to cum.  Your crying devolves into heated moans of pleasure and longing.\n\n");
@@ -1541,7 +1571,7 @@ package classes.Scenes.Dungeons
 				outputText("You blink a few times, and sit up, finding yourself back in the chair.  Your pink panty-creature has closed back up, trapping the demon's cum inside you.  The corrupted seed is so potent you can actually feel it tainting your body further as it spreads into your core.  You stretch languidly as you try to recover from the best orgasm of your life.  Perhaps you can escape?  No, you can't leave, the panties are already massaging your aching cunt and toying with your still-hard " + clitDescript() + ".  You squirm as it effects you, ramping your body's desires back up to the max.  Maybe if you take a load in the front AND back at the same time it'll sate the creature long enough for you to escape....\n\n");
 				outputText("You set off into the factory, looking for the Omnibus and an Incubus to help.\n\n");
 				outputText("<b>One month later:</b>\nYou lick the demonic jism from your lips and stretch, happy your mistress provided you with your fifth orgasm of the morning.  Normally she only lets her favorite slut get her off three or four times before lunch.  You squirm as your panties go to work, taking you back to that wonderful plateau of pleasure that only your masters and mistresses can bring you down from.  Thinking back, this really is the best way for things to end.  You thank your mistress and ask if you can see if any of the imps want to knock you up again.  She smiles condescendingly and nods, making your cunt squeeze with happiness.  Imps have such great cum!");
-				getGame().gameOver();
+				EventParser.gameOver();
 				return;
 			}
 		}
@@ -1569,7 +1599,7 @@ package classes.Scenes.Dungeons
 			else outputText("moo");
 			outputText(" with happiness, promising another dose to you if you are a good cow for her.");
 			dynStats("int", -100, "lib", 100, "cor", 2);
-			getGame().gameOver();			
+			EventParser.gameOver();			
 		}
 		
 		private function doBadEndDemon():void {
@@ -1577,12 +1607,12 @@ package classes.Scenes.Dungeons
 			if(player.gender == 1) outputText("As a demon, you rapidly moved up the ranks, eventually taking command of the factory and its inhabitants.  The previous commander was reduced to a willing cock-sleeve, ever-eager to obey your slightest order.  By the time the next year has come around, you've managed to earn the coveted honor of collecting the next champion.");
 			else if(player.gender == 2) outputText("Now a full-fledged demon, you leave the factory, setting off on your own.  Over the next year you capture many foolish mortals, and even convince more than a few of them to give up their souls.  With your rapid gain in power, it's easy to rise in the demonic ranks, and in no time flat your power far exceeds that of the succubus that 'turned' you.  You live in luxury, surrounded by a harem of slaves, waiting in your camp for the next victim to step through...");
 			else outputText("As a demon, you rapidly moved up the ranks, eventually taking command of the factory and its inhabitants.  The previous commander was reduced to a willing cock-sleeve, ever-eager to obey your slightest order.  By the time the next year has come around, you've managed to earn the coveted honor of collecting the next champion. It should be quite satisfying...");
-			getGame().gameOver();
+			EventParser.gameOver();
 		}
 		
 		//ROOMS
 		public function roomLobby():void {
-			kGAMECLASS.dungeonLoc = 0;
+			dungeonLoc = 0;
 			clearOutput();
 			outputText("<b><u>The Factory Foyer</u></b>\n");
 			outputText("The door swings shut behind you with an ominous 'creeeeeaaaaaaak' followed by a loud 'SLAM'.  Glancing around, you find yourself in some kind of stylish foyer, complete with works of art and a receptionist's desk.  Looking closer at the paintings on the wall quickly reveals their tainted and demonic nature: One appears at first to be a painting of a beautiful smiling woman, except you notice dripping tentacles coiling around the hem of her dress.  Behind the receptionist's desk, the second painting is even less discreet, openly depicting a number of imps gang-raping a vaguely familiar-looking woman.  Luckily, whatever demon is employed as the receptionist is away at the moment.  Behind the desk on the northern wall stands a secure-looking iron door.  On the western wall, is a door. A sign on the door indicates that it leads to the factory restroom.  On the eastern wall is a simple wooden door, though the color of the wood itself is far darker and redder than any of the hard woods from your homeland.  Behind you to the south is the rusty iron entry door.");
@@ -1591,7 +1621,7 @@ package classes.Scenes.Dungeons
 		}
 		
 		public function roomBreakRoom():void {
-			kGAMECLASS.dungeonLoc = 1;
+			dungeonLoc = 1;
 			clearOutput();
 			outputText("<b><u>Break Room</u></b>\n");
 			outputText("Stepping through the dark red doorway, you wander into an expansive break room. Tables surrounded by crude wooden chairs fill most of the floor space. Along the far eastern wall sits a small counter, complete with a strange ebony sculpture of a busty woman with 'Mrs. Coffee' printed on the side. Below the sculpture is a pot of steaming hot coffee, giving off an invigoratingly rich smell.");
@@ -1628,7 +1658,7 @@ package classes.Scenes.Dungeons
 					if(player.gender == 1) outputText("stud");
 					else outputText("sexy");
 					outputText("!  You haven't seen a confused human about calling itself a champion have you?</i>\"\n\nShe shakes her more-than-ample bosom from side to side as she licks her lips and offers, \"<i>If you do, be sure and bring them back here ok?  We've got their spot all ready for them, but that little prick Zetaz fucked up the pickup.  Tell you what – if you bring me the 'champion' I'll ");
-					if(player.totalCocks() > 0) outputText("give you the blowjob of a lifetime");
+					if(player.cockTotal() > 0) outputText("give you the blowjob of a lifetime");
 					else if(player.hasVagina()) outputText("lick your honeypot 'til you soak my face");
 					else outputText("give you a new addition and show you how to use it");
 					outputText(".</i>\"\n\nThe succubus turns away from you and makes a show of tweaking her make-up, ignoring you for the moment.");
@@ -1653,7 +1683,7 @@ package classes.Scenes.Dungeons
 		}
 		
 		public function roomPumpRoom():void {
-			kGAMECLASS.dungeonLoc = 2;
+			dungeonLoc = 2;
 			clearOutput();
 			outputText("<u><b>Pump Room</b></u>\n");
 			if(flags[kFLAGS.FACTORY_SHUTDOWN] < 1) {
@@ -1664,7 +1694,7 @@ package classes.Scenes.Dungeons
 		}
 		
 		public function roomFurnaceRoom():void {
-			kGAMECLASS.dungeonLoc = 3;
+			dungeonLoc = 3;
 			clearOutput();
 			outputText("<b><u>Furnace Room</u></b>\n");
 			if(flags[kFLAGS.FACTORY_SHUTDOWN] <= 0) {
@@ -1692,7 +1722,7 @@ package classes.Scenes.Dungeons
 		}
 		
 		public function roomRepairCloset():void {
-			kGAMECLASS.dungeonLoc = 4;
+			dungeonLoc = 4;
 			clearOutput();
 			outputText("<b><u>Repair Closet</u></b>\n");
 			outputText("As you carefully slip inside the room, you note with some relief that it seems to be an empty storage closet. The room is tiny, barely 6' by 8' and almost entirely empty.  The one piece of furniture inside the closet is a simple wooden cabinet, placed against the far wall.  ");
@@ -1716,7 +1746,7 @@ package classes.Scenes.Dungeons
 		}
 		
 		public function roomMainChamber():void {
-			kGAMECLASS.dungeonLoc = 5;
+			dungeonLoc = 5;
 			clearOutput();
 			outputText("<b><u>Main Chamber</u></b>\n");
 			dungeons.setDungeonButtons(null, null, null, roomPumpRoom);
@@ -1736,7 +1766,7 @@ package classes.Scenes.Dungeons
 		}
 		
 		public function roomForemanOffice():void {
-			kGAMECLASS.dungeonLoc = 6;
+			dungeonLoc = 6;
 			//Foreman's Office
 			clearOutput();
 			outputText("<b><u>Foreman's Office</u></b>\n");
@@ -1761,7 +1791,7 @@ package classes.Scenes.Dungeons
 		}
 		
 		public function roomControlRoom():void {
-			kGAMECLASS.dungeonLoc = 7;
+			dungeonLoc = 7;
 			clearOutput();
 			outputText("<b><u>Pump Control Room</u></b>\n");
 			outputText("This room is little more than a closet in reality.  There is a simple set of mechanical controls on a finely crafted terminal against the far wall.  ");
@@ -1785,7 +1815,7 @@ package classes.Scenes.Dungeons
 		}
 		
 		public function roomPremiumStorage():void {
-			kGAMECLASS.dungeonLoc = 8;
+			dungeonLoc = 8;
 			clearOutput();
 			outputText("<b><u>Premium Products</u></b>\n");
 			outputText("This store room is filled with a few opened crates, meant to store the various substances in the factory.  It looks as if the current overseer has allowed supplies to run low, as there is not much to be gleaned from this meager stash.\n\n");
@@ -1810,10 +1840,11 @@ package classes.Scenes.Dungeons
 				outputText("There is an unopened crate with five bottles of something called 'Gro+' inside.\n\n");
 				addButton(1, "GroPlus", takeGroPlus);
 			}
+			if(flags[kFLAGS.CAMP_UPGRADES_MAGIC_WARD] < 1) addButton(2, "Search", takeWardTome);
 		}
 		
 		public function roomBathroom():void {
-			kGAMECLASS.dungeonLoc = 9;
+			dungeonLoc = 9;
 			clearOutput();
 			outputText("<b><u>Washroom</u></b>\n");
 			outputText("This room is fairly clean. At one of the walls, there is a row of four sinks. Opposite side, there are few bathroom stalls. Three urinals are mounted against one of the walls. You'd guess even the demons need to use the bathroom.");
@@ -1822,4 +1853,4 @@ package classes.Scenes.Dungeons
 			//addButton(2, "Use", useBathroom);
 		}
 	}
-}
+}

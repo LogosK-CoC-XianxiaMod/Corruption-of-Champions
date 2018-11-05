@@ -5,12 +5,10 @@ package classes.BodyParts {
 import classes.CoC_Settings;
 import classes.Creature;
 import classes.internals.SimpleJsonable;
-import classes.internals.Utils;
 
 public class BodyPart extends SimpleJsonable {
-	include "../../../includes/appearanceDefs.as";
 
-	protected var _type:int = 0;
+    protected var _type:int = 0;
 	public function restore(keepColor:Boolean = true):void {
 		type = 0;
 	}
@@ -64,7 +62,7 @@ public class BodyPart extends SimpleJsonable {
 	 * player.skin.checkProps({
 	 *     coverage: [0, 1, 2], // either none, low, or mid coverage
 	 *     base: {
-	 *         type: SKIN_TYPE_PLAIN,
+	 *         type: PLAIN,
 	 *         color: ["blue", "light blue"]
 	 *     }
 	 * });

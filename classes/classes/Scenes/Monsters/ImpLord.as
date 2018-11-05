@@ -1,18 +1,21 @@
 ﻿package classes.Scenes.Monsters
 {
-	import classes.*;
-	import classes.internals.*;
-	import classes.GlobalFlags.kFLAGS;
+import classes.*;
+import classes.BodyParts.Butt;
+import classes.BodyParts.Hips;
+import classes.BodyParts.LowerBody;
+import classes.BodyParts.Wings;
+import classes.GlobalFlags.kFLAGS;
+import classes.Scenes.SceneLib;
+import classes.internals.*;
 
-	public class ImpLord extends Imp
+public class ImpLord extends Imp
 	{
 		//Special Attack 1
 		protected function impFire():void
 		{
 			//[-HP // +Lust(minor)]
 			var damage:int = 40 + rand(10);
-			if (player.findPerk(PerkLib.FromTheFrozenWaste) >= 0 || player.findPerk(PerkLib.ColdAffinity) >= 0) damage *= 3;
-			if (player.findPerk(PerkLib.FireAffinity) >= 0) damage *= 0.3;
 			if (player.hasStatusEffect(StatusEffects.Blizzard)) {
 			player.addStatusValue(StatusEffects.Blizzard, 1, -1);
 			outputText("The imp mutters something to himself. Before you have time to react the demonic creature's hand is filled with a bright red fire that he hurls at you.  The flames lick at your body leaving a small burn on you torso due to protedction of blizzard, as well as an arousing heat in your groin. ");
@@ -22,9 +25,8 @@
 			outputText("The imp mutters something to himself. Before you have time to react the demonic creature's hand is filled with a bright red fire that he hurls at you.  The flames lick at your body leaving a painful burn on you torso, as well as an arousing heat in your groin. ");
 			}
 			damage = Math.round(damage);
-			player.takeDamage(damage, true);
-			game.dynStats("lus", 20 + player.cor / 10);
-			combatRoundOver();
+			player.takeFireDamage(damage, true);
+			player.dynStats("lus", 20 + player.cor / 10);
 		}
 		
 		//Heavy Attack
@@ -36,9 +38,8 @@
 			else if (damage <= 0) outputText(" but the attack proves ineffectual.");
 			else {
 				outputText("leaving a large gash. The attack leaves you slightly stunned, but you recover. ");
-				player.takeDamage(damage, true);
+				player.takePhysDamage(damage, true);
 			}
-			combatRoundOver();
 		}
 
 		//Lust Attack
@@ -46,8 +47,7 @@
 		{
 			outputText("Lowering his loincloth the imp reveals his inhumanly thick shaft.  He smirks and licks his lips as he gives his cock a squeeze, milking a few beads of clear pre from the tip.  You shake your head and try to ignore your growing need.");
 			//[+Lust]
-			game.dynStats("lus", 5 + player.lib / 5 + player.cor / 5);
-			combatRoundOver();
+			player.dynStats("lus", 5 + player.lib / 5 + player.cor / 5);
 		}
 
 		//Lust and Light Attack
@@ -55,10 +55,9 @@
 		{
 			outputText("Reaching into his satchel the devilish creature pulls out a leather riding crop.  He quickly rushes forward, but somehow manages to get behind you.  Before you can react the imp lashes out, striking your [butt] twice with the riding crop.  The strikes leave a slight burning feeling, as well as a strange sense of arousal. ");
 			var damage:int = 3 + rand(10);
-			player.takeDamage(damage, true);
+			player.takePhysDamage(damage, true);
 			//[-HP(minor) // +Lust]
-			game.dynStats("lus", 5 + player.sens / 4 + player.cor / 10);
-			combatRoundOver();
+			player.dynStats("lus", 5 + player.sens / 4 + player.cor / 10);
 		}
         override protected function performCombatAction():void
 		{
@@ -70,12 +69,12 @@
 		override public function defeated(hpVictory:Boolean):void
 		{
 			game.flags[kFLAGS.DEMONS_DEFEATED]++;
-			game.impScene.defeatImpLord();
+			SceneLib.impScene.defeatImpLord();
 		}
 
 		override public function won(hpVictory:Boolean,pcCameWorms:Boolean):void
 		{
-			game.impScene.loseToAnImpLord();
+			SceneLib.impScene.loseToAnImpLord();
 		}
 
 		public function ImpLord()
@@ -99,20 +98,21 @@
 			this.pronoun1 = "he";
 			this.pronoun2 = "him";
 			this.pronoun3 = "his";
-			this.ass.analLooseness = ANAL_LOOSENESS_STRETCHED;
-			this.ass.analWetness = ANAL_WETNESS_NORMAL;
+			this.ass.analLooseness = AssClass.LOOSENESS_STRETCHED;
+			this.ass.analWetness = AssClass.WETNESS_NORMAL;
 			this.tallness = rand(14) + 40;
-			this.hipRating = HIP_RATING_BOYISH;
-			this.buttRating = BUTT_RATING_TIGHT;
-			this.lowerBody = LOWER_BODY_TYPE_HOOFED;
+			this.hips.type = Hips.RATING_BOYISH;
+			this.butt.type = Butt.RATING_TIGHT;
+			this.lowerBody = LowerBody.HOOFED;
 			this.skinTone = "red";
 			initStrTouSpeInte(55, 40, 45, 42);
-			initLibSensCor(55, 35, 100);
+			initWisLibSensCor(42, 55, 35, 100);
 			this.weaponName = "fist";
 			this.weaponVerb="punch";
-			this.weaponAttack = 10 + (3 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.weaponAttack = 10;
 			this.armorName = "leathery skin";
-			this.armorDef = 5 + (1 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.armorDef = 5;
+			this.armorMDef = 1;
 			this.bonusHP = 100;
 			this.bonusLust = 30;
 			this.lust = 30;
@@ -125,14 +125,9 @@
 					add(consumables.LABOVA_,1).
 					add(consumables.INCUBID,6).
 					add(consumables.SUCMILK,6);
-			this.wingType = WING_TYPE_IMP;
+			this.wings.type = Wings.IMP;
 			this.special1 = lustMagicAttack;
-			this.str += 11 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.tou += 8 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.spe += 9 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.inte += 8 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];			
-			this.lib += 11 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.newgamebonusHP = 470;
+			this.createPerk(PerkLib.EnemyTrueDemon, 0, 0, 0, 0);
 			checkMonster();
 		}
 		

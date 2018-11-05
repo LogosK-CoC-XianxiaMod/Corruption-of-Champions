@@ -3,27 +3,25 @@
  */
 package classes.Items
 {
-	import classes.CoC;
-	import classes.GlobalFlags.kGAMECLASS;
-	import classes.ItemType;
-	import classes.Player;
+import classes.CoC;
+import classes.EngineCore;
+import classes.CoC;
+import classes.ItemType;
+import classes.Player;
 
-	use namespace kGAMECLASS;
+use namespace CoC;
 
 	public class CommonItem extends ItemType{
 
 		public function get game():CoC{
-			return kGAMECLASS;
-		}
-		public function getGame():CoC{
-			return kGAMECLASS;
+			return CoC.instance;
 		}
 
 		public function clearOutput():void{
-			kGAMECLASS.clearOutput();
+			EngineCore.clearOutput();
 		}
 		public function outputText(text:String):void{
-			kGAMECLASS.outputText(text);
+			EngineCore.outputText(text);
 		}
 
 		public function CommonItem(id:String, shortName:String=null, longName:String=null, value:Number=0, description:String=null)

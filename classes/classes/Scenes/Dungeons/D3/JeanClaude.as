@@ -1,11 +1,14 @@
 package classes.Scenes.Dungeons.D3 
 {
-	import classes.*;
-	import classes.internals.*;
-	import classes.Items.*
-	import classes.GlobalFlags.kFLAGS;
-	
-	/**
+import classes.*;
+import classes.BodyParts.Butt;
+import classes.BodyParts.Face;
+import classes.BodyParts.Hips;
+import classes.BodyParts.LowerBody;
+import classes.Items.*;
+import classes.Scenes.SceneLib;
+
+/**
 	 * ...
 	 * @author Gedan
 	 */
@@ -16,7 +19,6 @@ package classes.Scenes.Dungeons.D3
 			outputText("The monstrous basilisk suddenly lunges forward, snarling wordlessly as he swings his cutlass at you twice, the blows of a savage yet expert swordsman.\n\n");
 			createStatusEffect(StatusEffects.Attacks, 2, 0, 0, 0);
 			eAttack();
-			combatRoundOver();
 		}
 		
 		override public function doAI():void
@@ -26,12 +28,13 @@ package classes.Scenes.Dungeons.D3
 		
 		override public function defeated(hpVictory:Boolean):void
 		{
-			game.d3.jeanClaude.beatDaFuckhugeBasilisk(hpVictory);
+			SceneLib.d3.jeanClaude.beatDaFuckhugeBasilisk(hpVictory);
 		}
 		
 		override public function won(hpVictory:Boolean, pcCameWorms:Boolean):void
 		{
-			game.d3.jeanClaude.fuckhugeBasiliskFuckedYouUp(hpVictory);
+			if (player.isGargoyle()) SceneLib.d3.gargoyleBadEndD3();
+			else SceneLib.d3.jeanClaude.fuckhugeBasiliskFuckedYouUp(hpVictory);
 		}
 		
 		public function handleTease(lustDelta:Number, successful:Boolean):void
@@ -66,7 +69,7 @@ package classes.Scenes.Dungeons.D3
 					}
 					
 					applyTease(lustDelta);
-					game.dynStats("lus+", 20);
+					player.dynStats("lus+", 20);
 				}
 			}
 			else
@@ -74,7 +77,7 @@ package classes.Scenes.Dungeons.D3
 				outputText("\n\n“<i>Even when made the fool, still you try it, still you think you can entice me with things I have seen a thousand times before,</i>” Jean-Claude sighs. “<i>Why not give up, interloper? You do these things because they arouse YOU, not because you hope they arouse me. Give up, and embrace the life you were born to lead.</i>” Despite these words his hungry eyes remain on your body. Perhaps he can’t help it. You can only hope...");
 				
 				if (successful) applyTease(lustDelta);
-				game.dynStats("lus+", 20);
+				player.dynStats("lus+", 20);
 			}
 		}
 		
@@ -89,37 +92,32 @@ package classes.Scenes.Dungeons.D3
 			this.balls = 2;
 			this.ballSize = 6;
 			this.hoursSinceCum = 9999;
-			createBreastRow(0);
-			tallness = 86;
-			ass.analLooseness = 0;
-			ass.analWetness = 0;
-			hipRating = HIP_RATING_AVERAGE;
-			buttRating = BUTT_RATING_AVERAGE;
-			lowerBody = LOWER_BODY_TYPE_LIZARD;
-			skinDesc = "green-purple mottled hide";
+			this.createBreastRow(0);
+			this.tallness = 86;
+			this.ass.analLooseness = 0;
+			this.ass.analWetness = 0;
+			this.hips.type = Hips.RATING_AVERAGE;
+			this.butt.type = Butt.RATING_AVERAGE;
+			this.lowerBody = LowerBody.LIZARD;
+			this.skinDesc = "green-purple mottled hide";
 			initStrTouSpeInte(100, 200, 110, 70);
-			initLibSensCor(40, 40, 80);
-			faceType = FACE_LIZARD;
-			weaponName = "cutlass";
-			weaponVerb = "slash";
-			weaponAttack = 25 + (6 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
-			armorName = "leather tunic";
-			armorDef = 25 + (3 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			initWisLibSensCor(70, 40, 40, 80);
+			this.faceType = Face.LIZARD;
+			this.weaponName = "cutlass";
+			this.weaponVerb = "slash";
+			this.weaponAttack = 25;
+			this.armorName = "leather tunic";
+			this.armorDef = 25;
+			this.armorMDef = 10;
 			this.bonusHP = 1000;
 			this.bonusLust = 30;
-			lustVuln = 0.6;
-			lust = 5;
-			level = 38;
-			gems = 700 + rand(100);
+			this.lustVuln = 0.6;
+			this.lust = 5;
+			this.level = 38;
+			this.gems = 700 + rand(100);
 			this.drop = NO_DROP;
 			this.createPerk(PerkLib.BasicSelfControl, 0, 0, 0, 0);
 			this.createPerk(PerkLib.EnemyBeastOrAnimalMorphType, 0, 0, 0, 0);
-			this.str += 20 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.tou += 40 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.spe += 22 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.inte += 14 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];			
-			this.lib += 8 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.newgamebonusHP = 4160;
 			checkMonster();
 		}
 		

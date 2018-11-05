@@ -1,10 +1,14 @@
 package classes.Scenes.Dungeons.DeepCave
 {
-	import classes.*;
-	import classes.GlobalFlags.kFLAGS;
-	import classes.internals.WeightedDrop;
+import classes.*;
+import classes.BodyParts.Butt;
+import classes.BodyParts.Hips;
+import classes.BodyParts.Wings;
+import classes.GlobalFlags.kFLAGS;
+import classes.Scenes.SceneLib;
+import classes.internals.WeightedDrop;
 
-	public class Vala extends Monster
+public class Vala extends Monster
 	{
 		//Vala AI
 
@@ -14,17 +18,16 @@ package classes.Scenes.Dungeons.DeepCave
 			//Lightly wounded.
 			if(HPRatio() > .7) {
 				outputText("  The sweet-smelling cloud rapidly fills the room, but the volume of mist is low enough that you don't end up breathing in that much of it.  It does make your pulse quicken in the most pleasant way though...");
-				game.dynStats("lus", 5 + player.lib/20);
+				player.dynStats("lus", 5 + player.lib/20);
 			}
 			else if(HPRatio() > .4) {
 				outputText("  The rose-colored vapor spreads throughout the room, forcing you to breathe it in or pass out from lack of air.  It smells sweet and makes your head swim with sensual promises and your crotch tingle with desire.  Panicked by the knowledge that you're being drugged, you gasp, but it only draws more of the rapidly disappating cloud into your lungs, fueling your lust.");
-				game.dynStats("lus", 10 + player.lib/20);
+				player.dynStats("lus", 10 + player.lib/20);
 			}
 			else {
 				outputText("  The cloying, thick cloud of pink spools out from her mouth and fills the room with a haze of bubblegum-pink sweetness.  Even the shallowest, most experimental breath makes your heart pound and your crotch thrum with excitement.  You gasp in another quick breath and sway back and forth on your feet, already on the edge of giving in to the faerie.");
-				game.dynStats("lus", 30 + player.lib/10);
+				player.dynStats("lus", 30 + player.lib/10);
 			}
-			combatRoundOver();
 		}
 		//Milk magic
 		public function valaSpecial2():void {
@@ -40,14 +43,12 @@ package classes.Scenes.Dungeons.DeepCave
 				createStatusEffect(StatusEffects.Milk,5,0,0,0);
 				outputText("You aren't sure if there's something in her milk, the dust, or just watching her squirt and shake for you, but it's turning you on.");
 			}
-			game.dynStats("lus", statusEffectv1(StatusEffects.Milk) + player.lib / 20);
-			combatRoundOver();
+			player.dynStats("lus", statusEffectv1(StatusEffects.Milk) + player.lib / 20);
 		}
 		//Masturbation
 		public function valaMasturbate():void {
 			outputText("The mind-fucked faerie spreads her alabaster thighs and dips a finger into the glistening slit between her legs, sliding in and out, only pausing to circle her clit.  She brazenly masturbates, putting on quite the show.  Vala slides another two fingers inside herself and finger-fucks herself hard, moaning and panting lewdly.  Then she pulls them out and asks, \"<i>Did you like that?  Will you fuck Vala now?</i>\"");
-			game.dynStats("lus", 4 + player.cor/10);
-			combatRoundOver();
+			player.dynStats("lus", 4 + player.cor/10);
 		}
 
 
@@ -84,16 +85,16 @@ package classes.Scenes.Dungeons.DeepCave
 
 		override public function defeated(hpVictory:Boolean):void
 		{
-			game.dungeons.deepcave.fightValaVictory();
+			SceneLib.dungeons.deepcave.fightValaVictory();
 		}
 
 		override public function won(hpVictory:Boolean, pcCameWorms:Boolean):void
 		{
 			if(pcCameWorms){
 				outputText("\n\nYour foe doesn't seem put off enough to leave...");
-				doNext(game.endLustLoss);
+				doNext(SceneLib.combat.endLustLoss);
 			} else {
-				game.dungeons.deepcave.loseToVala();
+				SceneLib.dungeons.deepcave.loseToVala();
 			}
 		}
 
@@ -104,25 +105,26 @@ package classes.Scenes.Dungeons.DeepCave
 			this.imageName = "vala";
 			this.long = "While the fey girl is whip-thin, her breasts are disproportionately huge. They'd be at least a DD-cup on a normal human, but for her height and body type, they're practically as large as her head. They jiggle at her slow, uneven breathing, tiny drops of milk bubbling at her nipples with every heartbeat.  She seems fixated on mating with you, and won't take no for an answer.";
 			// this.plural = false;
-			this.createVagina(false, VAGINA_WETNESS_SLICK, VAGINA_LOOSENESS_GAPING_WIDE);
+			this.createVagina(false, VaginaClass.WETNESS_SLICK, VaginaClass.LOOSENESS_GAPING_WIDE);
 			this.createStatusEffect(StatusEffects.BonusVCapacity, 25, 0, 0, 0);
 			createBreastRow(Appearance.breastCupInverse("E"));
-			this.ass.analLooseness = ANAL_LOOSENESS_STRETCHED;
-			this.ass.analWetness = ANAL_WETNESS_DRY;
+			this.ass.analLooseness = AssClass.LOOSENESS_STRETCHED;
+			this.ass.analWetness = AssClass.WETNESS_DRY;
 			this.createStatusEffect(StatusEffects.BonusACapacity,10,0,0,0);
 			this.tallness = 4*12;
-			this.hipRating = HIP_RATING_CURVY;
-			this.buttRating = BUTT_RATING_LARGE;
+			this.hips.type = Hips.RATING_CURVY;
+			this.butt.type = Butt.RATING_LARGE;
 			this.skinTone = "fair";
 			this.hairColor = "purple";
 			this.hairLength = 22;
 			initStrTouSpeInte(75, 90, 90, 90);
-			initLibSensCor(55, 35, 50);
+			initWisLibSensCor(90, 55, 35, 50);
 			this.weaponName = "fists";
 			this.weaponVerb="caresses";
-			this.weaponAttack = 1 + (1 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.weaponAttack = 1;
 			this.armorName = "skin";
-			this.armorDef = 1 + (1 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.armorDef = 1;
+			this.armorMDef = 1;
 			var lustVuln:Number = .5;
 			if(game.flags[kFLAGS.TIMES_PC_DEFEATED_VALA] > 0) lustVuln += .25;
 			if(game.flags[kFLAGS.TIMES_PC_DEFEATED_VALA] > 2) lustVuln += .5;
@@ -144,15 +146,9 @@ package classes.Scenes.Dungeons.DeepCave
 			var wingDesc:String = "shimmering wings";
 			if(flags[kFLAGS.TIMES_PC_DEFEATED_VALA] == 0) this.drop = new WeightedDrop(consumables.NUMBROX);
 			else this.drop = NO_DROP;
-			this.wingType = WING_TYPE_BEE_LIKE_LARGE;
-			this.wingDesc = wingDesc;
+			this.wings.type = Wings.BEE_LIKE_LARGE;
+			this.wings.desc = wingDesc;
 			this.createPerk(PerkLib.InhumanDesireI, 0, 0, 0, 0);
-			this.str += 22 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.tou += 27 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.spe += 27 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.inte += 27 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];			
-			this.lib += 16 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.newgamebonusHP = 3570;
 			checkMonster();
 		}
 		

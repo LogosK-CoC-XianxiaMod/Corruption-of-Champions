@@ -3,14 +3,16 @@
  */
 package classes.Items.Consumables
 {
-	import classes.GlobalFlags.kFLAGS;
-    import classes.Player;
-	import classes.PregnancyStore;
-	import classes.StatusEffects;
-    import classes.internals.Utils;
-	import classes.Items.Consumable;
+import classes.CoC;
+import classes.EngineCore;
+import classes.GlobalFlags.kFLAGS;
+import classes.Items.Consumable;
+import classes.Player;
+import classes.PregnancyStore;
+import classes.StatusEffects;
+import classes.internals.Utils;
 
-	public class PhoukaWhiskey extends Consumable {
+public class PhoukaWhiskey extends Consumable {
 		
 		public function PhoukaWhiskey() {
 			super("P_Whsky", "Ph. Whiskey", "a small bottle of whiskey", 20, "A small, corked glass bottle with a dark amber liquid inside.  The whiskey smells strongly of peat.");
@@ -40,7 +42,7 @@ package classes.Items.Consumables
 			switch (phoukaWhiskeyDrink(game.player)) {
 				case 0: //Player isn't pregnant
 					outputText("You uncork the bottle and drink some whiskey, hoping it will let you relax for a while.\n\nIt's strong stuff and afterwards you worry a bit less about the future.  Surely things will right themselves in the end.");
-					game.dynStats("cor", Utils.rand(2) + 1, "lus", Utils.rand(8) + 1); //These gains are permanent
+					game.player.dynStats("cor", Utils.rand(2) + 1, "lus", Utils.rand(8) + 1); //These gains are permanent
 					break;
 				case 1: //Child is a phouka or satyr, loves alcohol
 					outputText("You uncork the bottle and drink some whiskey, hoping it will help with the gnawing hunger for alcohol you've had since this baby started growing inside you.\n\nYou down the booze in one shot and a wave of contentment washes over you.  It seems your passenger enjoyed the meal.");
@@ -51,6 +53,7 @@ package classes.Items.Consumables
 				case 3: //Child is a faerie, hates phouka whiskey
 					outputText("You feel queasy and want to throw up.  There's a pain in your belly and you realize the baby you're carrying didn't like that at all.");
 			}
+			if (!player.hasStatusEffect(StatusEffects.DrunkenPower) && CoC.instance.inCombat && player.oniScore() >= mutations.DrunkenPowerEmpowerOni()) mutations.DrunkenPowerEmpower();
 			game.flags[kFLAGS.PREGNANCY_CORRUPTION]++; //Faerie or phouka babies become more corrupted, no effect if the player is not pregnant or on other types of babies
 			phoukaWhiskeyAddStatus(game.player);
 			return(false);
@@ -106,14 +109,14 @@ package classes.Items.Consumables
 				player.addStatusValue(StatusEffects.PhoukaWhiskeyAffect, 3, 256 * libidoChange + sensChange);
 				player.addStatusValue(StatusEffects.PhoukaWhiskeyAffect, 4, 256 * speedChange + intChange);
 				outputText("\n\nOh, it tastes so good.  This stuff just slides down your throat.");
-				game.dynStats("lib", libidoChange, "sens", -sensChange, "spe", -speedChange, "int", -intChange);
+				game.player.dynStats("lib", libidoChange, "sens", -sensChange, "spe", -speedChange, "int", -intChange);
 			}
 			else { //First time
 				player.createStatusEffect(StatusEffects.PhoukaWhiskeyAffect, 8, 1, 256 * libidoChange + sensChange, 256 * speedChange + intChange);
 					//The four stats we’re affecting get paired together to save space. This way we don’t need a second StatusEffect to store more info.
-				game.dynStats("lib", libidoChange, "sens", -sensChange, "spe", -speedChange, "int", -intChange);
+				game.player.dynStats("lib", libidoChange, "sens", -sensChange, "spe", -speedChange, "int", -intChange);
 			}
-			game.statScreenRefresh();
+			EngineCore.statScreenRefresh();
         }
 		
 		public function phoukaWhiskeyExpires(player:Player):void
@@ -126,7 +129,7 @@ package classes.Items.Consumables
 			var libidoChange:int = (libidoSensCombined - sensChange) / 256;
 			var intChange:int = intSpeedCombined & 255;
 			var speedChange:int = (intSpeedCombined - intChange) / 256;
-			game.dynStats("lib", -libidoChange , "sens", sensChange, "spe", speedChange, "int", intChange); //Get back all the stats you lost
+			game.player.dynStats("lib", -libidoChange , "sens", sensChange, "spe", speedChange, "int", intChange); //Get back all the stats you lost
 			player.removeStatusEffect(StatusEffects.PhoukaWhiskeyAffect);
 			if (numDrunk > 3)
 				outputText("\n<b>The dizzy sensation dies away and is replaced by a throbbing pain that starts in your skull and then seems to run all through your body, seizing up your joints and making your stomach turn.  The world feels like it’s off kilter and you aren’t in any shape to face it.  You suppose you could down another whiskey, but right now that doesn’t seem like such a good idea.</b>\n");
@@ -134,7 +137,7 @@ package classes.Items.Consumables
 				outputText("\n<b>The fuzzy, happy feeling ebbs away.  With it goes the warmth and carefree feelings.  Your head aches and you wonder if you should have another whiskey, just to tide you over</b>\n");
 			else
 				outputText("\n<b>The fuzzy, happy feeling ebbs away.  The weight of the world’s problems seems to settle on you once more.  It was nice while it lasted and you wouldn’t mind having another whiskey.</b>\n");
-			game.statScreenRefresh();
+			EngineCore.statScreenRefresh();
 		}
     }
 }

@@ -1,10 +1,12 @@
 package classes.Scenes.NPCs 
 {
-	import classes.GlobalFlags.*;
-	import classes.Items.*;
-	import classes.*;
-	
-	/**
+import classes.*;
+import classes.GlobalFlags.*;
+import classes.Items.*;
+import classes.lists.BreastCup;
+import classes.lists.Gender;
+
+/**
 	 * Bimbo Jojo by LukaDoc
 	 * @author Kitteh6660
 	 */
@@ -43,7 +45,7 @@ package classes.Scenes.NPCs
 		private function initializeJoy():void {
 			if (player.hasStatusEffect(StatusEffects.JojoNightWatch)) player.removeStatusEffect(StatusEffects.JojoNightWatch);
 			flags[kFLAGS.JOY_COCK_SIZE] = 5.5;
-			flags[kFLAGS.JOY_BREAST_SIZE] = BREAST_CUP_DD;
+			flags[kFLAGS.JOY_BREAST_SIZE] = BreastCup.DD;
 			flags[kFLAGS.JOY_VAGINAL_WETNESS] = 3;
 			flags[kFLAGS.JOY_INTELLIGENCE] = 20;
 		}
@@ -82,8 +84,7 @@ package classes.Scenes.NPCs
 		}
 		
 		public function joyHasCock():Boolean {
-			if (flags[kFLAGS.JOY_COCK_SIZE] > 0) return true;
-			else return false;
+			return flags[kFLAGS.JOY_COCK_SIZE] > 0;
 		}
 		public function joyHasCockText(text:String):String {
 			if (joyHasCock()) return text;
@@ -213,7 +214,7 @@ package classes.Scenes.NPCs
 			var text:String = "";
 			if (flags[kFLAGS.JOJO_ANAL_XP] == 0) text += "virgin ";
 			else if (flags[kFLAGS.JOJO_ANAL_XP] < 5) text += "tight ";
-			else "loose ";
+			else text+="loose ";
 			switch(rand(6)) {
 				case 0:
 					text += "ass";
@@ -241,7 +242,7 @@ package classes.Scenes.NPCs
 		
 		public function joyBreastDescript():String {
 			var text:String = "";
-			if (flags[kFLAGS.JOY_BREAST_SIZE] >= BREAST_CUP_E && flags[kFLAGS.JOY_BREAST_SIZE] < BREAST_CUP_G) {
+			if (flags[kFLAGS.JOY_BREAST_SIZE] >= BreastCup.E && flags[kFLAGS.JOY_BREAST_SIZE] < BreastCup.G) {
 				switch(rand(3)) {
 					case 0:
 						text += "large";
@@ -256,7 +257,7 @@ package classes.Scenes.NPCs
 						text += "";
 				}
 			}
-			else if (flags[kFLAGS.JOY_BREAST_SIZE] >= BREAST_CUP_G) {
+			else if (flags[kFLAGS.JOY_BREAST_SIZE] >= BreastCup.G) {
 				switch(rand(4)) {
 					case 0:
 						text += "huge";
@@ -327,8 +328,8 @@ package classes.Scenes.NPCs
 			outputText("\n\nYou stop and think about this... On one hand, catching this thief would be great, since that would mean one less problem to worry about, but Jojo would be risking himself.  Sure... he has battle training... and he did manage to live all by himself in the forest before you arrived... would a petty thief really pose a threat to someone like him?  And why were they targeting the Bimbo Liqueur?  From what you gather its a pretty potent transformative, so who knows what this mysterious visitor could be planning?  On the other hand... sometimes prevention is the better solution... you could just have Jojo keep a close eye on your stash to discourage any further attempts at theft, and this would ensure whoever is targeting the Bimbo Liqueur doesn’t get a chance to try and do any harm.");
 			outputText("\n\nWhat do you do?");
 			menu();
-			addButton(0, "Catch Thief", letsCatchThief);
-			addButton(1, "Guard Stash", letsGuardStash);
+			addButton(0, "Catch Thief", letsCatchThief).hint("Could lead to 'unexpected' situation.");
+			addButton(1, "Guard Stash", letsGuardStash).hint("Safe option.");
 		}
 		
 		//Attempt to catch thief, set flag to 2, route to bimbofication the next day.
@@ -542,7 +543,7 @@ package classes.Scenes.NPCs
 				case "goblin":
 					outputText("\"<i>Well, you're a goblin... Sort of. Never knew a goblin who wasn't obsessed with trying to fuck everything in sight.");
 					if (player.hasCock()) outputText(" Never knew a goblin with, like, a cock of her own, either.");
-					if (player.gender == GENDER_FEMALE && !joyHasCock()) outputText(" But I've never, like, heard of a lesbian goblin before.");
+					if (player.gender == Gender.GENDER_FEMALE && !joyHasCock()) outputText(" But I've never, like, heard of a lesbian goblin before.");
 					outputText("</i>\"");
 					break;
 				case "kitsune":
@@ -565,14 +566,14 @@ package classes.Scenes.NPCs
 			}
 			//Gender check
 			outputText("\n\nHaving commented on your race, the bimbo next casts her eye over your crotch and your [chest]. \"<i>You're a ");
-			if (player.gender == GENDER_MALE) {
+			if (player.gender == Gender.GENDER_MALE) {
 				outputText(" guy, and I'm, like, super-happy that's what you are - it means I can play with your funstick.");
 			}
-			else if (player.gender == GENDER_FEMALE) {
+			else if (player.gender == Gender.GENDER_FEMALE) {
 				if (joyHasCock()) outputText("girl, with a yummy baby-hole for me to stick my funstick into and fill you full of mousey-cream.");
 				else outputText("girl... And that's not a bad thing, but I kinda, like, wish one of us had a funstick; it'd be more fun that way! Oooh! And imagine the fun we could have if we both had funsticks!");
 			}
-			else if (player.gender == GENDER_HERM) {
+			else if (player.gender == Gender.GENDER_HERM) {
 				if (joyHasCock()) outputText("herm and I'm sooo happy about it; we can have so much fun!");
 				else outputText("herm, with yummy [breasts] and a cute [vagina] for me to lick and a nice [cock] for me to suck and rub and fill my fun-holes with; I just love it when you put cream in my hungry-achey little belly.");
 			}
@@ -580,7 +581,7 @@ package classes.Scenes.NPCs
 				outputText("...Well, you're not really anything. And it's not really a lot of fun... can't you turn into a boy or a girl?");
 			}
 			//Corruption and perk check
-			outputText("\n\nNext, Joy closes her eyes and focuses on your aura.");
+			outputText("\"</i>\n\nNext, Joy closes her eyes and focuses on your aura.");
 			if (player.cor < 5) { //Pure
 				outputText("\n\n\"<i>Your aura's, like, super shiny white - I can't remember seeing anyone as clean and pretty as you!</i>\"");
 			}
@@ -795,7 +796,7 @@ package classes.Scenes.NPCs
 						if (player.hasCock()) outputText(player.cockDescript() + " is already hard ");
 						if (player.hasCock() && player.hasVagina()) outputText("and");
 						if (player.hasVagina()) outputText(player.vaginaDescript() + " is already moist");
-						outputText(". Somehow Joy's not noticing or ignoring your squirming, but you can smell her even if your nose is not that good to begin with... she smells so nice... you can barely suppress your urge to hug her and give her a big wet kiss... then ask her to help you with your... needs... but as you think of doing this to her, you wonder if she's sitting on your " + joySitLoc() + " as some kind of test... she also seems so peaceful sitting atop your " + joySitLoc() + "; it inspires you to regain a bit of control and mentally force your ")
+						outputText(". Somehow Joy's not noticing or ignoring your squirming, but you can smell her even if your nose is not that good to begin with... she smells so nice... you can barely suppress your urge to hug her and give her a big wet kiss... then ask her to help you with your... needs... but as you think of doing this to her, you wonder if she's sitting on your " + joySitLoc() + " as some kind of test... she also seems so peaceful sitting atop your " + joySitLoc() + "; it inspires you to regain a bit of control and mentally force your ");
 						if (player.hasCock()) outputText(player.cockDescript());
 						if (player.hasCock() && player.hasVagina()) outputText("and");
 						if (player.hasVagina()) outputText(player.vaginaDescript());
@@ -984,7 +985,7 @@ package classes.Scenes.NPCs
 				outputText("\n\nWith a smile, you rub her between her ears, redress yourself, thank her for trying and leave.");
 				outputText("\n\nShe hugs you from behind and says, \"<i>Don't, like, be discouraged [name]. It really is meant to hurt, but if you, like, withstand the pain, you'll get tougher I promise.</i>\"");
 				outputText("\n\nYou promise her you'll keep that in mind.");
-				player.takeDamage(30);
+				player.takePhysDamage(30);
 			}
 			else if (player.tou <= 66) {
 				outputText("\n\nYou have to struggle to bite back a yell, but you manage to avoid bucking and thrashing around. It hurts, you can't deny it hurts, but you refuse to give in. Eventually, though, the pain is too much and you beg Joy to stop.");
@@ -992,10 +993,10 @@ package classes.Scenes.NPCs
 				outputText("\n\nYou can't help but smile back and ask what she has in mind.");
 				outputText("\n\nShe holds your cheeks gently and gives you a big kiss on the lips. \"<i>There. Now you, like, have some incentive to try again.</i>\" She grins, getting off you.");
 				outputText("\n\nWith a smirk");
-				if (player.cor > 66) outputText(", and privately feeling somewhat ripped off")
+				if (player.cor > 66) outputText(", and privately feeling somewhat ripped off");
 				outputText(", you thank her, redress yourself and start heading back to your part of the camp.");
 				outputText("\n\nJoy hugs you from behind and says, \"<i>I'm, like, really proud of you [name]. If you keep trying you'll, like, be able to withstand the pain and become even tougher.</i>\" Then she releases you and sashays away.");
-				player.takeDamage(20);
+				player.takePhysDamage(20);
 			}
 			else {
 				outputText("\n\nYou grunt softly, but the pain is minimal, incapable of seriously phasing your developed muscles. Quietly you sit there, shrugging off the pinpricks as Joy works your body over.");
@@ -1185,7 +1186,7 @@ package classes.Scenes.NPCs
 					outputText("\n\nShe sniffs it and squints her eyes at it. \"<i>Like, I think this will make my funstick bigger. Are you sure you want that [name]?</i>\"");
 				}
 				else {
-					outputText("\n\nShe sniffs it and squints her eyes at it. \"<i>Like, I think this could help me get my funstick back. Are you sure you want that [name]?\"");
+					outputText("\n\nShe sniffs it and squints her eyes at it. \"<i>Like, I think this could help me get my funstick back. Are you sure you want that [name]?\"</i>");
 				}
 				doYesNo(giveJoyAnIncubiDraftForReal, dontGiveJoyAnIncubiDraft);
 			}
@@ -1240,7 +1241,7 @@ package classes.Scenes.NPCs
 				outputText("Once it's over you can see it looks wetter than normal.");
 				flags[kFLAGS.JOY_VAGINAL_WETNESS]++;
 			}
-			if (flags[kFLAGS.JOY_BREAST_SIZE] >= BREAST_CUP_G) { //Jojo has maxed breast size.
+			if (flags[kFLAGS.JOY_BREAST_SIZE] >= BreastCup.G) { //Jojo has maxed breast size.
 				outputText("\n\nHer top seems to grow tight as her generous " + joyBreastDescript() + " grows. Her tightly fitting robe strains to hold the " + joyBreastDescript() + " inside, until it pops and jumps out. Joy massages her newly grown boobies. \"<i>I think this might, like, be too big...</i>\" she begins running her hands all over her boobs, a soft white glow coming off them, and slowly you see her breasts shrinking back to their previous size. \"<i>There! Much better now! Aren't my boobies, like, the cutests?</i>\" she asks happily, bouncing them from side to side in her hands.");
 				outputText("\n\nOnce she's done playing with her breasts she turns to you and says, \"<i>That was, like, so good! Do you have more, [name]?</i>\" she asks, then adds, \"<i>you know that if you want to make me wet you don't, like, need any potions for that right, sexy?</i>\" she says seductively. Then begins playing with her wet vagina and breasts; you decide to leave her alone for the moment.");
 			}
@@ -1289,7 +1290,7 @@ package classes.Scenes.NPCs
 			else player.consumeItem(consumables.BLUEEGG, 1);
 			outputText("You hand Joy a " + (large ? "large blue egg" : "blue egg") + " and ask her to eat it for you. She sniffs it experimentally, then cracks it open and sucks the yolk down, shuddering with disgust. \"<i>Blech! That tastes awful!</i>\" She complains, sticking her tongue out for emphasis. Then she shudders, and gives a squeak of shock; and you can see why - her breasts are shrinking! As you watch, her chest completely flattens itself out... then, a few moments later, it starts bubbling out again until her DD-cups are bouncing proudly on her chest once more, straining against her shirt even as her shorts are soaked by feminine fluid. She shivers and gives you a flat look. \"<i>Like, I don't know what you were hoping would happen, but that felt totally nasty. Please don't do it again, kay?</i>\" She asks.");
 			outputText("You promise you'll keep it in mind and leave her alone as she thankfully jiggles her newly-restored bosom.");
-			flags[kFLAGS.JOY_BREAST_SIZE] = BREAST_CUP_DD;
+			flags[kFLAGS.JOY_BREAST_SIZE] = BreastCup.DD;
 			flags[kFLAGS.JOY_EATEN_BLUE_EGG]++;
 			doNext(genericMenu);
 		}
@@ -1313,7 +1314,7 @@ package classes.Scenes.NPCs
 				else outputText("really");
 				outputText(" big, didn't they? They feel sort of funny, too.</i>\" She states, and, before you can say anything, squeezes them, causing milk to spurt out of her nipples. \"<i>...Wow! I'm full of milk... I'm a mouse-cow.</i>\" She giggles.");
 			}
-			else outputText("\"<i>Never better, [name]. Don't you think my boobies look so nice all fat and full with milk?</i>\" She laughs;")
+			else outputText("\"<i>Never better, [name]. Don't you think my boobies look so nice all fat and full with milk?</i>\" She laughs;");
 			outputText("; then she pouts. \"<i>But my milky titties are sooo heavy now. I don't think I can get up. [name]? Won't you help me? Please?</i>\" She asks.");
 			if (player.cor <= 33) outputText("\n\nWell... she can barely stand as it is, so you agree.");
 			else if (player.cor <= 66) outputText("\n\nHer milk tasted really good and you're eager to try more, so you agree.");
@@ -1370,9 +1371,9 @@ package classes.Scenes.NPCs
 			player.consumeItem(consumables.REDUCTO, 1);
 			outputText("You tell Joy that she could shrink her breasts.");
 			outputText("\n\n\"<i>Okay! But won't you, like, miss me having bigger boobies?</i>\" Joy teases. Then she opens up her robes and applies Reducto all over her breasts and makes a disgusted expression. \"<i>That pasty thing smells, like, awful! And look at my boobies go!</i>\" Joy exclaims.");
-			if (flags[kFLAGS.JOY_BREAST_SIZE] < BREAST_CUP_DD) {
+			if (flags[kFLAGS.JOY_BREAST_SIZE] < BreastCup.DD) {
 				outputText("\n\nNothing happens. \"<i>They're the same size? Why would you want me to, like, get rid of these boobies? They're fun and soft! They'll stay with me!</i>\" Joy teases and giggles.");
-				flags[kFLAGS.JOY_BREAST_SIZE] = BREAST_CUP_DD;
+				flags[kFLAGS.JOY_BREAST_SIZE] = BreastCup.DD;
 			}
 			else {
 				outputText("\n\nHer breasts begin shrinking until they appear to have lost a couple of breast sizes. \"<i>I feel, like, a bit better! My boobies feel lighter now.</i>\" Joy smiles. Her tail wiggles excitedly.");
@@ -1577,7 +1578,7 @@ package classes.Scenes.NPCs
 			outputText("\n\nYou quickly close your mouth around her labia, just in time to receive a sudden serving of deliciously sweet girl-cum; you savour every drop as you drink from Joy, kissing and slurping her lower lips, as well as teasing her little hard clitty with your nose.");
 			outputText("\n\nShe wriggles and squeaks, pushing herself forward to grind her cunt against your face" + joyHasCockText(", her balls flopping into your nose at the motion") + ". \"<i>Like, ooh, yeah, that's the stuff, [name]!</i>\"");
 			outputText("\n\nYour slurping mouth curls into a smile when you see the effect you're having on the horny bimbo mouse; then you decide to step up the game by plugging your " + tongueDescript() + " as far as you can inside Joy's wanton cunt.");
-			if (player.tongueType > 0) {
+			if (player.tongue.type > 0) {
 				outputText("\n\n\"<i>Oh! Oh-oh fuck yeah!</i>\" Joy howls with horny glee, as your long undulating tongue slithers inside her warm, wet depths like a snake; licking every little crevice and bump, tasting every cranny and nook of Joy's vagina.");
 				outputText("\n\nJoy's vagina tries to grasp at your tongue, but your mobile appendage is easily able to slip and massage her insides.");
 			}
@@ -1609,7 +1610,7 @@ package classes.Scenes.NPCs
 			outputText("\n\nYou begin to stroke Joy's cock, painfully slowly, just waiting for an opportunity... as well as testing the limits of Joy's patience.");
 			outputText("\n\nWhich turns out to not be much. \"<i>Like... I don't want teasing; I want you to suck my cock!</i>\" She whines.");
 			outputText("\n\nThe moment a bead of pre shows up atop Joy's cock is the moment you strike.");
-			if (player.tongueType > 0) {
+			if (player.tongue.type > 0) {
 				outputText("\n\nYou extend your " + tongueDescript() + ", swiping the bead of pre, coiling your tongue around Joy's cock and entering Joy's pussy; all in one fell swoop. You don't even wait for Joy's gasp of surprise before you pull your tongue back and dive forwards to engulf Joy's " + joyCockDescript() + ".");
 			}
 			else {
@@ -1772,6 +1773,7 @@ package classes.Scenes.NPCs
 			outputText("\n\nYou sigh and get up, extracting yourself from under her; a small trickle of cum leaks from your used fuckhole, and down your legs; looks like you'll need a bath... but first. You help Joy up and pat her head telling her if she promises to be a good girl you two can have more fun later.");
 			outputText("\n\n\"<i>Yay!</i>\" Joy perks right up at that, throwing her arms into the air in delight.");
 			outputText("\n\nYou giggle at her reaction and gather your discarded clothes. Then take Joy's hand and begin making your way towards the nearest stream.");
+			if (player.isGargoyle() && player.hasPerk(PerkLib.GargoyleCorrupted)) player.refillGargoyleHunger(30);
 			player.orgasm();
 			dynStats("sens", 1, "cor", -(1 + Math.ceil(player.cor / 20)));
 			flags[kFLAGS.JOJO_VAGINAL_CATCH_COUNTER]++;
@@ -1824,6 +1826,7 @@ package classes.Scenes.NPCs
 			outputText("\n\n\"<i>No! Please! Don't cut off the sex! I couldn't stand no more sex!</i>\" Joy begs you.");
 			outputText("\n\nYou laugh at Joy's mortified expression and comfort her by hugging her and telling her you would never refuse something as cute as her... but if she really expects to have a shot at your ass again she'd better grab your stuff and help you clean up. Then you release her and make your way towards the stream.");
 			outputText("\n\nThe mouse bimbo watches you go. \"<i>Like, [name], that was really mean!</i>\" She whines, then scampers after you.");
+			if (player.isGargoyle() && player.hasPerk(PerkLib.GargoyleCorrupted)) player.refillGargoyleHunger(30);
 			player.orgasm();
 			dynStats("sens", 1, "cor", -(1 + Math.ceil(player.cor / 20)));
 			flags[kFLAGS.JOJO_ANAL_CATCH_COUNTER]++;
@@ -2222,7 +2225,7 @@ package classes.Scenes.NPCs
 			outputText("\n\nYou barely register Joy's comment though, the feeling of your breasts being slowly drained of their milk feels so nice, you can't help but fall asleep...");
 			player.knockUpForce(); //Clear pregnancy
 			player.cuntChange(60, true,true,false);
-			if(player.vaginas[0].vaginalWetness == VAGINA_WETNESS_DRY) player.vaginas[0].vaginalWetness++;
+			if(player.vaginas[0].vaginalWetness == VaginaClass.WETNESS_DRY) player.vaginas[0].vaginalWetness++;
 			player.orgasm();
 			dynStats("str", -1,"tou", -2, "spe", 3, "lib", 1, "sen", .5);
 			flags[kFLAGS.JOY_TWINS_BIRTHED]++;
@@ -2243,14 +2246,14 @@ package classes.Scenes.NPCs
 			outputText("\n\nUpon seeing that, you give her a hug, ruffling her hair and tell her you'll think about it.");
 			outputText("\n\nJoy smiles, leans into the hug, then wanders off, presumably to check on your kids.");
 			//Butt increase
-			if(player.buttRating < 14 && rand(2) == 0) {
-				if(player.buttRating < 10) {
-					player.buttRating++;
+			if(player.butt.type < 14 && rand(2) == 0) {
+				if(player.butt.type < 10) {
+					player.butt.type++;
 					outputText("\n\nYou notice your " + buttDescript() + " feeling larger and plumper after the ordeal.");
 				}
 				//Big butts grow slower!
-				else if(player.buttRating < 14 && rand(2) == 0) {
-					player.buttRating++;
+				else if(player.butt.type < 14 && rand(2) == 0) {
+					player.butt.type++;
 					outputText("\n\nYou notice your " + buttDescript() + " feeling larger and plumper after the ordeal.");
 				}
 			}
@@ -2289,4 +2292,4 @@ package classes.Scenes.NPCs
 		}
 	}
 
-}
+}

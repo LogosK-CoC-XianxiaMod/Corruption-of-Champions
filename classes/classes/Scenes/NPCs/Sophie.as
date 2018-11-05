@@ -1,11 +1,14 @@
 ﻿package classes.Scenes.NPCs
 {
-	import classes.*;
-	import classes.Scenes.Areas.HighMountains.Harpy;
-	import classes.internals.*;
-	import classes.GlobalFlags.kFLAGS;
+import classes.*;
+import classes.BodyParts.Butt;
+import classes.BodyParts.Hips;
+import classes.BodyParts.Wings;
+import classes.Scenes.Areas.HighMountains.Harpy;
+import classes.Scenes.SceneLib;
+import classes.internals.*;
 
-	/**
+/**
 	 * ...
 	 * @author Fake-Name
 	 */
@@ -20,7 +23,7 @@
 		//+20 lust.  Each kiss adds 2 hours to length of status
 		//affect.
 		private function sophieKissAttack():void {
-			game.sophieBimbo.sophieSprite();
+			SceneLib.sophieBimbo.sophieSprite();
 			outputText("Sophie bobs and weaves as she closes the distance between you in an instant.  ");
 			//Blind dodge change
 			if(hasStatusEffect(StatusEffects.Blind) && rand(3) < 2) {
@@ -53,8 +56,8 @@
 			//Already affected by it
 			if(player.hasStatusEffect(StatusEffects.Luststick)) {
 				outputText("  Blood rushes to [eachcock] as you grow so hard so fast that it hurts.  ");
-				game.sophieScene.luststickApplication(2);
-				game.dynStats("lus", (12+player.lib/10));
+				SceneLib.sophieScene.luststickApplication(2);
+				player.dynStats("lus", (12+player.lib/10));
 				if(player.lust < 0.7*player.maxLust()) outputText("The drugged lip-gloss is starting to get to you!\n");
 				else if(player.lust < 0.8*player.maxLust()) outputText("Her curvy thighs look so inviting.  You barely stop yourself before you climb in between them!\n");
 				else if(player.lust < 0.9*player.maxLust()) outputText("A trickle of pre-cum leaks from [eachcock].  Sophie coos, \"<i>Why don't you give in and let mommy Sophie drain out all that juicy cum?</i>\"\n");
@@ -63,8 +66,8 @@
 			}
 			else {
 				outputText("  Your whole body blushes as your lips tingle with some unnatural sensation.  Her lips were drugged!  Your whole body flushes as arousal begins to course through your veins.  ");
-				game.sophieScene.luststickApplication(2);
-				game.dynStats("lus", 8+player.lib/10);
+				SceneLib.sophieScene.luststickApplication(2);
+				player.dynStats("lus", 8+player.lib/10);
 				if(player.lust < 0.7*player.maxLust()) outputText("The drugged lip-gloss is starting to get to you!\n");
 				else if(player.lust < 0.8*player.maxLust()) outputText("Her curvy thighs look so inviting.  You barely stop yourself before you climb in between them!\n");
 				else if(player.lust < 0.9*player.maxLust()) outputText("A trickle of pre-cum leaks from [eachcock].  Sophie coos, \"<i>Why don't you give in and let mommy Sophie drain out all that juicy cum?</i>\"\n");
@@ -79,7 +82,7 @@
 		//for a few moments.
 		//Easily dodged with evade or flexibility.
 		private function sophieHarpyBoatsPC():void {
-			game.sophieBimbo.sophieSprite();
+			SceneLib.sophieBimbo.sophieSprite();
 			outputText(capitalA + short + " flaps her wings and launches herself forwards with her talons up.  ");
 			//Blind dodge change
 			if(hasStatusEffect(StatusEffects.Blind) && rand(3) < 2) {
@@ -110,12 +113,12 @@
 			outputText("She hits you hard, nearly bowling you over.  Thankfully, her talons passed to either side of your torso.  They lock together behind your back and your face is pulled tightly into Sophie's smotheringly large mounds!");
 			if(rand(2) == 0) outputText("  She jiggles them around you pleasantly and coos, \"<i>Don't fight it baby.  Just let your body do what comes naturally.</i>\"\n");
 			else outputText("  She runs her long fingernails through your hair as she whispers, \"<i>Why fight it?  I'll make you feel so good.  Just relax and play with momma Sophie's tits.</i>\"\n");
-			game.dynStats("lus", (13 + player.sens/10));
+			player.dynStats("lus", (13 + player.sens/10));
 		}
 		
 		//Compulsion (Male Only)
 		private function sophieCompulsionAttack():void {
-			game.sophieBimbo.sophieSprite();
+			SceneLib.sophieBimbo.sophieSprite();
 			outputText("Sophie spreads her thick thighs and slips four fingers into her slippery sex.  She commands, \"<i>Touch yourself for me.  Be a good pet and masturbate for me.</i>\"  ");
 			//Autosucceeds if player inte < 40
 			//autofails if player inte > 80
@@ -123,7 +126,7 @@
 			if(player.inte < 40 || (player.inte < 80 && rand(40) > (player.inte - 40))) {
 				outputText("You moan out loud as your arms move of their own volition.  They reach inside your [armor] and stroke [eachcock], caress the tip, and continue to fondle you a few moments.");
 				outputText("Even after regaining control of your limbs, you're left far more turned on by the ordeal.");
-				game.dynStats("lus", (15 + player.cor/20 + player.lib/20));
+				player.dynStats("lus", (15 + player.cor/20 + player.lib/20));
 			}
 			//Player resists
 			else {
@@ -135,7 +138,7 @@
 		//Talons (Female Only)
 		//High damage attack easily avoided by evade/flexibility.
 		private function talonsSophie():void {
-			game.sophieBimbo.sophieSprite();
+			SceneLib.sophieBimbo.sophieSprite();
 			outputText("Sophie pulls her leg up, cocking her thigh dangerously.  Look out!  ");
 			var damage:Number = 0;
 			//Blind dodge change
@@ -168,43 +171,43 @@
 			damage = int((str + weaponAttack) - Math.random()*(player.tou) - player.armorDef);
 			if(damage < 0) damage = 0;
 			damage += 40;
-			damage = player.takeDamage(damage);
+			damage = player.takePhysDamage(damage);
 			outputText("(" + damage + ")\n");
 			
 		}
 		//Batter (Female Only)
 		//Batters PC with wings – 4x attack impossible to dodge.*/
 		private function batterAttackSophie():void {
-			game.sophieBimbo.sophieSprite();
+			SceneLib.sophieBimbo.sophieSprite();
 			var damage:Number = 0;
 			outputText("Sophie comes at you in a flurry of beating wings!  There's no way to dodge the flurry of strikes!\n");
 			
 			//Determine damage - str modified by enemy toughness!
 			damage = int((str) - Math.random()*(player.tou) - player.armorDef);
 			if(damage < 0) damage = 0;
-			damage = player.takeDamage(damage);
+			damage = player.takePhysDamage(damage);
 			outputText("Her left primary wing batters your head! (" + damage + ")\n");
 			//Determine damage - str modified by enemy toughness!
 			damage = int((str) - Math.random()*(player.tou) - player.armorDef);
 			if(damage < 0) damage = 0;
-			damage = player.takeDamage(damage);
+			damage = player.takePhysDamage(damage);
 			outputText("Her right, wing-like arm slaps at your torso! (" + damage + ")\n");
 			//Determine damage - str modified by enemy toughness!
 			damage = int((str) - Math.random()*(player.tou) - player.armorDef);
 			if(damage < 0) damage = 0;
-			damage = player.takeDamage(damage);
+			damage = player.takePhysDamage(damage);
 			outputText("Her other feathery arm punches at your shoulder! (" + damage + ")\n");
 			//Determine damage - str modified by enemy toughness!
 			damage = int((str) - Math.random()*(player.tou) - player.armorDef);
 			if(damage < 0) damage = 0;
-			damage = player.takeDamage(damage);
+			damage = player.takePhysDamage(damage);
 			outputText("Her right wing slams into the other side of your head! (" + damage + ")\n");
 		}
 
 		override protected function performCombatAction():void
 		{
 			//Sophie has special AI in harpySophie.as
-			game.sophieBimbo.sophieSprite();
+			SceneLib.sophieBimbo.sophieSprite();
 			var select:Number = 1;
 			var rando:Number = 1;
 //Update attacks for girls/neuters
@@ -228,7 +231,6 @@
 			select = rand(4);
 			if (select == 0) {
 				eAttack();
-				combatRoundOver();
 				return;
 			}
 			if (player.hasCock() && !hasStatusEffect(StatusEffects.BimboBrawl)) rando = 1 + rand(3);
@@ -236,26 +238,25 @@
 			if (rando == 1) special1();
 			if (rando == 2) special2();
 			if (rando == 3) special3();
-			combatRoundOver();
 		}
 
 		override public function defeated(hpVictory:Boolean):void
 		{
 			if(hasStatusEffect(StatusEffects.BimboBrawl))
-				game.sophieFollowerScene.beatUpDebimboSophie();
+				SceneLib.sophieFollowerScene.beatUpDebimboSophie();
 			else
-				game.sophieScene.sophieLostCombat();
+				SceneLib.sophieScene.sophieLostCombat();
 		}
 
 		override public function won(hpVictory:Boolean, pcCameWorms:Boolean):void
 		{
 			if(hasStatusEffect(StatusEffects.BimboBrawl))
-				game.sophieFollowerScene.debimboSophieBeatsYouUp();
+				SceneLib.sophieFollowerScene.debimboSophieBeatsYouUp();
 			else if (pcCameWorms) {
 				outputText("\n\nYour foe seems disgusted by the display and leaves you to recover alone...");
-				game.cleanupAfterCombat();
+				SceneLib.combat.cleanupAfterCombatImpl();
 			} else {
-				game.sophieScene.sophieWonCombat();
+				SceneLib.sophieScene.sophieWonCombat();
 			}
 		}
 
@@ -269,26 +270,27 @@
 			this.imageName = "sophie";
 			this.long = "Sophie is approximately the size of a normal human woman, not counting the large feathery wings that sprout from her back.  Her face is gorgeous, with large rounded eyes and glimmering amber lip-gloss painted on her lush, kissable lips.  In spite of her beauty, it's clear from the barely discernible laugh lines around her mouth that she's been around long to enough to have quite a few children.  Her feathers are light pink, though the downy plumage that comprises her 'hair' is brighter than the rest.  She moves with practiced grace despite the large, jiggling breasts that hang from her chest.  Judging from her confident movements, she's an experienced fighter.";
 			// this.plural = false;
-			this.createVagina(false, VAGINA_WETNESS_DROOLING, VAGINA_LOOSENESS_GAPING_WIDE);
+			this.createVagina(false, VaginaClass.WETNESS_DROOLING, VaginaClass.LOOSENESS_GAPING_WIDE);
 			this.createStatusEffect(StatusEffects.BonusVCapacity, 40, 0, 0, 0);
 			createBreastRow(Appearance.breastCupInverse("DD"));
-			this.ass.analLooseness = ANAL_LOOSENESS_TIGHT;
-			this.ass.analWetness = ANAL_WETNESS_DRY;
+			this.ass.analLooseness = AssClass.LOOSENESS_TIGHT;
+			this.ass.analWetness = AssClass.WETNESS_DRY;
 			this.createStatusEffect(StatusEffects.BonusACapacity,10,0,0,0);
 			this.tallness = 5*12+5;
-			this.hipRating = HIP_RATING_INHUMANLY_WIDE;
-			this.buttRating = BUTT_RATING_EXPANSIVE;
+			this.hips.type = Hips.RATING_INHUMANLY_WIDE;
+			this.butt.type = Butt.RATING_EXPANSIVE;
 			this.skin.setBaseOnly({color:"pink"});
 			this.skinDesc = "feathers";
 			this.hairColor = "pink";
 			this.hairLength = 16;
 			initStrTouSpeInte(80, 70, 130, 80);
-			initLibSensCor(60, 50, 60);
+			initWisLibSensCor(80, 60, 50, 60);
 			this.weaponName = "talons";
 			this.weaponVerb="slashing talons";
-			this.weaponAttack = 40 + (9 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.weaponAttack = 40;
 			this.armorName = "feathers";
-			this.armorDef = 10 + (2 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.armorDef = 10;
+			this.armorMDef = 0;
 			this.bonusHP = 300;
 			this.bonusLust = 20;
 			this.lust = 10;
@@ -298,16 +300,10 @@
 			this.gems = 40 + rand(45);
 			this.drop = new ChainedDrop().add(armors.W_ROBES,1/10)
 					.elseDrop(consumables.GLDSEED);
-			this.wingType = WING_TYPE_HARPY;
-			this.wingDesc = "large feathery";
+			this.wings.type = Wings.HARPY;
+			this.wings.desc = "large feathery";
 			this.special1 = harpyUberCharge;
 			this.special2 = harpyTease;
-			this.str += 16 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.tou += 14 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.spe += 23 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.inte += 16 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];			
-			this.lib += 12 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.newgamebonusHP = 2520;
 			checkMonster();
 		}
 

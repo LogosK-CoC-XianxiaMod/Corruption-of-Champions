@@ -10,7 +10,7 @@ package classes.Items.Armors
 	public final class InquisitorsCorset extends Armor {
 		
 		public function InquisitorsCorset() {
-			super("I.Corst", "I.Corst", "inquisitor's corset", "an inquisitor's corset", 4, 2000, "This sexualized and feminine red and gold ensemble carries with it the hopes of a shamed sorcerer.  Wearing it will cause spells to tax your health instead of exhausting you.", "Light", false, false);
+			super("I.Corst", "I.Corst", "inquisitor's corset", "an inquisitor's corset", 0, 16, 2000, "This sexualized and feminine red and gold ensemble carries with it the hopes of a shamed sorcerer.  Wearing it will allow cast blood magic spells.", "Light", false, false);
 		}
 		
 		override public function useText():void {
@@ -25,13 +25,13 @@ package classes.Items.Armors
 			outputText("\n\n");
 			outputText("You feel sexy... and pious.\n\n(<b>Perk Gained - Blood Mage</b>: Spells consume HP (minimum 5) instead of mana!)\n\n");
 			//+lust
-			game.dynStats("lus", 5);
+			game.player.dynStats("lus", 5);
 		}
 		
 		override public function get description():String {
 			var desc:String = _description;
 			//Type
-			desc += "\n\nType: "
+			desc += "\n\nType: ";
 			if (name.indexOf("armor") >= 0 || name.indexOf("armour") >= 0 || name.indexOf("chain") >= 0 || name.indexOf("mail") >= 0 || name.indexOf("plates") >= 0) {
 				desc += "Armor ";
 				if (perk == "Light" || perk == "Medium") {

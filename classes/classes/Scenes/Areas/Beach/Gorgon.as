@@ -4,19 +4,21 @@
  */
 package classes.Scenes.Areas.Beach 
 {
-	import classes.*;
-	import classes.internals.*;
-	import classes.GlobalFlags.kFLAGS;
-	import classes.Scenes.Areas.Desert.NagaScene;
-	
-	
-	public class Gorgon extends Monster
+import classes.*;
+import classes.BodyParts.Butt;
+import classes.BodyParts.Face;
+import classes.BodyParts.Hips;
+import classes.BodyParts.LowerBody;
+import classes.BodyParts.Skin;
+import classes.Scenes.Areas.Desert.NagaScene;
+import classes.internals.*;
+
+public class Gorgon extends Monster
 	{
-		public var nagaScene:NagaScene = new NagaScene();
+		public var nagaScene:NagaScene = new NagaScene(true);
 		
 		override public function defeated(hpVictory:Boolean):void
 		{
-			flags[kFLAGS.NAGA_OR_GORGON] = 2;
 			nagaScene.nagaRapeChoice();
 		}
 
@@ -25,9 +27,8 @@ package classes.Scenes.Areas.Beach
 			if(pcCameWorms){
 				outputText("\n\nThe gorgon's eyes go wide and she turns to leave, no longer interested in you.");
 				player.orgasm();
-				doNext(game.cleanupAfterCombat);
+				doNext(cleanupAfterCombat);
 			} else {
-				flags[kFLAGS.NAGA_OR_GORGON] = 2;
 				nagaScene.nagaFUCKSJOOOOOO();
 			}
 		}
@@ -80,9 +81,9 @@ package classes.Scenes.Areas.Beach
 				}
 				else {
 					player.createStatusEffect(StatusEffects.NagaVenom,0,0,0,0);
-					player.takeDamage(15+rand(15));
+					player.takePhysDamage(15+rand(15));
 				}
-				player.takeDamage(15+rand(15));
+				player.takePhysDamage(15+rand(15));
 			}
 			else {
 				outputText("The venom's effects intensify as your vision begins to blur and it becomes increasingly harder to stand.");
@@ -94,19 +95,17 @@ package classes.Scenes.Areas.Beach
 					// speDown.visible = true;
 					player.addStatusValue(StatusEffects.NagaVenom,1,4);
 				}
-				else player.takeDamage(15+rand(15));
-				player.takeDamage(15+rand(15));
+				else player.takePhysDamage(15+rand(15));
+				player.takePhysDamage(15+rand(15));
 			}
-			combatRoundOver();
 		}
 		
 		public function gorgonConstrict():void {
 			outputText("The " + this.short + " draws close and suddenly wraps herself around you, binding you in place! You can't help but feel strangely aroused by the sensation of her scales rubbing against your body. All you can do is struggle as she begins to squeeze tighter!");
 			player.createStatusEffect(StatusEffects.NagaBind,0,0,0,0); 
 			if (player.findPerk(PerkLib.Juggernaut) < 0 && armorPerk != "Heavy") {
-				player.takeDamage(4+rand(8));
+				player.takePhysDamage(4+rand(8));
 			}
-			combatRoundOver();
 		}
 		
 		public function TailWhip():void {
@@ -126,9 +125,8 @@ package classes.Scenes.Areas.Beach
 				var damage:Number = str;
 				if(player.armorDef < 50) damage += 50 - player.armorDef;
 				damage += rand(25);
-				damage = player.takeDamage(damage, true);
+				damage = player.takePhysDamage(damage, true);
 			}
-			combatRoundOver();
 		}
 		
 		public function petrify():void {
@@ -136,7 +134,6 @@ package classes.Scenes.Areas.Beach
 			player.createStatusEffect(StatusEffects.Stunned, 1, 0, 0, 0);
 			createStatusEffect(StatusEffects.AbilityCooldown1, 3, 0, 0, 0);
 			if (player.hasStatusEffect(StatusEffects.NagaBind)) player.removeStatusEffect(StatusEffects.NagaBind);
-			combatRoundOver();
 		}
 		
 		public function Gorgon() 
@@ -146,26 +143,27 @@ package classes.Scenes.Areas.Beach
 			this.imageName = "gorgon";
 			this.long = "You are fighting a gorgon. She resembles a slender woman from the waist up, with green scale covered hair hanging down to her neck. Her whole body is covered with shiny green scales, striped in a pattern reminiscent of the dunes around you. Instead of bifurcating into legs, her hips elongate into a snake's body which stretches far out behind her, leaving a long and curving trail in the sand.  She's completely naked, with her round D-cup breasts showing in plain sight. In her mouth you can see a pair of sharp, venomous fangs and a long forked tongue moving rapidly as she hisses at you.";
 			// this.plural = false;
-			this.createVagina(false, VAGINA_WETNESS_SLAVERING, VAGINA_LOOSENESS_NORMAL);
+			this.createVagina(false, VaginaClass.WETNESS_SLAVERING, VaginaClass.LOOSENESS_NORMAL);
 			this.createStatusEffect(StatusEffects.BonusVCapacity, 60, 0, 0, 0);
 			createBreastRow(Appearance.breastCupInverse("D"));
-			this.ass.analLooseness = ANAL_LOOSENESS_TIGHT;
-			this.ass.analWetness = ANAL_WETNESS_DRY;
+			this.ass.analLooseness = AssClass.LOOSENESS_TIGHT;
+			this.ass.analWetness = AssClass.WETNESS_DRY;
 			this.createStatusEffect(StatusEffects.BonusACapacity,10,0,0,0);
 			this.tallness = 6*12+2;
-			this.hipRating = HIP_RATING_AMPLE+2;
-			this.buttRating = BUTT_RATING_LARGE;
-			this.lowerBody = LOWER_BODY_TYPE_NAGA;
-			this.skin.growCoat(SKIN_COAT_SCALES,{color:"green"});
+			this.hips.type = Hips.RATING_AMPLE + 2;
+			this.butt.type = Butt.RATING_LARGE;
+			this.lowerBody = LowerBody.NAGA;
+			this.skin.growCoat(Skin.SCALES,{color:"green"});
 			this.hairColor = "green";
 			this.hairLength = 16;
 			initStrTouSpeInte(91, 125, 110, 75);
-			initLibSensCor(72, 55, 40);
+			initWisLibSensCor(75, 72, 55, 40);
 			this.weaponName = "claws";
 			this.weaponVerb="claw-slash";
-			this.weaponAttack = 31 + (7 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.weaponAttack = 31;
 			this.armorName = "scales";
-			this.armorDef = 31 + (4 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.armorDef = 31;
+			this.armorMDef = 10;
 			this.bonusHP = 500;
 			this.bonusLust = 10;
 			this.lust = 30;
@@ -176,13 +174,7 @@ package classes.Scenes.Areas.Beach
 					add(null,1).
 					add(consumables.REPTLUM,5).
 					add(consumables.GORGOIL,4);
-			this.faceType = FACE_SNAKE_FANGS;
-			this.str += 18 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.tou += 25 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.spe += 22 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.inte += 15 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];			
-			this.lib += 14 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.newgamebonusHP = 2820;
+			this.faceType = Face.SNAKE_FANGS;
 			checkMonster();
 		}
 		

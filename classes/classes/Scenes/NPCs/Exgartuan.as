@@ -1,8 +1,10 @@
 ﻿package classes.Scenes.NPCs{
-	import classes.*;
-	import classes.GlobalFlags.kFLAGS;
-	import classes.GlobalFlags.kACHIEVEMENTS;
-	public class Exgartuan extends NPCAwareContent implements TimeAwareInterface {
+import classes.*;
+import classes.BodyParts.Skin;
+import classes.GlobalFlags.kACHIEVEMENTS;
+import classes.GlobalFlags.kFLAGS;
+
+public class Exgartuan extends NPCAwareContent implements TimeAwareInterface {
 
 //EXGARTUAN STATUS
 //v1 - Location - 1 = dick, 2 = tits
@@ -54,7 +56,7 @@
 */
 
 		public function Exgartuan() {
-			CoC.timeAwareClassAdd(this);
+			EventParser.timeAwareClassAdd(this);
 		}
 		
 		private var checkedExgartuan:int;
@@ -72,7 +74,7 @@
 					needNext = true;
 				}
 				else if (player.statusEffectv1(StatusEffects.Exgartuan) == 2 && player.biggestTitSize() < 12) { //Tit removal
-					outputText("\n<b>Black milk dribbles from your " + getGame().nippleDescript(0) + ".  It immediately dissipates into the air, leaving you feeling alone.  It looks like you became too small for Exgartuan!\n</b>");
+					outputText("\n<b>Black milk dribbles from your " + Appearance.nippleDescription(player, 0) + ".  It immediately dissipates into the air, leaving you feeling alone.  It looks like you became too small for Exgartuan!\n</b>");
 					player.removeStatusEffect(StatusEffects.Exgartuan);
 					needNext = true;
 				}		
@@ -137,9 +139,9 @@
 								else if (rand(3) == 0) {
 									outputText("\n<b>");
 									if (rand(2) == 0)
-										outputText("You feel warm and tingly, good all over.  Wait a second, your hands are playing with your " + getGame().breastDescript(0) + ".  You yank your hands away, but it only makes Exgartuan laugh with demonic pleasure!");
+										outputText("You feel warm and tingly, good all over.  Wait a second, your hands are playing with your " + player.breastDescript(0) + ".  You yank your hands away, but it only makes Exgartuan laugh with demonic pleasure!");
 									else {
-										outputText("Your hands knead and caress your " + getGame().breastDescript(0) + ", eagerly touching every inch of soft flesh.  You gasp when you realize what you're doing and pull them away");
+										outputText("Your hands knead and caress your " + player.breastDescript(0) + ", eagerly touching every inch of soft flesh.  You gasp when you realize what you're doing and pull them away");
 										if (player.cor < 50) outputText(", angry at yourself for falling prey to the demon's directions");
 										outputText(".");
 										dynStats("lus", 5 + player.sens / 10);
@@ -221,21 +223,21 @@ private function drinkFountainEndowment():void {
 	if(rand(3) == 0 && player.biggestTitSize() > 1) {
 		outputText("\n\nYour [allbreasts] balloon, each growing about four bra-sizes larger... they feel so... jiggly and sensitive.  Even your nipples seem to grow with them!  Your [armor] feels tighter than ever!");
 		player.nippleLength += .3;
-		temp = player.breastRows.length;
-		while(temp > 0) {
-			temp--;
-			player.breastRows[temp].breastRating += 4;
+		var i:int = player.breastRows.length;
+		while(i > 0) {
+			i--;
+			player.breastRows[i].breastRating += 4;
 		}
 		changed = true;
 	}
 	//(+Big dick)
-	if(rand(3) == 0 && player.totalCocks() > 0) {
+	if(rand(3) == 0 && player.cockTotal() > 0) {
 		outputText("\n\nYour [cocks] feels tighter inside your [armor], even when flaccid.  You shudder and realize you've probably gained more than a few inches in total length, and who knows how your thickness has changed.");
-		temp = player.cocks.length;
-		while(temp > 0) {
-			temp--;
-			player.cocks[temp].cockLength += 3;
-			player.cocks[temp].cockThickness += .3;
+		i = player.cocks.length;
+		while(i > 0) {
+			i--;
+			player.cocks[i].cockLength += 3;
+			player.cocks[i].cockThickness += .3;
 		}
 		changed = true;
 	}
@@ -280,10 +282,10 @@ private function exgartuanInfestDick():void {
 }
 private function exgartuanInfestTits():void {
 	outputText("\n\nYour [allbreasts] jiggle as they grow MUCH larger, turning into obscene mounds that shake with every motion of your body.  All your " + nippleDescript(0) + "s puff up with them, gaining volume to match their new, larger homes.  They feel hot and ache to be touched.");
-	temp = player.breastRows.length;
-	while(temp > 0) {
-		temp--;
-		player.breastRows[temp].breastRating += 7;
+	var i:int = player.breastRows.length;
+	while(i > 0) {
+		i--;
+		player.breastRows[i].breastRating += 7;
 	}
 	outputText("\n\nA voice suddenly splits the air, demanding, \"<i>Touch me mortal, or be stained!</i>\"");
 	outputText("\n\nYou look about in confusion, trying to locate the source of the voice.");
@@ -370,8 +372,8 @@ public function exgartuanMasturbation():void {
 			outputText("You shrug off your top eagerly, ready to cooperate with the demon inside your [allbreasts] and enjoy a relaxing tit-massage.  You slide the offending material to the side and marvel at the wondrously large orbs on your chest.  Truly any place that can give you such wonderful endowments can't be evil.  You lean back, enjoying the warmth in the air as it flows over every extra-sensitive inch of your mounds, more than ready to get started.\n\n");
 		}
 		outputText("Both hands rise unbidden and begin to caress your " + breastDescript(0) + ".  They slide over every sensitive inch of ");
-		if(player.hasFur() == SKIN_TYPE_FUR) outputText("furry-covered flesh");
-		else if(player.hasScales() == SKIN_TYPE_SCALES) outputText("soft scaley flesh");
+		if(player.hasFur() == Skin.FUR) outputText("furry-covered flesh");
+		else if(player.hasScales() == Skin.SCALES) outputText("soft scaley flesh");
 		else if(player.hasGooSkin()) outputText("gooey surface");
 		else outputText("flesh");
 		outputText(", pausing to gently squeeze and caress any particularly sensitive spots.  Soft sighs escape your lips from the self-imposed pleasure-assault.  Your body relaxes totally, slouching down against a rock while you continue to happily play with your [allbreasts].  The entire time your hands never touch one of your " + nippleDescript(0) + "s, merely circling them from time to time, making you arch your back in need.\n\n");
@@ -379,10 +381,10 @@ public function exgartuanMasturbation():void {
 		outputText("At last, fingers wrap themselves about your " + nippleDescript(0) + "s, squeezing them gently and forcing happy gasps from your mouth.  ");
 		if(player.hasVagina()) {
 			outputText("Juice");
-			if(player.totalCocks() > 0) outputText(" and pre-cum");
+			if(player.cockTotal() > 0) outputText(" and pre-cum");
 			outputText(" soaks your groin");
 		}
-		else if(player.totalCocks() > 0) outputText("pre-cum soaks your groin");
+		else if(player.cockTotal() > 0) outputText("pre-cum soaks your groin");
 		else outputText("Warmth radiates through your body");
 		outputText(" as you're more and more turned on by the feelings coming from your chest.  Fingertips ");
 		if(player.nippleLength < 2) outputText("pinch together and pull, and it's too much for you.");
@@ -543,7 +545,7 @@ public function exgartuanCombatUpdate():Boolean {
 			return true;
 		}
 		//(Taunts Male Foes -enemy lust)
-		else if(monster.totalCocks() > 0) {
+		else if(monster.cockTotal() > 0) {
 			select = rand(8);
 			switch(select) {
 				case 0:
@@ -577,7 +579,7 @@ public function exgartuanCombatUpdate():Boolean {
 	}
 	//Exgartuan in tittays!
 	else if(player.statusEffectv1(StatusEffects.Exgartuan) == 2) {
-		if(monster.totalCocks() > 0) {
+		if(monster.cockTotal() > 0) {
 			select = rand(8);
 			switch(select) {
 				case 0:
@@ -897,8 +899,8 @@ private function exgartuanSleepSurprise():void {
 			//(no balls)
 			if(player.balls == 0) {
 				outputText("The ");
-				if(player.vaginas[0].vaginalWetness < VAGINA_WETNESS_WET) outputText("puffy");
-				else if(player.vaginas[0].vaginalWetness < VAGINA_WETNESS_DROOLING) outputText("glistening");
+				if(player.vaginas[0].vaginalWetness < VaginaClass.WETNESS_WET) outputText("puffy");
+				else if(player.vaginas[0].vaginalWetness < VaginaClass.WETNESS_DROOLING) outputText("glistening");
 				else outputText("dripping");
 				outputText(" skin of your outer lips is engorged and ready, but there's no pleasure to be had for your greedy gash.  Cool night air washes over the exposed ");
 				if(player.hasScales()) outputText("scales");
@@ -911,8 +913,8 @@ private function exgartuanSleepSurprise():void {
 			//(Herms + Balls)
 			else {
 				outputText("The ");
-				if(player.vaginas[0].vaginalWetness < VAGINA_WETNESS_WET) outputText("puffy");
-				else if(player.vaginas[0].vaginalWetness < VAGINA_WETNESS_DROOLING) outputText("glistening");
+				if(player.vaginas[0].vaginalWetness < VaginaClass.WETNESS_WET) outputText("puffy");
+				else if(player.vaginas[0].vaginalWetness < VaginaClass.WETNESS_DROOLING) outputText("glistening");
 				else outputText("dripping");
 				outputText(" skin of your outer lips is engorged and ready, but with your hands so focused on your [cock], there's little for your " + vaginaDescript(0) + " to feel.  The closest it gets to pleasure is the sensation of your " + sackDescript() + " slapping against it with the steady rhythm of your masturbation.  If only you had taken care of yourself earlier!  You might have had enough control over your rebellious tool to let a hand attend to your OTHER needs.\n\n");
 			}
@@ -926,24 +928,24 @@ private function exgartuanSleepSurprise():void {
 		outputText("If someone were watching");
 		if(monk >= 5 && !player.hasStatusEffect(StatusEffects.NoJojo) && flags[kFLAGS.JOJO_DEAD_OR_GONE] == 0) outputText(", and judging by Jojo's high pitched whines, he certainly is,");
 		outputText(" they'd see dick-flesh bulging with a heavy load as it's pumped into your lips.  The fully-inflated cum-tube distends your mouth, stretching your jaw painfully, and dumps its creamy cargo into its willing receptacle.  Your belly burbles as it adjusts to the ");
-		temp = player.cumQ();
-		if(temp < 50) outputText("surprisingly light");
-		else if(temp < 150) outputText("sticky");
-		else if(temp < 300) outputText("large, thick");
-		else if(temp < 800) outputText("long, thick blast of your");
+		var cumQ:Number = player.cumQ();
+		if(cumQ < 50) outputText("surprisingly light");
+		else if(cumQ < 150) outputText("sticky");
+		else if(cumQ < 300) outputText("large, thick");
+		else if(cumQ < 800) outputText("long, thick blast of your");
 		else outputText("immensely voluminous");
 		outputText(" deposit.  Quiet, barely audible squishes hang in the air around you as your gut is ");
-		if(temp < 500) outputText("pumped into");
+		if(cumQ < 500) outputText("pumped into");
 		else outputText("pumped full");
 		outputText(" with obscene, liquid sloshing.  Your " + hipDescript() + " and " + assDescript() + " rise off the ground with your back as your muscles lock");
 		if(player.balls > 0) outputText(" and your [balls] pull tight against your groin from the effort");
 		outputText(".");
-		temp = player.cumQ();
-		if(temp > 500) {
+		cumQ = player.cumQ();
+		if(cumQ > 500) {
 			outputText("  A gradual curve quickly rises on your belly");
-			if(temp > 1500) outputText(", but it doesn't stop there.  It keeps growing until you look full and pregnant.");
+			if(cumQ > 1500) outputText(", but it doesn't stop there.  It keeps growing until you look full and pregnant.");
 			else outputText(".");
-			if(temp > 2500) outputText("  Back-pressure blasts your [cock] free from your imprisoning oral cavity along with a fountain of seed while you weakly try to cough out enough spooge to breathe.");
+			if(cumQ > 2500) outputText("  Back-pressure blasts your [cock] free from your imprisoning oral cavity along with a fountain of seed while you weakly try to cough out enough spooge to breathe.");
 		}
 		outputText("\n\n");
 		

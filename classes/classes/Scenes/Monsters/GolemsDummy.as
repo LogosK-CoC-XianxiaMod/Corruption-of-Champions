@@ -4,22 +4,22 @@
  */
 package classes.Scenes.Monsters 
 {
-	import classes.*;
-	import classes.Scenes.Places.HeXinDao;
-	import classes.internals.*;
-	import classes.GlobalFlags.kGAMECLASS;
-	import classes.GlobalFlags.kFLAGS;
-	
-	public class GolemsDummy extends AbstractGolem
+import classes.*;
+import classes.GlobalFlags.kFLAGS;
+import classes.Scenes.Places.HeXinDao;
+import classes.Scenes.SceneLib;
+import classes.internals.*;
+
+public class GolemsDummy extends AbstractGolem
 	{
 		public var golems:HeXinDao = new HeXinDao();
 		
 		override public function defeated(hpVictory:Boolean):void
 		{
-			if (player.hasStatusEffect(StatusEffects.SoulArena)) {
+			if (player.hasStatusEffect(StatusEffects.SoulArenaGaunlet)) {
 				golems.gaunletchallange1fight2();
 			}
-			else game.combat.finishCombat();
+			else SceneLib.combat.finishCombat();
 		}
 		
 		public function backhand():void {
@@ -29,8 +29,8 @@ package classes.Scenes.Monsters
 			if (damage <= 0 || (player.getEvasionRoll())) outputText(" You slide underneath the surprise swings!");
 			else
 			{
-				outputText(" They chits you square in the chest from a few different angles. ");
-				damage = player.takeDamage(damage, true);
+				outputText(" They hits you square in the chest from a few different angles. ");
+				damage = player.takePhysDamage(damage, true);
 			}
 		}
 		
@@ -42,7 +42,6 @@ package classes.Scenes.Monsters
 				if (choice == 3) backhand();
 			}
 			else eAttack();
-			combatRoundOver();
 		}
 		
 		public function GolemsDummy() 
@@ -53,7 +52,7 @@ package classes.Scenes.Monsters
 			this.imageName = "dummy golems";
 			this.long = "You're currently fighting dummy golems. They're all around six feet tall without any sexual characteristics, their stone body covered in cracks and using bare stone fists to smash enemies.";
 			initStrTouSpeInte(20, 20, 10, 10);
-			initLibSensCor(10, 10, 50);
+			initWisLibSensCor(10, 10, 10, 50);
 			this.tallness = 72;
 			this.drop = new ChainedDrop()
 					.add(useables.GOLCORE, 1);
@@ -62,19 +61,14 @@ package classes.Scenes.Monsters
 			this.additionalXP = 50;
 			this.weaponName = "stone fists";
 			this.weaponVerb = "smash";
-			this.weaponAttack = 10 + (3 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.weaponAttack = 10;
 			this.armorName = "cracked stone";
-			this.armorDef = 10 + (2 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.armorDef = 10;
+			this.armorMDef = 2;
 			this.createPerk(PerkLib.RefinedBodyI, 0, 0, 0, 0);
 			this.createPerk(PerkLib.TankI, 0, 0, 0, 0);
 			this.createPerk(PerkLib.EnemyGroupType, 0, 0, 0, 0);
 			this.createPerk(PerkLib.EnemyConstructType, 0, 0, 0, 0);
-			this.str += 4 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.tou += 4 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.spe += 2 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.inte += 2 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];			
-			this.lib += 2 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.newgamebonusHP = 140;
 			checkMonster();
 		}
 		

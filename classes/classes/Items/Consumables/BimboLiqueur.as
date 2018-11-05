@@ -3,13 +3,14 @@
  */
 package classes.Items.Consumables
 {
-	import classes.Appearance;
-	import classes.PerkLib;
-	import classes.Player;
-	import classes.internals.Utils;
-	import classes.Items.Consumable;
+import classes.CoC;
+import classes.Items.Consumable;
+import classes.PerkLib;
+import classes.VaginaClass;
+import classes.StatusEffects;
+import classes.internals.Utils;
 
-	public class BimboLiqueur extends Consumable {
+public class BimboLiqueur extends Consumable {
 		
 		public function BimboLiqueur() {
 			super("BimboLq", "BimboLq", "a potent bottle of 'Bimbo Liqueur'", 1000, "This small bottle of liqueur is labelled 'Bimbo Liqueur'.  There's a HUGE warning label about the effects being strong and usually permanent, so you should handle this with care.");
@@ -38,11 +39,11 @@ package classes.Items.Consumables
 				//(If vagina = 2tight:
 				if (!game.player.hasVagina()) {
 					outputText("  Before you can even take a breath, an extremely peculiar sensation emanates from your crotch.  You can't see through your " + game.player.armorName + ", but you can certainly feel the vagina splitting " + (game.player.balls > 0 ? "from behind your testicles" : "your groin") + ".  Luckily, the cunt-forming doesn't yield any discomfort - on the contrary, you feel yourself falling farther into your chemically-dulled, libido-fueled rut.");
-					if (game.player.hipRating < 12 || game.player.buttRating < 12) outputText("  As if realizing the necessity of womanly proportions to attract the hard cocks your body now craves, your waist pinches slightly inward and your hips and butt swell.  You can't help but run a hand across your newly-feminized pelvis, admiring it.");
+					if (game.player.hips.type < 12 || game.player.butt.type < 12) outputText("  As if realizing the necessity of womanly proportions to attract the hard cocks your body now craves, your waist pinches slightly inward and your hips and butt swell.  You can't help but run a hand across your newly-feminized pelvis, admiring it.");
 					game.player.createVagina();
 					game.player.clitLength = 0.25;
-					if (game.player.hipRating < 12) game.player.hipRating = 12;
-					if (game.player.buttRating < 12) game.player.buttRating = 12;
+					if (game.player.hips.type < 12) game.player.hips.type = 12;
+					if (game.player.butt.type < 12) game.player.butt.type = 12;
 				}
 				outputText("\n\n");
 				outputText("A wave of numbness rolls through your features, alerting you that another change is happening.  You reach up to your feel your jaw narrowing, becoming more... feminine?  Heavy, filling lips purse in disappointment as your face takes on a very feminine cast.  You're probably pretty hot now!\n\n");
@@ -59,11 +60,11 @@ package classes.Items.Consumables
 				game.player.createPerk(PerkLib.FutaForm, 0, 0, 0, 0);
 				if (game.player.inte > 35) {
 					game.player.inte = 35;
-					game.dynStats("int", -0.1);
+					game.player.dynStats("int", -0.1);
 				}
 				if (game.player.lib < 50) {
 					game.player.lib = 50;
-					game.dynStats("lib", .1);
+					game.player.dynStats("lib", .1);
 				}
 			}
 			else {
@@ -83,21 +84,21 @@ package classes.Items.Consumables
 				if (!game.player.hasVagina()) {
 					game.player.createVagina();
 					game.player.clitLength = 0.25;
-					game.player.vaginas[0].vaginalWetness = Appearance.VAGINA_WETNESS_SLICK;
+					game.player.vaginas[0].vaginalWetness = VaginaClass.WETNESS_SLICK;
 					if (game.player.isTaur()) outputText("Wait!? Wet? You wish you could touch yourself between the " + game.player.legs() + ", but you can tell from the fluid running down your hind-legs just how soaked your new vagina is.");
 					else outputText("Wait!?  Wet?  You touch yourself between the " + game.player.legs() + " and groan when your fingers sink into a sloppy, wet cunt.");
 				}
 				else {
 					if (game.player.isTaur()) {
 						outputText("You wish you could sink your fingers into your sloppy, wet cunt, but as a centaur, you can't quite reach.");
-						if (game.player.vaginas[0].vaginalWetness < Appearance.VAGINA_WETNESS_SLICK)
-							game.player.vaginas[0].vaginalWetness = Appearance.VAGINA_WETNESS_SLICK;
+						if (game.player.vaginas[0].vaginalWetness < VaginaClass.WETNESS_SLICK)
+							game.player.vaginas[0].vaginalWetness = VaginaClass.WETNESS_SLICK;
 					}
 					else {
 						outputText("You sink your fingers into your ");
-						if (game.player.vaginas[0].vaginalWetness < Appearance.VAGINA_WETNESS_SLICK) {
+						if (game.player.vaginas[0].vaginalWetness < VaginaClass.WETNESS_SLICK) {
 							outputText("now ");
-							game.player.vaginas[0].vaginalWetness = Appearance.VAGINA_WETNESS_SLICK;
+							game.player.vaginas[0].vaginalWetness = VaginaClass.WETNESS_SLICK;
 						}
 						outputText("sloppy, wet cunt with a groan of satisfaction.");
 					}
@@ -130,7 +131,7 @@ package classes.Items.Consumables
 					game.player.breastRows[0].breastRating += 5 + Utils.rand(5);
 					outputText(", admiring how sensitive they're getting.  The big breasts start getting bigger and bigger, soft chest-flesh practically oozing out between your fingers as the squishy mammaries sprout like weeds, expanding well beyond any hand's ability to contain them.  The supple, " + game.player.breastCup(0) + " boobs still manage to sit high on your chest, almost gravity defying in their ability to generate cleavage.  You pinch a nipple with one hand ");
 				}
-				game.dynStats("sen", 20);
+				game.player.dynStats("sen", 20);
 				outputText("while the other toys with the juicy entrance of your folds.  Mmmm, it, like, feels too good not to touch yourself, and after being worried about getting all dumb and stuff, you need to relax.  Thinking is hard, but sex is so easy and, like, natural!  You lean back and start grunting as you plunge four fingers inside yourself, plowing your " + game.player.vaginaDescript(0) + " like no tomorrow.  By now, your " + game.player.clitDescript() + " is throbbing, and you give it an experimental ");
 				if (game.player.clitLength >= 3) outputText("jerk ");
 				else outputText("caress ");
@@ -138,20 +139,20 @@ package classes.Items.Consumables
 
 				outputText("Though the orgasm is intense, you recover a few moments later feeling refreshed, but still hot and horny.  Maybe you could find a partner to fuck?  After all, sex is, like, better with a partner or two.  Or that number after two.  You brush a lengthy, platinum blonde strand of hair out of your eyes and lick your lips - you're ready to have some fun!\n\n");
 
-				if (game.player.hipRating < 12 || game.player.buttRating < 12) {
+				if (game.player.hips.type < 12 || game.player.butt.type < 12) {
 					outputText("As you start to walk off in search of a sexual partner, you feel your center of balance shifting.");
-					if (game.player.hipRating < 12 && game.player.buttRating < 12) {
+					if (game.player.hips.type < 12 && game.player.butt.type < 12) {
 						outputText("  Your ass and hips inflate suddenly, forcing you to adopt a slow, swaying gait.  You find that rolling your hips back and forth comes naturally to you.  You make sure to squeeze your butt-muscles and make your curvy tush jiggle as you go.");
-						game.player.buttRating = 12;
-						game.player.hipRating = 12;
+						game.player.butt.type = 12;
+						game.player.hips.type = 12;
 					}
-					else if (game.player.hipRating < 12) {
+					else if (game.player.hips.type < 12) {
 						outputText("  Your hips widen suddenly, forcing you to adopt a slow, swaying gait.  You find that rolling yours hips back and forth comes naturally to you, and your big, obscene ass seems to jiggle all on its own with every step you take.");
-						game.player.hipRating = 12;
+						game.player.hips.type = 12;
 					}
 					else {
 						outputText("  Your [butt] swells dramatically, the puffy cheeks swelling with newfound weight that jiggles along with each step.  Clenching your glutes to make the posh cheeks jiggle a little more enticingly becomes second nature to you in a few seconds.");
-						game.player.buttRating = 12;
+						game.player.butt.type = 12;
 					}
 					outputText("\n\n");
 				}
@@ -159,10 +160,10 @@ package classes.Items.Consumables
 					outputText("Like, weirdest of all, your muscles seem to be vanishing!  Before your eyes, all muscle tone vanishes, leaving your body soft and gently curvy.  You poke yourself and giggle!  Everyone's totally going to want to, like, rub up against you at every opportunity.  Your thighs are so soft you bet you could squeeze a pair of dicks to orgasm without even touching your moist cunny.");
 					game.player.tone = 0;
 					if (game.player.str >= 30) {
-						if (game.player.str >= 90) game.dynStats("str", -10);
-						if (game.player.str >= 70) game.dynStats("str", -10);
-						if (game.player.str >= 50) game.dynStats("str", -10);
-						game.dynStats("str", -5);
+						if (game.player.str >= 90) game.player.dynStats("str", -10);
+						if (game.player.str >= 70) game.player.dynStats("str", -10);
+						if (game.player.str >= 50) game.player.dynStats("str", -10);
+						game.player.dynStats("str", -5);
 						outputText("  It does get a bit harder to carry yourself around with your diminished strength, but that's, like, what big strong hunks are for anyways!  You can just flirt until one of them volunteers to help out or something!  Besides, you don't need to be strong to jerk off cocks or finger slutty pussies!");
 					}
 					outputText("\n\n");
@@ -180,7 +181,8 @@ package classes.Items.Consumables
 					}
 				}
 				game.player.orgasm();
-				game.dynStats("int", -1, "lib", 5, "sen", 25);
+				game.player.dynStats("int", -1, "lib", 5, "sen", 25);
+				if (!player.hasStatusEffect(StatusEffects.DrunkenPower) && CoC.instance.inCombat && player.oniScore() >= mutations.DrunkenPowerEmpowerOni()) mutations.DrunkenPowerEmpower();
 				//FULL ON BITCHFACE
 				game.player.modFem(100, 100);
 				//Body

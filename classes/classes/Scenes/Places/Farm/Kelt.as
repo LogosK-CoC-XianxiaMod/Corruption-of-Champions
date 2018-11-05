@@ -1,9 +1,14 @@
 package classes.Scenes.Places.Farm
 {
-	import classes.*;
-	import classes.GlobalFlags.kFLAGS;
+import classes.*;
+import classes.BodyParts.Butt;
+import classes.BodyParts.Hips;
+import classes.BodyParts.LowerBody;
+import classes.BodyParts.Tail;
+import classes.GlobalFlags.kFLAGS;
+import classes.Scenes.SceneLib;
 
-	public class Kelt extends Monster
+public class Kelt extends Monster
 	{
 		//Trample - once every five turns
 		private function keltTramplesJoo():void {
@@ -11,7 +16,6 @@ package classes.Scenes.Places.Farm
 			//Miss:
 			if(player.getEvasionRoll()) {
 				outputText("You roll out of the way at the last moment, avoiding his dangerous hooves.");
-				combatRoundOver();
 				return;
 			}
 
@@ -27,8 +31,7 @@ package classes.Scenes.Places.Farm
 			else {
 				outputText("You can't get out of the way in time, and you're knocked down!  Kelt tramples overtop of you!  ");
 			}
-			if(damage > 0) damage = player.takeDamage(damage, true);
-			combatRoundOver();
+			if(damage > 0) damage = player.takePhysDamage(damage, true);
 		}
 
 		//Arrow Attack
@@ -39,13 +42,11 @@ package classes.Scenes.Places.Farm
 			//Miss:
 			if (player.getEvasionRoll()) {
 				outputText("You manage to avoid the missile by the skin of your teeth!");
-				combatRoundOver();
 				return;
 			}
 			if (player.hasStatusEffect(StatusEffects.WindWall)) {
 				outputText("Still his arrow hits wind wall dealing no damage to you.");
 				player.addStatusValue(StatusEffects.WindWall,2,-1);
-				combatRoundOver();
 				return;
 			}
 
@@ -54,14 +55,12 @@ package classes.Scenes.Places.Farm
 			if(damage < 0) damage = 0;
 			if(damage == 0) {
 				outputText("You deflect the hit, preventing it from damaging you.");
-				combatRoundOver();
 				return;
 			}
 			//Hit:
 			
 			outputText("The arrow bites into you before you can react. ");
-			damage = player.takeDamage(damage, true);
-			combatRoundOver();
+			damage = player.takePhysDamage(damage, true);
 		}
 
 		//Aura Arouse
@@ -77,8 +76,7 @@ package classes.Scenes.Places.Farm
 				if(player.lust >= 80) outputText("Your hand moves towards your groin seemingly of its own volition.");
 				else outputText("Your hands twitch towards your groin but you arrest them.  Still, the idea seems to buzz at the back of your brain, exciting you.");
 			}
-			game.dynStats("lus", player.lib/5 + rand(10));
-			combatRoundOver();
+			player.dynStats("lus", player.lib/5 + rand(10));
 		}
 
 		//Attacks as normal + daydream "attack"
@@ -87,7 +85,6 @@ package classes.Scenes.Places.Farm
 			if(rand(2) == 0) outputText("Kelt pauses mid-draw, looking you up and down.  He licks his lips for a few moments before shaking his head to rouse himself from his lusty stupor.  He must miss the taste of your sperm.");
 			else outputText("Flaring 'his' nostrils, Kelt inhales deeply, his eyelids fluttering closed as he gives a rather lady-like moan.   His hands roam over his stiff nipples, tweaking them slightly before he recovers.");
 			lust += 5;
-			combatRoundOver();
 		}
 
 
@@ -112,14 +109,14 @@ package classes.Scenes.Places.Farm
 		{
 			if (game.flags[kFLAGS.KELT_KILL_PLAN] == 1) {
 				if (hpVictory) {
-					game.farm.keltScene.fightToBeatKeltVictoryHP();
+					SceneLib.farm.keltScene.fightToBeatKeltVictoryHP();
 				} else {
-					game.farm.keltScene.fightToBeatKeltVictoryLust();
+					SceneLib.farm.keltScene.fightToBeatKeltVictoryLust();
 				}
 			}
 			else{
-				if(game.flags[kFLAGS.KELT_BREAK_LEVEL] == 1) game.farm.kelly.defeatKellyNDBREAKHIM();
-				else game.farm.kelly.breakingKeltNumeroThree();
+				if(game.flags[kFLAGS.KELT_BREAK_LEVEL] == 1) SceneLib.farm.kelly.defeatKellyNDBREAKHIM();
+				else SceneLib.farm.kelly.breakingKeltNumeroThree();
 			}
 		}
 
@@ -127,9 +124,9 @@ package classes.Scenes.Places.Farm
 		{
 			if (pcCameWorms){
 				outputText("\n\nKelt recoils for a moment before assuming a look of superiority...");
-				doNext(game.endLustLoss);
+				doNext(SceneLib.combat.endLustLoss);
 			} else {
-				game.farm.kelly.keltFucksShitUp();
+				SceneLib.farm.kelly.keltFucksShitUp();
 			}
 		}
 
@@ -147,40 +144,35 @@ package classes.Scenes.Places.Farm
 			this.cumMultiplier = 1.5;
 			this.hoursSinceCum = player.ballSize * 10;
 			this.createBreastRow(Appearance.breastCupInverse(breakLevel2?"B":"A"));
-			this.ass.analLooseness = ANAL_LOOSENESS_NORMAL;
-			this.ass.analWetness = ANAL_WETNESS_DRY;
+			this.ass.analLooseness = AssClass.LOOSENESS_NORMAL;
+			this.ass.analWetness = AssClass.WETNESS_DRY;
 			this.createStatusEffect(StatusEffects.BonusACapacity,50,0,0,0);
 			this.tallness = 84;
-			this.hipRating = HIP_RATING_AVERAGE;
-			this.buttRating = BUTT_RATING_AVERAGE+1;
-			this.lowerBody = LOWER_BODY_TYPE_HOOFED;
+			this.hips.type = Hips.RATING_AVERAGE;
+			this.butt.type = Butt.RATING_AVERAGE + 1;
+			this.lowerBody = LowerBody.HOOFED;
 			this.legCount = 4;
 			this.skinTone = "tan";
 			this.hairColor = randomChoice("black","brown");
 			this.hairLength = 3;
 			initStrTouSpeInte(70, 80, 50, 20);
-			initLibSensCor(40, 25, 55);
+			initWisLibSensCor(20, 40, 25, 55);
 			this.weaponName = "fist";
 			this.weaponVerb="punch";
-			this.weaponAttack = 11 + (3 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.weaponAttack = 11;
 			this.armorName = "tough skin";
-			this.armorDef = 10 + (2 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
-			this.bonusHP = 200;
+			this.armorDef = 10;
+			this.armorMDef = 0;
+			this.bonusHP = 250;
 			this.bonusLust = 20;
 			this.lust = 40;
 			this.lustVuln = 0.83;
 			this.temperment = TEMPERMENT_LUSTY_GRAPPLES;
-			this.level = 12;
+			this.level = 13;
 			this.gems = rand(15) + 25;
-			this.tailType = TAIL_TYPE_HORSE;
+			this.tailType = Tail.HORSE;
 			this.drop = NO_DROP;
 			this.createPerk(PerkLib.EnemyBeastOrAnimalMorphType, 0, 0, 0, 0);
-			this.str += 14 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.tou += 16 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.spe += 10 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.inte += 4 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];			
-			this.lib += 8 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.newgamebonusHP = 1040;
 			checkMonster();
 		}
 		

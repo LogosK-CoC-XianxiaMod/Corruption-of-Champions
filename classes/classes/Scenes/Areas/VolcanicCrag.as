@@ -7,18 +7,20 @@
 
 package classes.Scenes.Areas 
 {
-	import classes.*;
-	import classes.GlobalFlags.kFLAGS;
-	import classes.GlobalFlags.kGAMECLASS;
-	import classes.Scenes.Areas.VolcanicCrag.*;
-	import classes.Scenes.Areas.HighMountains.PhoenixScene;
-	import classes.Scenes.Areas.Forest.AlrauneScene;
+import classes.*;
+import classes.GlobalFlags.kFLAGS;
+import classes.Scenes.Areas.Forest.AlrauneScene;
+import classes.Scenes.Areas.HighMountains.PhoenixScene;
+import classes.Scenes.Areas.VolcanicCrag.*;
+import classes.Scenes.Holidays;
+import classes.Scenes.SceneLib;
 
-	public class VolcanicCrag extends BaseContent
+public class VolcanicCrag extends BaseContent
 	{
 		public var behemothScene:BehemothScene = new BehemothScene();
 		public var phoenixScene:PhoenixScene = new PhoenixScene();
 		public var alrauneScene:AlrauneScene = new AlrauneScene();
+		public var hellcatScene:HellCatScene = new HellCatScene();
 		
 		public function VolcanicCrag() 
 		{
@@ -41,17 +43,17 @@ package classes.Scenes.Areas
 			
 			//DLC april fools
 			if (isAprilFools() && flags[kFLAGS.DLC_APRIL_FOOLS] == 0) {
-				getGame().DLCPrompt("Extreme Zones DLC", "Get the Extreme Zones DLC to be able to visit Glacial Rift and Volcanic Crag and discover the realms within!", "$4.99");
-				return;
+                Holidays.DLCPrompt("Extreme Zones DLC", "Get the Extreme Zones DLC to be able to visit Glacial Rift and Volcanic Crag and discover the realms within!", "$4.99");
+                return;
 			}
 			//Helia monogamy fucks
-			if (flags[kFLAGS.PC_PROMISED_HEL_MONOGAMY_FUCKS] == 1 && flags[kFLAGS.HEL_RAPED_TODAY] == 0 && rand(10) == 0 && player.gender > 0 && !kGAMECLASS.helScene.followerHel()) {
-				kGAMECLASS.helScene.helSexualAmbush();
+			if (flags[kFLAGS.PC_PROMISED_HEL_MONOGAMY_FUCKS] == 1 && flags[kFLAGS.HEL_RAPED_TODAY] == 0 && rand(10) == 0 && player.gender > 0 && !SceneLib.helScene.followerHel()) {
+				SceneLib.helScene.helSexualAmbush();
 				return;
 			}
 			//Etna
 			if (flags[kFLAGS.ETNA_FOLLOWER] < 1 && flags[kFLAGS.ETNA_TALKED_ABOUT_HER] == 2 && rand(5) == 0) {
-				kGAMECLASS.etnaScene.repeatYandereEnc();
+				SceneLib.etnaScene.repeatYandereEnc();
 				return;
 			}
 			select = choice[rand(choice.length)];
@@ -60,7 +62,8 @@ package classes.Scenes.Areas
 					behemothScene.behemothIntro();
 					break;
 				case 1:
-					phoenixScene.encounterPhoenix2();
+					if (flags[kFLAGS.HEL_PHOENIXES_DEFEATED] > 0) phoenixScene.encounterPhoenix2();
+					else behemothScene.behemothIntro();
 					break;
 				case 2:
 					clearOutput();
@@ -82,6 +85,10 @@ package classes.Scenes.Areas
 					} else {
 						alrauneScene.alrauneVolcanicCrag();
 					}
+					break;
+				case 5:	//Hellcat/Witches Sabbath
+					if ((flags[kFLAGS.WITCHES_SABBATH] > 3 && player.hellcatScore() > 9 && player.gender == 3) || (flags[kFLAGS.WITCHES_SABBATH] > 0 && player.catScore() >= 8 && player.inte >= 40 && player.hasStatusEffect(StatusEffects.KnowsWhitefire))) SceneLib.volcanicCrag.hellcatScene.WitchesSabbath();
+					else SceneLib.volcanicCrag.hellcatScene.HellCatIntro();
 					break;
 				default:
 					clearOutput();

@@ -1,8 +1,11 @@
 ﻿package classes.Scenes.Places.Farm {
-	import classes.*;
-	import classes.GlobalFlags.kFLAGS;
+import classes.*;
+import classes.BodyParts.Face;
+import classes.BodyParts.LowerBody;
+import classes.BodyParts.Tongue;
+import classes.GlobalFlags.kFLAGS;
 
-	public class KeltScene extends AbstractFarmContent{
+public class KeltScene extends AbstractFarmContent{
 
 		public var kelly:Kelly = new Kelly();
 		
@@ -231,14 +234,14 @@ private function keltEagerlyGetNaked():void {
 	}
 	outputText("Despite his harsh comments, you can see the lust in Kelt's eyes, and are more than a little turned on by his derisive laughter.  His critique only becomes more lewd when you continue.  " + player.clothedOrNaked("As you remove the lower half of your clothes, stripping completely naked", "As you perform a pelvic thrust and slowly spin around") +", he eyes your ass and lets out a crude hoot of scornful delight, ");
 	//(Too small, Firm to Shapely:
-	if(player.buttRating < 6) outputText("\"<i>Well, someone works out!  Got a nice, tight little ass there! Probably a little too tight, huh?  Don't worry, you can tell me... do the mean old monsters hurt when they fuck that poor little ass of yours? HA!</i>\"\r\r");
+	if(player.butt.type < 6) outputText("\"<i>Well, someone works out!  Got a nice, tight little ass there! Probably a little too tight, huh?  Don't worry, you can tell me... do the mean old monsters hurt when they fuck that poor little ass of yours? HA!</i>\"\r\r");
 	//(Medium, Large to Heavy:
-	else if(player.buttRating < 13) outputText("\"<i>Hey, nice little cushion you got back here!  Do you get that from sitting around all day?  Nah, can't be that.  I'm sure you get more than a workout on this baby... of course, cock is no substitute for a little exercise, you know!</i>\"\r\r");
+	else if(player.butt.type < 13) outputText("\"<i>Hey, nice little cushion you got back here!  Do you get that from sitting around all day?  Nah, can't be that.  I'm sure you get more than a workout on this baby... of course, cock is no substitute for a little exercise, you know!</i>\"\r\r");
 	//(Big, Voluminous and beyond:
 	else outputText("\"<i>Now there's a rear end I could get behind!  For someone who claims to be a hero, you sure are built like a fucktoy!  With an ass like that, you remind me of my last lay... of course, she was a horse!</i>\"\r\r");
 	outputText("He slaps your ass with his open palm, getting in a good grope while he's at it.  His animalistic musk is in your nostrils, making you feel dizzy and more than a little aroused.  He grins widely, then walks around to your front, ");
 	//(No Cock:
-	if(player.totalCocks() == 0) outputText("\"<i>Well, aren't you a pretty little thing, all together.  You and I will get along real nice, that's for sure!</i>\"\r\r");
+	if(player.cockTotal() == 0) outputText("\"<i>Well, aren't you a pretty little thing, all together.  You and I will get along real nice, that's for sure!</i>\"\r\r");
 	else {
 		//(Any Cock: 
 		outputText("and almost inevitably, his eyes drop down to your [cock].  He snorts, ");
@@ -287,14 +290,14 @@ private function keltReluctantlyGetNaked():void {
 	}
 	outputText("Even with his harsh comments, you can see the lust in Kelt's eyes.  He is obviously enjoying seeing your naked flesh.  Despite the embarrasment, you are determined to not let his remarks get to you.  His critique only becomes more lewd as you continue, though.  " + player.clothedOrNaked("As you remove the lower half of your clothes, stripping completely naked", "As you perform a pelvic thrust and slowly spin around") +", he eyes your ass and lets out a crude hoot of scornful delight, ");
 	//(Too small, Firm to Shapely:
-	if(player.buttRating < 6) outputText("\"<i>Well, someone works out!  Got a nice, tight little ass there! Probably a little too tight, huh?  Don't worry, you can tell me... do the mean old monsters hurt when they fuck that poor little ass of yours? HA!</i>\"\r\r");
+	if(player.butt.type < 6) outputText("\"<i>Well, someone works out!  Got a nice, tight little ass there! Probably a little too tight, huh?  Don't worry, you can tell me... do the mean old monsters hurt when they fuck that poor little ass of yours? HA!</i>\"\r\r");
 	//(Medium, Large to Heavy:
-	else if(player.buttRating < 13) outputText("\"<i>Hey, nice little cushion you got back here!  Do you get that from sitting around all day?  Nah, can't be that.  I'm sure you get more than a workout on this baby... of course, cock is no substitute for a little exercise, you know!</i>\"\r\r");
+	else if(player.butt.type < 13) outputText("\"<i>Hey, nice little cushion you got back here!  Do you get that from sitting around all day?  Nah, can't be that.  I'm sure you get more than a workout on this baby... of course, cock is no substitute for a little exercise, you know!</i>\"\r\r");
 	//(Big, Voluminous and beyond:
 	else outputText("\"<i>Now there's a rear end I could get behind!  For someone who claims to be a hero, you sure are built like a fucktoy!  With an ass like that, you remind me of my last lay... of course, she was a horse!</i>\"\r\r");
 	outputText("He slaps your " + buttDescript() + " with his open palm, getting in a good grope while he's at it.  His animalistic musk is in your nostrils, making you feel dizzy and somehow even a little aroused.  The centaur's obvious enjoyment of your body is a little flattering, even if his words are cruel.  He paces around to your front, a shameless grin on his face while he taunts you, ");
 	//(No Cock:
-	if(player.totalCocks() == 0) outputText("\"<i>Well, aren't you a pretty little thing, all together.  You and I will get along real nice, that's for sure!</i>\"\r\r");
+	if(player.cockTotal() == 0) outputText("\"<i>Well, aren't you a pretty little thing, all together.  You and I will get along real nice, that's for sure!</i>\"\r\r");
 	else {
 		//(Any Cock: 
 		outputText("and almost inevitably, his eyes drop down to your [cock].  He snorts, ");
@@ -539,17 +542,27 @@ private function keltMainEncounter3():void {
 	//(Clothed)
 	if(!player.hasStatusEffect(StatusEffects.NakedOn)) {
 		outputText("Kelt is arrogant, crude, and all too often cruel as he mocks your attempts at archery again and again.  Despite all this, however, he obviously does know what he's doing.  You try to ignore his insults and lewd comments as best as you can and focus on the archery.  In the end, you feel you've learned a lot, though Kelt remains snide.\r\r");
-		temp = rand(4);
-		//(25% Chance: 
-		if(temp == 0) outputText("\"<i>Oh, yes.  Looks like you're shaping up to be a pretty accurate archer.  Just make sure you only fight blind giants.  You know, massive targets that have no chance to dodge.  You'll do fine.</i>\"\r\r");
-		//(25% Chance: 
-		if(temp == 1) outputText("\"<i>Ha!  You want to become an archer?  Here's a hint... stop thinking about sucking cock for two seconds and AIM.</i>\"\r\r");
-		//(25% Chance: 
-		if(temp == 2) outputText("\"<i>See the red dot, in the middle of the target?  Imagine that's your ass, and the arrow is a big, fat, minotaur cock.  That should help you hit the target.</i>\"\r\r");
-		//(25% Chance: 
-		if(temp == 3) {
-			if(player.race() != "centaur") outputText("\"<i>If you were a centaur, I'd recommend suicide.  Since you're a [race], I'd say your best option is to fuck off.</i>\"\r\r");
-			else outputText("\"<i>As a centaur, I'd recommend suicide.  Really, it's that or man the fuck up.</i>\"\r\r");
+		switch (rand(4)) {
+			case 0:
+				outputText("\"<i>Oh, yes.  Looks like you're shaping up to be a pretty accurate archer.  Just make sure you only fight blind giants.  You know, massive targets that have no chance to dodge.  You'll do fine.</i>\"\r\r");
+				break;
+
+			case 1:
+				outputText("\"<i>Ha!  You want to become an archer?  Here's a hint... stop thinking about sucking cock for two seconds and AIM.</i>\"\r\r");
+				break;
+
+			case 2:
+				outputText("\"<i>See the red dot, in the middle of the target?  Imagine that's your ass, and the arrow is a big, fat, minotaur cock.  That should help you hit the target.</i>\"\r\r");
+				break;
+
+			case 3:
+				if (player.race() != "centaur") {
+					outputText("\"<i>If you were a centaur, I'd recommend suicide.  Since you're a [race], I'd say your best option is to fuck off.</i>\"\r\r");
+				} else {
+					outputText("\"<i>As a centaur, I'd recommend suicide.  Really, it's that or man the fuck up.</i>\"\r\r");
+				}
+
+				break;
 		}
 		//player.addStatusValue(StatusEffects.Kelt,1,5+rand(4));
 		if (player.statusEffectv1(StatusEffects.Kelt) < 90) bowSkill(5 + rand(4));
@@ -698,7 +711,7 @@ private function keltMainEncounterPostBlowjob():void {
 			outputText("Scrambling to your feet and babbling apologies, you hastily open the door to the barn, entering immediately.  Before you is a thin, upraised table, with straps in it, like saddle stirrups.  Your heart leaps excitedly, and Kelt laughs a little to himself as he tells you to get on, facedown.  You hasten to comply.\r\r");
 			outputText("Lying on the rough table with your feet in the stirrups, your ass is suspended at just the right height.  Kelt moves with obvious hunger, running his finger along your nethers.");
 			//(Penis:
-			if(player.totalCocks() > 0) outputText("  Your [cock] is rock hard, but he ignores it almost contemptuously.  You almost feel ashamed of it, compared to the slowly-growing manhood between his legs.");
+			if(player.cockTotal() > 0) outputText("  Your [cock] is rock hard, but he ignores it almost contemptuously.  You almost feel ashamed of it, compared to the slowly-growing manhood between his legs.");
 			//(Vagina:
 			if(player.hasVagina()) outputText("  For a moment, his fingers trace the line of your exposed " + vaginaDescript(0) + ", giving you the slightest of warnings before he crudely jams two fingers deep inside, as though scouting out your depths.  You whimper urgently at the treatment, and more so as Kelt removes his fingers, licking with obvious pleasure.");
 			outputText("\r\r\"<i>Oh?  Like that, do you?  Well, we're not here for what you like.  You're here to satisfy me, slut.  And I know what I'm after.</i>\"\r\r");
@@ -710,7 +723,7 @@ private function keltMainEncounterPostBlowjob():void {
 			outputText("\r\r");
 			outputText("You can't help it... at the thought of being used as his worthless fucktoy, you suffer a mild orgasm of your own, crying out your submission to this powerful creature.");
 			//(Penis: 
-			if(player.totalCocks() > 0) outputText("  Beneath you, pressed firmly into the harsh wood of the mounting board, your [cock] erupts, splattering your stomach with your own cum.  As the thick semen slides down towards your face, you begin slipping on your own warm seed, rocking back and forth with each harsh pounding Kelt delivers to your backside.");
+			if(player.cockTotal() > 0) outputText("  Beneath you, pressed firmly into the harsh wood of the mounting board, your [cock] erupts, splattering your stomach with your own cum.  As the thick semen slides down towards your face, you begin slipping on your own warm seed, rocking back and forth with each harsh pounding Kelt delivers to your backside.");
 			//(Vagina:
 			if(player.hasVagina()) outputText("  Your poor, neglected pussy quivers with delight, convulsing without even being touched.  Thick juices run freely down your leg, dripping off to splatter the hay below you as you moan like a bitch in heat.");
 			//(Genderless: 
@@ -911,14 +924,14 @@ private function keltBadEndEpilogue():void {
 	outputText("The centaur noticed her looking, and grinned.  \"<i>You like what you see?  Maybe I could teach you a few things.  If you're not as stupid as that slut, of course.</i>\"\r\r");
 	outputText("He waved confidently at the mare, still nursing her young with a rapturous look on her face.  Cum slowly oozed out of her pussy, pooling on the ground beneath her, and the heroine felt a little envious for a moment.  Most horses had harems, the virile male satisfying many women at once.  How many times a day was this mare fucked?\r\r");
 	outputText("The centaur grinned, knowingly.  His musk was heavy on the air, a thick, animalistic scent of masculinity.  \"<i>Well, I could do with a little distraction anyway.  Stupid whore may be a good fuck, but a man needs to... spread out a little.  Come back tomorrow, and maybe I can knock some fucking sense into that empty head of yours.  My name's Kelt.</i>\"\r\r");
-	getGame().gameOver();
+	EventParser.gameOver();
 }
 //Requires 40+ int & 70+ corruption to resist his 'aura'.
 private function keltResistance():void {
 	spriteSelect(35);
 	clearOutput();
 	outputText("You close your eyes, ");
-	if(player.faceType == FACE_HORSE || player.faceType == FACE_DOG) outputText("a low growl building in the back of your throat");
+	if(player.faceType == Face.HORSE || player.faceType == Face.DOG) outputText("a low growl building in the back of your throat");
 	else outputText("fighting anger-fueled muscle-spasms");
 	outputText(" as Kelt's insults go too far.  You've had just about enough of his disingenuous assertions!\r\r");
 	outputText("An idea on how to put him in his place slowly forms in the back of your mind, though you're sure pulling it off would humiliate the puffed-up centaur into never his showing his face around the farm again.  Do you do it?");
@@ -937,7 +950,7 @@ private function fuckKeltsShitUp():void {
 	spriteSelect(35);
 	clearOutput();
 	//If naga folks
-	if (player.faceType == FACE_SNAKE_FANGS && player.tongueType == TONGUE_SNAKE && player.lowerBody == LOWER_BODY_TYPE_NAGA) {
+	if (player.faceType == Face.SNAKE_FANGS && player.tongue.type == Tongue.SNAKE && player.lowerBody == LowerBody.NAGA) {
 		outputText(images.showImage("kelt-farm-naga-subkelt"));
 		outputText("Feigning a coy smile, you lick your lips with your forked tongue and beckon Kelt towards you.  The foolish stud trots over to you saying \"<i>That's more like it, worm.  Maybe when I'm done with your mouth, I'll let you have my dick in your ass, too.</i>\"  His sheath ripples and swells as his thick member begins to slowly droop out from the folded skin, hanging towards the ground.  It continues growing as he comes closer and closer, until it finally begins to grow rigid and arc towards your face.  You feel a moment of self-doubt as you breathe in his wonderful scent - wouldn't it be better, safer to just give in?  No, says a cold, reptile voice in your head.  You are the predator here and he, arrogant prey, has stepped into your trap.  Make him pay.  Make him know where his place in the world is.\r\r");
 
@@ -1028,7 +1041,7 @@ private function fuckKeltsShitUp():void {
 		outputText("Feigning a coy smile, you drop to your knees and beckon Kelt towards you.  The foolish stud trots over saying, \"<i>That's more like it, slut.  Maybe when I'm done with your mouth, I'll let you have my dick in your ass too.</i>\"  His sheath ripples and swells as his thick member begins to slowly droop out from the folded skin, hanging towards the ground.  It continues growing as he comes closer and closer, until it finally begins to grow rigid and arc up to point at your face.  You breathe in your master's wonderful scent an — No!  You won't cave in to him this time!\r\r");
 		outputText("You grip his dick just below the flare and yank it down hard, stepping up and back until you're behind the beast.  His flexible horse-dick seems to be handling the angle well, so you pull it back further until Kelt dances about uncomfortably, trying to relax the pressure on his exposed member.  He barks, \"<i>You really have no fucking clue what you're doing, do you, bitch?</i>\"\r\r");
 		outputText("Your cheeks color, but your anger drives away the urge to submit.  A quick jerk on his flared dong makes Kelt whinny painfully, and he lashes out with a vicious kick from his hind legs.  You anticipate such a move, and dodge, bending his length further just as his backside starts lifting up.  The pain robs his kick of any strength, and you're able to sidestep one leg and force the other aside with a block before it can connect.  He lands hard, wobbling and whinnying uncomfortably, even starting to cry, \"<i>Ah, oww... please, just stop hurting me!</i>\"\r\r");
-		if(player.tallness < 50 || player.totalCocks() == 0) {
+		if(player.tallness < 50 || player.cockTotal() == 0) {
 			if(player.tallness < 50) outputText("Realizing you're too short to dominate him properly, you come up with another plan.  ");
 			outputText("You give his ass a hard smack before you ball up your hand into a fist.  \"<i>Who's the bitch now?!</i>\" you taunt, punching forwards into his asshole.  He cries out at the sudden discomfort, but you feel his dick thicken perceptibly in your hand.  You open your hand when you bump into an apple sized knot inside him, and give it a small, experimental squeeze.  Kelt whinnies and squirts like a garden-hose, splattering a generous helping of clear pre-cum into the grass.  You grin wolfishly and constrict your fingers around the organ.  His horse-cock twitches and flares in your hand, unloading a massive squirt of cum from the stimulation.\r\r");
 		}
@@ -1040,12 +1053,12 @@ private function fuckKeltsShitUp():void {
 		if(player.gender == 0) {
 			outputText("You turn around, bending over to expose your " + assholeDescript() + ".  \"<i>Lick it, bitch,</i>\" you command.  When he doesn't, you give the rope a pull, and his hooves paw at the dirt in pain.  \"<i>I said LICK!</i>\" you scream, and this time he does.  His tongue slips between your " + assDescript() + ".  \"<i>Deeper,</i>\" you sigh, and he complies, no longer capable of resistance.  You make him tonguefuck you until you come to a shuddering orgasm.\r\r");
 		}
-		else if(player.hasVagina() && (player.totalCocks() == 0 || rand(2) == 0)) {
+		else if(player.hasVagina() && (player.cockTotal() == 0 || rand(2) == 0)) {
 			outputText("You spread your [legs] and expose your " + vaginaDescript(0) + ".  \"<i>Lick it, bitch,</i>\" you command.  When he doesn't, you give the rope a pull, and his hooves paw at the dirt in pain.  \"<i>I said LICK!</i>\" you scream, and this time he does.  His tongue slips between your puffy folds ");
-			if(player.vaginas[0].vaginalWetness < VAGINA_WETNESS_SLICK) outputText("tasting them experimentally.  ");
+			if(player.vaginas[0].vaginalWetness < VaginaClass.WETNESS_SLICK) outputText("tasting them experimentally.  ");
 			else outputText("immediately becoming slick with your fuck-me-juices.  ");
 			outputText("\"<i>Deeper,</i>\" you sigh, and he complies, no longer capable of resistance.  You make him tonguefuck you until you come to a shuddering, cunt-clenching orgasm.");
-			if(player.totalCocks() > 0) outputText("Your [cock] splatters cock-cream into his hair, further humiliating him.");
+			if(player.cockTotal() > 0) outputText("Your [cock] splatters cock-cream into his hair, further humiliating him.");
 			outputText("\r\r");
 		}
 		else {

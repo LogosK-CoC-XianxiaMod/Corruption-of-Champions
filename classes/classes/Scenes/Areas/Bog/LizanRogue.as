@@ -1,14 +1,15 @@
 package classes.Scenes.Areas.Bog 
 {
-	import classes.*;
-	import classes.internals.*;
-	import classes.GlobalFlags.kFLAGS;
-	import classes.GlobalFlags.kGAMECLASS;
-	
-	public class LizanRogue extends Monster
+import classes.*;
+import classes.BodyParts.Butt;
+import classes.BodyParts.Hips;
+import classes.BodyParts.Skin;
+import classes.Scenes.SceneLib;
+import classes.StatusEffects.Combat.LizanBlowpipeDebuff;
+import classes.internals.*;
+
+public class LizanRogue extends Monster
 	{
-		private static const STAT_DROP_FLAT:int = 5;
-		private static const STAT_DROP_MULT:int = 2;
 		//1 - str
 		//2 - tou
 		//3 - spe
@@ -22,21 +23,9 @@ package classes.Scenes.Areas.Bog
 				outputText("The lizan flings himself back.  In the air he puts a blowgun to his lips.  You move just in time to avoid the tiny dart.");
 			}
 			else {
-				var statdrop:int = STAT_DROP_FLAT+STAT_DROP_MULT*player.newGamePlusMod();
 				outputText("The lizan flings himself back.  In the air he puts his blowgun to his lips and fires a single dart into your neck.  As you pull it out your limbs begin to feel like wet noodles, it appears you’ve been poisoned.");
-				game.dynStats("str", -statdrop, "spe", -statdrop);
-				if (!player.hasStatusEffect(StatusEffects.LizanBlowpipe)) player.createStatusEffect(StatusEffects.LizanBlowpipe, statdrop, 0, statdrop, 0);
-				else {
-					player.addStatusValue(StatusEffects.LizanBlowpipe, 1, statdrop);
-					player.addStatusValue(StatusEffects.LizanBlowpipe, 3, statdrop);
-				}
-				if (player.cor > 50) {
-					game.dynStats("str", -statdrop, "spe", -statdrop);
-					player.addStatusValue(StatusEffects.LizanBlowpipe, 1, statdrop);
-					player.addStatusValue(StatusEffects.LizanBlowpipe, 3, statdrop);
-				}
+				(player.createOrFindStatusEffect(StatusEffects.LizanBlowpipe) as LizanBlowpipeDebuff).debuffStrSpe();
 			}
-			combatRoundOver();
 		}
 		
 		public function immaHurtYouBadly():void {
@@ -44,21 +33,9 @@ package classes.Scenes.Areas.Bog
 				outputText("The lizan Rushes at you.  As you raise your [weapon] to defend yourself he dives to the side, using a blowgun to fire a single dart at you.  You somehow manage to dodge it.");
 			}
 			else {
-				var statdrop:int = STAT_DROP_FLAT+STAT_DROP_MULT*player.newGamePlusMod();
 				outputText("The lizan rushes at you.  As you raise your [weapon] to defend yourself he dives to the side, using his blowgun to fire a single stinging dart into your neck.  You pull out the dart and your skin begins to feel hypersensitive, you’re going to have trouble defending yourself");
-				game.dynStats("tou", -statdrop, "sens", statdrop);
-				if (!player.hasStatusEffect(StatusEffects.LizanBlowpipe)) player.createStatusEffect(StatusEffects.LizanBlowpipe, 0, statdrop, 0, statdrop);
-				else {
-					player.addStatusValue(StatusEffects.LizanBlowpipe, 2, statdrop);
-					player.addStatusValue(StatusEffects.LizanBlowpipe, 4, statdrop);
-				}
-				if (player.cor > 50) {
-					game.dynStats("tou", -statdrop, "sens", statdrop);
-					player.addStatusValue(StatusEffects.LizanBlowpipe, 2, statdrop);
-					player.addStatusValue(StatusEffects.LizanBlowpipe, 4, statdrop);
-				}
+				(player.createOrFindStatusEffect(StatusEffects.LizanBlowpipe) as LizanBlowpipeDebuff).debuffTouSens();
 			}
-			combatRoundOver();
 		}
 		
 		public function wingstickThrow():void {
@@ -68,9 +45,8 @@ package classes.Scenes.Areas.Bog
 			else {
 				outputText("The lizan zips to the side and as you move to follow you feel something sharp cut across your body. He must have thrown something. ");
 				var damage:int = this.spe/3 + rand(60);
-				player.takeDamage(damage, true);
+				player.takePhysDamage(damage, true);
 			}
-			combatRoundOver();
 		}
 				
 		public function tongueAttack():void {
@@ -81,7 +57,6 @@ package classes.Scenes.Areas.Bog
 				outputText("All you see is a flash of pink as the lizan’s long tongue hits your eyes. Some kind of chemical reaction causes your eyes to burn, you’ve been blinded!");
 				if (!player.hasStatusEffect(StatusEffects.Blind)) player.createStatusEffect(StatusEffects.Blind, 1 + rand(2), 0, 0, 0)
 			}
-			combatRoundOver();
 		}
 		
 		protected function chooseBlowpipe():void {
@@ -91,12 +66,12 @@ package classes.Scenes.Areas.Bog
 		
 		override public function defeated(hpVictory:Boolean):void
 		{
-			game.bog.lizanScene.winAgainstLizan();
+			SceneLib.bog.lizanScene.winAgainstLizan();
 		}
 		
 		override public function won(hpVictory:Boolean, pcCameWorms:Boolean):void
 		{
-			game.bog.lizanScene.loseToLizan();
+			SceneLib.bog.lizanScene.loseToLizan();
 		}
 		
 		private const SKIN_VARIATIONS:Array = ["emerald", "azure", "scarlet", "violet", "obsidian", "amber", "silver"];
@@ -104,7 +79,7 @@ package classes.Scenes.Areas.Bog
 		public function LizanRogue() 
 		{
 			var skinToneAdj:String = randomChoice(SKIN_VARIATIONS);
-			this.skin.growCoat(SKIN_COAT_SCALES,{color:skinToneAdj});
+			this.skin.growCoat(Skin.SCALES,{color:skinToneAdj});
 			this.a = "the ";
 			this.short = "lizan rogue";
 			this.imageName = "lizanrogue";
@@ -113,21 +88,22 @@ package classes.Scenes.Areas.Bog
 			createBreastRow(Appearance.breastCupInverse("flat"));
 			this.createCock(8, 3, CockTypesEnum.LIZARD);
 			this.createCock(8, 3, CockTypesEnum.LIZARD);
-			this.ass.analLooseness = ANAL_LOOSENESS_TIGHT;
-			this.ass.analWetness = ANAL_WETNESS_MOIST;
+			this.ass.analLooseness = AssClass.LOOSENESS_TIGHT;
+			this.ass.analWetness = AssClass.WETNESS_MOIST;
 			this.tallness = 60 + rand(10);
-			this.hipRating = HIP_RATING_BOYISH;
-			this.buttRating = BUTT_RATING_TIGHT;
+			this.hips.type = Hips.RATING_BOYISH;
+			this.butt.type = Butt.RATING_TIGHT;
 			this.skinDesc = "skin";
 			this.hairColor = "black";
 			this.hairLength = 15;
 			initStrTouSpeInte(140, 180, 120, 90);
-			initLibSensCor(20, 10, 0);
+			initWisLibSensCor(80, 20, 10, 0);
 			this.weaponName = "claws";
 			this.weaponVerb="claw";
-			this.weaponAttack = 38 + (8 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.weaponAttack = 38;
 			this.armorName = "loincloth";
-			this.armorDef = 18 + (2 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.armorDef = 18;
+			this.armorMDef = 2;
 			this.bonusHP = 350;
 			this.bonusLust = 10;
 			this.lust = 20;
@@ -149,12 +125,6 @@ package classes.Scenes.Areas.Bog
 			this.special1 = chooseBlowpipe;
 			this.special2 = wingstickThrow;
 			this.special3 = tongueAttack;
-			this.str += 42 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.tou += 54 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.spe += 36 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.inte += 27 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];			
-			this.lib += 6 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.newgamebonusHP = 6600;
 			checkMonster();
 		}
 		

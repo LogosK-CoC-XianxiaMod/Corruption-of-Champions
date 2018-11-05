@@ -1,32 +1,31 @@
 ﻿package classes.Scenes.Areas.Mountain
 {
-	import classes.*;
-	import classes.GlobalFlags.kFLAGS;
+import classes.*;
+import classes.BodyParts.Butt;
+import classes.BodyParts.Hips;
+import classes.Scenes.SceneLib;
 
-	public class WormMass extends Monster
+public class WormMass extends Monster
 	{
 		public function wormAttack():void {
 			//Dodged!
 			if(player.spe - spe > 0 && int(Math.random()*(((player.spe-spe)/4)+80)) > 80) {
 				outputText("The worm colony flails at you with its simulated arms, but its lack of coordination allows you to easily dodge its attack.\n");
-				combatRoundOver();
 				return;
 			}
 			//Evade
 			if(player.findPerk(PerkLib.Evade) >= 0 && rand(100) < 10) {
 				outputText("Using your skills at evading attacks, you anticipate and sidestep " + a + short + "' attacks.\n");
-				combatRoundOver();
 				return;
 			}
 			var temp:int = int((str + weaponAttack) - Math.random()*(player.tou+player.armorDef));
 			if(temp <= 0) temp = 1;
-			if(temp > 0) player.takeDamage(temp);
+			if(temp > 0) player.takePhysDamage(temp);
 			outputText("The worm colony strikes at you with its makeshift limbs. It strikes you for ");
 			outputText(String(temp));
 			outputText(" damage and the limb splatters, dispersing the worms comprising the false arm.");
 			statScreenRefresh();
 			outputText("\n");
-			combatRoundOver();
 			return;
 		}
 		
@@ -35,20 +34,19 @@
 			if(rand(2) == 0) {
 				if(player.lust < 50) outputText("The worm colony stands before you and begins secreting a significant amount of slime. You are perplexed as to why the worms have done this. You shrug your shoulders and remain on guard.\n");
 				else outputText("The worm colony shambles over to you and attempts to grapple you. Quickly sidestepping the clumsy movements of the creature, you avoid what could have been a horrible fate as the mass falls over and splatters in its failed attempt to engulf you.\n");
-				combatRoundOver();
 				return;
 			}
 			//SUCCESS
 			if(player.lust < 50) {
 				outputText("The worm colony stands before you and begins secreting a significant amount of slime. Inexplicably, you find that your [cock] is already erect and is throbbing. The erection is quite meddlesome and you find yourself distracted by the unwanted arousal.\n");
-				game.dynStats("lus", 10+player.lib/20+player.cor/20);
+				player.dynStats("lus", 10+player.lib/20+player.cor/20);
 			}
 			else {
 				outputText("The worm colony shambles over to you and attempts to grapple you. Attempting to dodge, you fail to get away fast enough and fall to the ground engulfed by the mass. You are completely covered in the slimy worms!!! Incapable of avoiding any of their movements, you feel their slime coat every inch of your body and you feel the struggle and strain of each individual worm as they crawl all over you. You immediately begin flailing wildly as you cannot even breathe!");
 				//Chance of insta-loss if infested twice
 				if(player.hasStatusEffect(StatusEffects.InfestAttempted)) {
 					outputText("  Struggle as you might, the creatures overwhelm your body and prevent you from any conceivable opportunity to get them off you, Your head quickly becomes visible, allowing you to breathe as you stare helplessly at the cocoon of worms trapping you.\n\n");
-					game.mountain.wormsScene.infest1();
+					SceneLib.mountain.wormsScene.infest1();
 					return;
 				}
 				//Escaped!
@@ -57,7 +55,6 @@
 					player.createStatusEffect(StatusEffects.InfestAttempted,0,0,0,0);
 				}
 			}
-			combatRoundOver();
 		}
 		
 		override protected function performCombatAction():void
@@ -71,10 +68,10 @@
 		override public function won(hpVictory:Boolean, pcCameWorms:Boolean):void
 		{
 			outputText("Overcome by your "+(hpVictory?"wounds":"lust")+", you sink to your knees as the colony of worms swarms all over your body...\n\n", true);
-			game.mountain.wormsScene.infest1();
+			SceneLib.mountain.wormsScene.infest1();
 		}
 		
-		override public function eMaxHP():Number
+		override public function maxHP():Number
 		{
 			return 40 + (player.newGamePlusMod() * 20);
 		}
@@ -92,19 +89,20 @@
 			this.pronoun2 = "them";
 			this.pronoun3 = "their";
 			this.createBreastRow(0,0);
-			this.ass.analLooseness = ANAL_LOOSENESS_VIRGIN;
-			this.ass.analWetness = ANAL_WETNESS_DRY;
+			this.ass.analLooseness = AssClass.LOOSENESS_VIRGIN;
+			this.ass.analWetness = AssClass.WETNESS_DRY;
 			this.tallness = 1;
-			this.hipRating = HIP_RATING_SLENDER;
-			this.buttRating = BUTT_RATING_BUTTLESS;
+			this.hips.type = Hips.RATING_SLENDER;
+			this.butt.type = Butt.RATING_BUTTLESS;
 			this.skinTone = "white";
 			initStrTouSpeInte(40, 10, 10, 1);
-			initLibSensCor(90, 60, 90);
+			initWisLibSensCor(1, 90, 60, 90);
 			this.weaponName = "worm";
 			this.weaponVerb="slap";
-			this.weaponAttack = 1 + (1 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.weaponAttack = 1;
 			this.armorName = "skin";
-			this.armorDef = 1 + (1 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.armorDef = 1;
+			this.armorMDef = 0;
 			this.lust = 30;
 			this.lustVuln = 0;
 			this.temperment = TEMPERMENT_LOVE_GRAPPLES;
@@ -114,12 +112,6 @@
 			this.special2 = wormsEntice;
 			this.drop = NO_DROP;
 			this.createPerk(PerkLib.EnemyGroupType, 0, 0, 0, 0);
-			this.str += 8 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.tou += 2 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.spe += 2 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.inte += 1 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];			
-			this.lib += 18 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.newgamebonusHP = 310;
 			checkMonster();
 		}
 

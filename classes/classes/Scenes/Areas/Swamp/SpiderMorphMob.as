@@ -1,9 +1,12 @@
 package classes.Scenes.Areas.Swamp
 {
-	import classes.*;
-	import classes.GlobalFlags.kFLAGS;
+import classes.*;
+import classes.BodyParts.Butt;
+import classes.BodyParts.Hips;
+import classes.BodyParts.Tail;
+import classes.Scenes.SceneLib;
 
-	public class SpiderMorphMob extends Monster
+public class SpiderMorphMob extends Monster
 	{
 		//==============================
 		// SPOIDAH HORDE COMBAT SHIZZLE HERE!
@@ -19,7 +22,7 @@ package classes.Scenes.Areas.Swamp
 				outputText("A number of spiders rush at you, trying to claw and bite you.  You manage to knock most of them away, but a few nasty hits manage to punch through your [armorName].  ");
 				//Determine damage - str modified by enemy toughness!
 				var damage:int = int((str + weaponAttack) - rand(player.tou) - player.armorDef) + 20;
-				if(damage > 0) damage = player.takeDamage(damage);
+				if(damage > 0) damage = player.takePhysDamage(damage);
 				if(damage <= 0) {
 					damage = 0;
 					if(rand(player.armorDef + player.tou) < player.armorDef) outputText("You absorb and deflect every " + weaponVerb + " with your [armor].");
@@ -51,14 +54,12 @@ package classes.Scenes.Areas.Swamp
 			//SPIDER HORDE WEB - Miss (guaranteed if turns 1-3 and PC lost to Kiha)
 			if(hasStatusEffect(StatusEffects.MissFirstRound) || player.getEvasionRoll()) {
 				outputText("One of the driders launches a huge glob of webbing right at you!  Luckily, Kiha manages to burn it out of the air with a well-timed gout of flame!");
-				combatRoundOver();
 			}
 			else {
 				outputText("Some of the spiders and driders launch huge globs of wet webbing right at you, hitting you in the torso!  You try to wiggle out, but it's no use; you're stuck like this for now.  Though comfortingly, the driders' open stance and self-satisfaction allow Kiha to blast them in the side with a huge conflagration!");
 				//(PC cannot attack or use spells for one turn; can use Magical Special and Possess)
 				player.createStatusEffect(StatusEffects.UBERWEB,0,0,0,0);
 				HP -= 250;
-				combatRoundOver();
 			}
 		}
 
@@ -68,7 +69,6 @@ package classes.Scenes.Areas.Swamp
 			outputText("While they're tangled up with you, however, Kiha takes the opportunity to get in a few shallow swings with her axe, to the accompaniment of crunching chitin.");
 			//horde loses HP
 			HP -= 50;
-			combatRoundOver();
 		}
 
 		override protected function performCombatAction():void
@@ -81,16 +81,16 @@ package classes.Scenes.Areas.Swamp
 
 		override public function defeated(hpVictory:Boolean):void
 		{
-			game.kihaFollower.beatSpiderMob();
+			SceneLib.kihaFollower.beatSpiderMob();
 		}
 
 		override public function won(hpVictory:Boolean, pcCameWorms:Boolean):void
 		{
 			if (pcCameWorms){
 				outputText("\n\nThe spiders smile to one at another as they watch your display, then close in...");
-				doNext(game.endLustLoss);
+				doNext(SceneLib.combat.endLustLoss);
 			} else {
-				game.kihaFollower.loseToSpiderMob();
+				SceneLib.kihaFollower.loseToSpiderMob();
 			}
 		}
 
@@ -109,40 +109,35 @@ package classes.Scenes.Areas.Swamp
 			this.ballSize = 1;
 			this.cumMultiplier = 3;
 			// this.hoursSinceCum = 0;
-			this.createVagina(false, VAGINA_WETNESS_SLICK, VAGINA_LOOSENESS_LOOSE);
+			this.createVagina(false, VaginaClass.WETNESS_SLICK, VaginaClass.LOOSENESS_LOOSE);
 			createBreastRow(0);
-			this.ass.analLooseness = ANAL_LOOSENESS_STRETCHED;
-			this.ass.analWetness = ANAL_WETNESS_SLIME_DROOLING;
+			this.ass.analLooseness = AssClass.LOOSENESS_STRETCHED;
+			this.ass.analWetness = AssClass.WETNESS_SLIME_DROOLING;
 			this.tallness = rand(8) + 70;
-			this.hipRating = HIP_RATING_AMPLE+2;
-			this.buttRating = BUTT_RATING_LARGE;
+			this.hips.type = Hips.RATING_AMPLE + 2;
+			this.butt.type = Butt.RATING_LARGE;
 			this.skinTone = "red";
 			this.hairColor = "black";
 			this.hairLength = 15;
 			initStrTouSpeInte(100, 80, 99, 99);
-			initLibSensCor(35, 35, 20);
+			initWisLibSensCor(99, 35, 35, 20);
 			this.weaponName = "claws";
 			this.weaponVerb="claws";
-			this.weaponAttack = 34 + (7 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.weaponAttack = 34;
 			this.armorName = "chitin";
-			this.armorDef = 30 + (4 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.armorDef = 30;
+			this.armorMDef = 3;
 			this.bonusHP = 1200;
 			this.bonusLust = 50;
 			this.lustVuln = .2;
 			this.temperment = TEMPERMENT_LOVE_GRAPPLES;
 			this.level = 23;
 			this.gems = rand(50)+100;
-			this.special1 = game.combat.packAttack;
-			this.special2 = game.combat.lustAttack;
-			this.tailType = TAIL_TYPE_SPIDER_ADBOMEN;
+			this.special1 = SceneLib.combat.packAttack;
+			this.special2 = SceneLib.combat.lustAttack;
+			this.tailType = Tail.SPIDER_ADBOMEN;
 			this.drop = NO_DROP;
 			this.createPerk(PerkLib.EnemyGroupType, 0, 0, 0, 0);
-			this.str += 20 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.tou += 16 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.spe += 19 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.inte += 19 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];			
-			this.lib += 7 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.newgamebonusHP = 2430;
 			checkMonster();
 		}
 		

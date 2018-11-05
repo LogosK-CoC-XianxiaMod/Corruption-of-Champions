@@ -1,32 +1,46 @@
 ﻿//CoC Creature.as
 package classes
 {
-	import classes.BodyParts.Claws;
-	import classes.BodyParts.Face;
-	import classes.BodyParts.IOrifice;
-	import classes.BodyParts.LowerBody;
-	import classes.BodyParts.Skin;
-	import classes.BodyParts.SkinLayer;
-	import classes.BodyParts.Tail;
-	import classes.BodyParts.UnderBody;
-	import classes.GlobalFlags.kGAMECLASS;
-	import classes.GlobalFlags.kFLAGS;
-	import classes.PerkType;
-	import classes.StatusEffectType;
-	import classes.Items.JewelryLib;
-	import classes.internals.Utils;
-	import classes.VaginaClass;
-	import classes.Scenes.Places.TelAdre.UmasShop;
-	import flash.display.InteractiveObject;
-	import flash.errors.IllegalOperationError;
+import classes.BodyParts.Antennae;
+import classes.BodyParts.Arms;
+import classes.BodyParts.Beard;
+import classes.BodyParts.Butt;
+import classes.BodyParts.Claws;
+import classes.BodyParts.Ears;
+import classes.BodyParts.Eyes;
+import classes.BodyParts.Face;
+import classes.BodyParts.Gills;
+import classes.BodyParts.Hair;
+import classes.BodyParts.Hips;
+import classes.BodyParts.Horns;
+import classes.BodyParts.IOrifice;
+import classes.BodyParts.LowerBody;
+import classes.BodyParts.RearBody;
+import classes.BodyParts.Skin;
+import classes.BodyParts.Tail;
+import classes.BodyParts.Tongue;
+import classes.BodyParts.UnderBody;
+import classes.BodyParts.Wings;
+import classes.GlobalFlags.kFLAGS;
+import classes.Items.JewelryLib;
+import classes.Scenes.Places.TelAdre.UmasShop;
+import classes.StatusEffects.Combat.CombatInteBuff;
+import classes.StatusEffects.Combat.CombatSpeBuff;
+import classes.StatusEffects.Combat.CombatStrBuff;
+import classes.StatusEffects.Combat.CombatTouBuff;
+import classes.StatusEffects.Combat.CombatWisBuff;
+import classes.internals.Utils;
+import classes.lists.BreastCup;
+import classes.lists.Gender;
 
-	public class Creature extends Utils
+import flash.errors.IllegalOperationError;
+
+public class Creature extends Utils
 	{
 
-		include "../../includes/appearanceDefs.as";
 
-		public function get game():CoC {
-			return kGAMECLASS;
+        public function get game():CoC {
+			return CoC.instance;
 		}
 		public function get flags():DefaultDict {
 			return game.flags;
@@ -82,17 +96,52 @@ package classes
 		//Clothing/Armor
 		private var _armorName:String = "";
 		private var _armorDef:Number = 0;
+		private var _armorMDef:Number = 0;
 		private var _armorPerk:String = "";
 		private var _armorValue:Number = 0;
 		public function get armorName():String { return _armorName; }
 		public function get armorDef():Number { return _armorDef; }
+		public function get armorMDef():Number { return _armorMDef; }
 		public function get armorPerk():String { return _armorPerk; }
 		public function get armorValue():Number { return _armorValue; }
 		public function set armorValue(value:Number):void { _armorValue = value; }
 		public function set armorName(value:String):void { _armorName = value; }
 		public function set armorDef(value:Number):void { _armorDef = value; }
+		public function set armorMDef(value:Number):void { _armorMDef = value; }
 		public function set armorPerk(value:String):void { _armorPerk = value; }
-		//Jewelry!
+		//Head Jewelery
+		private var _headjewelryName:String = "";
+		private var _headjewelryEffectId:Number = 0;
+		private var _headjewelryEffectMagnitude:Number = 0;
+		private var _headjewelryPerk:String = "";
+		private var _headjewelryValue:Number = 0;
+		public function get headjewelryName():String { return _headjewelryName; }
+		public function get headjewelryEffectId():Number { return _headjewelryEffectId; }
+		public function get headjewelryEffectMagnitude():Number { return _headjewelryEffectMagnitude; }
+		public function get headjewelryPerk():String { return _headjewelryPerk; }
+		public function get headjewelryValue():Number { return _headjewelryValue; }
+		public function set headjewelryValue(value:Number):void { _headjewelryValue = value; }
+		public function set headjewelryName(value:String):void { _headjewelryName = value; }
+		public function set headjewelryEffectId(value:Number):void { _headjewelryEffectId = value; }
+		public function set headjewelryEffectMagnitude(value:Number):void { _headjewelryEffectId = value; }
+		public function set headjewelryPerk(value:String):void { _headjewelryPerk = value; }
+		//Necklace
+		private var _necklaceName:String = "";
+		private var _necklaceEffectId:Number = 0;
+		private var _necklaceEffectMagnitude:Number = 0;
+		private var _necklacePerk:String = "";
+		private var _necklaceValue:Number = 0;
+		public function get necklaceName():String { return _necklaceName; }
+		public function get necklaceEffectId():Number { return _necklaceEffectId; }
+		public function get necklaceEffectMagnitude():Number { return _necklaceEffectMagnitude; }
+		public function get necklacePerk():String { return _necklacePerk; }
+		public function get necklaceValue():Number { return _necklaceValue; }
+		public function set necklaceValue(value:Number):void { _necklaceValue = value; }
+		public function set necklaceName(value:String):void { _necklaceName = value; }
+		public function set necklaceEffectId(value:Number):void { _necklaceEffectId = value; }
+		public function set necklaceEffectMagnitude(value:Number):void { _necklaceEffectId = value; }
+		public function set necklacePerk(value:String):void { _necklacePerk = value; }
+		//Rings (Jewelry)
 		private var _jewelryName:String = "";
 		private var _jewelryEffectId:Number = 0;
 		private var _jewelryEffectMagnitude:Number = 0;
@@ -108,7 +157,7 @@ package classes
 		public function set jewelryEffectId(value:Number):void { _jewelryEffectId = value; }
 		public function set jewelryEffectMagnitude(value:Number):void { _jewelryEffectId = value; }
 		public function set jewelryPerk(value:String):void { _jewelryPerk = value; }
-		//Shield!
+		//Shield
 		private var _shieldName:String = "";
 		private var _shieldBlock:Number = 0;
 		private var _shieldPerk:String = "";
@@ -121,7 +170,7 @@ package classes
 		public function set shieldName(value:String):void { _shieldName = value; }
 		public function set shieldBlock(value:Number):void { _shieldBlock = value; }
 		public function set shieldPerk(value:String):void { _shieldPerk = value; }
-		//Undergarments!
+		//Undergarments
 		private var _upperGarmentName:String = "";
 		private var _upperGarmentPerk:String = "";
 		private var _upperGarmentValue:Number = 0;
@@ -141,6 +190,13 @@ package classes
 		public function set lowerGarmentName(value:String):void { _lowerGarmentName = value; }
 		public function set lowerGarmentPerk(value:String):void { _lowerGarmentPerk = value; }
 		public function set lowerGarmentValue(value:Number):void { _lowerGarmentValue = value; }
+		
+		/*
+		
+		   [   S T A T S   ]
+		
+		 */
+		
 		//Primary stats
 		public var str:Number = 0;
 		public var tou:Number = 0;
@@ -164,14 +220,408 @@ package classes
 		public var level:Number = 0;
 		public var gems:Number = 0;
 		public var additionalXP:Number = 0;
-				
+		
+		public function get str100():Number { return 100*str/getMaxStats('str'); }
+		public function get tou100():Number { return 100*tou/getMaxStats('tou'); }
+		public function get spe100():Number { return 100*spe/getMaxStats('spe'); }
+		public function get inte100():Number { return 100*inte/getMaxStats('inte'); }
+		public function get wis100():Number { return 100*wis/getMaxStats('wis'); }
+		public function get lib100():Number { return 100*lib/getMaxStats('lib'); }
+		public function get sens100():Number { return 100*sens/getMaxStats('sens'); }
+		public function get fatigue100():Number { return 100*fatigue/maxFatigue(); }
+		public function get hp100():Number { return 100*HP/maxHP(); }
+		public function get wrath100():Number { return 100*wrath/maxWrath(); }
+		public function get mana100():Number { return 100*mana/maxMana(); }
+		public function get soulforce100():Number { return 100*soulforce/maxSoulforce(); }
+		public function get lust100():Number { return 100*lust/maxLust(); }
+		
+		public function minLust():Number {
+			return 0;
+		}
+		public function minLib():Number {
+			return 1;
+		}
+		public function minSens():Number {
+			return 10;
+		}
+		protected function maxHP_base():Number {
+			var max:Number = 0;
+			max += int(tou * 2 + 50);
+			if (tou >= 21) max += Math.round(tou);
+			if (tou >= 41) max += Math.round(tou);
+			if (tou >= 61) max += Math.round(tou);
+			if (tou >= 81) max += Math.round(tou);
+			if (tou >= 101) max += Math.round(tou);
+			if (tou >= 151) max += Math.round(tou);
+			if (tou >= 201) max += Math.round(tou);
+			if (tou >= 251) max += Math.round(tou);
+			if (tou >= 301) max += Math.round(tou);
+			if (tou >= 351) max += Math.round(tou);
+			if (tou >= 401) max += Math.round(tou);
+			if (tou >= 451) max += Math.round(tou);
+			if (tou >= 501) max += Math.round(tou);
+			if (tou >= 551) max += Math.round(tou);
+			if (tou >= 601) max += Math.round(tou);
+			if (tou >= 651) max += Math.round(tou);
+			if (tou >= 701) max += Math.round(tou);
+			if (tou >= 751) max += Math.round(tou);
+			if (tou >= 801) max += Math.round(tou);
+			if (tou >= 851) max += Math.round(tou);
+			if (tou >= 901) max += Math.round(tou);
+			if (tou >= 951) max += Math.round(tou);
+			if (tou >= 1001) max += Math.round(tou);
+			if (tou >= 1051) max += Math.round(tou);
+			if (tou >= 1101) max += Math.round(tou);
+			if (tou >= 1151) max += Math.round(tou);
+			if (tou >= 1201) max += Math.round(tou);
+			if (tou >= 1251) max += Math.round(tou);
+			if (tou >= 1301) max += Math.round(tou);
+			if (tou >= 1351) max += Math.round(tou);
+			if (tou >= 1401) max += Math.round(tou);
+			if (tou >= 1451) max += Math.round(tou);
+			if (tou >= 1501) max += Math.round(tou);
+			if (tou >= 1551) max += Math.round(tou);
+			if (tou >= 1601) max += Math.round(tou);
+			if (tou >= 1651) max += Math.round(tou);
+			if (tou >= 1701) max += Math.round(tou);
+			if (tou >= 1751) max += Math.round(tou);
+			if (tou >= 1801) max += Math.round(tou);
+			if (tou >= 1851) max += Math.round(tou);
+			if (tou >= 1901) max += Math.round(tou);
+			if (tou >= 1951) max += Math.round(tou);
+			if (findPerk(PerkLib.RefinedBodyI) >= 0) max += 50;
+			if (findPerk(PerkLib.RefinedBodyII) >= 0) max += 50;
+			if (findPerk(PerkLib.RefinedBodyIII) >= 0) max += 50;
+			if (findPerk(PerkLib.RefinedBodyIV) >= 0) max += 50;
+			if (findPerk(PerkLib.RefinedBodyV) >= 0) max += 50;
+			if (findPerk(PerkLib.RefinedBodyVI) >= 0) max += 50;
+			if (findPerk(PerkLib.TankI) >= 0) max += Math.round(tou*3);
+			if (findPerk(PerkLib.TankII) >= 0) max += Math.round(tou*3);
+			if (findPerk(PerkLib.TankIII) >= 0) max += Math.round(tou*3);
+			if (findPerk(PerkLib.TankIV) >= 0) max += Math.round(tou*3);
+			if (findPerk(PerkLib.TankV) >= 0) max += Math.round(tou*3);
+			if (findPerk(PerkLib.TankVI) >= 0) max += Math.round(tou*3);
+			if (findPerk(PerkLib.GoliathI) >= 0) max += Math.round(str*2);
+			if (findPerk(PerkLib.GoliathII) >= 0) max += Math.round(str*2);
+			if (findPerk(PerkLib.GoliathIII) >= 0) max += Math.round(str*2);
+			if (findPerk(PerkLib.GoliathIV) >= 0) max += Math.round(str*2);
+			if (findPerk(PerkLib.GoliathV) >= 0) max += Math.round(str*2);
+			if (findPerk(PerkLib.GoliathVI) >= 0) max += Math.round(str*2);
+			if (findPerk(PerkLib.CheetahI) >= 0) max += Math.round(spe);
+			if (findPerk(PerkLib.CheetahII) >= 0) max += Math.round(spe);
+			if (findPerk(PerkLib.CheetahIII) >= 0) max += Math.round(spe);
+			if (findPerk(PerkLib.CheetahIV) >= 0) max += Math.round(spe);
+			if (findPerk(PerkLib.CheetahV) >= 0) max += Math.round(spe);
+			if (findPerk(PerkLib.CheetahVI) >= 0) max += Math.round(spe);
+			if (findPerk(PerkLib.ElementalBondFlesh) >= 0) {
+				if (hasStatusEffect(StatusEffects.SummonedElementalsAir)) max += 25 * statusEffectv2(StatusEffects.SummonedElementalsAir);
+				if (hasStatusEffect(StatusEffects.SummonedElementalsEarth)) max += 25 * statusEffectv2(StatusEffects.SummonedElementalsEarth);
+				if (hasStatusEffect(StatusEffects.SummonedElementalsFire)) max += 25 * statusEffectv2(StatusEffects.SummonedElementalsFire);
+				if (hasStatusEffect(StatusEffects.SummonedElementalsWater)) max += 25 * statusEffectv2(StatusEffects.SummonedElementalsWater);
+				if (hasStatusEffect(StatusEffects.SummonedElementalsEther)) max += 25 * statusEffectv2(StatusEffects.SummonedElementalsEther);
+				if (hasStatusEffect(StatusEffects.SummonedElementalsWood)) max += 25 * statusEffectv2(StatusEffects.SummonedElementalsWood);
+				if (hasStatusEffect(StatusEffects.SummonedElementalsMetal)) max += 25 * statusEffectv2(StatusEffects.SummonedElementalsMetal);
+				if (hasStatusEffect(StatusEffects.SummonedElementalsIce)) max += 25 * statusEffectv2(StatusEffects.SummonedElementalsIce);
+				if (hasStatusEffect(StatusEffects.SummonedElementalsLightning)) max += 25 * statusEffectv2(StatusEffects.SummonedElementalsLightning);
+				if (hasStatusEffect(StatusEffects.SummonedElementalsDarkness)) max += 25 * statusEffectv2(StatusEffects.SummonedElementalsDarkness);
+			}
+			if (findPerk(PerkLib.JobGuardian) >= 0) max += 30;
+			if (findPerk(PerkLib.DeityJobMunchkin) >= 0) max += 150;
+			if (findPerk(PerkLib.BodyCultivator) >= 0) max += (25 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));
+			if (findPerk(PerkLib.FleshBodyApprenticeStage) >= 0) {
+				if (findPerk(PerkLib.SoulApprentice) >= 0) max += (50 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));
+				if (findPerk(PerkLib.SoulPersonage) >= 0) max += (50 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));
+				if (findPerk(PerkLib.SoulWarrior) >= 0) max += (50 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));
+			}
+			if (findPerk(PerkLib.FleshBodyWarriorStage) >= 0) {
+				if (findPerk(PerkLib.SoulSprite) >= 0) max += (75 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));
+				if (findPerk(PerkLib.SoulScholar) >= 0) max += (75 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));
+				if (findPerk(PerkLib.SoulElder) >= 0) max += (75 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));
+			}
+			if (findPerk(PerkLib.FleshBodyElderStage) >= 0) {
+				if (findPerk(PerkLib.SoulExalt) >= 0) max += (100 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));
+				if (findPerk(PerkLib.SoulOverlord) >= 0) max += (100 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));
+				if (findPerk(PerkLib.SoulTyrant) >= 0) max += (100 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));
+			}
+			if (findPerk(PerkLib.FleshBodyOverlordStage) >= 0) {
+				if (findPerk(PerkLib.SoulKing) >= 0) max += (125 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));
+				if (findPerk(PerkLib.SoulEmperor) >= 0) max += (125 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));
+				if (findPerk(PerkLib.SoulAncestor) >= 0) max += (125 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));
+			}
+			if (findPerk(PerkLib.HclassHeavenTribulationSurvivor) >= 0) max += (150 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));
+			if (findPerk(PerkLib.GclassHeavenTribulationSurvivor) >= 0) max += (225 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));
+			if (findPerk(PerkLib.FclassHeavenTribulationSurvivor) >= 0) max += (300 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));
+			if (findPerk(PerkLib.AscensionHardiness) >= 0) max += perkv1(PerkLib.AscensionHardiness) * 100;
+			if (findPerk(PerkLib.ChiReflowDefense) >= 0) max += UmasShop.NEEDLEWORK_DEFENSE_EXTRA_HP;
+			max += level * 15;
+			if (findPerk(PerkLib.UnlockBody) >= 0) max += level * 15;
+			if (findPerk(PerkLib.UnlockBody2ndStage) >= 0) max += level * 15;
+			if (findPerk(PerkLib.UnlockBody3rdStage) >= 0) max += level * 15;
+			if (findPerk(PerkLib.UnlockBody4thStage) >= 0) max += level * 15;
+			if (findPerk(PerkLib.AscensionUnlockedPotential) >= 0) max += level * 20;
+			if (jewelryEffectId == JewelryLib.MODIFIER_HP) max += jewelryEffectMagnitude;
+			return max;
+		}
+		protected function maxLust_base():Number {
+			var max:Number = 100;
+			if (findPerk(PerkLib.InhumanDesireI) >= 0) max += 20;
+			if (findPerk(PerkLib.InhumanDesireII) >= 0) max += 20;
+			if (findPerk(PerkLib.InhumanDesireIII) >= 0) max += 20;
+			if (findPerk(PerkLib.InhumanDesireIV) >= 0) max += 20;
+			if (findPerk(PerkLib.InhumanDesireV) >= 0) max += 20;
+			if (findPerk(PerkLib.InhumanDesireVI) >= 0) max += 20;
+			if (findPerk(PerkLib.DemonicDesireI) >= 0) max += Math.round(lib);
+			if (findPerk(PerkLib.DemonicDesireII) >= 0) max += Math.round(lib);
+			if (findPerk(PerkLib.DemonicDesireIII) >= 0) max += Math.round(lib);
+			if (findPerk(PerkLib.DemonicDesireIV) >= 0) max += Math.round(lib);
+			if (findPerk(PerkLib.DemonicDesireV) >= 0) max += Math.round(lib);
+			if (findPerk(PerkLib.DemonicDesireVI) >= 0) max += Math.round(lib);
+			if (findPerk(PerkLib.BasicSelfControl) >= 0) max += 15;
+			if (findPerk(PerkLib.HalfStepToImprovedSelfControl) >= 0) max += 25;
+			if (findPerk(PerkLib.ImprovedSelfControl) >= 0) max += 40;
+			if (findPerk(PerkLib.HalfStepToAdvancedSelfControl) >= 0) max += 60;
+			if (findPerk(PerkLib.AdvancedSelfControl) >= 0) max += 100;
+			if (findPerk(PerkLib.HalfStepToSuperiorSelfControl) >= 0) max += 160;
+			if (findPerk(PerkLib.SuperiorSelfControl) >= 0) max += 250;
+			if (findPerk(PerkLib.HalfStepToPeerlessSelfControl) >= 0) max += 350;
+			if (findPerk(PerkLib.PeerlessSelfControl) >= 0) max += 500;
+			if (findPerk(PerkLib.HalfStepToInhumanSelfControl) >= 0) max += 750;
+			if (findPerk(PerkLib.InhumanSelfControl) >= 0) max += 1000;
+			if (findPerk(PerkLib.HalfStepToEpicSelfControl) >= 0) max += 1500;
+			if (findPerk(PerkLib.EpicSelfControl) >= 0) max += 2250;
+			if (findPerk(PerkLib.HalfStepToLegendarySelfControl) >= 0) max += 3500;
+			if (findPerk(PerkLib.LegendarySelfControl) >= 0) max += 5000;
+			if (findPerk(PerkLib.HalfStepToMythicalSelfControl) >= 0) max += 7500;
+			if (findPerk(PerkLib.MythicalSelfControl) >= 0) max += 10000;
+			if (findPerk(PerkLib.ElementalBondUrges) >= 0) {
+				if (hasStatusEffect(StatusEffects.SummonedElementalsAir)) max += 5 * statusEffectv2(StatusEffects.SummonedElementalsAir);
+				if (hasStatusEffect(StatusEffects.SummonedElementalsEarth)) max += 5 * statusEffectv2(StatusEffects.SummonedElementalsEarth);
+				if (hasStatusEffect(StatusEffects.SummonedElementalsFire)) max += 5 * statusEffectv2(StatusEffects.SummonedElementalsFire);
+				if (hasStatusEffect(StatusEffects.SummonedElementalsWater)) max += 5 * statusEffectv2(StatusEffects.SummonedElementalsWater);
+				if (hasStatusEffect(StatusEffects.SummonedElementalsEther)) max += 5 * statusEffectv2(StatusEffects.SummonedElementalsEther);
+				if (hasStatusEffect(StatusEffects.SummonedElementalsWood)) max += 5 * statusEffectv2(StatusEffects.SummonedElementalsWood);
+				if (hasStatusEffect(StatusEffects.SummonedElementalsMetal)) max += 5 * statusEffectv2(StatusEffects.SummonedElementalsMetal);
+				if (hasStatusEffect(StatusEffects.SummonedElementalsIce)) max += 5 * statusEffectv2(StatusEffects.SummonedElementalsIce);
+				if (hasStatusEffect(StatusEffects.SummonedElementalsLightning)) max += 5 * statusEffectv2(StatusEffects.SummonedElementalsLightning);
+				if (hasStatusEffect(StatusEffects.SummonedElementalsDarkness)) max += 5 * statusEffectv2(StatusEffects.SummonedElementalsDarkness);
+			}
+			if (findPerk(PerkLib.BroBody) >= 0 || findPerk(PerkLib.BimboBody) >= 0 || findPerk(PerkLib.FutaForm) >= 0) max += 20;
+			if (findPerk(PerkLib.OmnibusGift) >= 0) max += 15;
+			if (findPerk(PerkLib.JobCourtesan) >= 0) max += 20;
+			if (findPerk(PerkLib.JobSeducer) >= 0) max += 10;
+			if (findPerk(PerkLib.DeityJobMunchkin) >= 0) max += 50;
+			if (findPerk(PerkLib.HclassHeavenTribulationSurvivor) >= 0) max += (50 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));
+			if (findPerk(PerkLib.GclassHeavenTribulationSurvivor) >= 0) max += (75 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));
+			if (findPerk(PerkLib.FclassHeavenTribulationSurvivor) >= 0) max += (100 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));
+			if (findPerk(PerkLib.AscensionDesires) >= 0) max += perkv1(PerkLib.AscensionDesires) * 10;
+			if (findPerk(PerkLib.UnlockArdor) >= 0) max += level;
+			if (findPerk(PerkLib.UnlockArdor2ndStage) >= 0) max += level;
+			if (findPerk(PerkLib.UnlockArdor3rdStage) >= 0) max += level;
+			if (findPerk(PerkLib.UnlockArdor4thStage) >= 0) max += level;
+			if (findPerk(PerkLib.AscensionUnlockedPotential) >= 0) max += level * 2;
+			return max;
+		}
+		protected function maxHP_mult():Number {
+			return 1 + (countCockSocks("green") * 0.02);
+		}
+		protected function maxLust_mult():Number {
+			return 1;
+		}
+		public function maxHP():Number {
+			var max:Number = Math.round(maxHP_base()*maxHP_mult());
+			return Math.min(999999,max);
+		}
+		public function maxLust():Number {
+			var max:Number = Math.round(maxLust_base()*maxLust_mult());
+			return Math.min(59999,max);
+		}
+		public function maxFatigue():Number {
+			return 100;
+		}
+		public function maxWrath():Number {
+			return 0;
+		}
+		public function maxSoulforce():Number {
+			return 0;
+		}
+		public function maxMana():Number {
+			return 0;
+		}
+		public function getMaxStats(stats:String):int {
+			var obj:Object = getAllMaxStats();
+			if (stats == "str" || stats == "strength") return obj.str;
+			else if (stats == "tou" || stats == "toughness") return obj.tou;
+			else if (stats == "spe" || stats == "speed") return obj.spe;
+			else if (stats == "inte" || stats == "int" || stats == "intelligence") return obj.inte;
+			else if (stats == "wis" || stats == "wisdom") return obj.wis;
+			else if (stats == "lib" || stats == "libido") return obj.lib;
+			else if (stats == "sens" || stats == "sen" || stats == "sensitivity") return obj.sen;
+			else return 100;
+		}
+		/**
+		 * @return keys: str, tou, spe, inte, wis, lib, sens, cor
+		 */
+		public function getAllMaxStats():Object {
+			return {
+				str:100,
+				tou:100,
+				spe:100,
+				inte:100,
+				wis:100,
+				lib:100,
+				sens:100,
+				cor:100
+			};
+		}
+		public function getAllMinStats():Object {
+			return {
+				str:1,
+				tou:1,
+				spe:1,
+				inte:1,
+				wis:1,
+				lib:10,
+				sens:10,
+				cor:0
+			};
+		}
+		/**
+		 * Modify stats.
+		 *
+		 * Arguments should come in pairs nameOp:String, value:Number/Boolean <br/>
+		 * where nameOp is ( stat_name + [operator] ) and value is operator argument<br/>
+		 * valid operators are "=" (set), "+", "-", "*", "/", add is default.<br/>
+		 * valid stat_names are "str", "tou", "spe", "int", "wis", "lib", "sen", "lus", "cor" or their full names;
+		 * also "scaled"/"scale"/"sca" (default true: apply resistances, perks; false - force values)
+		 *
+		 * @return Object of (newStat-oldStat) with keys str, tou, spe, inte, wis, lib, sens, lust, cor
+		 * */
+		public function dynStats(... args):Object {
+			Begin("Creature","dynStats");
+			var argz:Object = parseDynStatsArgs(this, args);
+			var prevStr:Number  = str;
+			var prevTou:Number  = tou;
+			var prevSpe:Number  = spe;
+			var prevInte:Number  = inte;
+			var prevWis:Number  = wis;
+			var prevLib:Number  = lib;
+			var prevSens:Number  = sens;
+			var prevLust:Number  = lust;
+			var prevCor:Number  = cor;
+			modStats(argz.str, argz.tou, argz.spe, argz.inte, argz.wis, argz.lib, argz.sens, argz.lust, argz.cor, argz.scale, argz.max);
+			End("Creature","dynStats");
+			//trace("dynStats("+args.join(", ")+") => ("+[str,tou,spe,inte,wis,lib,sens,lust,cor].join(", ")+")");
+			return {
+				str:str-prevStr,
+				tou:tou-prevTou,
+				spe:spe-prevSpe,
+				inte:inte-prevInte,
+				wis:wis-prevWis,
+				lib:lib-prevLib,
+				sens:sens-prevSens,
+				lust:lust-prevLust,
+				cor:cor-prevCor
+			};
+		}
+		public function modStats(dstr:Number, dtou:Number, dspe:Number, dinte:Number, dwis:Number, dlib:Number, dsens:Number, dlust:Number, dcor:Number, scale:Boolean, max:Boolean):void {
+			var maxes:Object;
+			if (max) {
+				maxes = getAllMaxStats();
+				maxes.lust = maxLust();
+			} else {
+				maxes = {
+					str:Infinity,
+					tou:Infinity,
+					spe:Infinity,
+					inte:Infinity,
+					wis:Infinity,
+					lib:Infinity,
+					sens:Infinity,
+					cor:Infinity,
+					lust:Infinity
+				}
+			}
+			var mins:Object = getAllMinStats();
+			mins.lust = minLust();
+			var oldHPratio:Number = hp100/100;
+			str  = Utils.boundFloat(mins.str, str + dstr, maxes.str);
+			tou  = Utils.boundFloat(mins.tou, tou + dtou, maxes.tou);
+			spe  = Utils.boundFloat(mins.spe, spe + dspe, maxes.spe);
+			inte = Utils.boundFloat(mins.inte, inte + dinte, maxes.inte);
+			wis  = Utils.boundFloat(mins.wis, wis + dwis, maxes.wis);
+			lib  = Utils.boundFloat(mins.lib, lib + dlib, maxes.lib);
+			sens = Utils.boundFloat(mins.sens, sens + dsens, maxes.sens);
+			lust = Utils.boundFloat(mins.lust, lust + dlust, maxes.lust);
+			cor  = Utils.boundFloat(mins.cor, cor + dcor, maxes.cor);
+			
+			// old_hp / old_max = new_hp / new_max
+			HP = oldHPratio * maxHP();
+			
+			// Keep values in bounds (lust and HP handled above)
+			fatigue = Math.min(fatigue, maxFatigue());
+			mana = Math.min(mana, maxMana());
+			soulforce = Math.min(soulforce, maxSoulforce());
+			wrath = Math.min(wrath,maxWrath());
+		}
+		// Lust gain, in % (100 = receive as is, 25 = receive one fourth, 0 = immune)
+		public function lustPercent():Number {
+			return 100;
+		}
+		public function takePhysDamage(damage:Number, display:Boolean = false):Number {
+			HP = boundFloat(0,HP-Math.round(damage),HP);
+			return (damage > 0 && damage < 1) ? 1 : damage;
+		}
+		public function takeMagicDamage(damage:Number, display:Boolean = false):Number {
+			HP = boundFloat(0,HP-Math.round(damage),HP);
+			return (damage > 0 && damage < 1) ? 1 : damage;
+		}
+		public function takeFireDamage(damage:Number, display:Boolean = false):Number {
+			HP = boundFloat(0,HP-Math.round(damage),HP);
+			return (damage > 0 && damage < 1) ? 1 : damage;
+		}
+		public function takeIceDamage(damage:Number, display:Boolean = false):Number {
+			HP = boundFloat(0,HP-Math.round(damage),HP);
+			return (damage > 0 && damage < 1) ? 1 : damage;
+		}
+		public function takeLightningDamage(damage:Number, display:Boolean = false):Number {
+			HP = boundFloat(0,HP-Math.round(damage),HP);
+			return (damage > 0 && damage < 1) ? 1 : damage;
+		}
+		public function takeDarknessDamage(damage:Number, display:Boolean = false):Number {
+			HP = boundFloat(0,HP-Math.round(damage),HP);
+			return (damage > 0 && damage < 1) ? 1 : damage;
+		}
+		public function takePoisonDamage(damage:Number, display:Boolean = false):Number {
+			HP = boundFloat(0,HP-Math.round(damage),HP);
+			return (damage > 0 && damage < 1) ? 1 : damage;
+		}
+		public function takeLustDamage(lustDmg:Number, display:Boolean = true, applyRes:Boolean = true):Number{
+			if (applyRes) lustDmg *= lustPercent()/100;
+			lust = boundFloat(minLust(),lust+Math.round(lustDmg),maxLust());
+			return (lustDmg > 0 && lustDmg < 1) ? 1 : lustDmg;
+		}
+		/**
+		 * Get the remaining fatigue of the Creature.
+		 * @return maximum amount of fatigue that still can be used
+		 */
+		public function fatigueLeft():Number
+		{
+			return maxFatigue() - fatigue;
+		}
+
+		/*
+		
+		[    A P P E A R A N C E    ]
+		
+		*/
+		
 		//Appearance Variables
 		//Gender 1M, 2F, 3H
 		public function get gender():int {
-			if (hasCock() && hasVagina()) return GENDER_HERM;
-			if (hasCock()) return GENDER_MALE;
-			if (hasVagina()) return GENDER_FEMALE;
-			return GENDER_NONE;
+			if (hasCock() && hasVagina()) return Gender.GENDER_HERM;
+			if (hasCock()) return Gender.GENDER_MALE;
+			if (hasVagina()) return Gender.GENDER_FEMALE;
+			return Gender.GENDER_NONE;
 		}
 		private var _tallness:Number = 0;
 		public function get tallness():Number { return _tallness; }
@@ -183,7 +633,7 @@ package classes
 		2- ghost
 		3- goo!
 		4- anemononeoenoeneo!*/
-		public var hairType:Number = HAIR_NORMAL;
+		public var hairType:Number = Hair.NORMAL;
 		private var _hairColor:String = "no";
 		public var hairLength:Number = 0;
 		public function get hairColor():String {
@@ -203,7 +653,7 @@ package classes
 			skin.coat.color = value;
 		}
 
-		public var beardStyle:Number = BEARD_NORMAL;
+		public var beardStyle:Number = Beard.NORMAL;
 		public var beardLength:Number = 0;
 				
 		public var skin:Skin;
@@ -220,8 +670,8 @@ package classes
 		 * @return -1 if hasCoat(), skin.coat.type otherwise
 		 */
 		public function coatType():int { return skin.coatType(); }
-		public function hasCoatOfType(...types:Array):Boolean { return skin.hasCoatOfType(types); }
-		public function hasFullCoatOfType(...types:Array):Boolean { return skin.hasFullCoatOfType(types); }
+		public function hasCoatOfType(...types:Array):Boolean { return skin.hasCoatOfType.apply(skin,types); }
+		public function hasFullCoatOfType(...types:Array):Boolean { return skin.hasFullCoatOfType.apply(skin,types); }
 	//	[Deprecated]
 		public function set skinTone(value:String):void {
 			trace("[DEPRECATED] set skinTone");
@@ -255,16 +705,10 @@ package classes
 		public function set clawType(value:int):void { this.clawsPart.type = value; }
 		// </mod>
 		public var underBody:UnderBody;
-
-		public var earType:Number = EARS_HUMAN;
-		public var earValue:Number = 0;
-		public var hornType:Number = HORNS_NONE;
-		public var horns:Number = 0;
-		private var _wingType:Number = WING_TYPE_NONE;
-		public var wingDesc:String = "non-existant";
-		public function get wingType():Number { return _wingType; }
-		public function set wingType(value:Number):void { _wingType = value; }
-
+		public var ears:Ears = new Ears();
+		public var horns:Horns = new Horns();
+		public var wings:Wings = new Wings();
+		
 		/* lowerBody: see LOWER_BODY_TYPE_ */
 		public var lowerBodyPart:LowerBody;
 		public function get lowerBody():int { return lowerBodyPart.type; }
@@ -282,27 +726,9 @@ package classes
 		public function set tailCount(value:Number):void { tail.count = value; }
 		public function set tailRecharge(value:Number):void { tail.recharge = value; }
 		
-		/*hipRating
-		0 - boyish
-		2 - slender
-		4 - average
-		6 - noticable/ample
-		10 - curvy//flaring
-		15 - child-bearing/fertile
-		20 - inhumanly wide*/
-		public var hipRating:Number = HIP_RATING_BOYISH;
-		
-		/*buttRating
-		0 - buttless
-		2 - tight
-		4 - average
-		6 - noticable
-		8 - large
-		10 - jiggly
-		13 - expansive
-		16 - huge
-		20 - inconceivably large/big/huge etc*/
-		public var buttRating:Number = BUTT_RATING_BUTTLESS;
+
+		public var hips:Hips = new Hips();
+		public var butt:Butt = new Butt();
 		
 		//Piercings
 		//TODO: Pull this out into it's own class and enum.
@@ -326,24 +752,15 @@ package classes
 		public var nosePLong:String = "";
 
 		//Head ornaments. Definitely need to convert away from hard coded types.
-		public var antennae:Number = ANTENNAE_NONE;
-
-		//Eyetype
-		public var eyeType:Number = EYES_HUMAN;
-		public var eyeColor:String = "brown";
-
-		//TongueType
-		public var tongueType:Number = TONGUE_HUMAN;
-
-		//ArmType
-		public var armType:Number = ARM_TYPE_HUMAN;
-
-		//GillType
-		public var gillType:int = GILLS_NONE;
-		public function hasGills():Boolean { return gillType != GILLS_NONE; }
+		public var antennae:Antennae = new Antennae();
+		public var eyes:Eyes = new Eyes();
+		public var tongue:Tongue = new Tongue();
+		public var arms:Arms = new Arms();
 		
-		//RearBody
-		public var rearBody:Number = REAR_BODY_NONE;
+		public var gills:Gills = new Gills();
+		public function hasGills():Boolean { return gills.type != Gills.NONE; }
+		
+		public var rearBody:RearBody = new RearBody();
 
 		//Sexual Stuff		
 		//MALE STUFF
@@ -371,7 +788,7 @@ package classes
 		//Fertility is a % out of 100.
 		public var fertility:Number = 10;
 		public var nippleLength:Number = .25;
-		public var breastRows:Array;
+		public var breastRows:/*BreastRowClass*/Array;
 		public var ass:AssClass = new AssClass();
 
 		public function get clitLength():Number {
@@ -463,22 +880,22 @@ package classes
 			// 2.1. non-negative Number fields
 			error += Utils.validateNonNegativeNumberFields(this,"Monster.validate",[
 				"balls", "ballSize", "cumMultiplier", "hoursSinceCum",
-				"tallness", "hipRating", "buttRating", "lowerBody", "armType",
+				"tallness", "hips.type", "butt.type", "lowerBody", "arms.type",
 				"hairLength", "hairType",
-				"faceType", "earType", "tongueType", "eyeType",
+				"faceType", "ears.type", "tongue.type", "eyes.type",
 				"str", "tou", "spe", "inte", "wis", "lib", "sens", "cor",
 				// Allow weaponAttack to be negative as a penalty to strength-calculated damage
 				// Same with armorDef, bonusHP, additionalXP
 				"weaponValue", "armorValue",
 				"lust", "fatigue", "soulforce", "mana", "wrath",
 				"level", "gems",
-				"tailCount", "tailVenom", "tailRecharge", "horns",
+				"tailCount", "tailVenom", "tailRecharge", "horns.type",
 				"HP", "XP"
 			]);
 			// 2.2. non-empty String fields
 			error += Utils.validateNonEmptyStringFields(this,"Monster.validate",[
 				"short",
-				"skinDesc", "eyeColor",
+				"skinDesc", "eyes.colour",
 				"weaponName", "weaponVerb", "armorName"
 			]);
 			// 3. validate members
@@ -502,21 +919,26 @@ package classes
 			}
 			// 4.2. hair
 			if (hairLength <= 0) {
-				if (hairType != HAIR_NORMAL) error += "No hair but hairType = " + hairType + ". ";
+				if (hairType != Hair.NORMAL) error += "No hair but hairType = " + hairType + ". ";
 			}
 			// 4.3. tail
-			if (tailType == TAIL_TYPE_NONE) {
+			if (tailType == Tail.NONE) {
 				if (tailCount != 0) error += "No tail but tailCount = "+tailCount+". ";
 			}
 			// 4.4. horns
-			if (hornType == HORNS_NONE){
-				if (horns>0) error += "horns > 0 but hornType = HORNS_NONE. ";
+			if (horns.type == Horns.NONE){
+				if (horns.count > 0) error += "horns > 0 but horns.type = NONE. ";
 			} else {
-				if (horns==0) error += "Has horns but their number 'horns' = 0. ";
+				if (horns.count == 0) error += "Has horns but their number 'horns' = 0. ";
 			}
 			return error;
 		}
 		
+		/*
+		
+		[        P E R K S          ]
+		
+		*/
 		//Monsters have few perks, which I think should be a status effect for clarity's sake.
 		//TODO: Move perks into monster status effects.
 		private var _perks:Array;
@@ -773,25 +1195,53 @@ package classes
 		}
 		return perk(counter).value4;
 	}
-
+		
+		/*
+		
+		[    S T A T U S   E F F E C T S    ]
+		
+		*/
 		//{region StatusEffects
-		//Create a status
-		public function createStatusEffect(stype:StatusEffectType, value1:Number, value2:Number, value3:Number, value4:Number):void
+		public function createOrFindStatusEffect(stype:StatusEffectType):StatusEffectClass
 		{
-			var newStatusEffect:StatusEffectClass = new StatusEffectClass(stype,value1,value2,value3,value4);
-			statusEffects.push(newStatusEffect);
-			//trace("createStatusEffect -> "+statusEffects.join(","));
-			//trace("NEW STATUS APPLIED TO PLAYER!: " + statusName);
+			var sec:StatusEffectClass = statusEffectByType(stype);
+			if (!sec) sec = createStatusEffect(stype,0,0,0,0);
+			return sec;
 		}
-
+		//Create a status
+		public function createStatusEffect(stype:StatusEffectType, value1:Number, value2:Number, value3:Number, value4:Number, fireEvent:Boolean = true):StatusEffectClass
+		{
+			var newStatusEffect:StatusEffectClass = stype.create(value1,value2,value3,value4);
+			statusEffects.push(newStatusEffect);
+			newStatusEffect.addedToHostList(this,fireEvent);
+			return newStatusEffect;
+		}
+		public function addStatusEffect(sec:StatusEffectClass/*,fireEvent:Boolean = true*/):void {
+			if (sec.host != this) {
+				sec.remove();
+				sec.attach(this/*,fireEvent*/);
+			} else {
+				statusEffects.push(sec);
+				sec.addedToHostList(this,true);
+			}
+		}
 		//Remove a status
-		public function removeStatusEffect(stype:StatusEffectType):void
+		public function removeStatusEffect(stype:StatusEffectType/*, fireEvent:Boolean = true*/):StatusEffectClass
 		{
 			var counter:Number = indexOfStatusEffect(stype);
-			if (counter < 0) return;
+			if (counter < 0) return null;
+			var sec:StatusEffectClass = statusEffects[counter];
 			statusEffects.splice(counter, 1);
-			//trace("removeStatusEffect -> "+statusEffects.join(","));
+			sec.removedFromHostList(true);
+			return sec;
 		}
+		public function removeStatusEffectInstance(sec:StatusEffectClass/*, fireEvent:Boolean = true*/):void {
+			var i:int = statusEffects.indexOf(sec);
+			if (i < 0) return;
+			statusEffects.splice(i, 1);
+			sec.removedFromHostList(true);
+		}
+		
 		public function indexOfStatusEffect(stype:StatusEffectType):int {
 			for (var counter:int = 0; counter < statusEffects.length; counter++) {
 				if ((statusEffects[counter] as StatusEffectClass).stype == stype)
@@ -871,7 +1321,43 @@ package classes
 		{
 			statusEffects = [];
 		}
-
+		
+		/**
+		 * Applies (creates or increases) a combat-long debuff to stat.
+		 * Stat is fully restored after combat.
+		 * Different invocations are indistinguishable - do not use this if you need
+		 * to check for _specific_ debuff source (poison etc) mid-battle
+		 * @param stat 'str','spe','tou','inte','wis'
+		 * @param buff Creature stat is decremented by this value.
+		 * @return (oldStat-newStat)
+		 */
+		public function addCombatBuff(stat:String, buff:Number):Number {
+			switch(stat) {
+				case 'str':
+					return (createOrFindStatusEffect(StatusEffects.GenericCombatStrBuff)
+							as CombatStrBuff).applyEffect(buff);
+				case 'spe':
+					return (createOrFindStatusEffect(StatusEffects.GenericCombatSpeBuff)
+							as CombatSpeBuff).applyEffect(buff);
+				case 'tou':
+					return (createOrFindStatusEffect(StatusEffects.GenericCombatTouBuff)
+							as CombatTouBuff).applyEffect(buff);
+				case 'int':
+				case 'inte':
+					return (createOrFindStatusEffect(StatusEffects.GenericCombatInteBuff)
+							as CombatInteBuff).applyEffect(buff);
+				case 'wis':
+					return (createOrFindStatusEffect(StatusEffects.GenericCombatWisBuff)
+							as CombatWisBuff).applyEffect(buff);
+			}
+			trace("/!\\ ERROR: addCombatBuff('"+stat+"', "+buff+")");
+			return 0;
+		}
+		/*
+		
+		[    ? ? ?    ]
+		
+		*/
 		public function biggestTitSize():Number
 		{
 			if (breastRows.length == 0)
@@ -1396,7 +1882,7 @@ package classes
 			if (index < 0) index = biggestCockIndex();
 			var isPierced:Boolean = (cocks.length == 1) && (cocks[index].isPierced); //Only describe as pierced or sock covered if the creature has just one cock
 			var hasSock:Boolean = (cocks.length == 1) && (cocks[index].sock != "");
-			var isGooey:Boolean = (skin.type == SKIN_TYPE_GOO);
+			var isGooey:Boolean = (skin.type == Skin.GOO);
 			return Appearance.cockAdjective(cocks[index].cockType, cocks[index].cockLength, cocks[index].cockThickness, lust, cumQ(), isPierced, hasSock, isGooey);
 		}
 
@@ -1519,18 +2005,6 @@ package classes
 		{
 			//Lactation * breastSize x 10 (milkPerBreast) determines scene
 			return biggestLactation() * biggestTitSize() * 10;
-		}
-
-		//Hacky code till I can figure out how to move appearance code out.
-		//TODO: Get rid of this
-		public virtual function dogScore():Number {
-			throw new Error("Not implemented. BAD");
-		}
-
-		//Hacky code till I can figure out how to move appearance code out.
-		//TODO: Get rid of this
-		public virtual function foxScore():Number {
-			throw new Error("Not implemented. BAD");
 		}
 
 		public function biggestLactation():Number
@@ -1756,14 +2230,18 @@ package classes
 				quantity *= 1.5;
 			if (findPerk(PerkLib.OneTrackMind) >= 0)
 				quantity *= 1.1;
+			if (findPerk(PerkLib.MinotaurTesticlesFinalForm) >= 0)
+				quantity *= 2.5;
 			if (findPerk(PerkLib.MaraesGiftStud) >= 0)
 				quantity += 350;
 			if (findPerk(PerkLib.FerasBoonAlpha) >= 0)
 				quantity += 200;
 			if (findPerk(PerkLib.MagicalVirility) >= 0)
 				quantity += 200 + (perkv1(PerkLib.MagicalVirility) * 100);
-			if(findPerk(PerkLib.FerasBoonSeeder) >= 0)
+			if (findPerk(PerkLib.FerasBoonSeeder) >= 0)
 				quantity += 1000;
+			if (findPerk(PerkLib.MinotaurTesticlesEvolved) >= 0)
+				quantity += 200;
 			if (findPerk(PerkLib.ProductivityDrugs) >= 0)
 				quantity += (perkv3(PerkLib.ProductivityDrugs));
 			//if(hasPerk("Elven Bounty") >= 0) quantity += 250;;
@@ -1776,6 +2254,8 @@ package classes
 			quantity *= (1 + (2 * perkv1(PerkLib.PiercedFertite)) / 100);
 			if (jewelryEffectId == JewelryLib.MODIFIER_FERTILITY)
 				quantity *= (1 + (jewelryEffectMagnitude / 100));
+			if (findPerk(PerkLib.AscensionCumHose) >= 0)
+				quantity += perkv1(PerkLib.AscensionCumHose) * 200;
 			//trace("Final Cum Volume: " + int(quantity) + "mLs.");
 			//if (quantity < 0) trace("SOMETHING HORRIBLY WRONG WITH CUM CALCULATIONS");
 			if (quantity < 2)
@@ -1900,6 +2380,15 @@ package classes
 			return countCocksOfType(CockTypesEnum.STAMEN);
 		}
 
+		public function avianCocks():int { //How many aviancocks?
+			return countCocksOfType(CockTypesEnum.AVIAN);
+		}
+
+		public function gryphonCocks():int { //How many gryphoncocks?
+			return countCocksOfType(CockTypesEnum.GRYPHON);
+		}
+
+
 		public function findFirstCockType(ctype:CockTypesEnum):Number
 		{
 			var index:Number = 0;
@@ -1975,16 +2464,8 @@ package classes
 			}
 			return -1;
 		}
-
-		//TODO Seriously wtf. 1500+ calls to cockTotal, 340+ call to totalCocks. I'm scared to touch either.
 		//How many cocks?
 		public function cockTotal():Number
-		{
-			return (cocks.length);
-		}
-
-		//Alternate
-		public function totalCocks():Number
 		{
 			return (cocks.length);
 		}
@@ -2045,17 +2526,25 @@ package classes
 		}
 
 		public static const canFlyWings:Array = [
-			WING_TYPE_BEE_LIKE_LARGE,
-			WING_TYPE_BAT_LIKE_LARGE,
-			WING_TYPE_BAT_LIKE_LARGE_2,
-			WING_TYPE_FEATHERED_LARGE,
-			WING_TYPE_FEATHERED_PHOENIX,
-			WING_TYPE_DRACONIC_LARGE,
-			WING_TYPE_DRACONIC_HUGE,
-			WING_TYPE_GIANT_DRAGONFLY,
-			WING_TYPE_MANTIS_LIKE_LARGE,
-			WING_TYPE_MANTIS_LIKE_LARGE_2,
-			WING_TYPE_MANTICORE_LIKE_LARGE,
+			Wings.BEE_LIKE_LARGE,
+			Wings.BAT_LIKE_LARGE,
+			Wings.BAT_LIKE_LARGE_2,
+			Wings.FEATHERED_LARGE,
+			Wings.FEATHERED_PHOENIX,
+			Wings.DRACONIC_LARGE,
+			Wings.DRACONIC_HUGE,
+			Wings.GIANT_DRAGONFLY,
+			Wings.MANTIS_LIKE_LARGE,
+			Wings.MANTIS_LIKE_LARGE_2,
+			Wings.MANTICORE_LIKE_LARGE,
+			Wings.GARGOYLE_LIKE_LARGE,
+			Wings.BAT_ARM,
+			Wings.VAMPIRE,
+			Wings.FEY_DRAGON_WINGS,
+			Wings.FEATHERED_AVIAN,
+			Wings.FEATHERED_SPHINX,
+			Wings.FEATHERED_ALICORN,
+			Wings.NIGHTMARE,
 			//WING_TYPE_IMP_LARGE,
 		];
 
@@ -2065,114 +2554,68 @@ package classes
 			//web also makes false!
 			if (hasStatusEffect(StatusEffects.Web))
 				return false;
-			return canFlyWings.indexOf(_wingType) != -1;
-
+			return canFlyWings.indexOf(wings.type) != -1;
 		}
+
+		public static const canPounceLeg:Array = [
+			LowerBody.CAT,
+			LowerBody.LION,
+			LowerBody.WOLF,
+		];
+
+		public static const canPounceArms:Array = [
+			Arms.CAT,
+			Arms.LION,
+			Arms.SPHINX,
+			Arms.WOLF,
+		];
+
+		public function canPounce():Boolean
+		{
+			return canPounceLeg.indexOf(lowerBody) != -1 && canPounceArms.indexOf(arms.type) != -1;
+		}
+
 
 		//PC can swim underwater?
 		public function canSwimUnderwater():Boolean
 		{
-			if (gillType != GILLS_NONE)
-				return true;	//dodać jeszcze trzeba bdzie tu efekt of itemów i inne opcje dające oddych. pod wodą
-			return false;
-		}
-
-		//Artifacts Bows
-		public function isArtifactBow():Boolean
-		{
-			if (game.player.weaponRange == game.weaponsrange.BOWGUID)
-				return true;
-			return false;
-		}
-
-		//Wrath Weapons
-		public function isLowGradeWrathWeapon():Boolean
-		{
-			if (game.player.weapon == game.weapons.BFSWORD || game.player.weapon == game.weapons.DBFSWO || game.player.weapon == game.weapons.OTETSU || game.player.weapon == game.weapons.CNTWHIP)
-				return true;
-			return false;
-		}
-
-		//Fists and fist weapons
-		public function isFistOrFistWeapon():Boolean
-		{
-			if (game.player.weaponName == "fists" || game.player.weapon == game.weapons.S_GAUNT || game.player.weapon == game.weapons.H_GAUNT)
-				return true;
-			return false;
-		}
-
-		//Weapons for Whirlwind
-		public function isWeaponForWhirlwind():Boolean
-		{
-			if (game.player.weapon == game.weapons.BFSWORD || game.player.weapon == game.weapons.CLAYMOR || game.player.weapon == game.weapons.URTAHLB || game.player.weapon == game.weapons.KIHAAXE || game.player.weapon == game.weapons.L__AXE || game.player.weapon == game.weapons.L_HAMMR || game.player.weapon == game.weapons.TRASAXE || game.player.weapon == game.weapons.WARHAMR
-			 || game.player.weapon == game.weapons.OTETSU || game.player.weapon == game.weapons.NODACHI || game.player.weapon == game.weapons.WGSWORD || game.player.weapon == game.weapons.DBFSWO || game.player.weapon == game.weapons.D_WHAM_ || game.player.weapon == game.weapons.DL_AXE_ || game.player.weapon == game.weapons.DSWORD_)// || game.player.weapon == game.weapons.
-				return true;
-			return false;
-		}
-
-		//Weapons for Whipping
-		public function isWeaponsForWhipping():Boolean
-		{
-			if (game.player.weapon == game.weapons.FLAIL || game.player.weapon == game.weapons.L_WHIP || game.player.weapon == game.weapons.SUCWHIP || game.player.weapon == game.weapons.PSWHIP || game.player.weapon == game.weapons.WHIP || game.player.weapon == game.weapons.PWHIP || game.player.weapon == game.weapons.NTWHIP || game.player.weapon == game.weapons.CNTWHIP
-			 || game.player.weapon == game.weapons.RIBBON || game.player.weapon == game.weapons.ERIBBON)
-				return true;
-			return false;
-		}
-
-		//Using Tome
-		public function isUsingTome():Boolean
-		{
-			if (game.player.weaponRangeName == "nothing" || game.player.weaponRangeName == "Inquisitor’s Tome" || game.player.weaponRangeName == "Sage’s Sketchbook")
-				return true;
-			return false;
-		}
-
-		//Natural Jouster perks req check
-		public function isMeetingNaturalJousterReq():Boolean
-		{
-			if ((((game.player.isTaur() || game.player.isDrider()) && game.player.spe >= 60) && game.player.findPerk(PerkLib.Naturaljouster) >= 0 && (game.player.findPerk(PerkLib.DoubleAttack) < 0 || (game.player.findPerk(PerkLib.DoubleAttack) >= 0 && kGAMECLASS.flags[kFLAGS.DOUBLE_ATTACK_STYLE] == 0)))
-			 || (game.player.spe >= 150 && game.player.findPerk(PerkLib.Naturaljouster) >= 0 && game.player.findPerk(PerkLib.DoubleAttack) >= 0 && (game.player.findPerk(PerkLib.DoubleAttack) < 0 || (game.player.findPerk(PerkLib.DoubleAttack) >= 0 && kGAMECLASS.flags[kFLAGS.DOUBLE_ATTACK_STYLE] == 0))))
-				return true;
-			return false;
-		}
-		public function isMeetingNaturalJousterMasterGradeReq():Boolean
-		{
-			if ((((game.player.isTaur() || game.player.isDrider()) && game.player.spe >= 180) && game.player.findPerk(PerkLib.NaturaljousterMastergrade) >= 0 && (game.player.findPerk(PerkLib.DoubleAttack) < 0 || (game.player.findPerk(PerkLib.DoubleAttack) >= 0 && kGAMECLASS.flags[kFLAGS.DOUBLE_ATTACK_STYLE] == 0)))
-			 || (game.player.spe >= 450 && game.player.findPerk(PerkLib.NaturaljousterMastergrade) >= 0 && game.player.findPerk(PerkLib.DoubleAttack) >= 0 && (game.player.findPerk(PerkLib.DoubleAttack) < 0 || (game.player.findPerk(PerkLib.DoubleAttack) >= 0 && kGAMECLASS.flags[kFLAGS.DOUBLE_ATTACK_STYLE] == 0))))
-				return true;
-			return false;
-		}
-
-		//1H Weapons
-		public function isOneHandedWeapons():Boolean
-		{
-			if (game.player.weaponPerk != "Dual Large" && game.player.weaponPerk != "Dual" && game.player.weaponPerk != "Staff" && game.player.weaponPerk != "Large")
-				return true;
+			if (gills.type != Gills.NONE)
+				return true;	//dodać jeszcze trzeba bedzie tu efekt of itemów i inne opcje dające oddych. pod wodą
 			return false;
 		}
 
 		//Naked
 		public function isNaked():Boolean
 		{
-			if (game.player.armorName == "nothing" && game.player.upperGarmentName == "nothing" && game.player.lowerGarmentName == "nothing")
-				return true;
-			return false;
-		}
-
-		//Natural Armor (need at least to partialy covering whole body)
-		public function haveNaturalArmor():Boolean
-		{
-			if (game.player.findPerk(PerkLib.ThickSkin) >= 0 || game.player.skin.hasFur() || game.player.skin.hasChitin() || game.player.skin.hasScales() || game.player.skin.hasBark() || game.player.skin.hasDragonScales() || game.player.skin.hasBaseOnly(SKIN_BASE_STONE))
-				return true;
-			return false;
+			return game.player.armorName == "nothing" && game.player.upperGarmentName == "nothing" && game.player.lowerGarmentName == "nothing";
 		}
 
 		//Crit immunity
 		public function isImmuneToCrits():Boolean
 		{
-			if (game.monster.findPerk(PerkLib.EnemyConstructType) >= 0)
-				return true;//potem inne typy wrogów dodać tutaj: goo, żywiołaki, rośliny, nieumarli/duchy
+			if (game.monster.findPerk(PerkLib.EnemyConstructType) >= 0 || game.monster.findPerk(PerkLib.EnemyPlantType) >= 0 || game.monster.findPerk(PerkLib.EnemyGooType) >= 0)
+				return true;//dodać inne typy wrogów: żywiołaki, nieumarli/duchy
 			return false;
+		}
+
+		//Eyes of the Hunter
+		public function whenEyesOfTheHunterActivates():Boolean
+		{
+			return (game.player.findPerk(PerkLib.EyesOfTheHunterNovice) >= 0 && game.player.sens >= 25 && (game.monster.findPerk(PerkLib.EnemyBeastOrAnimalMorphType) >= 0 || game.monster.findPerk(PerkLib.EnemyFeralType) >= 0 || game.monster.findPerk(PerkLib.EnemyConstructType) >= 0 || game.monster.findPerk(PerkLib.EnemyPlantType) >= 0 || game.monster.findPerk(PerkLib.EnemyGooType) >= 0
+					|| game.monster.findPerk(PerkLib.EnemyGigantType) >= 0 || game.monster.findPerk(PerkLib.EnemyGroupType) >= 0))
+                    || (game.player.findPerk(PerkLib.EyesOfTheHunterAdept) >= 0 && game.player.sens >= 50 && (game.monster.findPerk(PerkLib.EnemyGodType) >= 0 || game.monster.findPerk(PerkLib.EnemyBossType) >= 0 || game.monster.findPerk(PerkLib.DarknessNature) >= 0 || game.monster.findPerk(PerkLib.FireNature) >= 0 || game.monster.findPerk(PerkLib.IceNature) >= 0 || game.monster.findPerk(PerkLib.LightningNature) >= 0))
+                    || (game.player.findPerk(PerkLib.EyesOfTheHunterMaster) >= 0 && game.player.sens >= 75 && (game.monster.findPerk(PerkLib.DarknessVulnerability) >= 0 || game.monster.findPerk(PerkLib.FireVulnerability) >= 0 || game.monster.findPerk(PerkLib.IceVulnerability) >= 0 || game.monster.findPerk(PerkLib.LightningVulnerability) >= 0));
+		}
+		public function whenGeneralEnemyPerksDisplayed():Boolean
+		{
+			return (game.player.findPerk(PerkLib.EyesOfTheHunterNovice) >= 0 && game.player.sens >= 25 && (game.monster.findPerk(PerkLib.EnemyBeastOrAnimalMorphType) >= 0 || game.monster.findPerk(PerkLib.EnemyFeralType) >= 0 || game.monster.findPerk(PerkLib.EnemyConstructType) >= 0 || game.monster.findPerk(PerkLib.EnemyGroupType) >= 0 || game.monster.findPerk(PerkLib.EnemyGooType) >= 0
+					|| game.monster.findPerk(PerkLib.EnemyGigantType) >= 0 || game.monster.findPerk(PerkLib.EnemyPlantType) >= 0))
+                    || (game.player.findPerk(PerkLib.EyesOfTheHunterAdept) >= 0 && game.player.sens >= 50 && (game.monster.findPerk(PerkLib.EnemyGodType) >= 0 || game.monster.findPerk(PerkLib.EnemyBossType) >= 0));
+		}
+		public function whenElementalEnemyPerksDisplayed():Boolean
+		{
+			return (game.player.findPerk(PerkLib.EyesOfTheHunterAdept) >= 0 && game.player.sens >= 50 && (game.monster.findPerk(PerkLib.DarknessNature) >= 0 || game.monster.findPerk(PerkLib.FireNature) >= 0 || game.monster.findPerk(PerkLib.IceNature) >= 0 || game.monster.findPerk(PerkLib.LightningNature) >= 0))
+                    || (game.player.findPerk(PerkLib.EyesOfTheHunterMaster) >= 0 && game.player.sens >= 75 && (game.monster.findPerk(PerkLib.DarknessVulnerability) >= 0 || game.monster.findPerk(PerkLib.FireVulnerability) >= 0 || game.monster.findPerk(PerkLib.IceVulnerability) >= 0 || game.monster.findPerk(PerkLib.LightningVulnerability) >= 0));
 		}
 
 		//check for vagoo
@@ -2205,7 +2648,7 @@ package classes
 		public function manWoman(caps:Boolean = false):String
 		{
 			//Dicks?
-			if (totalCocks() > 0)
+			if (cockTotal() > 0)
 			{
 				if (hasVagina())
 				{
@@ -2255,12 +2698,12 @@ package classes
 		public function looksFemale():Boolean {
 			var tits:Number = biggestTitSize();
 			switch(gender) {
-				case GENDER_HERM:
-                case GENDER_NONE:
+				case Gender.GENDER_HERM:
+                case Gender.GENDER_NONE:
                     return ((tits >= 3 || tits == 2 && femininity >= 15 || tits == 1 && femininity >= 40 || femininity >= 65) && (flags[kFLAGS.MALE_OR_FEMALE] == 0 || flags[kFLAGS.MALE_OR_FEMALE] == 2));
-				case GENDER_MALE:
+				case Gender.GENDER_MALE:
                     return ((tits >= 3 && femininity >= 5 || tits == 2 && femininity >= 35 || tits == 1 && femininity >= 65 || femininity >= 95) && (flags[kFLAGS.MALE_OR_FEMALE] == 0 || flags[kFLAGS.MALE_OR_FEMALE] == 2));
-                case GENDER_FEMALE:
+                case Gender.GENDER_FEMALE:
                     return ((tits > 1 || tits == 1 && femininity >= 15 || femininity >= 45) && (flags[kFLAGS.MALE_OR_FEMALE] == 0 || flags[kFLAGS.MALE_OR_FEMALE] == 2));
 				default: return false;
 			}
@@ -2274,10 +2717,10 @@ package classes
 		public function maleFemaleHerm(caps:Boolean = false):String
 		{
 			switch (gender) {
-				case GENDER_NONE:   return caps ? mf("Genderless", "Fem-genderless") : mf("genderless", "fem-genderless");
-				case GENDER_MALE:   return caps ? mf("Male", biggestTitSize() > BREAST_CUP_A ? "Shemale" : "Femboy")             : mf("male", biggestTitSize() > BREAST_CUP_A ? "shemale" : "femboy");
-				case GENDER_FEMALE: return caps ? mf("Cuntboy", "Female")            : mf("cuntboy", "female");
-				case GENDER_HERM:   return caps ? mf("Maleherm", "Hermaphrodite")    : mf("maleherm", "hermaphrodite");
+				case Gender.GENDER_NONE:   return caps ? mf("Genderless", "Fem-genderless") : mf("genderless", "fem-genderless");
+				case Gender.GENDER_MALE:   return caps ? mf("Male", biggestTitSize() > BreastCup.A ? "Shemale" : "Femboy")             : mf("male", biggestTitSize() > BreastCup.A ? "shemale" : "femboy");
+				case Gender.GENDER_FEMALE: return caps ? mf("Cuntboy", "Female")            : mf("cuntboy", "female");
+				case Gender.GENDER_HERM:   return caps ? mf("Maleherm", "Hermaphrodite")    : mf("maleherm", "hermaphrodite");
 				default: return "<b>Gender error!</b>";
 			}
 		}
@@ -2287,7 +2730,7 @@ package classes
 		 */
 		public function isMale():Boolean
 		{
-			return gender == GENDER_MALE;
+			return gender == Gender.GENDER_MALE;
 		}
 		
 		/**
@@ -2295,7 +2738,7 @@ package classes
 		 */
 		public function isFemale():Boolean
 		{
-			return gender == GENDER_FEMALE;
+			return gender == Gender.GENDER_FEMALE;
 					}
 
 		/**
@@ -2303,7 +2746,7 @@ package classes
 		 */
 		public function isHerm():Boolean
 					{
-			return gender == GENDER_HERM;
+			return gender == Gender.GENDER_HERM;
 					}
 
 		/**
@@ -2311,7 +2754,7 @@ package classes
 		 */
 		public function isGenderless():Boolean
 				{
-			return gender == GENDER_NONE;
+			return gender == Gender.GENDER_NONE;
 				}
 
 		/**
@@ -2319,7 +2762,7 @@ package classes
 		 */
 		public function isMaleOrHerm():Boolean
 			{
-			return (gender & GENDER_MALE) != 0;
+			return (gender & Gender.GENDER_MALE) != 0;
 				}
 
 		/**
@@ -2327,7 +2770,7 @@ package classes
 		 */
 		public function isFemaleOrHerm():Boolean
 				{
-			return (gender & GENDER_FEMALE) != 0;
+			return (gender & Gender.GENDER_FEMALE) != 0;
 					}
 
 		//Create a cock. Default type is HUMAN
@@ -2531,10 +2974,10 @@ package classes
 		public function cuntChangeNoDisplay(cArea:Number):Boolean{
 			if(vaginas.length == 0) return false;
 			var stretched:Boolean = false;
-			if(findPerk(PerkLib.FerasBoonMilkingTwat) < 0 || vaginas[0].vaginalLooseness <= VAGINA_LOOSENESS_NORMAL) {
+			if(findPerk(PerkLib.FerasBoonMilkingTwat) < 0 || vaginas[0].vaginalLooseness <= VaginaClass.LOOSENESS_NORMAL) {
 			//cArea > capacity = autostreeeeetch.
 			if(cArea >= vaginalCapacity()) {
-				if(vaginas[0].vaginalLooseness >= VAGINA_LOOSENESS_LEVEL_CLOWN_CAR) {}
+				if(vaginas[0].vaginalLooseness >= VaginaClass.LOOSENESS_LEVEL_CLOWN_CAR) {}
 				else vaginas[0].vaginalLooseness++;
 				stretched = true;
 			}
@@ -2608,12 +3051,14 @@ package classes
 		public function hasLizardScales():Boolean { return skin.hasLizardScales(); }
 		public function hasNonLizardScales():Boolean { return skin.hasNonLizardScales(); }
 		public function hasFur():Boolean { return skin.hasFur(); }
+		public function hasChitin():Boolean { return skin.hasChitin(); }
+		public function hasFeather():Boolean { return skin.hasFeather(); }
 		public function hasMostlyPlainSkin():Boolean { return skin.hasMostlyPlainSkin(); }
 		public function hasPlainSkinOnly():Boolean { return skin.hasPlainSkinOnly(); }
 		public function hasPartialCoat(coat_type:int):Boolean { return skin.hasPartialCoat(coat_type); }
 		public function hasPlainSkin():Boolean { return skin.hasPlainSkin(); }
 		public function hasGooSkin():Boolean { return skin.hasGooSkin(); }
-		public function isGargoyle():Boolean { return skin.hasBaseOnly(SKIN_BASE_STONE); }
+		public function isGargoyle():Boolean { return skin.hasBaseOnly(Skin.STONE); }
 		public function skinDescript():String { return skin.describe('basic'); }
 		public function skinFurScales():String { return skin.describe('cover'); }
 
@@ -2632,41 +3077,46 @@ package classes
 		public function isTaur():Boolean { return lowerBodyPart.isTaur(); }
 		public function isScylla():Boolean { return lowerBodyPart.isScylla(); }
 		public function isAlraune():Boolean { return lowerBodyPart.isAlraune(); }
+		
+		public function isFlying():Boolean {
+			return hasStatusEffect(StatusEffects.Flying);
+		}
 
 		public function canOvipositSpider():Boolean
 		{
-			if (eggs() >= 10 && findPerk(PerkLib.SpiderOvipositor) >= 0 && isDrider() && tail.type == TAIL_TYPE_SPIDER_ADBOMEN)
-				return true;
-			return false;
+			return eggs() >= 10 && findPerk(PerkLib.SpiderOvipositor) >= 0 && isDrider() && tail.type == Tail.SPIDER_ADBOMEN;
 		}
 
 		public function canOvipositBee():Boolean
 		{
-			if (eggs() >= 10 && findPerk(PerkLib.BeeOvipositor) >= 0 && tail.type == TAIL_TYPE_BEE_ABDOMEN)
-				return true;
-			return false;
+			return eggs() >= 10 && findPerk(PerkLib.BeeOvipositor) >= 0 && tail.type == Tail.BEE_ABDOMEN;
+		}
+
+		public function canOvipositMantis():Boolean
+		{
+			return eggs() >= 10 && findPerk(PerkLib.MantisOvipositor) >= 0 && tail.type == Tail.MANTIS_ABDOMEN;
 		}
 
 		public function canOviposit():Boolean
 		{
-			if (canOvipositSpider() || canOvipositBee())
-				return true;
-			return false;
+			return canOvipositSpider() || canOvipositBee() || canOvipositMantis();
 		}
 
 		public function eggs():int
 		{
-			if (findPerk(PerkLib.SpiderOvipositor) < 0 && findPerk(PerkLib.BeeOvipositor) < 0)
+			if (findPerk(PerkLib.SpiderOvipositor) < 0 && findPerk(PerkLib.BeeOvipositor) < 0 && findPerk(PerkLib.MantisOvipositor) < 0)
 				return -1;
 			else if (findPerk(PerkLib.SpiderOvipositor) >= 0)
 				return perkv1(PerkLib.SpiderOvipositor);
-			else
+			else if (findPerk(PerkLib.BeeOvipositor) >= 0)
 				return perkv1(PerkLib.BeeOvipositor);
+			else
+				return perkv1(PerkLib.MantisOvipositor);
 		}
 
 		public function addEggs(arg:int = 0):int
 		{
-			if (findPerk(PerkLib.SpiderOvipositor) < 0 && findPerk(PerkLib.BeeOvipositor) < 0)
+			if (findPerk(PerkLib.SpiderOvipositor) < 0 && findPerk(PerkLib.BeeOvipositor) < 0 && findPerk(PerkLib.MantisOvipositor) < 0)
 				return -1;
 			else {
 				if (findPerk(PerkLib.SpiderOvipositor) >= 0) {
@@ -2675,18 +3125,24 @@ package classes
 						setPerkValue(PerkLib.SpiderOvipositor, 1, 50);
 					return perkv1(PerkLib.SpiderOvipositor);
 				}
-				else {
+				else if (findPerk(PerkLib.BeeOvipositor) >= 0) {
 					addPerkValue(PerkLib.BeeOvipositor, 1, arg);
 					if (eggs() > 50)
 						setPerkValue(PerkLib.BeeOvipositor, 1, 50);
 					return perkv1(PerkLib.BeeOvipositor);
+				}
+				else {
+					addPerkValue(PerkLib.MantisOvipositor, 1, arg);
+					if (eggs() > 50)
+						setPerkValue(PerkLib.MantisOvipositor, 1, 50);
+					return perkv1(PerkLib.MantisOvipositor);
 				}
 			}
 		}
 
 		public function dumpEggs():void
 		{
-			if (findPerk(PerkLib.SpiderOvipositor) < 0 && findPerk(PerkLib.BeeOvipositor) < 0)
+			if (findPerk(PerkLib.SpiderOvipositor) < 0 && findPerk(PerkLib.BeeOvipositor) < 0 && findPerk(PerkLib.MantisOvipositor) < 0)
 				return;
 			setEggs(0);
 			//Sets fertile eggs = regular eggs (which are 0)
@@ -2695,7 +3151,7 @@ package classes
 
 		public function setEggs(arg:int = 0):int
 		{
-			if (findPerk(PerkLib.SpiderOvipositor) < 0 && findPerk(PerkLib.BeeOvipositor) < 0)
+			if (findPerk(PerkLib.SpiderOvipositor) < 0 && findPerk(PerkLib.BeeOvipositor) < 0 && findPerk(PerkLib.MantisOvipositor) < 0)
 				return -1;
 			else {
 				if (findPerk(PerkLib.SpiderOvipositor) >= 0) {
@@ -2704,33 +3160,43 @@ package classes
 						setPerkValue(PerkLib.SpiderOvipositor, 1, 50);
 					return perkv1(PerkLib.SpiderOvipositor);
 				}
-				else {
+				else if (findPerk(PerkLib.BeeOvipositor) >= 0) {
 					setPerkValue(PerkLib.BeeOvipositor, 1, arg);
 					if (eggs() > 50)
 						setPerkValue(PerkLib.BeeOvipositor, 1, 50);
 					return perkv1(PerkLib.BeeOvipositor);
+				}
+				else {
+					setPerkValue(PerkLib.MantisOvipositor, 1, arg);
+					if (eggs() > 50)
+						setPerkValue(PerkLib.MantisOvipositor, 1, 50);
+					return perkv1(PerkLib.MantisOvipositor);
 				}
 			}
 		}
 
 		public function fertilizedEggs():int
 		{
-			if (findPerk(PerkLib.SpiderOvipositor) < 0 && findPerk(PerkLib.BeeOvipositor) < 0)
+			if (findPerk(PerkLib.SpiderOvipositor) < 0 && findPerk(PerkLib.BeeOvipositor) < 0 && findPerk(PerkLib.MantisOvipositor) < 0)
 				return -1;
 			else if (findPerk(PerkLib.SpiderOvipositor) >= 0)
 				return perkv2(PerkLib.SpiderOvipositor);
-			else
+			else if (findPerk(PerkLib.BeeOvipositor) >= 0)
 				return perkv2(PerkLib.BeeOvipositor);
+			else
+				return perkv2(PerkLib.MantisOvipositor);
 		}
 
 		public function fertilizeEggs():int
 		{
-			if (findPerk(PerkLib.SpiderOvipositor) < 0 && findPerk(PerkLib.BeeOvipositor) < 0)
+			if (findPerk(PerkLib.SpiderOvipositor) < 0 && findPerk(PerkLib.BeeOvipositor) < 0 && findPerk(PerkLib.MantisOvipositor) < 0)
 				return -1;
 			else if (findPerk(PerkLib.SpiderOvipositor) >= 0)
 				setPerkValue(PerkLib.SpiderOvipositor, 2, eggs());
-			else
+			else if (findPerk(PerkLib.BeeOvipositor) >= 0)
 				setPerkValue(PerkLib.BeeOvipositor, 2, eggs());
+			else
+				setPerkValue(PerkLib.MantisOvipositor, 2, eggs());
 			return fertilizedEggs();
 		}
 
@@ -2895,9 +3361,8 @@ package classes
 				if (breastRows[index].breasts < breastRows[counter].breasts && breastRows[counter].breastRating > 3)
 					index = counter;
 			}
-			if (breastRows[index].breasts >= 2 && breastRows[index].breastRating > 3)
-				return true;
-			return false;
+			return breastRows[index].breasts >= 2 && breastRows[index].breastRating > 3;
+
 		}
 
 		public function mostBreastsPerRow():Number
@@ -3176,96 +3641,111 @@ package classes
 		 * Echidna 1 ft long (i'd consider it barely qualifying), demonic 2 ft long, draconic 4 ft long
 		 */
 		public function hasLongTongue():Boolean {
-			return tongueType == TONGUE_DEMONIC || tongueType == TONGUE_DRACONIC || tongueType == TONGUE_ECHIDNA;
+			return tongue.type == Tongue.DEMONIC || tongue.type == Tongue.DRACONIC || tongue.type == Tongue.ECHIDNA;
+		}
+		
+		public function hairOrFur():String
+		{
+			return Appearance.hairOrFur(this);
+		}
+		
+		public function hairDescript():String
+		{
+			return Appearance.hairDescription(this);
+		}
+		
+		public function beardDescript():String
+		{
+			return Appearance.beardDescription(this);
+		}
+		
+		public function hipDescript():String
+		{
+			return Appearance.hipDescription(this);
+		}
+		
+		public function assDescript():String
+		{
+			return buttDescript();
+		}
+		
+		public function buttDescript():String
+		{
+			return Appearance.buttDescription(this);
+		}
+		
+		public function tongueDescript():String
+		{
+			return Appearance.tongueDescription(this);
+		}
+		
+		public function hornDescript():String
+		{
+			return Appearance.DEFAULT_HORNS_NAMES[horns.type] + " _horns";
+		}
+		
+		public function tailDescript():String
+		{
+			return Appearance.tailDescript(this);
+		}
+		
+		public function oneTailDescript():String
+		{
+			return Appearance.oneTailDescript(this);
+		}
+		
+		public function wingsDescript():String
+		{
+			return Appearance.wingsDescript(this);
+		}
+		
+		public function eyesDescript():String
+		{
+			return Appearance.eyesDescript(this);
+		}
+		
+		public function earsDescript():String
+		{
+			return Appearance.earsDescript(this);
 		}
 
-		public function damageToughnessModifier(displayMode:Boolean = false):Number {
-			var temp:Number = 0;
-			if (tou < 25) temp = (tou * 0.4);
-			else if (tou < 50) temp = 10 + ((tou-25) * 0.3);
-			else if (tou < 75) temp = 17.5 + ((tou-50) * 0.2);
-			else if (tou < 100) temp = 22.5 + ((tou-75) * 0.1);
-			else temp = 25;
-			//displayMode is for stats screen.
-			if (displayMode) return temp;
-			else return rand(temp);
-		}
-
-		public function damagePercent(displayMode:Boolean = false, applyModifiers:Boolean = false):Number {
+		public function damagePercent():Number {
 			var mult:Number = 100;
-			var armorMod:Number = armorDef;
-			//--BASE--
-			//Toughness modifier.
-			if (!displayMode) {
-				mult -= damageToughnessModifier();
-				if (mult < 75) mult = 75;
-			}
-			//Modify armor rating based on weapons.
-			if (applyModifiers) {
-				if (game.player.weapon == game.weapons.JRAPIER || game.player.weapon == game.weapons.SPEAR || game.player.weapon == game.weapons.LANCE || game.player.weaponName.indexOf("staff") != -1 && game.player.findPerk(PerkLib.StaffChanneling) >= 0) armorMod = 0;
-				if (game.player.weapon == game.weapons.KATANA) armorMod -= 5;
-				if (game.player.findPerk(PerkLib.LungingAttacks) >= 0) armorMod /= 2;
-				if (armorMod < 0) armorMod = 0;
-			}
-			mult -= armorMod;
-
-			//--PERKS--
-			//Take damage you masochist!
-			if (findPerk(PerkLib.Masochist) >= 0 && lib >= 60) {
-				mult *= 0.8;
-				if (short == game.player.short && !displayMode) game.dynStats("lus", (2 * (1 + game.player.newGamePlusMod())));
-			}
-			if (findPerk(PerkLib.FenrirSpikedCollar) >= 0) {
-				mult *= 0.85;
-			}
-			if (findPerk(PerkLib.Juggernaut) >= 0 && tou >= 100 && armorPerk == "Heavy") {
-				mult *= 0.9;
-			}
-			if (findPerk(PerkLib.ImmovableObject) >= 0 && tou >= 75) {
-				mult *= 0.9;
-			}
-			if (findPerk(PerkLib.AyoArmorProficiency) >= 0 && tou >= 75 && armorPerk == "Ayo") {
-				mult *= 0.9;
-			}
-			if (findPerk(PerkLib.HeavyArmorProficiency) >= 0 && tou >= 75 && armorPerk == "Heavy") {
-				mult *= 0.9;
-			}
-			if (findPerk(PerkLib.ShieldHarmony) >= 0 && tou >= 100 && shieldName != "nothing" && !hasStatusEffect(StatusEffects.Stunned)) {
-				mult *= 0.9;
-			}
-			if (findPerk(PerkLib.NakedTruth) >= 0 && spe >= 75 && lib >= 60 && (armorName == "arcane bangles" || armorName == "practically indecent steel armor" || armorName == "revealing chainmail bikini" || armorName == "slutty swimwear" || armorName == "barely-decent bondage straps" || armorName == "nothing")) {
-				mult *= 0.9;
-			}
-
-			//--STATUS AFFECTS--
-			//Black cat beer = 25% reduction!
-			if (statusEffectv1(StatusEffects.BlackCatBeer) > 0) {
-				mult *= 0.75;
-			}
-			if (statusEffectv1(StatusEffects.OniRampage) > 0) {
-				mult *= 0.8;
-			}
-			//Defend = 50-(99)% reduction
-			if (hasStatusEffect(StatusEffects.Defend)) {
-				if (findPerk(PerkLib.DefenceStance) >= 0 && tou >= 80) {
-					if (findPerk(PerkLib.MasteredDefenceStance) >= 0 && tou >= 120) {
-						if (findPerk(PerkLib.PerfectDefenceStance) >= 0 && tou >= 160) mult *= 0.05;
-						else mult *= 0.25;
-					}
-					else mult *= 0.4;
-				}
-				else mult *= 0.5;
-			}
-			// Uma's Massage bonuses
-			var sac:StatusEffectClass = statusEffectByType(StatusEffects.UmasMassage);
-			if (sac && sac.value1 == UmasShop.MASSAGE_RELAXATION) {
-				mult *= sac.value2;
-			}
-			//Round things off.
-			mult = Math.round(mult);
-			//Caps damage reduction at 95/99%.
-			if (hasStatusEffect(StatusEffects.Defend) && findPerk(PerkLib.PerfectDefenceStance) >= 0 && tou >= 160 && mult < 1) mult = 1;
-			if (!hasStatusEffect(StatusEffects.Defend) && mult < 5) mult = 5;
+			return mult;
+		}
+		
+		public function damageRangePercent():Number {
+			var mult:Number = 100;
+			return mult;
+		}
+		
+		public function damageMagicalPercent():Number {
+			var mult:Number = 100;
+			return mult;
+		}
+		
+		public function damageFirePercent():Number {
+			var mult:Number = 100;
+			return mult;
+		}
+		
+		public function damageIcePercent():Number {
+			var mult:Number = 100;
+			return mult;
+		}
+		
+		public function damageLightningPercent():Number {
+			var mult:Number = 100;
+			return mult;
+		}
+		
+		public function damageDarknessPercent():Number {
+			var mult:Number = 100;
+			return mult;
+		}
+		
+		public function damagePoisonPercent():Number {
+			var mult:Number = 100;
 			return mult;
 		}
 
@@ -3275,13 +3755,45 @@ package classes
 		public function getEvasionChance():Number
 		{
 			var chance:Number = 0;
-			if (findPerk(PerkLib.Evade) >= 0) chance += 10;
+			var flychance:Number = 20;
+			if (findPerk(PerkLib.AdvancedAerialCombat) >= 0) flychance += 5;
+			if (findPerk(PerkLib.GreaterAerialCombat) >= 0) flychance += 15;
+			if (findPerk(PerkLib.Evade) >= 0) {
+				chance += 5;
+				flychance += 5;
+				if (findPerk(PerkLib.ImprovedEvade) >= 0) {
+					chance += 10;
+					flychance += 10;
+				}
+				if (findPerk(PerkLib.GreaterEvade) >= 0) {
+					chance += 15;
+					flychance += 15;
+				}
+				if (findPerk(PerkLib.JobRogue) >= 0) {
+					chance += 5;
+					flychance += 5;
+				}
+				if (findPerk(PerkLib.Spectre) >= 0 && findPerk(PerkLib.Incorporeality) >= 0) {
+					chance += 10;
+					flychance += 10;
+				}
+			}
 			if (findPerk(PerkLib.Flexibility) >= 0) chance += 6;
 			if (findPerk(PerkLib.Misdirection) >= 0 && armorName == "red, high-society bodysuit") chance += 10;
-			if (findPerk(PerkLib.Unhindered) >= 0 && (armorName == "arcane bangles" || armorName == "practically indecent steel armor" || armorName == "revealing chainmail bikini" || armorName == "slutty swimwear" || armorName == "barely-decent bondage straps" || armorName == "nothing")) chance += 10;
-			if (hasStatusEffect(StatusEffects.Illusion)) chance += 10;
-			if (hasStatusEffect(StatusEffects.Flying)) chance += 20;
+			//if (findPerk(PerkLib.Unhindered) >= 0 && meetUnhinderedReq()) chance += 10;
+			if (findPerk(PerkLib.Unhindered) >= 0 && (game.player.armorName == "arcane bangles" || game.player.armorName == "practically indecent steel armor" || game.player.armorName == "revealing chainmail bikini" || game.player.armorName == "slutty swimwear" || game.player.armorName == "barely-decent bondage straps" || game.player.armorName == "nothing")) chance += 10;
+			if (findPerk(PerkLib.JunglesWanderer) >= 0) chance += 35;
+			if (hasStatusEffect(StatusEffects.Illusion)) {
+				if (findPerk(PerkLib.KitsuneThyroidGlandFinalForm) >= 0) chance += 20;
+				else chance += 10;
+			}
+			if (hasStatusEffect(StatusEffects.Flying)) chance += flychance;
+			if (hasStatusEffect(StatusEffects.HurricaneDance)) chance += 25;
 			if (hasStatusEffect(StatusEffects.BladeDance)) chance += 30;
+			if (game.player.cheshireScore() >= 11) {
+				if (hasStatusEffect(StatusEffects.EverywhereAndNowhere)) chance += 80;
+				else chance += 30;
+			}
 			return chance;
 		}
 
@@ -3290,8 +3802,10 @@ package classes
 		public const EVASION_FLEXIBILITY:String = "Flexibility";
 		public const EVASION_MISDIRECTION:String = "Misdirection";
 		public const EVASION_UNHINDERED:String = "Unhindered";
+		public const EVASION_JUNGLESWANDERER:String = "Jungle's Wanderer";
 		public const EVASION_ILLUSION:String = "Illusion";
-		public const EVASION_FLYING:String = "Illusion";
+		public const EVASION_FLYING:String = "Flying";
+		public const EVASION_CHESHIRE_PHASING:String = "Phasing";
 
 		/**
 	    * Try to avoid and @return a reason if successfull or null if failed to evade.
@@ -3306,18 +3820,32 @@ package classes
 			if (useMonster && game.monster != null && attackSpeed == int.MIN_VALUE) attackSpeed = game.monster.spe;
 			if (attackSpeed != int.MIN_VALUE && spe - attackSpeed > 0 && int(Math.random() * (((spe - attackSpeed) / 4) + 80)) > 80) return "Speed";
 			//note, Player.speedDodge is still used, since this function can't return how close it was
-
 			var roll:Number = rand(100);
-
+			var generalevasion:Number = 0;
+			var flyeavsion:Number = 20;
+			if (findPerk(PerkLib.Evade) >= 0) generalevasion += 5;
+			if (findPerk(PerkLib.ImprovedEvade) >= 0) generalevasion += 10;
+			if (findPerk(PerkLib.GreaterEvade) >= 0) generalevasion += 15;
+			if (findPerk(PerkLib.JobRogue) >= 0) generalevasion += 5;
+			if (findPerk(PerkLib.Spectre) >= 0 && findPerk(PerkLib.Incorporeality) >= 0) generalevasion += 10;
+			if (generalevasion > 0) flyeavsion += generalevasion;
+			if (findPerk(PerkLib.AdvancedAerialCombat) >= 0) flyeavsion += 5;
+			if (findPerk(PerkLib.GreaterAerialCombat) >= 0) flyeavsion += 15;
 			// perks
-			if (findPerk(PerkLib.Evade) >= 0 && (roll < 10))
-			return "Evade";
+			if (findPerk(PerkLib.Evade) >= 0 && (roll < generalevasion)) return "Evade";
 			if (findPerk(PerkLib.Flexibility) >= 0 && (roll < 6)) return "Flexibility";
 			if (findPerk(PerkLib.Misdirection) >= 0 && armorName == "red, high-society bodysuit" && (roll < 10)) return "Misdirection";
-			if (findPerk(PerkLib.Unhindered) >= 0 && (armorName == "arcane bangles" || armorName == "practically indecent steel armor" || armorName == "revealing chainmail bikini" || armorName == "slutty swimwear" || armorName == "barely-decent bondage straps" || armorName == "nothing") && (roll < 10)) return "Unhindered";
-			if (hasStatusEffect(StatusEffects.Illusion) && (roll < 10)) return "Illusion";
-			if (hasStatusEffect(StatusEffects.Flying) && (roll < 20)) return "Flying";
+			//if (findPerk(PerkLib.Unhindered) >= 0 && meetUnhinderedReq() && (roll < 10)) return "Unhindered";
+			if (findPerk(PerkLib.Unhindered) >= 0 && (game.player.armorName == "arcane bangles" || game.player.armorName == "practically indecent steel armor" || game.player.armorName == "revealing chainmail bikini" || game.player.armorName == "slutty swimwear" || game.player.armorName == "barely-decent bondage straps" || game.player.armorName == "nothing") && (roll < 10)) return "Unhindered";
+			if (findPerk(PerkLib.JunglesWanderer) >= 0 && (roll < 35)) return "Jungle's Wanderer";
+			if (hasStatusEffect(StatusEffects.Illusion)) {
+				if (findPerk(PerkLib.KitsuneThyroidGlandFinalForm) >= 0 && roll < 20) return "Illusion";
+				else if (roll < 10) return "Illusion";
+			}
+			if (hasStatusEffect(StatusEffects.Flying) && (roll < flyeavsion)) return "Flying";
+			if (hasStatusEffect(StatusEffects.HurricaneDance) && (roll < 25)) return "Hurricane Dance";
 			if (hasStatusEffect(StatusEffects.BladeDance) && (roll < 30)) return "Blade Dance";
+			if (game.player.cheshireScore() >= 11 && ((!hasStatusEffect(StatusEffects.EverywhereAndNowhere) && (roll < 30)) || (hasStatusEffect(StatusEffects.EverywhereAndNowhere) && (roll < 80)))) return "Phasing";
 			return null;
 		}
 
@@ -3329,5 +3857,127 @@ package classes
 		public function get vagorass():IOrifice {
 			return hasVagina() ? vaginas[0] : ass;
 		}
+		
+		
+		// returns OLD OP VAL
+		public static function applyOperator(old:Number, op:String, val:Number):Number {
+			switch(op) {
+				case "=":
+					return val;
+				case "+":
+					return old + val;
+				case "-":
+					return old - val;
+				case "*":
+					return old * val;
+				case "/":
+					return old / val;
+				default:
+					trace("applyOperator(" + old + ",'" + op + "'," + val + ") unknown op");
+					return old;
+			}
+		}
+		/**
+		 * Generate increments for stats
+		 *
+		 * @return Object of (newStat-oldStat) with keys str, tou, spe, inte, wis, lib, sens, lust, cor
+		 * and flags scale, max
+		 * */
+		public static function parseDynStatsArgs(c:Creature, args:Array):Object {
+			// Check num of args, we should have a multiple of 2
+			if ((args.length % 2) != 0)
+			{
+				trace("dynStats aborted. Keys->Arguments could not be matched");
+				return {str:0,tou:0,spe:0,inte:0,wis:0,lib:0,sens:0,lust:0,cor:0,scale:true};
+			}
+			var argDefs:Object = { //[value, operator]
+				str: [ 0, "+"],
+				tou: [ 0, "+"],
+				spe: [ 0, "+"],
+				int: [ 0, "+"],
+				wis: [ 0, "+"],
+				lib: [ 0, "+"],
+				sen: [ 0, "+"],
+				lus: [ 0, "+"],
+				cor: [ 0, "+"],
+				scale: [ true, "="],
+				max: [ true, "="]
+			};
+			var aliases:Object = {
+				"strength":"str",
+				"toughness": "tou",
+				"speed": "spe",
+				"intellect": "int",
+				"inte": "int",
+				"libido": "lib",
+				"sensitivity": "sen",
+				"sens": "sen",
+				"lust": "lus",
+				"corruption": "cor",
+				"sca": "scale",
+				"scaled": "scale",
+				"res": "scale",
+				"resisted": "scale",
+				"wisdom": "wis"
+			};
+			
+			for (var i:int = 0; i < args.length; i += 2)
+			{
+				if (typeof(args[i]) == "string")
+				{
+					// Make sure the next arg has the POSSIBILITY of being correct
+					if ((typeof(args[i + 1]) != "number") && (typeof(args[i + 1]) != "boolean"))
+					{
+						trace("dynStats aborted. Next argument after argName is invalid! arg is type " + typeof(args[i + 1]));
+						continue;
+					}
+					var argOp:String = "";
+					// Figure out which array to search
+					var argsi:String = (args[i] as String);
+					if ("+-*/=".indexOf(argsi.charAt(argsi.length - 1)) != -1) {
+						argOp = argsi.charAt(argsi.length - 1);
+						argsi = argsi.slice(0, argsi.length - 1);
+					}
+					if (argsi in aliases) argsi = aliases[argsi];
+					
+					if (argsi in argDefs) {
+						argDefs[argsi][0] = args[i + 1];
+						if (argOp) argDefs[argsi][1] = argOp;
+					} else {
+						trace("Couldn't find the arg name " + argsi + " in the index arrays. Welp!");
+					}
+				}
+				else
+				{
+					trace("dynStats aborted. Expected a key and got SHIT");
+				}
+			}
+			// Got this far, we have values to statsify
+			var newStr:Number = applyOperator(c.str, argDefs.str[1], argDefs.str[0]);
+			var newTou:Number = applyOperator(c.tou, argDefs.tou[1], argDefs.tou[0]);
+			var newSpe:Number = applyOperator(c.spe, argDefs.spe[1], argDefs.spe[0]);
+			var newInte:Number = applyOperator(c.inte, argDefs.int[1], argDefs.int[0]);
+			var newWis:Number = applyOperator(c.wis, argDefs.wis[1], argDefs.wis[0]);
+			var newLib:Number = applyOperator(c.lib, argDefs.lib[1], argDefs.lib[0]);
+			var newSens:Number = applyOperator(c.sens, argDefs.sen[1], argDefs.sen[0]);
+			var newLust:Number = applyOperator(c.lust, argDefs.lus[1], argDefs.lus[0]);
+			var newCor:Number = applyOperator(c.cor, argDefs.cor[1], argDefs.cor[0]);
+			// Because lots of checks and mods are made in the stats(), calculate deltas and pass them. However, this means that the '=' operator could be resisted
+			// In future (as I believe) stats() should be replaced with dynStats(), and checks and mods should be made here
+			return {
+				str     : newStr - c.str,
+				tou     : newTou - c.tou,
+				spe     : newSpe - c.spe,
+				inte    : newInte - c.inte,
+				wis     : newWis - c.wis,
+				lib     : newLib - c.lib,
+				sens    : newSens - c.sens,
+				lust    : newLust - c.lust,
+				cor     : newCor - c.cor,
+				scale   : argDefs.scale[0],
+				max     : argDefs.max[0]
+			};
+		}
 	}
 }
+

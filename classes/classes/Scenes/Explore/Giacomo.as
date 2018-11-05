@@ -24,14 +24,15 @@ As Fenoxo has made his game code open source, this license DOES NOT transfer to 
 For further information and license requests, Dxasmodeus may be contacted through private message at the Futanari Palace. http://www.futanaripalace.com/forum.php. */
 
 package classes.Scenes.Explore {
-	import classes.*;
-	import classes.GlobalFlags.kFLAGS;
-	import classes.GlobalFlags.kGAMECLASS;
+import classes.*;
+import classes.GlobalFlags.kFLAGS;
+import classes.CoC;
+import classes.Scenes.SceneLib;
 
-	public class Giacomo extends BaseContent implements TimeAwareInterface {
+public class Giacomo extends BaseContent implements TimeAwareInterface {
 
 		public function Giacomo() {
-			CoC.timeAwareClassAdd(this);
+			EventParser.timeAwareClassAdd(this);
 		}
 		
 		private var checkedSuccubi:int;
@@ -49,9 +50,9 @@ package classes.Scenes.Explore {
 		public function timeChangeLarge():Boolean {
 			if (checkedSuccubi++ == 0 && model.time.hours == 4 && player.hasStatusEffect(StatusEffects.SuccubiNight) && (player.hasCock() || player.gender == 0)) { //Call secksins!
 				if (player.hasStatusEffect(StatusEffects.RepeatSuccubi)) {
-					if (getGame().vapula.vapulaSlave() && player.hasCock() && flags[kFLAGS.VAPULA_THREESOMES] > 0 && flags[kFLAGS.FOLLOWER_AT_FARM_VAPULA] == 0) //VapulaSurprise
-						getGame().vapula.vapulaAssistsCeruleanSuccubus();
-					else nightSuccubiRepeat(); //Normal night succubi shit
+                    if (SceneLib.vapula.vapulaSlave() && player.hasCock() && flags[kFLAGS.VAPULA_THREESOMES] > 0 && flags[kFLAGS.FOLLOWER_AT_FARM_VAPULA] == 0) //VapulaSurprise
+                        SceneLib.vapula.vapulaAssistsCeruleanSuccubus();
+                    else nightSuccubiRepeat(); //Normal night succubi shit
 				}
 				else {
 					nightSuccubiFirstTime();
@@ -70,7 +71,7 @@ package classes.Scenes.Explore {
 		public function giacomoEncounter():void {
 			spriteSelect(23);
 			clearOutput();
-			if (kGAMECLASS.giacomo == 0) {
+			if (flags[kFLAGS.GIACOMO_MET] == 0) {
 				firstEncounter();
 			}
 			else if (!player.hasStatusEffect(StatusEffects.WormOffer) && player.hasStatusEffect(StatusEffects.Infested)) { //If infested && no worm offer yet
@@ -96,6 +97,11 @@ package classes.Scenes.Explore {
 				outputText("Giacomo's grin is nothing short of creepy as he offers his wares to you. What are you interested in?");
 			}
 			//var deworm:Function = (player.hasStatusEffect(StatusEffects.WormOffer) && player.hasStatusEffect(StatusEffects.Infested) ? wormRemovalOffer : null);
+			if (player.findPerk(PerkLib.SoulSense) >= 0 && flags[kFLAGS.SOUL_SENSE_GIACOMO] < 2) flags[kFLAGS.SOUL_SENSE_GIACOMO]++;
+			if (flags[kFLAGS.SOUL_SENSE_GIACOMO] == 2) {
+				flags[kFLAGS.SOUL_SENSE_GIACOMO]++;
+				outputText("\n\n<b>You have meet him enough times to be able to find him in the future when using soul sense. (Removes Giacomo from general explore encounters pool!)</b>\n\n");
+			}
 			menu();
 			addButton(0, "Potions", potionMenu);
 			addButton(1, "Books", bookMenu);
@@ -113,7 +119,7 @@ package classes.Scenes.Explore {
 			outputText("Giacomo pauses and turns his head in both directions in a mocking gesture of paranoid observation.  His little bit of theatrics does make you wonder what he is about to offer.\n");
 			outputText("\"<i>...maybe you would be interested in some items that enhance the pleasures of the flesh?  Hmmm?</i>\"\n\n");
 			outputText("Giacomo's grin is nothing short of creepy as he offers his wares to you.  What are you interested in?");
-			kGAMECLASS.giacomo = 1;
+			flags[kFLAGS.GIACOMO_MET] = 1;
 		}
 		
 		private function potionMenu():void {
@@ -902,7 +908,7 @@ package classes.Scenes.Explore {
 					outputText("  As the reality soaks in, you feel a sharp pain in your stomach and your cock. You NEED to feed. Cum, milk, it doesn't matter. Likewise, your dick is hard and you need to cum. Despite your need, you cannot bring yourself to masturbate. You want ANOTHER'S attention.\n\n");
 		
 					outputText("Without further acknowledgement, you take up your on your demonic wings to find your first \"meal\". The Succubus left behind simply giggles as she sees another of her kind take up the night in search for more meals and pleasure.");
-					getGame().gameOver();
+					EventParser.gameOver();
 					return;
 				}
 				else {

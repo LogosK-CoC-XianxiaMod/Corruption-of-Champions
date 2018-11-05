@@ -1,9 +1,9 @@
 ﻿package classes.Scenes.NPCs{
-	import classes.*;
-	import classes.GlobalFlags.kFLAGS;
-	import classes.Scenes.UniqueSexScenes;
+import classes.*;
+import classes.GlobalFlags.kFLAGS;
+import classes.Scenes.UniqueSexScenes;
 
-	public class HolliScene extends NPCAwareContent {
+public class HolliScene extends NPCAwareContent {
 
 	public var uniquuuesexscene:UniqueSexScenes = new UniqueSexScenes();
 	
@@ -286,7 +286,7 @@ public function fuckPlantGrowsToLevel2():void {
 	outputText("  Is this Marae's idea of a gift?");
 	if(player.gender > 0) outputText("  Well, you could give it a whirl... just being around it seems to slowly turn you on.");
 	outputText("  Of course, destroying it would be the safest option.");
-	dynStats("lus", 33, "resisted", false);
+	dynStats("lus", 33, "scale", false);
 	if(silly()) outputText("\n\n<b>What do?</b>");
 	else outputText("\n\n<b>What do you do?</b>");
 	//[Fuck It] [Ride Stamen] [Do Nothing] [Destroy It]
@@ -503,9 +503,10 @@ private function rideTheWalrusP3():void {
 	//{- big sensitivity loss, big libido gain, minus lust}
 	player.orgasm();
 	dynStats("lib", 1, "sen", -5);
+	if (player.isGargoyle() && player.hasPerk(PerkLib.GargoyleCorrupted)) player.refillGargoyleHunger(30);
 	if(flags[kFLAGS.FUCK_FLOWER_GROWTH_COUNTER] < 1000) flags[kFLAGS.FUCK_FLOWER_GROWTH_COUNTER] += 5;
-	flags[kFLAGS.TIMES_RIDDEN_FLOWER]++;;
-	flags[kFLAGS.HOLLI_FUCKED_TODAY] = 1;
+    flags[kFLAGS.TIMES_RIDDEN_FLOWER]++;
+    flags[kFLAGS.HOLLI_FUCKED_TODAY] = 1;
 	doNext(camp.returnToCampUseOneHour);
 }
 
@@ -765,6 +766,7 @@ private function level4RideHollisTentacruels():void {
 	if(!player.isBiped()) outputText("you'd be walking bowlegged for a week, if you had legs.");
 	else outputText("you'll be walking bowlegged for a week!");
 	//empty lust, boost corruption, slimefeed(), +1 cor, -3 sens, +.5 libido
+	if (player.isGargoyle() && player.hasPerk(PerkLib.GargoyleCorrupted)) player.refillGargoyleHunger(30);
 	player.orgasm();
 	dynStats("lib", .5, "sen", 2, "cor", 1);
 	fertilizeHolli(false);
@@ -790,17 +792,17 @@ private function eatHolliFruit():void {
 	//TF CHANCES
 	if(rand(2) == 0 && player.cockTotal() > player.tentacleCocks()) {
 		var choices:Array = [];
-		temp = 0;
-		while(temp < player.cockTotal()) {
-			if(player.cocks[temp].cockType != CockTypesEnum.TENTACLE) choices[choices.length] = temp;
-			temp++;
+		var i:int = 0;
+		while(i < player.cockTotal()) {
+			if(player.cocks[i].cockType != CockTypesEnum.TENTACLE) choices[choices.length] = i;
+			i++;
 		}
-		temp = choices[rand(choices.length)];
-		outputText("\n\nYour " + num2Text2(temp+1) + " penis itches, and you idly scratch at it.  As you do, it begins to grow longer and longer, all the way to the ground before you realize something is wrong.  You pull open your [armor] and look down, discovering your " + cockDescript(temp) + " has become a tentacle!  As you watch, it shortens back up; it's colored green except for a purplish head, and evidence seems to suggest you can make it stretch out at will.  <b>You now have a");
+		i = choices[rand(choices.length)];
+		outputText("\n\nYour " + num2Text2(i+1) + " penis itches, and you idly scratch at it.  As you do, it begins to grow longer and longer, all the way to the ground before you realize something is wrong.  You pull open your [armor] and look down, discovering your " + cockDescript(i) + " has become a tentacle!  As you watch, it shortens back up; it's colored green except for a purplish head, and evidence seems to suggest you can make it stretch out at will.  <b>You now have a");
 		if(player.tentacleCocks() > 0) outputText("nother");
 		outputText(" tentacle-cock!</b>");
-		player.cocks[temp].cockType = CockTypesEnum.TENTACLE;
-		player.cocks[temp].knotMultiplier = 1.3;
+		player.cocks[i].cockType = CockTypesEnum.TENTACLE;
+		player.cocks[i].knotMultiplier = 1.3;
 		dynStats("sen", 3, "lus", 10);
 	}
 	flags[kFLAGS.HOLLI_FRUIT]--;
@@ -865,7 +867,7 @@ private function domUpSomeHolli():void {
 	outputText("\n\nSlapping your palm down on the other side, you look her right in her oddly gold and black eyes and tell her in no uncertain terms that she is going to serve and service you at your slightest whim.  Any choice she thinks she has is nothing more than an illusion.");
 	var domPowah:Number = player.level;
 	domPowah += player.tallness/12;
-	if(player.horns > 0) domPowah += 3;
+	if(player.horns.count > 0) domPowah += 3;
 	if(player.cor > 66) domPowah += 2;
 	//{fail} 
 	if(domPowah < 20) {
@@ -1057,7 +1059,7 @@ private function threatenHolli():void {
 	else outputText("Marae is likely beyond your power yet, but... you feel like she might not pressure you too hard if you can make a suitably credible threat.");
 	outputText("\n\n\"<i>Now, I hope you rest well in the knowledge that I'm going to stay firmly in my tree, no matter what.  Watching the vermin of this land walk over your bedroll while you try to sleep will be suitable recompense for your rudeness.</i>\"");
 	//[(kid a, thorn canopy, or other non-jojo watch is on)
-	if((player.gender > 0 && player.hasStatusEffect(StatusEffects.JojoNightWatch) && player.hasStatusEffect(StatusEffects.PureCampJojo)) || flags[kFLAGS.ANEMONE_WATCH] > 0) {
+	if((player.gender > 0 && player.hasStatusEffect(StatusEffects.JojoNightWatch) && player.hasStatusEffect(StatusEffects.PureCampJojo)) || flags[kFLAGS.ANEMONE_WATCH] > 0 || flags[kFLAGS.CAMP_UPGRADES_MAGIC_WARD] > 2) {
 		outputText("\n\nYeah, whatever.  She'll be waiting a while for that; you've got your back covered.  With a dismissive, pointed gesture, you leave the smug arboreal demon behind.");
 	}
 	//{No option to beg for night watch till PC has been imp raped}
@@ -1130,9 +1132,9 @@ internal function defeatHolli():void {
 		outputText("Weary, the succubus godling folds into her tree, unwilling to allow you the sight of her defeat.  With her energy suppressed, you're free to ");
 		if(player.weaponName != "large axe") outputText("fetch an axe and ");
 		outputText("hack at her trunk, laboriously peeling bark and making wedge-shaped cuts in it as you try to fell the abomination.  It takes nearly eight hours, but eventually the gnarled tree topples.  No sooner does it fall than it shrivels and turns to ash.");
-		temp = 7;
-		while(temp > 0) {
-			temp--;
+		var i:int = 7;
+		while(i > 0) {
+			i--;
 			model.time.hours++;
 			if(model.time.hours > 23) {
 				model.time.days++;
@@ -1145,9 +1147,9 @@ internal function defeatHolli():void {
 	else {
 		outputText("The fire-blackened mouse cheers at you as the succubus groans and retreats completely into her bark.  \"<i>Well done, [name]!  Help me carry tinder and we can burn this abomination to the ground!</i>\"");
 		outputText("\n\nWeary but recognizing the need to finish this now, you help the monk haul firewood to the base of the tree until the blaze roars like a bonfire.  It takes hours of carrying wood and eventually cutting it as well, but finally the tree is nothing but ash.");
-		temp = 3;
-		while(temp > 0) {
-			temp--;
+		i = 3;
+		while(i > 0) {
+			i--;
 			model.time.hours++;
 			if(model.time.hours > 23) {
 				model.time.days++;
@@ -1374,7 +1376,7 @@ private function holliPlaysWithPenisesBadEnd():void {
 	outputText("\n\n\"<i>Simple-minded fool,</i>\" Holli spits at the distant, retreating back of the newest Champion, stroking the erect shaft of her partner.  \"<i>I'm eager to see where and when she will take root.  Though, I wonder if your seed will impregnate her before mine can absorb it all?</i>\"");
 	
 	//--[Game Over], man! [Game Over]!--
-	getGame().gameOver();
+	EventParser.gameOver();
 }
 
 private function girlsGetANiceManToBadEnd():void {
@@ -1502,7 +1504,7 @@ private function girlsGetANiceManToBadEnd():void {
 	outputText("\n\nHolli watches him until he's out of sight.  \"<i>When something seems too good to be true... it probably is.  Stupid imbecile.</i>\"  She turns to the figure in the tree, who is frowning deeply.  \"<i>Oh my... I was just lying before, but <b>do</b> you actually like him?  Well, you'll meet him again - when he sprouts and joins with Marae's roots.  In the meanwhile, I'm eager to see what the child of a pure human man and a once-human dryad like you will be.  I wonder if its tree will be more interesting than those of the imp- and beast-spawns you've given birth to already?</i>\"");
 	
 	//--Oh shit, it's already... [Game Over]--
-	getGame().gameOver();
+	EventParser.gameOver();
 }
 
 private function holliAndGenderlessSittingInATree():void {
@@ -1541,7 +1543,7 @@ private function holliAndGenderlessSittingInATree():void {
 	outputText("...");
 	
 	//--Dante's Purgatorio is an epic poem about [Game Over]--
-	getGame().gameOver();
+	EventParser.gameOver();
 }
 
 public function amilyComesBack():void {

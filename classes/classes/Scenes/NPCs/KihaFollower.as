@@ -1,9 +1,10 @@
 ﻿package classes.Scenes.NPCs{
-	import classes.*;
-	import classes.GlobalFlags.kFLAGS;
-	import classes.Scenes.Areas.Swamp.SpiderMorphMob;
+import classes.*;
+import classes.BodyParts.Tongue;
+import classes.GlobalFlags.kFLAGS;
+import classes.Scenes.Areas.Swamp.SpiderMorphMob;
 
-	public class KihaFollower extends NPCAwareContent implements TimeAwareInterface
+public class KihaFollower extends NPCAwareContent implements TimeAwareInterface
 	{
 
 		public var pregnancy:PregnancyStore;
@@ -12,7 +13,7 @@
 		{
 			pregnancy = new PregnancyStore(kFLAGS.KIHA_PREGNANCY_TYPE, kFLAGS.KIHA_INCUBATION, 0, 0);
 			pregnancy.addPregnancyEventSet(PregnancyStore.PREGNANCY_PLAYER, 384, 336, 288, 240, 192, 144, 96, 48);
-			CoC.timeAwareClassAdd(this);
+			EventParser.timeAwareClassAdd(this);
 		}
 
 		//Implementation of TimeAwareInterface
@@ -107,8 +108,7 @@ private function kihaAffection(changes:Number = 0):Boolean {
 }
 
 private function canKihaGetPregnant():Boolean {
-	if (model.time.days % 15 == 0 && flags[kFLAGS.KIHA_PREGNANCY_POTENTIAL] > 0 && flags[kFLAGS.KIHA_CHILD_MATURITY_COUNTER] <= 0 && !pregnancy.isPregnant) return true;
-	else return false;
+	return model.time.days % 15 == 0 && flags[kFLAGS.KIHA_PREGNANCY_POTENTIAL] > 0 && flags[kFLAGS.KIHA_CHILD_MATURITY_COUNTER] <= 0 && !pregnancy.isPregnant;
 }
 
 private function kihaKnockUpAttempt():void {
@@ -414,6 +414,7 @@ internal function winSparWithKiha():void {
 		outputText("[pg]You sigh and head back towards your stuff.");
 		kihaAffection(20);
 	}
+	lvlUpCheckup();
 	cleanupAfterCombat();
 }
 //Spar with Friendly Kiha - Kiha Wins (Z)
@@ -843,7 +844,7 @@ private function warmLoverKihaIntro(output:Boolean = true):void {
 			addButton(1, "Hang Out", hangOutWithKiha).hint("Spend some quality time with Kiha.");
 			addButton(2, "Hug", hugFriendWarmKiha).hint("Give the dragoness a hug.");
 			addButton(3, "Sex", kihaSexMenu).hint("Initiate sex session with Kiha.");
-			addButton(4, "Spar", sparWithKiha).hint("Do some quick battle with Kiha!");
+			if (flags[kFLAGS.CAMP_UPGRADES_SPARING_RING] >= 2) addButton(4, "Spar", sparWithKiha).hint("Do some quick battle with Kiha!");
 			if (flags[kFLAGS.CORRUPTED_GLADES_DESTROYED] > 0 && flags[kFLAGS.CORRUPTED_GLADES_DESTROYED] < 100) {
 				if (flags[kFLAGS.KIHA_DESTROYING_CORRUPTED_GLADES] == 0) addButton(7, "Destroy Glades", kihaDestroyGladesToggle).hint("Request Kiha to destroy any corrupted glades she can find.");
 				else addButton(7, "Stop Destroying", kihaDestroyGladesToggle).hint("Request Kiha to stop destroying the corrupted glades.");
@@ -1065,11 +1066,11 @@ private function boneTheShitOutofKihaHolesWithHorsecock():void {
 	var y:Number = -1;
 	//Find appropriately large horsecock
 	if(player.horseCocks() > 0) {
-		temp = player.cockTotal();
-		while(temp > 0) {
-			temp--;
-			if(player.cocks[temp].cockType == CockTypesEnum.HORSE && player.cockArea(temp) >= 40) {
-				x = temp;
+		var i:int = player.cockTotal();
+		while(i > 0) {
+			i--;
+			if(player.cocks[i].cockType == CockTypesEnum.HORSE && player.cockArea(i) >= 40) {
+				x = i;
 				y = x+1;
 				break;
 			}
@@ -1445,6 +1446,7 @@ private function kihaGirlGirlSex():void {
 	else outputText("explosion");
 	outputText(" of lady-spooge to mess her face.");
 	outputText("[pg]Mouths stuffed in each others' twats, you lie with your lover, lazily lapping at fragrant girl-honey while your bodies shiver from aftershocks of bliss.  Kiha admits, \"<i>Okay, you're - lick - not too bad - lick - at this.</i>\"  You swat her rump and stroke her happily swaying tail before thanking her.");
+	if (player.isGargoyle() && player.hasPerk(PerkLib.GargoyleCorrupted)) player.refillGargoyleHunger(30);
 	player.orgasm();
 	dynStats("sen", -1);
 	doNext(camp.returnToCampUseOneHour);
@@ -1577,6 +1579,7 @@ private function giveKihaIncubusDraft():void {
 	outputText("[pg]By the time Kiha's orgasm subsides, you're both covered in her hot white spunk, reeking of sex, sweat, and semen.  Shuddering from the sticky, slimy sensation up your ass, you crawl off your lover, her prick popping out of you with a wet POP.  Looking down at her, you see Kiha's eyes are crossed, her chest heaving; she's mumbling something about some pink eggs in her stash, but seems otherwise insensate.  You give her soon-to-be-gone cock a last loving little pat before gathering your [armorName] and heading out.");
 	dynStats("sen", 4, "lus", 30, "cor", .5);
 	player.orgasm();
+	if (player.isGargoyle() && player.hasPerk(PerkLib.GargoyleCorrupted)) player.refillGargoyleHunger(30);
 	if(player.hasItem(consumables.P_DRAFT)) player.consumeItem(consumables.P_DRAFT);
 	else {
 		player.consumeItem(consumables.INCUBID);
@@ -1593,24 +1596,24 @@ private function fuckKihaWithATentacle():void {
 	var y:Number = -1;
 	var z:Number = -1;
 	var zz:Number = -1;
-	temp = player.cockTotal();
-	while(temp > 0) {
-		temp--;
-		if(player.cocks[temp].cockType == CockTypesEnum.TENTACLE) {
+	var i:int = player.cockTotal();
+	while(i > 0) {
+		i--;
+		if(player.cocks[i].cockType == CockTypesEnum.TENTACLE) {
 			if(x == -1) {
-				x = temp;
+				x = i;
 				x++;
 			}
 			else if(y == -1) {
-				y = temp;
+				y = i;
 				y++;
 			}
 			else if(z == -1) {
-				z = temp;
+				z = i;
 				z++;
 			}
 			else if(zz == -1) {
-				zz = temp;
+				zz = i;
 				zz++;
 			}
 			else break;
@@ -1849,6 +1852,7 @@ internal function pcLosesDomFight():void {
 //[PC wins the fight]
 internal function pcWinsDomFight():void {
 	clearOutput();
+	lvlUpCheckup();
 	outputText(images.showImage("kiha-dom-win"));
 	spriteSelect(72);
 	var x:Number = player.cockThatFits(67);
@@ -1962,11 +1966,11 @@ internal function pcWinsDomFight():void {
 		outputText("[pg]Pinning her arms to the cold ground, you move your head down to her supple breast, gently flicking the little stubs of her nipples with your tongue.");
 
 		//PC has a demon/snake tongue: 
-		if(player.hasLongTongue() || player.tongueType == TONGUE_SNAKE) {
+		if(player.hasLongTongue() || player.tongue.type == Tongue.SNAKE) {
 			outputText("[pg]Kiha initially reacts with titillation, then a sense of perverted violation as you wrap the hardening nub with your mouth muscle, ");
 			//Demon: 
 			if(player.hasLongTongue()) outputText("taking to her pointed mammary like a boa to prey as you lather up each teat separately.  The hot-tempered dragon girl squirms, completely at your mercy while you have your fun."); 
-			else if(player.tongueType == TONGUE_SNAKE) outputText("stimulating the soft, nubby flesh with your forked tongue, hissing for effect as you do it.  Imagine the look on her face if you worked that little bugger over her clit; she'd go berserk!  But she hasn't earned that yet; what you want to hear is her begging for a good dicking first.");
+			else if(player.tongue.type == Tongue.SNAKE) outputText("stimulating the soft, nubby flesh with your forked tongue, hissing for effect as you do it.  Imagine the look on her face if you worked that little bugger over her clit; she'd go berserk!  But she hasn't earned that yet; what you want to hear is her begging for a good dicking first.");
 		}
 		outputText("[pg]Her breathing becoming plagued with arousal and stimulus overload, she finally yields, beseeching you to stop playing with her breasts and to get on with \"<i>more important things.</i>\"");
 
@@ -2031,6 +2035,57 @@ private function guardMyCampKiha():void {
 	}
 	menu();
 	addButton(0,"Next",warmLoverKihaIntro);
+}
+
+private function lvlUpCheckup():void {
+	if (flags[kFLAGS.SPARRABLE_NPCS_TRAINING] == 2) {
+		if (flags[kFLAGS.KIHA_FOLLOWER] == 1) {
+			if (flags[kFLAGS.KIHA_DEFEATS_COUNTER] >= 1) flags[kFLAGS.KIHA_DEFEATS_COUNTER]++;
+			else flags[kFLAGS.KIHA_DEFEATS_COUNTER] = 1;
+		}
+		if (flags[kFLAGS.KIHA_DEFEATS_COUNTER] == 4 && flags[kFLAGS.KIHA_LVL_UP] < 1) {
+			if (player.hasStatusEffect(StatusEffects.CampSparingNpcsTimers1)) player.addStatusValue(StatusEffects.CampSparingNpcsTimers1, 3, 24);
+			else player.createStatusEffect(StatusEffects.CampSparingNpcsTimers1, 0, 0, 24, 0);
+			flags[kFLAGS.KIHA_DEFEATS_COUNTER] = 0;
+			flags[kFLAGS.KIHA_LVL_UP] = 1;
+		}
+		if (flags[kFLAGS.KIHA_DEFEATS_COUNTER] == 5 && flags[kFLAGS.KIHA_LVL_UP] == 1) {
+			if (player.hasStatusEffect(StatusEffects.CampSparingNpcsTimers1)) player.addStatusValue(StatusEffects.CampSparingNpcsTimers1, 3, 30);
+			else player.createStatusEffect(StatusEffects.CampSparingNpcsTimers1, 0, 0, 30, 0);
+			flags[kFLAGS.KIHA_DEFEATS_COUNTER] = 0;
+			flags[kFLAGS.KIHA_LVL_UP] = 2;
+		}
+		if (flags[kFLAGS.KIHA_DEFEATS_COUNTER] == 6 && flags[kFLAGS.KIHA_LVL_UP] == 2) {
+			if (player.hasStatusEffect(StatusEffects.CampSparingNpcsTimers1)) player.addStatusValue(StatusEffects.CampSparingNpcsTimers1, 3, 36);
+			else player.createStatusEffect(StatusEffects.CampSparingNpcsTimers1, 0, 0, 36, 0);
+			flags[kFLAGS.KIHA_DEFEATS_COUNTER] = 0;
+			flags[kFLAGS.KIHA_LVL_UP] = 3;
+		}
+		if (flags[kFLAGS.KIHA_DEFEATS_COUNTER] == 7 && flags[kFLAGS.KIHA_LVL_UP] == 3) {
+			if (player.hasStatusEffect(StatusEffects.CampSparingNpcsTimers1)) player.addStatusValue(StatusEffects.CampSparingNpcsTimers1, 3, 42);
+			else player.createStatusEffect(StatusEffects.CampSparingNpcsTimers1, 0, 0, 42, 0);
+			flags[kFLAGS.KIHA_DEFEATS_COUNTER] = 0;
+			flags[kFLAGS.KIHA_LVL_UP] = 4;
+		}
+		if (flags[kFLAGS.KIHA_DEFEATS_COUNTER] == 8 && flags[kFLAGS.KIHA_LVL_UP] == 4) {
+			if (player.hasStatusEffect(StatusEffects.CampSparingNpcsTimers1)) player.addStatusValue(StatusEffects.CampSparingNpcsTimers1, 3, 48);
+			else player.createStatusEffect(StatusEffects.CampSparingNpcsTimers1, 0, 0, 48, 0);
+			flags[kFLAGS.KIHA_DEFEATS_COUNTER] = 0;
+			flags[kFLAGS.KIHA_LVL_UP] = 5;
+		}
+		if (flags[kFLAGS.KIHA_DEFEATS_COUNTER] == 9 && flags[kFLAGS.KIHA_LVL_UP] == 5) {
+			if (player.hasStatusEffect(StatusEffects.CampSparingNpcsTimers1)) player.addStatusValue(StatusEffects.CampSparingNpcsTimers1, 3, 54);
+			else player.createStatusEffect(StatusEffects.CampSparingNpcsTimers1, 0, 0, 54, 0);
+			flags[kFLAGS.KIHA_DEFEATS_COUNTER] = 0;
+			flags[kFLAGS.KIHA_LVL_UP] = 6;
+		}
+		if (flags[kFLAGS.KIHA_DEFEATS_COUNTER] == 10 && flags[kFLAGS.KIHA_LVL_UP] == 6) {
+			if (player.hasStatusEffect(StatusEffects.CampSparingNpcsTimers1)) player.addStatusValue(StatusEffects.CampSparingNpcsTimers1, 3, 60);
+			else player.createStatusEffect(StatusEffects.CampSparingNpcsTimers1, 0, 0, 60, 0);
+			flags[kFLAGS.KIHA_DEFEATS_COUNTER] = 0;
+			flags[kFLAGS.KIHA_LVL_UP] = 7;
+		}
+	}
 }
 
 		private function giveKihaUndergarmentsPrompt():void {
@@ -2132,7 +2187,7 @@ private function guardMyCampKiha():void {
 			if (eggCounter > 2) outputText("\n\nThe process repeats until Kiha's belly finally flattens.");
 			outputText("\n\nYou count the eggs; there are " + num2Text(eggCounter) + " of them.");
 			outputText("\n\n\"<i>Look at that! They're beautiful. They're going to hatch real soon. Thank you, [name].</i>\" Kiha smiles and delivers a kiss to your lips.");
-			outputText("\n\nBut wait a minute! The eggs are shaking already! It's only a few minutes and already they're going to hatch.");
+			outputText("\n\nBut wait a minute! The eggs are shaking already! It's only a few minutes and they're already going to hatch.");
 			outputText("\n\nCracks form in the eggs and they're getting bigger and bigger. Eventually, the eggs burst and draconic heads poke out of the eggs. Aren't they cute? You and Kiha spend time peeling off the egg-shells and analyze the little dragon-morphs.");
 			//Initial children for variants.
 			var oldTotal:int = totalKihaChildren();
@@ -2165,7 +2220,7 @@ private function guardMyCampKiha():void {
 		}
 		
 		private function kihaBreastfeedingTime():void {
-			outputText("\nKiha is doing well with her " + (totalKihaChildren() == 1 ? "offspring" : "offsprings") + ". She appears to be breastfeeding her " + (totalKihaChildren() == 1 ? "" : "youngest ") + "offspring.");
+			outputText("\nKiha is doing well with your " + (totalKihaChildren() == 1 ? "offspring" : "offsprings") + ". She appears to be breastfeeding your " + (totalKihaChildren() == 1 ? "" : "youngest ") + "offspring.");
 		}
 		
 		public function kihaTellsChildrenStory():void {
@@ -2175,18 +2230,18 @@ private function guardMyCampKiha():void {
 				return;
 			}
 			clearOutput();
-			outputText("Kiha walks over to you and says, \"<i>Could you please sit with me please, [name]? I want to tell my " + (totalKihaChildren() == 1 ? "kid" : "kids") + " a story,</i>\" she says. You tell her that it would be a wonderful idea! Kiha escorts you to her nest.");
-			outputText("\n\nYou sit on the crudely made seat while Kiha sits on the another seat. ");
-			if (totalKihaChildren() == 1) outputText("Kiha gestures for her only child to sit on her lap. ");
-			else outputText("Kiha gestures for her children to sit in front of her, making sure you are visible to them. ");
+			outputText("Kiha walks over to you and says, \"<i>Could you sit with me please, [name]? I want to tell our " + (totalKihaChildren() == 1 ? "kid" : "kids") + " a story,</i>\" she says. You tell her that it would be a wonderful idea! Kiha escorts you to her nest.");
+			outputText("\n\nYou sit on the crudely made seat while Kiha sits on the other seat. ");
+			if (totalKihaChildren() == 1) outputText("Kiha gestures for the child to sit on her lap. ");
+			else outputText("Kiha gestures for the children to sit in front of her, making sure you are visible to them. ");
 			//Story time!
-			outputText("\n\nKiha says, \"<i>I'll tell you about my times.</i>\" You listen. Kiha explains about her past, how she was originally a lizan, how she slain her tribe's enemies by the thousands, how she was turned into a dragon-morph thanks to the demonic abduction and how she grew her hatred for the demons. She takes great care not to say something that would be inappropriate.");
-			outputText("\n\nKiha's children seem to be impressed and ask what happened next.");
+			outputText("\n\nKiha says, \"<i>I'll tell you about my times.</i>\" You listen. Kiha explains about her past, how she was originally a lizan, how she had slain her tribe's enemies by the thousands, how she was turned into a dragon-morph thanks to the demonic abduction, and how she grew her hatred for the demons. She takes great care not to say something that would be inappropriate.");
+			outputText("\n\nThe " + (totalKihaChildren() == 1 ? "child" : "children") + " seem to be impressed and ask what happened next.");
 			outputText("\n\nKiha resumes her story. She tells about how she met you for the first time and how she defended herself from the mob of spider-morphs thanks to your aid. ");
-			if (flags[kFLAGS.LETHICE_DEFEATED] > 0) outputText("\n\nYou tell about how you've defeated Lethice and put an end to the demonic threats. Kiha and her young " + (totalKihaChildren() == 1 ? "dragon-morph" : "dragon-morphs") + " look at you, amazed about your victory.");
-			else outputText("\n\nKiha tells about how she plans to get into Lethice's stronghold and defeat Lethice for once and for all.");
+			if (flags[kFLAGS.LETHICE_DEFEATED] > 0) outputText("\n\nYou tell about how you've defeated Lethice and put an end to the demonic threats. Kiha and the young " + (totalKihaChildren() == 1 ? "dragon-morph" : "dragon-morphs") + " look at you, amazed about your victory.");
+			else outputText("\n\nKiha tells about how she plans to get into Lethice's stronghold and defeat Lethice once and for all.");
 			outputText("\n\nThe " + (totalKihaChildren() == 1 ? "kid" : "kids") + " are happy to hear about the story. \"<i>Thank you for being with me and listening to my story, my Doofus,</i>\" Kiha says before giving you a peck on your cheek.");
-			dynStats("lib", -2, "cor", -2, "lus", -50, "resisted", false, "noBimbo", true);
+			dynStats("lib", -2, "cor", -2, "lus", -50, "scale", false);
 			
 			menu();
 			doNext(camp.returnToCampUseOneHour);
@@ -2215,12 +2270,13 @@ private function guardMyCampKiha():void {
 			if (flags[kFLAGS.KIHA_CHILDREN_GIRLS] > 0) availableGenders.push("female");
 			if (flags[kFLAGS.KIHA_CHILDREN_HERMS] > 0) availableGenders.push("herms");
 			var select:String = randomChoice(availableGenders);
-			outputText("You walk up to check on your draconic children. By Marae, they're all grown up! Looking down, you notice that most of them are wearing tribal loincloths, a nod to the modesty ");
+			outputText("You walk up to check on your draconic children. By Marae, they're all grown up! Looking down, you notice that most of them are wearing tribal loincloths, a nod to modesty ");
 			if (flags[kFLAGS.KIHA_UNDERGARMENTS] > 0) outputText("like Kiha");
 			else outputText("unlike Kiha who is naked");
 			outputText(" although some prefer to be completely free of clothing.");
-			outputText("\n\nKiha walks over to you and says, \"<i>They are quite the warrior now. They even slain some Minotaurs! I'm proud of them. You can knock me up all over again, my Doofus.</i>\" Kiha gives you a passionate kiss before flying off to do her usual duties.");
+			outputText("\n\nKiha walks over to you and says, \"<i>They are quite the warrior now. They've even slain some Minotaurs! I'm proud of them. You can knock me up all over again, my Doofus.</i>\" Kiha gives you a passionate kiss before flying off to do her usual duties.");
 			flags[kFLAGS.KIHA_CHILD_MATURITY_COUNTER] = 0;
 		}
 	}
 }
+

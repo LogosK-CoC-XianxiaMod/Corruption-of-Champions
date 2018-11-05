@@ -3,11 +3,29 @@
 import classes.BodyParts.IOrifice;
 import classes.internals.Utils;
 
-	public class VaginaClass implements IOrifice
+public class VaginaClass implements IOrifice
 	{
-		include "../../includes/appearanceDefs.as";
-		public static const DEFAULT_CLIT_LENGTH:Number = 0.5;
 
+        public static const DEFAULT_CLIT_LENGTH:Number = 0.5;
+		
+		public static const HUMAN:int           = 0;
+		public static const EQUINE:int          = 1;
+		public static const BLACK_SAND_TRAP:int = 5;
+		
+		public static const WETNESS_DRY:int       = 0;
+		public static const WETNESS_NORMAL:int    = 1;
+		public static const WETNESS_WET:int       = 2;
+		public static const WETNESS_SLICK:int     = 3;
+		public static const WETNESS_DROOLING:int  = 4;
+		public static const WETNESS_SLAVERING:int = 5;
+		
+		public static const LOOSENESS_TIGHT:int           = 0;
+		public static const LOOSENESS_NORMAL:int          = 1;
+		public static const LOOSENESS_LOOSE:int           = 2;
+		public static const LOOSENESS_GAPING:int          = 3;
+		public static const LOOSENESS_GAPING_WIDE:int     = 4;
+		public static const LOOSENESS_LEVEL_CLOWN_CAR:int = 5;
+		
 		//constructor
 		public function VaginaClass(vaginalWetness:Number = 1, vaginalLooseness:Number = 0, virgin:Boolean = false, clitLength:Number = DEFAULT_CLIT_LENGTH)
 		{
@@ -111,7 +129,7 @@ import classes.internals.Utils;
 		 */
 		public function stretch(cArea:Number, hasFeraMilkingTwat:Boolean = false):Boolean {
 			var stretched:Boolean = false;
-			if (hasFeraMilkingTwat || vaginalLooseness <= VAGINA_LOOSENESS_NORMAL) {
+			if (hasFeraMilkingTwat || vaginalLooseness <= LOOSENESS_NORMAL) {
 				//cArea > capacity = autostreeeeetch.
 				if (cArea >= capacity()) {
 					vaginalLooseness++;
@@ -128,7 +146,7 @@ import classes.internals.Utils;
 					stretched = true;
 				}
 			}
-			if (vaginalLooseness > VAGINA_LOOSENESS_LEVEL_CLOWN_CAR) vaginalLooseness = VAGINA_LOOSENESS_LEVEL_CLOWN_CAR;
+			if (vaginalLooseness > LOOSENESS_LEVEL_CLOWN_CAR) vaginalLooseness = LOOSENESS_LEVEL_CLOWN_CAR;
 
 			if (virgin) {
 				virgin = false;

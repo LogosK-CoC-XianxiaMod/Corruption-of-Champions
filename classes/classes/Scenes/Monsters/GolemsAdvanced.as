@@ -6,7 +6,7 @@ package classes.Scenes.Monsters
 {
 	import classes.*;
 	import classes.internals.*;
-	import classes.GlobalFlags.kGAMECLASS;
+	import classes.CoC;
 	import classes.GlobalFlags.kFLAGS;
 	
 	public class GolemsAdvanced extends AbstractGolem
@@ -18,10 +18,9 @@ package classes.Scenes.Monsters
 			if (damage <= 0 || (player.getEvasionRoll())) outputText(" You slide underneath the surprise swings!");
 			else
 			{
-				outputText(" They chits you square in the chest from a few different angles. ");
-				damage = player.takeDamage(damage, true);
+				outputText(" They hits you square in the chest from a few different angles. ");
+				damage = player.takePhysDamage(damage, true);
 			}
-			combatRoundOver();
 		}
 		
 		public function overhandSmash():void {
@@ -32,7 +31,7 @@ package classes.Scenes.Monsters
 			else
 			{
 				outputText(" The concussive strikes impacts you with a bonecrushing force. ");
-				damage = player.takeDamage(damage, true);
+				damage = player.takePhysDamage(damage, true);
 			}
 		}
 		
@@ -50,7 +49,6 @@ package classes.Scenes.Monsters
 				if (choice1 == 3) backhand();
 			}
 			else eAttack();
-			combatRoundOver();
 		}
 		
 		public function GolemsAdvanced() 
@@ -61,7 +59,7 @@ package classes.Scenes.Monsters
 			this.imageName = "advanced golems";
 			this.long = "You're currently fighting advanced golems. They're all around eight feet tall without any sexual characteristics, their stone body covered in cracks and using bare stone fists to smash enemies.";
 			initStrTouSpeInte(320, 250, 180, 10);
-			initLibSensCor(10, 10, 50);
+			initWisLibSensCor(10, 10, 10, 50);
 			this.tallness = 96;
 			this.drop = new ChainedDrop()
 					.add(useables.GOLCORE, 1);
@@ -70,19 +68,14 @@ package classes.Scenes.Monsters
 			this.additionalXP = 900;
 			this.weaponName = "stone fists";
 			this.weaponVerb = "smash";
-			this.weaponAttack = 100 + (21 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.weaponAttack = 100;
 			this.armorName = "stone";
-			this.armorDef = 100 + (11 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.armorDef = 100;
+			this.armorMDef = 20;
 			this.createPerk(PerkLib.RefinedBodyI, 0, 0, 0, 0);
 			this.createPerk(PerkLib.TankI, 0, 0, 0, 0);
 			this.createPerk(PerkLib.EnemyGroupType, 0, 0, 0, 0);
 			this.createPerk(PerkLib.EnemyConstructType, 0, 0, 0, 0);
-			this.str += 128 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.tou += 100 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.spe += 72 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.inte += 4 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];			
-			this.lib += 4 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.newgamebonusHP = 18480;
 			checkMonster();
 		}
 		

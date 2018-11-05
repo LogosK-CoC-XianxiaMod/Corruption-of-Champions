@@ -1,10 +1,9 @@
 package classes.Scenes.Areas.HighMountains 
 {
-	import classes.*;
-	import classes.GlobalFlags.kFLAGS;
-	import classes.GlobalFlags.kGAMECLASS;
+import classes.*;
+import classes.GlobalFlags.kFLAGS;
 
-	public class PhoenixScene extends BaseContent
+public class PhoenixScene extends BaseContent
 	{
 		//" + (player.cocks.length == 1 ? "": "") + "
 		public function PhoenixScene() 
@@ -41,7 +40,7 @@ package classes.Scenes.Areas.HighMountains
 			outputText("Strolling along the mountain path, you spot the familiar Phoenix. You ready your [weapon].");
 			if (flags[kFLAGS.PHOENIX_ENCOUNTERED] == 1) outputText("\n\n\"<i>Back again?</i>\" The phoenix says with a glare. \"<i>But... I guess you're a worthy opponent. Let's see what you're made of!</i>\" The phoenix yells as she readies her scimitar and shield. You assume a combat stance.");
 			else outputText("\n\n\"<i>Back again?</i>\" The phoenix says with a glare. \"<i>Get ready for a rematch!</i>\" The phoenix yells as she readies her scimitar and shield. You assume a combat stance.");
-			flags[kFLAGS.PHOENIX_ENCOUNTERED]++
+			flags[kFLAGS.PHOENIX_ENCOUNTERED]++;
 			startCombat(new Phoenix());
 		}
 		
@@ -65,14 +64,14 @@ package classes.Scenes.Areas.HighMountains
 			outputText("Strolling along the vulcanic crag, you spot the familiar Phoenix. You ready your [weapon].");
 			if (flags[kFLAGS.PHOENIX_ENCOUNTERED] == 1) outputText("\n\n\"<i>Back again?</i>\" The phoenix says with a glare. \"<i>But... I guess you're a worthy opponent. Let's see what you're made of!</i>\" The phoenix yells as she readies her scimitar and shield. You assume a combat stance.");
 			else outputText("\n\n\"<i>Back again?</i>\" The phoenix says with a glare. \"<i>Get ready for a rematch!</i>\" The phoenix yells as she readies her scimitar and shield. You assume a combat stance.");
-			flags[kFLAGS.PHOENIX_ENCOUNTERED]++
+			flags[kFLAGS.PHOENIX_ENCOUNTERED]++;
 			startCombat(new Phoenix());
 		}
 		
 		//VICTORY!
 		public function winAgainstPhoenix():void {
 			flags[kFLAGS.PHOENIX_HP_LOSS_COUNTER] = 0; //Reset counter if you win.
-			outputText("With one final grunt, the phoenix collapses against a nearby rock, barely able to support herself. The once-proud soldier has been reduced to a " + (monster.lust >= monster.eMaxLust() ? "dazed, lust-crazed slut, desperately pulling at her clothing in a mad attempt to expose herself": "a beaten, battered heap; completely unable to resist your advances") + ". ");
+			outputText("With one final grunt, the phoenix collapses against a nearby rock, barely able to support herself. The once-proud soldier has been reduced to a " + (monster.lust >= monster.maxLust() ? "dazed, lust-crazed slut, desperately pulling at her clothing in a mad attempt to expose herself": "a beaten, battered heap; completely unable to resist your advances") + ". ");
 			if (player.lust >= 33 && flags[kFLAGS.SFW_MODE] <= 0) {
 				outputText("What do you do? \n\n");
 				if (player.hasCock()) {
@@ -93,8 +92,8 @@ package classes.Scenes.Areas.HighMountains
 		public function missionaryWithPhoenix():void {
 			clearOutput();
 			outputText("You charge at the defenseless phoenix, quickly disarming her before throwing the defeated girl to the ground, leaving her moaning in the dirt on her back. She grunts, shaking her head vigourously to try and clear her mind, before looking up at you with grim, fierce eyes. ");
-			outputText("\n\n\"<i>I’ll never submit! I am a noble phoenix, not some-</i>\" Completely ignoring her you yank her chain shirt up, revealing the heaving, plush D-cups beneath " + (monster.lust >= monster.eMaxLust() ? " nipples already standing at attention in the cool air": "") + ". The phoenix gasps at the sudden exposure and turns her head away, squeezing her eyes closed, determined to not look you in the eye as you take your pleasure.");
-			outputText("\n\nKneeling before her you tear away her loincloth, forcing her legs apart to reveal her " + (monster.lust >= monster.eMaxLust() ? " slick pussy and half-rigid cock, clearly aroused despite her insistence on not enjoying herself": " tight slit and slowly engorging lizard-shaft, apparently her current condition is more enticing than she wants to admit") + ". You run a pair of fingers along her cleft, trailing it all the way up to the tip of her stirring member before circling around her tip and sliding back down. The phoenix whines pitifully as her prick reacts accordingly, twitching as it hardens at your teasing touch before you bring your fingers back to her slickening entrance and ease them between her soft lips. She groans, gritting her teeth as you go deeper and deeper inside her, wiggling against her walls whilst she soaks your hand with arousal.");
+			outputText("\n\n\"<i>I’ll never submit! I am a noble phoenix, not some-</i>\" Completely ignoring her you yank her chain shirt up, revealing the heaving, plush D-cups beneath " + (monster.lust >= monster.maxLust() ? " nipples already standing at attention in the cool air": "") + ". The phoenix gasps at the sudden exposure and turns her head away, squeezing her eyes closed, determined to not look you in the eye as you take your pleasure.");
+			outputText("\n\nKneeling before her you tear away her loincloth, forcing her legs apart to reveal her " + (monster.lust >= monster.maxLust() ? " slick pussy and half-rigid cock, clearly aroused despite her insistence on not enjoying herself": " tight slit and slowly engorging lizard-shaft, apparently her current condition is more enticing than she wants to admit") + ". You run a pair of fingers along her cleft, trailing it all the way up to the tip of her stirring member before circling around her tip and sliding back down. The phoenix whines pitifully as her prick reacts accordingly, twitching as it hardens at your teasing touch before you bring your fingers back to her slickening entrance and ease them between her soft lips. She groans, gritting her teeth as you go deeper and deeper inside her, wiggling against her walls whilst she soaks your hand with arousal.");
 			outputText("\n\nHer neck cranes as she struggles to control herself; slow, heavy breathing accentuating her tits as they tremble gently with each mouthful of air. With a grin you whip your fingers out of her and, as she writhes at the sudden emptiness, force them into her gasping mouth. Eyes shooting wide open, she sputters and shakes her head, but you don’t let up until she’s had a good, long taste, wrapping her reptilian tongue around your dripping digits to make sure she gets a full sampling of her own flavour. The way her tongue constricts your sodden fingers floods your groin with warmth and you feel your " + (player.cocks.length == 1 ? "member": "members") + " starting to thicken as she slurps at her own spunk.");
 			outputText("\n\nWithdrawing your hand you chide her, asking that if she doesn’t want it so much, why is she so wet?");
 			outputText("\n\n\"<i>I-I am not! It’s natural!</i>\" As she speaks, her tongue darts out to lick her lips, almost as if searching for more of her delicious juice.");
@@ -133,7 +132,7 @@ package classes.Scenes.Areas.HighMountains
 		
 		public function fuckPhoenixsButt():void {
 			clearOutput();
-			var x:int = player.cockThatFits(monster.analCapacity())
+			var x:int = player.cockThatFits(monster.analCapacity());
 			if (x < 0) x = 0;
 			outputText("With your mind made up, you're definitely in control. You tell the phoenix that you're going to fuck her ass. You quickly yank her scimitar away so she's defenseless and loincloth off to expose her tailhole and firm butt-cheeks. You give her a hard shove on the grounds and step on her back like you're dominating. She gives you a glare and yells, \"<i>I'll never submit to you! I never will!</i>\"");
 			if (player.armorName == "goo armor") outputText("\n\nThe goo opens up to reveal your " + player.cockDescript(x) + ". ");
@@ -182,6 +181,7 @@ package classes.Scenes.Areas.HighMountains
 			outputText("\n\nUnable to take the cumulative pleasure, the phoenix cums. You go wide-eyed as her burning-hot cum pours into your waiting womb, scalding your depths with her sizzling, potent seed. You can only keep riding her, letting her jizz flow into you until the heat and pleasure sends you over the edge too. You hug the phoenix tight as orgasm hits you, shuddering and gasping as ecstasy threatens to overwhelm you. Your [vagina] milks your lover for every last drop until, breathless, you release your death-hold on your lover, letting her flop insensate to the ground.");
 			outputText("\n\nYou stand, a bit bow-legged, and watch as a bucket’s worth of her extra seed pours out of your sodden twat, pooling on the phoenix’s breasts and belly. Giggling, you stumble off her and collect your [armor].");
 			player.orgasm();
+			if (player.isGargoyle() && player.hasPerk(PerkLib.GargoyleCorrupted)) player.refillGargoyleHunger(30);
 			cleanupAfterCombat();
 		}
 		
@@ -200,6 +200,7 @@ package classes.Scenes.Areas.HighMountains
 			outputText("\n\nUnable to hold on for long, you bite down on her pink nipple and cum, letting waves of pleasure wash over you from your rectal intruder. Your sphincter crunches down hard on the lizard prick inside you, milking it just like a pussy would until, spurred on by your orgasm and bite to her most sensitive flesh, the phoenix-girl cums. You yelp as her burning-hot cum rushes into your ass, scalding your walls until you feel a massive wave of pleasure crash into you -- a second orgasm! Your mind goes utterly numb, nearly blacking out as tremors of ecsatcy pump into you from her dick.");
 			outputText("\n\nWhen you come to your senses a few minutes later, the phoenix girl is asleep, still holding you tight. You pull her deflated lizard dick out of your ass and shudder as a torrent of her sizzling-hot spunk dribbles out onto her thighs and hips. You wriggle out of her tight embrace and give her a little kiss on the cheek before collecting your [armor] and heading out.");
 			player.orgasm();
+			if (player.isGargoyle() && player.hasPerk(PerkLib.GargoyleCorrupted)) player.refillGargoyleHunger(30);
 			cleanupAfterCombat();
 		}
 		
@@ -310,7 +311,7 @@ package classes.Scenes.Areas.HighMountains
 			outputText("\n\n\"<i>The harpy queen will be avenged,</i>\" she says with a glare on your face. She raises her scimitar. You look up at the sharp blade. You clearly know where it's going.");
 			outputText("\n\n\"<i>Hasta la vista, baby!</i>\" These are the last words you hear as the speeding scimitar finally makes contact with your neck.");
 			rawOutputText("\n\n[DATA EXPUNGED]");
-			getGame().gameOver();
+			EventParser.gameOver();
 		}
 	}
 

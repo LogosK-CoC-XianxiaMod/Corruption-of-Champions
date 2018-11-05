@@ -86,13 +86,13 @@ package classes.Scenes.Areas.Lake
 			outputText("\n\nStrange, but you oblige, stripping off your [armor] and gear and tossing them aside. Callu instructs you to lay down on the beach next to her fishing pole, which you likewise oblige.  The otter-girl straddles your stomach, facing away from you, though her thick, heavy tail is thankfully kept away from your face.");
 			var x:int;
 			var y:int = -1;
-			temp = 0;
-			while (temp < player.cockTotal()) {
-				if (player.cocks[temp].cockLength < 48) {
-					if (y < 0) y = temp;
-					else if (player.cocks[temp].cockLength > player.cocks[y].cockLength) y = temp;
+			var i:int = 0;
+			while (i < player.cockTotal()) {
+				if (player.cocks[i].cockLength < 48) {
+					if (y < 0) y = i;
+					else if (player.cocks[i].cockLength > player.cocks[y].cockLength) y = i;
 				}
-				temp++;
+				i++;
 			}
 			if (y < 0) y = player.smallestCockIndex();
 			x = y;
@@ -272,8 +272,8 @@ package classes.Scenes.Areas.Lake
 		private function getDatFishingPole():void
 		{
 			clearOutput();
-			outputText("You mention to Calu that you would like to fish to but you have no idea of were to find a fishing pole.");
-			outputText("\"<i>So you want to start fishing to eh? Thats a humble pleasure of life. Don’t worry about finfing one, I got an extra if you can pay it to me. For 50 gems its yours.</i>\"");
+			outputText("You mention to Calu that you would like to fish to but you have no idea of where to find a fishing pole.");
+			outputText("\"<i>So you want to start fishing to eh? That's a humble pleasure of life. Don’t worry about finding one, I got an extra if you can pay it to me. For 50 gems it's yours.</i>\"");
 			menu();
 			if (player.gems >= 50) addButton(0, "Buy it", yesMissIHaveGems);
 			else addButtonDisabled(0, "Buy it", "You not have enough gems.");

@@ -1,7 +1,8 @@
 package classes.Scenes.Places.TelAdre {
-	import classes.GlobalFlags.kFLAGS;
+import classes.BodyParts.Face;
+import classes.GlobalFlags.kFLAGS;
 
-	public class Ifris extends TelAdreAbstractContent {
+public class Ifris extends TelAdreAbstractContent {
 public function Ifris(){
 
 }
@@ -136,7 +137,7 @@ private function showOffForIfris():void {
 		outputText("Humiliated, you stand and leave, nursing your sore body and ego.");
 		//Reset 'shown off for ifris'
 		flags[kFLAGS.IFRIS_SHOWED_OFF] = 0;
-		player.takeDamage(10);
+		player.takePhysDamage(10);
 		doNext(camp.returnToCampUseOneHour);
 		return;
 	}	
@@ -152,7 +153,7 @@ private function showOffForIfris():void {
 		return;
 	}
 	//4b5-PC masculinity > 60, corruption > 75, has cow features-
-	if(player.gender == 0 || (player.femininity < 40 && player.cor > 75 && player.faceType == FACE_COW_MINOTAUR)) {
+	if(player.gender == 0 || (player.femininity < 40 && player.cor > 75 && player.faceType == Face.COW_MINOTAUR)) {
 		outputText("Ifris watches you for a moment as you move down to the bench, but her eyes clearly wander elsewhere now and then. The pleasant smile never leaves her pretty face, but it's clear she's distracted or even disinterested for some reason. Soon enough she turns to leave, a bored little sigh leaving her. Her hips sway with a sexy gait as though it were natural, though nothing about her seems particularly excited at the moment...");
 		//Stat changes HERE!
 		if(player.str < 90) dynStats("str", .5);

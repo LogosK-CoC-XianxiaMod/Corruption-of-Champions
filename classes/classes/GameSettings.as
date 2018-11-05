@@ -1,7 +1,6 @@
 package classes {
 import classes.GlobalFlags.*;
 
-
 import coc.view.MainView;
 import coc.view.StatsView;
 
@@ -20,8 +19,8 @@ public class GameSettings extends BaseContent {
 		return flags[kFLAGS.CHARVIEWER_ENABLED];
 	}
 	public function settingsScreenMain():void {
-		getGame().saves.savePermObject(false);
-		mainView.showMenuButton(MainView.MENU_NEW_MAIN);
+        CoC.instance.saves.savePermObject(false);
+        mainView.showMenuButton(MainView.MENU_NEW_MAIN);
 		mainView.showMenuButton(MainView.MENU_DATA);
 		clearOutput();
 		displayHeader("Settings");
@@ -30,11 +29,9 @@ public class GameSettings extends BaseContent {
 		addButton(0, "Gameplay", settingsScreenGameSettings);
 		addButton(1, "Interface", settingsScreenInterfaceSettings);
 		addButton(3, "Font Size", fontSettingsMenu);
-		addButton(4, "Controls", getGame().displayControls);
-
-		addButton(14, "Back", getGame().mainMenu.mainMenu);
-
-		if (flags[kFLAGS.HARDCORE_MODE] > 0) {
+		addButton(4, "Controls", displayControls);
+		addButton(14, "Back", CoC.instance.mainMenu.mainMenu);
+        if (flags[kFLAGS.HARDCORE_MODE] > 0) {
 			debug                               = false;
 			flags[kFLAGS.EASY_MODE_ENABLE_FLAG] = 0;
 			flags[kFLAGS.HYPER_HAPPY]           = 0;
@@ -142,7 +139,7 @@ public class GameSettings extends BaseContent {
 
 		menu();
 		addButton(0, "Toggle Debug", toggleDebug).hint("Turn on debug mode. Debug mode is intended for testing purposes but can be thought of as a cheat mode.  Items are infinite and combat is easy to escape from.  Weirdness and bugs are to be expected.");
-		if (player.str > 0) addButton(1, "Difficulty", difficultySelectionMenu).hint("Adjust the game difficulty to make it easier or harder.");
+		if (player) addButton(1, "Difficulty", difficultySelectionMenu).hint("Adjust the game difficulty to make it easier or harder.");
 		//addButton(1, "Easy Mode", toggleEasyModeFlag).hint("Toggles easy mode.  Enemy damage is halved and bad-ends can be ignored.");
 		addButton(2, "Silly Toggle", toggleSillyFlag).hint("Toggles silly mode. Funny, crazy and nonsensical scenes may occur if enabled.");
 		addButton(3, "Low Standards", toggleStandards);
@@ -151,9 +148,11 @@ public class GameSettings extends BaseContent {
 		addButton(5, "SFW Toggle", toggleSFW).hint("Toggles SFW Mode. If enabled, sex scenes are hidden and all adult materials are censored. \n\nCurrently under development, only disables most sex scenes. Soon, it'll disable rape scenes."); //Softcore Mode
 		addButton(6, "Auto level", toggleAutoLevel).hint("Toggles automatic leveling when you accumulate sufficient experience.");
 		addButton(7, "Stat Pts", toggleStatGain).hint("Toggles stat gain mode");
-		if (player.str > 0) addButton(8, "Enable Surv", enableSurvivalPrompt).hint("Enable Survival mode. This will enable hunger. \n\n<font color=\"#080000\">Note: This is permanent and cannot be turned off!</font>");
-		if (player.str > 0) addButton(9, "Enable Real", enableRealisticPrompt).hint("Enable Realistic mode. This will make the game a bit realistic. \n\n<font color=\"#080000\">Note: This is permanent and cannot be turned off! Do not turn this on if you have hyper endowments.</font>");
-		addButton(10, "Fetishes", fetishSubMenu).hint("Toggle some of the weird fetishes such as watersports and worms.");
+		if (player) addButton(8, "Enable Surv", enableSurvivalPrompt).hint("Enable Survival mode. This will enable hunger. \n\n<font color=\"#080000\">Note: This is permanent and cannot be turned off!</font>");
+		if (player) addButton(9, "Enable Real", enableRealisticPrompt).hint("Enable Realistic mode. This will make the game a bit realistic. \n\n<font color=\"#080000\">Note: This is permanent and cannot be turned off! Do not turn this on if you have hyper endowments.</font>");
+		
+		addButton(10, "Eternal Holiday", toggleEternalHoliday).hint("Toggles etenral holiday mode. All holiday events like Eastern/X-mas and etc. would happen at any day of the year.");
+		addButton(11, "Fetishes", fetishSubMenu).hint("Toggle some of the weird fetishes such as watersports and worms.");
 
 		if (flags[kFLAGS.HUNGER_ENABLED] >= 0.5) {
 			removeButton(8);
@@ -246,22 +245,24 @@ public class GameSettings extends BaseContent {
 		//toggle silly mode
 		flags[kFLAGS.SILLY_MODE_ENABLE_FLAG] = !flags[kFLAGS.SILLY_MODE_ENABLE_FLAG];
 		settingsScreenGameSettings();
-
-
 	}
 
 	public function toggleStandards():void {
 		//toggle low standards
 		flags[kFLAGS.LOW_STANDARDS_FOR_ALL] = !flags[kFLAGS.LOW_STANDARDS_FOR_ALL];
 		settingsScreenGameSettings();
-
 	}
 
 	public function toggleHyperHappy():void {
 		//toggle hyper happy
 		flags[kFLAGS.HYPER_HAPPY] = !flags[kFLAGS.HYPER_HAPPY];
 		settingsScreenGameSettings();
+	}
 
+	public function toggleEternalHoliday():void {
+		//toggle eternal holiday
+		flags[kFLAGS.ITS_EVERY_DAY] = !flags[kFLAGS.ITS_EVERY_DAY];
+		settingsScreenGameSettings();
 	}
 
 	public function toggleSFW():void {
@@ -388,6 +389,12 @@ public class GameSettings extends BaseContent {
 		outputText("Char Viewer: ");
 		if (flags[kFLAGS.CHARVIEWER_ENABLED] == 1) outputText("<font color=\"#008000\"><b>ON</b></font>\n Player visualiser is available under \\[Appearance\\].");
 		else outputText("<font color=\"#800000\"><b>OFF</b></font>\n Player visualiser is disabled.");
+		outputText("\nChar View Style: ");
+		if (flags[kFLAGS.CHARVIEW_STYLE] < 1){
+			outputText("<font color=\"#008000\"><b>NEW</b></font>\n Viewer is inline with text");
+		} else {
+			outputText("<font color=\"#800000\"><b>OLD</b></font>\n Viewer is separate from text");
+		}
 		outputText("\n\n");
 
 		if (flags[kFLAGS.IMAGEPACK_OFF] == 0) {
@@ -435,6 +442,7 @@ public class GameSettings extends BaseContent {
 		addButton(6, "Time Format", toggleTimeFormat).hint("Toggles between 12-hour and 24-hour format.");
 		addButton(7, "Measurements", toggleMeasurements).hint("Switch between imperial and metric measurements.  \n\nNOTE: Only applies to your appearance screen.");
 		addButton(8, "Toggle CharView", toggleCharViewer).hint("Turn PC visualizer on/off.");
+		addButton(9, "Charview Style",toggleCharViewer,kFLAGS.CHARVIEW_STYLE).hint("Change between in text and sidebar display");
 		addButton(14, "Back", settingsScreenMain);
 	}
 	public function menuMainBackground():void {
@@ -466,11 +474,13 @@ public class GameSettings extends BaseContent {
 		addButton(14, "Back", settingsScreenInterfaceSettings);
 	}
 
-	public function toggleCharViewer():void {
-		if (flags[kFLAGS.CHARVIEWER_ENABLED] < 1) {
-			flags[kFLAGS.CHARVIEWER_ENABLED] = 1;
+	public function toggleCharViewer(flag:int = kFLAGS.CHARVIEWER_ENABLED):void {
+		if (flags[flag] < 1) {
+			flags[flag] = 1;
 			mainView.charView.reload();
-		} else flags[kFLAGS.CHARVIEWER_ENABLED] = 0;
+		} else {
+			flags[flag] = 0;
+		}
 		settingsScreenInterfaceSettings();
 	}
 
@@ -490,6 +500,7 @@ public class GameSettings extends BaseContent {
 			flags[kFLAGS.BACKGROUND_STYLE]           = type;
 			mainView.background.bitmapClass          = MainView.Backgrounds[flags[kFLAGS.BACKGROUND_STYLE]];
 			mainView.statsView.setBackground(StatsView.SidebarBackgrounds[flags[kFLAGS.BACKGROUND_STYLE]]);
+			mainView.monsterStatsView.setBackground(StatsView.SidebarBackgrounds[flags[kFLAGS.BACKGROUND_STYLE]]);
 			settingsScreenInterfaceSettings();
 		}
 
@@ -524,10 +535,10 @@ public class GameSettings extends BaseContent {
 	}
 
 	public function cycleQuality():void {
-		if (getGame().stage.quality == StageQuality.LOW) getGame().stage.quality = StageQuality.MEDIUM;
-		else if (getGame().stage.quality == StageQuality.MEDIUM) getGame().stage.quality = StageQuality.HIGH;
-		else if (getGame().stage.quality == StageQuality.HIGH) getGame().stage.quality = StageQuality.LOW;
-		settingsScreenInterfaceSettings();
+        if (CoC.instance.stage.quality == StageQuality.LOW) CoC.instance.stage.quality = StageQuality.MEDIUM;
+        else if (CoC.instance.stage.quality == StageQuality.MEDIUM) CoC.instance.stage.quality = StageQuality.HIGH;
+        else if (CoC.instance.stage.quality == StageQuality.HIGH) CoC.instance.stage.quality = StageQuality.LOW;
+        settingsScreenInterfaceSettings();
 	}
 
 	public function toggleImages():void {
@@ -606,6 +617,58 @@ public class GameSettings extends BaseContent {
 		mainView.mainText.setTextFormat(fmt);
 		flags[kFLAGS.CUSTOM_FONT_SIZE] = 0;
 	}
+
+    private function displayControls():void
+    {
+        mainView.hideAllMenuButtons();
+        CoC.instance.inputManager.DisplayBindingPane();
+        EngineCore.menu();
+        EngineCore.addButton(0, "Reset Ctrls", resetControls);
+        EngineCore.addButton(1, "Clear Ctrls", clearControls);
+        EngineCore.addButton(4, "Back", hideControls);
+    }
+
+    private function hideControls():void
+    {
+        CoC.instance.inputManager.HideBindingPane();
+        CoC.instance.gameSettings.settingsScreenMain();
+    }
+
+    private function resetControls():void
+    {
+        CoC.instance.inputManager.HideBindingPane();
+        EngineCore.clearOutput();
+        EngineCore.outputText("Are you sure you want to reset all of the currently bound controls to their defaults?");
+
+        EngineCore.doYesNo(resetControlsYes, displayControls);
+    }
+
+    private function resetControlsYes():void
+    {
+        CoC.instance.inputManager.ResetToDefaults();
+        EngineCore.clearOutput();
+        EngineCore.outputText("Controls have been reset to defaults!\n\n");
+
+        EngineCore.doNext(displayControls);
+    }
+
+    private function clearControls():void
+    {
+        CoC.instance.inputManager.HideBindingPane();
+        EngineCore.clearOutput();
+        EngineCore.outputText("Are you sure you want to clear all of the currently bound controls?");
+
+        EngineCore.doYesNo(clearControlsYes, displayControls);
+    }
+
+    private function clearControlsYes():void
+    {
+        CoC.instance.inputManager.ClearAllBinds();
+        EngineCore.clearOutput();
+        EngineCore.outputText("Controls have been cleared!");
+
+        EngineCore.doNext(displayControls);
+    }
 }
 
 }

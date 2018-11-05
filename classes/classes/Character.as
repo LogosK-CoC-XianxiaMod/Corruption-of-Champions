@@ -1,8 +1,9 @@
 ﻿package classes 
 {
-import classes.Scenes.Places.TelAdre.UmasShop;
-import classes.Items.JewelryLib;
+import classes.BodyParts.Face;
+import classes.BodyParts.Tail;
 import classes.GlobalFlags.kFLAGS;
+import classes.Items.JewelryLib;
 
 /**
 	 * Character class for player and NPCs. Has subclasses Player and NonPlayer.
@@ -233,6 +234,7 @@ import classes.GlobalFlags.kFLAGS;
 	public function hasBeard():Boolean{ return facePart.hasBeard(); }
 	public function beard():String{ return facePart.beard(); }
 	public function hasMuzzle():Boolean{ return facePart.hasMuzzle(); }
+	public function hasBeak():Boolean{ return facePart.hasBeak(); }
 	public function face():String { return facePart.describe(); }
 	public function faceDesc():String { return facePart.describeMF(); }
 	public function hasLongTail():Boolean { return tail.isLong(); }
@@ -247,6 +249,9 @@ import classes.GlobalFlags.kFLAGS;
 		{
 			//Contraceptives cancel!
 			if (hasStatusEffect(StatusEffects.Contraceptives) && arg < 1)
+				return;
+			//Gargoyle cancel!
+			if (isGargoyle())
 				return;
 //			if (hasStatusEffect(StatusEffects.GooStuffed)) return; //No longer needed thanks to PREGNANCY_GOO_STUFFED being used as a blocking value
 			var bonus:int = 0;
@@ -287,6 +292,9 @@ import classes.GlobalFlags.kFLAGS;
 		{
 			//Contraceptives cancel!
 			if (hasStatusEffect(StatusEffects.Contraceptives) && arg < 1)
+				return;
+			//Gargoyle cancel!
+			if (isGargoyle())
 				return;
 			var bonus:int = 0;
 			//If arg = 1 (always pregnant), bonus = 9000
@@ -602,200 +610,18 @@ import classes.GlobalFlags.kFLAGS;
 				return false;
 			return cocks[arg].hasKnot();
 		}
-
-
-		public function maxHP():Number
-		{
-			var max:Number = 0;
-			max += int(tou * 2 + 50);
-			if (tou >= 21) max += Math.round(tou);
-			if (tou >= 41) max += Math.round(tou);
-			if (tou >= 61) max += Math.round(tou);
-			if (tou >= 81) max += Math.round(tou);
-			if (tou >= 101) max += Math.round(tou);
-			if (tou >= 151) max += Math.round(tou);
-			if (tou >= 201) max += Math.round(tou);
-			if (tou >= 251) max += Math.round(tou);
-			if (tou >= 301) max += Math.round(tou);
-			if (tou >= 351) max += Math.round(tou);
-			if (tou >= 401) max += Math.round(tou);
-			if (tou >= 451) max += Math.round(tou);
-			if (tou >= 501) max += Math.round(tou);
-			if (tou >= 551) max += Math.round(tou);
-			if (tou >= 601) max += Math.round(tou);
-			if (tou >= 651) max += Math.round(tou);
-			if (tou >= 701) max += Math.round(tou);
-			if (tou >= 751) max += Math.round(tou);
-			if (tou >= 801) max += Math.round(tou);
-			if (tou >= 851) max += Math.round(tou);
-			if (tou >= 901) max += Math.round(tou);
-			if (tou >= 951) max += Math.round(tou);
-			if (game.player.alicornScore() >= 11) max += (150 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));
-			if (game.player.centaurScore() >= 8) max += (100 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));
-			if (game.player.dragonScore() >= 4) max += (100 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));
-			if (game.player.dragonScore() >= 10) max += (100 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));
-			if (game.player.dragonScore() >= 20) max += (100 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));
-			if (game.player.dragonScore() >= 28) max += (100 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));
-			if (game.player.gorgonScore() >= 11) max += (50 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));
-			if (game.player.horseScore() >= 4) max += (35 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));
-			if (game.player.horseScore() >= 7) max += (35 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));
-			if (game.player.manticoreScore() >= 5) max += (50 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));
-			if (game.player.rhinoScore() >= 4) max += (100 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));
-			if (game.player.scyllaScore() >= 4) max += (25 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));
-			if (game.player.scyllaScore() >= 7) max += (25 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));
-			if (game.player.scyllaScore() >= 12) max += (100 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));
-			if (game.player.unicornScore() >= 9) max += (120 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));
-			if (findPerk(PerkLib.RefinedBodyI) >= 0) max += 50;
-			if (findPerk(PerkLib.RefinedBodyII) >= 0) max += 50;
-			if (findPerk(PerkLib.RefinedBodyIII) >= 0) max += 50;
-			if (findPerk(PerkLib.RefinedBodyIV) >= 0) max += 50;
-			if (findPerk(PerkLib.RefinedBodyV) >= 0) max += 50;
-			if (findPerk(PerkLib.RefinedBodyVI) >= 0) max += 50;
-			if (findPerk(PerkLib.TankI) >= 0) max += Math.round(tou*3);
- 			if (findPerk(PerkLib.TankII) >= 0) max += Math.round(tou*3);
-			if (findPerk(PerkLib.TankIII) >= 0) max += Math.round(tou*3);
-			if (findPerk(PerkLib.TankIV) >= 0) max += Math.round(tou*3);
-			if (findPerk(PerkLib.TankV) >= 0) max += Math.round(tou*3);
-			if (findPerk(PerkLib.TankVI) >= 0) max += Math.round(tou*3);
-			if (findPerk(PerkLib.GoliathI) >= 0) max += Math.round(str*2);
- 			if (findPerk(PerkLib.GoliathII) >= 0) max += Math.round(str*2);
-			if (findPerk(PerkLib.GoliathIII) >= 0) max += Math.round(str*2);
-			if (findPerk(PerkLib.GoliathIV) >= 0) max += Math.round(str*2);
-			if (findPerk(PerkLib.GoliathV) >= 0) max += Math.round(str*2);
-			if (findPerk(PerkLib.GoliathVI) >= 0) max += Math.round(str*2);
-			if (findPerk(PerkLib.CheetahI) >= 0) max += Math.round(spe);
- 			if (findPerk(PerkLib.CheetahII) >= 0) max += Math.round(spe);
-			if (findPerk(PerkLib.CheetahIII) >= 0) max += Math.round(spe);
-			if (findPerk(PerkLib.CheetahIV) >= 0) max += Math.round(spe);
-			if (findPerk(PerkLib.CheetahV) >= 0) max += Math.round(spe);
-			if (findPerk(PerkLib.CheetahVI) >= 0) max += Math.round(spe);
-			if (findPerk(PerkLib.ElementalBondFlesh) >= 0) {
-				if (hasStatusEffect(StatusEffects.SummonedElementalsAir)) max += 25 * statusEffectv2(StatusEffects.SummonedElementalsAir);
-				if (hasStatusEffect(StatusEffects.SummonedElementalsEarth)) max += 25 * statusEffectv2(StatusEffects.SummonedElementalsEarth);
-				if (hasStatusEffect(StatusEffects.SummonedElementalsFire)) max += 25 * statusEffectv2(StatusEffects.SummonedElementalsFire);
-				if (hasStatusEffect(StatusEffects.SummonedElementalsWater)) max += 25 * statusEffectv2(StatusEffects.SummonedElementalsWater);
-				if (hasStatusEffect(StatusEffects.SummonedElementalsEther)) max += 25 * statusEffectv2(StatusEffects.SummonedElementalsEther);
-				if (hasStatusEffect(StatusEffects.SummonedElementalsWood)) max += 25 * statusEffectv2(StatusEffects.SummonedElementalsWood);
-				if (hasStatusEffect(StatusEffects.SummonedElementalsMetal)) max += 25 * statusEffectv2(StatusEffects.SummonedElementalsMetal);
-				if (hasStatusEffect(StatusEffects.SummonedElementalsIce)) max += 25 * statusEffectv2(StatusEffects.SummonedElementalsIce);
-				if (hasStatusEffect(StatusEffects.SummonedElementalsLightning)) max += 25 * statusEffectv2(StatusEffects.SummonedElementalsLightning);
-				if (hasStatusEffect(StatusEffects.SummonedElementalsDarkness)) max += 25 * statusEffectv2(StatusEffects.SummonedElementalsDarkness);
-			}
-			if (findPerk(PerkLib.JobGuardian) >= 0) max += 30;
-			if (findPerk(PerkLib.DeityJobMunchkin) >= 0) max += 150;
-			if (findPerk(PerkLib.BodyCultivator) >= 0) max += (25 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));
-			if (findPerk(PerkLib.FleshBodyApprenticeStage) >= 0) {
-				if (findPerk(PerkLib.SoulApprentice) >= 0) max += (50 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));
-				if (findPerk(PerkLib.SoulPersonage) >= 0) max += (50 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));
-				if (findPerk(PerkLib.SoulWarrior) >= 0) max += (50 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));
-			}
-			if (findPerk(PerkLib.FleshBodyWarriorStage) >= 0) {
-				if (findPerk(PerkLib.SoulSprite) >= 0) max += (75 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));
-				if (findPerk(PerkLib.SoulScholar) >= 0) max += (75 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));
-				if (findPerk(PerkLib.SoulElder) >= 0) max += (75 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));
-			}
-			if (findPerk(PerkLib.FleshBodyElderStage) >= 0) {
-				if (findPerk(PerkLib.SoulExalt) >= 0) max += (100 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));
-				if (findPerk(PerkLib.SoulOverlord) >= 0) max += (100 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));
-				if (findPerk(PerkLib.SoulTyrant) >= 0) max += (100 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));
-			}
-			if (findPerk(PerkLib.FleshBodyOverlordStage) >= 0) {
-				if (findPerk(PerkLib.SoulKing) >= 0) max += (125 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));
-				if (findPerk(PerkLib.SoulEmperor) >= 0) max += (125 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));
-				if (findPerk(PerkLib.SoulAncestor) >= 0) max += (125 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));
-			}
-			if (findPerk(PerkLib.HclassHeavenTribulationSurvivor) >= 0) max += (150 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));
-			if (findPerk(PerkLib.GclassHeavenTribulationSurvivor) >= 0) max += (225 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));
-			if (findPerk(PerkLib.AscensionHardiness) >= 0) max += perkv1(PerkLib.AscensionHardiness) * 100;
-			if (findPerk(PerkLib.ChiReflowDefense) >= 0) max += UmasShop.NEEDLEWORK_DEFENSE_EXTRA_HP;
-			max += level * 15;
-			if (findPerk(PerkLib.UnlockBody) >= 0) max += level * 15;
-			if (findPerk(PerkLib.AscensionUnlockedPotential) >= 0) max += level * 20;
-			if (jewelryEffectId == JewelryLib.MODIFIER_HP) max += jewelryEffectMagnitude;
-			max *= 1 + (countCockSocks("green") * 0.02);
-			max = Math.round(max);
-			if (max > 149999) max = 149999;
-			return max;
-		}
 		
-		public function maxLust():Number
+		public override function maxFatigue():Number
 		{
-			var max:Number = 100;
-			if (game.player.cowScore() >= 4) max += (25 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));
-			if (game.player.cowScore() >= 9) max += (25 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));
-			if (game.player.demonScore() >= 5) max += (50 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));
-			if (game.player.demonScore() >= 11) max += (50 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));
-			if (game.player.devilkinScore() >= 7) max += (75 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));
-			if (game.player.devilkinScore() >= 10) max += (75 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));
-			if (game.player.dragonScore() >= 20) max += (25 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));
-			if (game.player.dragonScore() >= 28) max += (25 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));
-			if (game.player.minotaurScore() >= 4) max += (25 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));
-			if (game.player.minotaurScore() >= 9) max += (25 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));
-			if (game.player.phoenixScore() >= 5) max += (25 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));
-			if (game.player.salamanderScore() >= 4) max += (25 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));
-			if (game.player.sharkScore() >= 9 && game.player.vaginas.length > 0 && game.player.cocks.length > 0) max += (50 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));
-			if (findPerk(PerkLib.InhumanDesireI) >= 0) max += 20;
-			if (findPerk(PerkLib.InhumanDesireII) >= 0) max += 20;
-			if (findPerk(PerkLib.InhumanDesireIII) >= 0) max += 20;
-			if (findPerk(PerkLib.InhumanDesireIV) >= 0) max += 20;
-			if (findPerk(PerkLib.InhumanDesireV) >= 0) max += 20;
-			if (findPerk(PerkLib.InhumanDesireVI) >= 0) max += 20;
-			if (findPerk(PerkLib.DemonicDesireI) >= 0) max += Math.round(lib);
-			if (findPerk(PerkLib.DemonicDesireII) >= 0) max += Math.round(lib);
-			if (findPerk(PerkLib.DemonicDesireIII) >= 0) max += Math.round(lib);
-			if (findPerk(PerkLib.DemonicDesireIV) >= 0) max += Math.round(lib);
-			if (findPerk(PerkLib.DemonicDesireV) >= 0) max += Math.round(lib);
-			if (findPerk(PerkLib.DemonicDesireVI) >= 0) max += Math.round(lib);
-			if (findPerk(PerkLib.BasicSelfControl) >= 0) max += 15;
-			if (findPerk(PerkLib.HalfStepToImprovedSelfControl) >= 0) max += 25;
-			if (findPerk(PerkLib.ImprovedSelfControl) >= 0) max += 40;
-			if (findPerk(PerkLib.HalfStepToAdvancedSelfControl) >= 0) max += 60;
-			if (findPerk(PerkLib.AdvancedSelfControl) >= 0) max += 100;
-			if (findPerk(PerkLib.HalfStepToSuperiorSelfControl) >= 0) max += 160;
-			if (findPerk(PerkLib.SuperiorSelfControl) >= 0) max += 250;
-			if (findPerk(PerkLib.HalfStepToPeerlessSelfControl) >= 0) max += 350;
-			if (findPerk(PerkLib.PeerlessSelfControl) >= 0) max += 500;
-			if (findPerk(PerkLib.HalfStepToInhumanSelfControl) >= 0) max += 750;
-			if (findPerk(PerkLib.InhumanSelfControl) >= 0) max += 1000;
-			if (findPerk(PerkLib.HalfStepToEpicSelfControl) >= 0) max += 1500;
-			if (findPerk(PerkLib.EpicSelfControl) >= 0) max += 2250;
-			if (findPerk(PerkLib.ElementalBondUrges) >= 0) {
-				if (hasStatusEffect(StatusEffects.SummonedElementalsAir)) max += 5 * statusEffectv2(StatusEffects.SummonedElementalsAir);
-				if (hasStatusEffect(StatusEffects.SummonedElementalsEarth)) max += 5 * statusEffectv2(StatusEffects.SummonedElementalsEarth);
-				if (hasStatusEffect(StatusEffects.SummonedElementalsFire)) max += 5 * statusEffectv2(StatusEffects.SummonedElementalsFire);
-				if (hasStatusEffect(StatusEffects.SummonedElementalsWater)) max += 5 * statusEffectv2(StatusEffects.SummonedElementalsWater);
-				if (hasStatusEffect(StatusEffects.SummonedElementalsEther)) max += 5 * statusEffectv2(StatusEffects.SummonedElementalsEther);
-				if (hasStatusEffect(StatusEffects.SummonedElementalsWood)) max += 5 * statusEffectv2(StatusEffects.SummonedElementalsWood);
-				if (hasStatusEffect(StatusEffects.SummonedElementalsMetal)) max += 5 * statusEffectv2(StatusEffects.SummonedElementalsMetal);
-				if (hasStatusEffect(StatusEffects.SummonedElementalsIce)) max += 5 * statusEffectv2(StatusEffects.SummonedElementalsIce);
-				if (hasStatusEffect(StatusEffects.SummonedElementalsLightning)) max += 5 * statusEffectv2(StatusEffects.SummonedElementalsLightning);
-				if (hasStatusEffect(StatusEffects.SummonedElementalsDarkness)) max += 5 * statusEffectv2(StatusEffects.SummonedElementalsDarkness);
-			}
-			if (findPerk(PerkLib.BroBody) >= 0 || findPerk(PerkLib.BimboBody) >= 0 || findPerk(PerkLib.FutaForm) >= 0) max += 20;
-			if (findPerk(PerkLib.OmnibusGift) >= 0) max += 15;
-			if (findPerk(PerkLib.JobCourtesan) >= 0) max += 20;
-			if (findPerk(PerkLib.JobSeducer) >= 0) max += 10;
-			if (findPerk(PerkLib.DeityJobMunchkin) >= 0) max += 50;
-			if (findPerk(PerkLib.HclassHeavenTribulationSurvivor) >= 0) max += (50 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));
-			if (findPerk(PerkLib.GclassHeavenTribulationSurvivor) >= 0) max += (75 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));
-			if (findPerk(PerkLib.AscensionDesires) >= 0) max += perkv1(PerkLib.AscensionDesires) * 10;
-			if (findPerk(PerkLib.UnlockId) >= 0) max += level;
-			if (findPerk(PerkLib.AscensionUnlockedPotential2ndStage) >= 0) max += level * 2;
-			if (max > 15999) max = 15999;
-			return max;
-		}
-		
-		public function maxFatigue():Number
-		{
-			var max:Number = 100;
-			if (game.player.alicornScore() >= 6) max += (50 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));
+			var max:Number = 150;
+			if (game.player.alicornScore() >= 12) max += (50 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));
 			if (game.player.dragonScore() >= 20) max += (100 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));
 			if (game.player.dragonScore() >= 28) max += (100 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));
 			if (game.player.foxScore() >= 7) max += (20 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));
 			if (game.player.kitsuneScore() >= 5 && game.player.tailCount >= 2 && game.player.tailCount < 9) max += (100 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));
 			if (game.player.kitsuneScore() >= 12 && game.player.tailCount == 9) max += (300 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));
 			if (game.player.lizardScore() >= 4) max += (30 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));
-			if (game.player.unicornScore() >= 5) max += (20 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));
+			if (game.player.unicornScore() >= 10) max += (20 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));
 			if (findPerk(PerkLib.ArchersStaminaI) >= 0) max += Math.round(spe);
 			if (findPerk(PerkLib.ArchersStaminaII) >= 0) max += Math.round(spe);
 			if (findPerk(PerkLib.ArchersStaminaIII) >= 0) max += Math.round(spe);
@@ -827,29 +653,38 @@ import classes.GlobalFlags.kFLAGS;
 			if (findPerk(PerkLib.InhumanEndurance) >= 0) max += 2000;
 			if (findPerk(PerkLib.HalfStepToEpicEndurance) >= 0) max += 3000;
 			if (findPerk(PerkLib.EpicEndurance) >= 0) max += 4500;
+			if (findPerk(PerkLib.HalfStepToLegendaryEndurance) >= 0) max += 7000;
+			if (findPerk(PerkLib.LegendaryEndurance) >= 0) max += 10000;
+			if (findPerk(PerkLib.HalfStepToMythicalEndurance) >= 0) max += 15000;
+			if (findPerk(PerkLib.MythicalEndurance) >= 0) max += 20000;
 			if (findPerk(PerkLib.JobHunter) >= 0) max += 50;
 			if (findPerk(PerkLib.JobRanger) >= 0) max += 5;
 			if (findPerk(PerkLib.DeityJobMunchkin) >= 0) max += 100;
 			if (findPerk(PerkLib.PrestigeJobArcaneArcher) >= 0) max += 600;
 			if (findPerk(PerkLib.PrestigeJobSoulArcher) >= 0) max += 150;
 			if (findPerk(PerkLib.PrestigeJobSeer) >= 0) max += 900;
+			if (findPerk(PerkLib.EromancyBeginner) >= 0) max += Math.round(lib);
+			if (findPerk(PerkLib.EromancyExpert) >= 0) max += Math.round(lib*2);
+			if (findPerk(PerkLib.EromancyMaster) >= 0) max += Math.round(lib*2);
 			if (findPerk(PerkLib.HclassHeavenTribulationSurvivor) >= 0) max += (100 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));
 			if (findPerk(PerkLib.GclassHeavenTribulationSurvivor) >= 0) max += (150 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));
+			if (findPerk(PerkLib.FclassHeavenTribulationSurvivor) >= 0) max += (200 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));
 			if (findPerk(PerkLib.AscensionEndurance) >= 0) max += perkv1(PerkLib.AscensionEndurance) * 30;
-			if (jewelryEffectId == JewelryLib.MODIFIER_MP) max += jewelryEffectMagnitude;
 			max += level * 5;
-			if (findPerk(PerkLib.UnlockBody2ndStage) >= 0) max += level * 5;
+			if (findPerk(PerkLib.UnlockEndurance) >= 0) max += level * 5;
+			if (findPerk(PerkLib.UnlockEndurance2ndStage) >= 0) max += level * 5;
+			if (findPerk(PerkLib.UnlockEndurance3rdStage) >= 0) max += level * 5;
+			if (findPerk(PerkLib.UnlockEndurance4thStage) >= 0) max += level * 5;
 			if (findPerk(PerkLib.AscensionUnlockedPotential) >= 0) max += level * 6;
-			if (max > 40999) max = 40999;
+			if (max > 299999) max = 299999;
 			return max;
 		}
 		
-		public function maxSoulforce():Number
+		public override function maxSoulforce():Number
 		{
 			var max:Number = 50;
-			if (game.player.alicornScore() >= 6) max += (150 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));//przenieść do mnożnika?
-			if (game.player.unicornScore() >= 5) max += (50 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));//przenieść do mnożnika?
 			if (hasPerk(PerkLib.DemonicLethicite)) max += Math.round(lib);
+			if (hasPerk(PerkLib.Metamorph)) max += (50 * (1 + perkv1(PerkLib.Metamorph)));
 			if (flags[kFLAGS.SOUL_CULTIVATION] >= 2) max += 25;
 			if (flags[kFLAGS.SOUL_CULTIVATION] >= 3) max += 25;
 			if (flags[kFLAGS.SOUL_CULTIVATION] >= 4) max += 30;
@@ -920,12 +755,15 @@ import classes.GlobalFlags.kFLAGS;
 			}
 			if (flags[kFLAGS.SOULFORCE_GAINED_FROM_CULTIVATING] > 0) max += flags[kFLAGS.SOULFORCE_GAINED_FROM_CULTIVATING];//+310
 			if (jewelryEffectId == JewelryLib.MODIFIER_SF) max += jewelryEffectMagnitude;//+20
+			if (necklaceName == "soulmetal necklace") max += necklaceEffectMagnitude;//+100
 			if (findPerk(PerkLib.JobSoulCultivator) >= 0) {//4105-5105 soulforce na razie przed liczeniem mnożnika jest
 				var multimax:Number = 1;
+				if (game.player.alicornScore() >= 12) multimax += 0.2;
 				if (game.player.dragonScore() >= 20) multimax += 0.1;
 				if (game.player.dragonScore() >= 28) multimax += 0.1;
 				if (game.player.kitsuneScore() >= 5 && game.player.tailCount >= 2 && game.player.tailCount < 9) multimax += 0.2;
 				if (game.player.kitsuneScore() >= 12 && game.player.tailCount == 9) multimax += 0.4;
+				if (game.player.unicornScore() >= 10) multimax += 0.1;
 				if (findPerk(PerkLib.HistoryCultivator) >= 0 || findPerk(PerkLib.PastLifeCultivator) >= 0) multimax += 0.1;
 				if (findPerk(PerkLib.DeityJobMunchkin) >= 0) multimax += 0.1;
 				if (findPerk(PerkLib.Dantain) >= 0) {
@@ -945,20 +783,24 @@ import classes.GlobalFlags.kFLAGS;
 				}
 				if (findPerk(PerkLib.HclassHeavenTribulationSurvivor) >= 0) multimax += 0.1;
 				if (findPerk(PerkLib.GclassHeavenTribulationSurvivor) >= 0) multimax += 0.15;
+				if (findPerk(PerkLib.FclassHeavenTribulationSurvivor) >= 0) multimax += 0.2;
 				//if (flags[kFLAGS.UNLOCKED_MERIDIANS] > 0) multimax += flags[kFLAGS.UNLOCKED_MERIDIANS] * 0.05;
 				//if (findPerk(PerkLib.Ascension) >= 0) multimax += perkv1(PerkLib.Ascension) * 0.01;
 				max *= multimax;
 			}
-			if (findPerk(PerkLib.UnlockMind2ndStage) >= 0) max += level * 5;
+			if (findPerk(PerkLib.UnlockSpirit) >= 0) max += level * 5;
+			if (findPerk(PerkLib.UnlockSpirit2ndStage) >= 0) max += level * 5;
+			if (findPerk(PerkLib.UnlockSpirit3rdStage) >= 0) max += level * 5;
+			if (findPerk(PerkLib.UnlockSpirit4thStage) >= 0) max += level * 5;
 			if (findPerk(PerkLib.AscensionUnlockedPotential2ndStage) >= 0) max += level * 6;
 			max = Math.round(max);
-			if (max > 79999) max = 79999;
+			if (max > 399999) max = 399999;
 			return max;
 		}
 		
-		public function maxWrath():Number
+		public override function maxWrath():Number
 		{
-			var max:Number = 100;
+			var max:Number = 250;
 			if (findPerk(PerkLib.DoubleAttack) >= 0) max += 10;
 			if (findPerk(PerkLib.TripleAttack) >= 0) max += 10;
 			if (findPerk(PerkLib.QuadrupleAttack) >= 0) max += 10;
@@ -972,6 +814,11 @@ import classes.GlobalFlags.kFLAGS;
 			if (findPerk(PerkLib.PrimalFuryIV) >= 0) max += 10;
 			if (findPerk(PerkLib.PrimalFuryV) >= 0) max += 10;
 			if (findPerk(PerkLib.PrimalFuryVI) >= 0) max += 10;
+			if (findPerk(PerkLib.FeralArmor) >= 0) max += 20;
+			if (findPerk(PerkLib.ClawTraining) >= 0) max += 20;
+			if (findPerk(PerkLib.ExtraClawAttack) >= 0) max += 30;
+			if (findPerk(PerkLib.MultiClawAttack) >= 0) max += 40;
+			if (findPerk(PerkLib.ClawingFlurry) >= 0) max += 50;
 			if (findPerk(PerkLib.BasicTranquilness) >= 0) max += 15;
 			if (findPerk(PerkLib.HalfStepToImprovedTranquilness) >= 0) max += 25;
 			if (findPerk(PerkLib.ImprovedTranquilness) >= 0) max += 40;
@@ -985,7 +832,11 @@ import classes.GlobalFlags.kFLAGS;
 			if (findPerk(PerkLib.InhumanTranquilness) >= 0) max += 1000;
 			if (findPerk(PerkLib.HalfStepToEpicTranquilness) >= 0) max += 1500;
 			if (findPerk(PerkLib.EpicTranquilness) >= 0) max += 2250;
-			if (findPerk(PerkLib.JobBarbarian) >= 0) max += 20;
+			if (findPerk(PerkLib.HalfStepToLegendaryTranquilness) >= 0) max += 3500;
+			if (findPerk(PerkLib.LegendaryTranquilness) >= 0) max += 5000;
+			if (findPerk(PerkLib.HalfStepToMythicalTranquilness) >= 0) max += 7500;
+			if (findPerk(PerkLib.MythicalTranquilness) >= 0) max += 10000;
+			if (findPerk(PerkLib.JobSwordsman) >= 0) max += 20;
 			if (findPerk(PerkLib.JobBeastWarrior) >= 0) max += 20;
 			if (findPerk(PerkLib.JobDervish) >= 0) max += 20;
 			if (findPerk(PerkLib.JobWarlord) >= 0) max += 20;
@@ -996,18 +847,22 @@ import classes.GlobalFlags.kFLAGS;
 			if (findPerk(PerkLib.Berzerker) >= 0) max += 100;
 			if (findPerk(PerkLib.Lustzerker) >= 0) max += 100;
 			if (findPerk(PerkLib.PrestigeJobBerserker) >= 0) max += 200;
-			if (findPerk(PerkLib.Rage) >= 0) max += 250;
-			if (findPerk(PerkLib.Anger) >= 0) max += 300;
+			if (findPerk(PerkLib.Rage) >= 0) max += 300;
+			if (findPerk(PerkLib.Anger) >= 0) max += 400;
+			if (findPerk(PerkLib.PrestigeJobTempest) >= 0) max += 100;
 			if (findPerk(PerkLib.AscensionFury) >= 0) max += perkv1(PerkLib.AscensionFury) * 20;
+			if (findPerk(PerkLib.UnlockId) >= 0) max += level;
 			if (findPerk(PerkLib.UnlockId2ndStage) >= 0) max += level;
+			if (findPerk(PerkLib.UnlockId3rdStage) >= 0) max += level;
+			if (findPerk(PerkLib.UnlockId4thStage) >= 0) max += level;
 			if (findPerk(PerkLib.AscensionUnlockedPotential2ndStage) >= 0) max += level * 2;
-			if (max > 8799) max = 8799;//obecnie max to 8720
+			if (max > 39999) max = 39999;
 			return max;
 		}
 		
-		public function maxMana():Number
+		public override function maxMana():Number
 		{
-			var max:Number = 100;
+			var max:Number = 200;
 			if (findPerk(PerkLib.ManaAffinityI) >= 0) max += 35;
 			if (findPerk(PerkLib.ManaAffinityII) >= 0) max += 35;
 			if (findPerk(PerkLib.ManaAffinityIII) >= 0) max += 35;
@@ -1057,6 +912,10 @@ import classes.GlobalFlags.kFLAGS;
 			if (findPerk(PerkLib.InhumanSpirituality) >= 0) max += 3000;
 			if (findPerk(PerkLib.HalfStepToEpicSpirituality) >= 0) max += 4500;
 			if (findPerk(PerkLib.EpicSpirituality) >= 0) max += 6750;
+			if (findPerk(PerkLib.HalfStepToLegendarySpirituality) >= 0) max += 10500;
+			if (findPerk(PerkLib.LegendarySpirituality) >= 0) max += 15000;
+			if (findPerk(PerkLib.HalfStepToMythicalSpirituality) >= 0) max += 22500;
+			if (findPerk(PerkLib.MythicalSpirituality) >= 0) max += 30000;
 			if (findPerk(PerkLib.Archmage) >= 0 && inte >= 75) max += 45;
 			if (findPerk(PerkLib.Channeling) >= 0 && inte >= 60) max += 30;
 			if (findPerk(PerkLib.GrandArchmage) >= 0 && inte >= 100) max += 60;
@@ -1065,6 +924,11 @@ import classes.GlobalFlags.kFLAGS;
 			if (findPerk(PerkLib.Mage) >= 0 && inte >= 50) max += 30;
 			if (findPerk(PerkLib.Spellpower) >= 0 && inte >= 50) max += 15;
 			if (findPerk(PerkLib.JobSorcerer) >= 0) max += 15;
+			if (findPerk(PerkLib.JobHealer) >= 0) max += 30;
+			if (findPerk(PerkLib.SpellpowerHealing) >= 0 && wis >= 50) max += 30;
+			if (findPerk(PerkLib.EromancyBeginner) >= 0) max += Math.round(inte);
+			if (findPerk(PerkLib.EromancyExpert) >= 0) max += Math.round(inte);
+			if (findPerk(PerkLib.EromancyMaster) >= 0) max += Math.round(inte*2);
 			if (findPerk(PerkLib.ArcaneRegenerationMinor) >= 0 && inte >= 50) {
 				var multimax:Number = 1;
 				multimax += 0.1;
@@ -1074,36 +938,48 @@ import classes.GlobalFlags.kFLAGS;
 				max *= multimax;
 			}
 			if (findPerk(PerkLib.AscensionInnerPower) >= 0) max += perkv1(PerkLib.AscensionInnerPower) * 40;
+			if (jewelryEffectId == JewelryLib.MODIFIER_MP) max += jewelryEffectMagnitude;
 			max += level * 10;
-			if (findPerk(PerkLib.UnlockMind) >= 0) max += level * 10;
-			if (findPerk(PerkLib.AscensionUnlockedPotential) >= 0) max += level * 12;
+			if (findPerk(PerkLib.UnlockForce) >= 0) max += level * 10;
+			if (findPerk(PerkLib.UnlockForce2ndStage) >= 0) max += level * 10;
+			if (findPerk(PerkLib.UnlockForce3rdStage) >= 0) max += level * 10;
+			if (findPerk(PerkLib.UnlockForce4thStage) >= 0) max += level * 10;
+			if (findPerk(PerkLib.AscensionUnlockedPotential2ndStage) >= 0) max += level * 12;
 			max = Math.round(max);
-			if (max > 79999) max = 79999;
+			if (max > 499999) max = 499999;
 			return max;
 		}
 		
 		public function maxVenom():Number
 		{
 			var maxven:Number = 0;
-			if (game.player.faceType == FACE_SNAKE_FANGS) maxven += 100;
-			if (game.player.faceType == FACE_SPIDER_FANGS) maxven += 100;
-			if (game.player.tailType == TAIL_TYPE_BEE_ABDOMEN) maxven += 150;
-			if (game.player.tailType == TAIL_TYPE_SPIDER_ADBOMEN) maxven += 150;
-			if (game.player.tailType == TAIL_TYPE_SCORPION) maxven += 150;
-			if (game.player.tailType == TAIL_TYPE_MANTICORE_PUSSYTAIL) maxven += 200;
+			var multimaxven:Number = 1;
+			if (game.player.faceType == Face.SNAKE_FANGS) maxven += 100;
+			if (game.player.faceType == Face.SPIDER_FANGS) maxven += 100;
+			if (game.player.tailType == Tail.BEE_ABDOMEN) maxven += 150;
+			if (game.player.tailType == Tail.SPIDER_ADBOMEN) maxven += 150;
+			if (game.player.tailType == Tail.SCORPION) maxven += 150;
+			if (game.player.tailType == Tail.MANTICORE_PUSSYTAIL) maxven += 200;
+			if (findPerk(PerkLib.ImprovedVenomGland) >= 0) maxven += 100;
+			if (findPerk(PerkLib.VenomGlands) >= 0) maxven += 25;
+			if (findPerk(PerkLib.VenomGlandsEvolved) >= 0) maxven += 100;
+			if (findPerk(PerkLib.VenomGlandsFinalForm) >= 0) {
+				maxven += 175;
+				multimaxven += 0.2;
+			}
 			if (findPerk(PerkLib.JobSoulCultivator) >= 0) {
-				var multimaxven:Number = 1;
 				if (findPerk(PerkLib.HclassHeavenTribulationSurvivor) >= 0) multimaxven += 0.1;
 				if (findPerk(PerkLib.GclassHeavenTribulationSurvivor) >= 0) multimaxven += 0.15;
-				maxven *= multimaxven;
+				if (findPerk(PerkLib.FclassHeavenTribulationSurvivor) >= 0) multimaxven += 0.2;
 			}
+			maxven *= multimaxven;
 			maxven = Math.round(maxven);
 			return maxven;
 		}
 		
 		public function maxHunger():Number
 		{
-			var max:Number = 100
+			var max:Number = 100;
 			if (flags[kFLAGS.SOUL_CULTIVATION] >= 2) max += 10;
 			if (flags[kFLAGS.SOUL_CULTIVATION] >= 3) max += 10;
 			if (flags[kFLAGS.SOUL_CULTIVATION] >= 4) max += 20;
@@ -1145,74 +1021,17 @@ import classes.GlobalFlags.kFLAGS;
 			if (game.player.dragonScore() >= 20) max += 50;
 			if (game.player.dragonScore() >= 28) max += 50;
 			if (findPerk(PerkLib.EzekielBlessing) >= 0) max += 50;
+			if (findPerk(PerkLib.ManticoreMetabolismEvolved) >= 0) max += 50;
 			// (findPerk(PerkLib.) >= 0 && game.player.humanScore() < 5) max += 100;
 			// jak bedzie mieć chimeryczna nature to kolejny boost to max hunger moze...150 lub nawet 200 ^^
 			// (findPerk(PerkLib.IronStomach) >= 0) max += level;
 			if (findPerk(PerkLib.HclassHeavenTribulationSurvivor) >= 0) max += 20;
 			if (findPerk(PerkLib.GclassHeavenTribulationSurvivor) >= 0) max += 30;
-			if (max > 1409) max = 1409;//obecnie max to 1360
+			if (findPerk(PerkLib.FclassHeavenTribulationSurvivor) >= 0) max += 40;
+			if (max > 1409) max = 1409;//obecnie max to 1400
 			return max;
 		}
 
-	public function hairOrFur():String
-	{
-		return Appearance.hairOrFur(this);
-	}
-
-	public function hairDescript():String
-	{
-		return Appearance.hairDescription(this);
-	}
-
-	public function beardDescript():String
-	{
-		return Appearance.beardDescription(this);
-	}
-
-	public function hipDescript():String
-	{
-		return Appearance.hipDescription(this);
-	}
-
-	public function assDescript():String
-	{
-		return buttDescript();
-	}
-
-	public function buttDescript():String
-	{
-		return Appearance.buttDescription(this);
-	}
-
-	public function tongueDescript():String
-	{
-		return Appearance.tongueDescription(this);
-	}
-
-	public function hornDescript():String
-	{
-		return Appearance.DEFAULT_HORNS_NAMES[hornType] + " horns";
-	}
-
-	public function tailDescript():String
-	{
-		return Appearance.tailDescript(this);
-	}
-
-	public function oneTailDescript():String
-	{
-		return Appearance.oneTailDescript(this);
-	}
-
-	public function wingsDescript():String
-	{
-		return Appearance.wingsDescript(this);
-	}
-
-	public function eyesDescript():String
-	{
-		return Appearance.eyesDescript(this);
-	}
 
 	}
 

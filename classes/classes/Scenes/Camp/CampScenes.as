@@ -4,18 +4,13 @@
  */
 package classes.Scenes.Camp 
 {
-	import classes.*;
-	import classes.GlobalFlags.kFLAGS;
-	import classes.GlobalFlags.kACHIEVEMENTS;
-	import classes.GlobalFlags.kGAMECLASS;
-	import classes.Scenes.Camp;
-	import classes.Scenes.Camp.*;
-	import classes.Scenes.NPCs.*;
-	import classes.StatusEffects;
-	
-	import coc.view.MainView;
-	
-	use namespace kGAMECLASS;
+import classes.*;
+import classes.GlobalFlags.kFLAGS;
+import classes.CoC;
+import classes.Scenes.NPCs.*;
+import classes.Scenes.SceneLib;
+
+use namespace CoC;
 	
 	public class CampScenes extends NPCAwareContent
 {
@@ -23,15 +18,16 @@ package classes.Scenes.Camp
 public static var elderKitsuneColors:Array = ["metallic golden", "golden blonde", "metallic silver", "silver blonde", "snow white", "iridescent gray"];
 
 public function KitsuneShrine():void {
-	var tailz:int = getGame().kitsuneScene.meditateAtKitsuneShrine();
-	if (tailz == 9 && flags[kFLAGS.AYANE_FOLLOWER == 0]) {
+    var tailz:int = SceneLib.kitsuneScene.meditateAtKitsuneShrine();
+    if (tailz == 9 && flags[kFLAGS.AYANE_FOLLOWER == 0]) {
 		outputText("\n\nYou see a form surging from the shadow of the shrine. It’s Ayane and you ponder how she found your camp.");
 		outputText("\n\nThe kitsune approaches and bows to you in reverence. \"<i>You have acquired a near deific status [name], as a priestess of Taoth it would be an honor to serve as your attendant. That is, if you would allow me to follow and assist you.</i>\"");
 		outputText("\n\nA little surprised, you ask Ayane why she wants to serve you.");
 		outputText("\n\n\"<i>Nine-tailed kitsunes are, in every aspect, divine messengers of Taoth in the mortal world. By serving you I follow the fox god's teachings and uphold his will. It would be an honor with no equal for me.</i>\"");
 		outputText("\n\nDo you take her as your attendant?");
 		doYesNo(AyaneStayAtCamp, AyaneGoBackToShrine);
-	} else {
+	}
+	else {
 		doNext(camp.returnToCampUseOneHour);
 	}
 }
@@ -52,7 +48,6 @@ private function AyaneGoBackToShrine():void {
 }
 
 public function HotSpring():void {
-	//clearOutput();
 	menu();
 	if (!player.hasCock()) addButton(0, "Bath (F)", HaveAGirlBath).hint("Have a bath.");
 	if (player.hasCock()) {
@@ -64,13 +59,15 @@ public function HotSpring():void {
 
 public function HaveABoysBath():void {
 	clearOutput();
-	outputText("You decide to take a bath to rest your weary adventurer body.\n\n");
-	if (player.hasStatusEffect(StatusEffects.PureCampJojo) && flags[kFLAGS.JOJO_BIMBO_STATE] < 3) outputText("Jojo isn’t exactly what you would call muscular but his size and lean frame fits his mouse outlook.\n\n");
-	if (player.hasStatusEffect(StatusEffects.CampRathazul)) outputText("You're almost glad you don’t see anything of Rathazul body beyond the hip level but again It’s not like you are this interested into knowing.\n\n");
-	if (arianScene.arianFollower() && flags[kFLAGS.ARIAN_VAGINA] < 1 && flags[kFLAGS.ARIAN_COCK_SIZE] > 0) outputText("Arian doesn’t seem to hate the water. He's likely cold blooded and must be enjoying it.\n\n");
-	if (emberScene.followerEmber() && flags[kFLAGS.EMBER_GENDER] == 1) outputText("Ember body and maleness could easily give all the other boys inferiority complex.\n\n");
+	outputText("You decide to take a bath to rest your weary body.\n\n");
+	if (player.hasStatusEffect(StatusEffects.PureCampJojo) && flags[kFLAGS.JOJO_BIMBO_STATE] < 3) outputText("Jojo isn’t exactly what you would call muscular, but his size and lean frame fits his mouse appearance.\n\n");
+	if (player.hasStatusEffect(StatusEffects.CampRathazul)) outputText("You're almost glad you don’t see any part of Rathazul’s body beyond the hip level, though you’re not particularly interested anyway.\n\n");
+	if (arianScene.arianFollower() && flags[kFLAGS.ARIAN_VAGINA] < 1 && flags[kFLAGS.ARIAN_COCK_SIZE] > 0) outputText("Arian doesn’t seem to hate the water. He's likely cold blooded and is probably enjoying it.\n\n");
+	if (flags[kFLAGS.IZMA_BROFIED] == 1) outputText("Since Ismael is a true guy now, he was allowed to bath with the boys.\n\n");
+	if (flags[kFLAGS.KONSTANTIN_FOLLOWER] >= 2) outputText("Sitting near you, Konstantin relaxes and stretches his limbs. His large and thick build dwarf those from the other guys. While chit-chatting, he friendly puts one arm around you, and with the other he shamelessly washes his gigantic manhood, earning no few stares and some blushes from the other boys.\n\n");
+    if (emberScene.followerEmber() && flags[kFLAGS.EMBER_GENDER] == 1) outputText("Ember’s body and maleness could easily give all the other boys an inferiority complex.\n\n");
 	if (camp.loversHotBathCount() > 0) {
-		outputText("You discuss your goals with the other guys when a girl's voices ring out from outside the spring.\n\n");
+		outputText("You discuss your goals with the other guys when a girl's voice ring out from outside the spring.\n\n");
 		outputText("\"<i>Ok boys, time's up it’s our turn.</i>\"\n\n");
 		outputText("The lot of you hurry and dress back up before the girls get to the bath. It then comes to mind that you could peep on them... do you?\n\n");
 		menu();
@@ -107,7 +104,7 @@ public function PeepingTom3():void {
 	if (amilyScene.amilyFollower() && !amilyScene.amilyCorrupt()) outputText("Amily is sitting in the left corner. Naturally, she’s a little shy about her modest breasts.\n\n");
 	if (flags[kFLAGS.JOJO_BIMBO_STATE] == 3 && flags[kFLAGS.JOY_COCK_SIZE] < 1) outputText("Joy is quite silent for once, you expected her to constantly blabber lewd comments about everyone's nudity.\n\n");
 	if (followerKiha()) outputText("Kiha definitely doesn’t have a size complex, with her huge breasts leaving most of the other girls in the shade.\n\n");
-//	 outputText("Chi Chi, while small, easily sports a bigger cup than Amily.\n\n");//Chi Chi
+	if (flags[kFLAGS.CHI_CHI_FOLLOWER] > 2) outputText("Chi Chi, while small, easily sports a bigger cup than Amily.\n\n");//Chi Chi
 //	 outputText("Alvina does not seem to care about her breast size. Her dark charms and unholy attraction aura does everything for her. Naturally nobody but you can see she’s there as usual.\n\n");//Alvina
 	if (player.hasStatusEffect(StatusEffects.CampMarble) && flags[kFLAGS.FOLLOWER_AT_FARM_MARBLE] == 0) outputText("Marble easily has the largest pair here, beating all of the other girls without contest. They’re probably the milkiest too.\n\n");
 	if (isabellaFollower() && flags[kFLAGS.FOLLOWER_AT_FARM_ISABELLA] == 0) outputText("Isabella sings as she bathes, which is not surprising. You assume they’re folk songs from her home.\n\n");
@@ -126,14 +123,20 @@ public function PeepingTom3():void {
 		else outputText("While she was not always a girl, Izma is womanly enough that she was still accepted in the bath.\n\n");
 	}
 //	 outputText("As a naga, Samira take a lot of space in the bath. You're glad you made it big enough to hold as many people as necessary.\n\n");//Samira
-	if (arianScene.arianFollower() && flags[kFLAGS.ARIAN_VAGINA] > 0 && flags[kFLAGS.ARIAN_COCK_SIZE] == 0) outputText("Arian, while formerly a male, seems to get along with the other girls perfectly.\n\n");
+	if (flags[kFLAGS.DIANA_FOLLOWER] > 5) outputText("Diana is resting next to a set of medicinal and aromatic oils she regularly spray in the bath.\n\n");
+	//Michiko
+	if (flags[kFLAGS.LUNA_FOLLOWER] >= 4) outputText("Luna is enjoying a break relaxing for once as she is not on duty" + (flags[kFLAGS.LUNA_FOLLOWER] > 6 ? ", though for a few split second you imagined her doing doggy paddle in the water" : "") + ".\n\n");
+	if (arianScene.arianFollower() && flags[kFLAGS.ARIAN_VAGINA] > 0 && flags[kFLAGS.ARIAN_COCK_SIZE] == 0) outputText("Arian while formerly a male seems to get along with the other girls.\n\n");
+	if (flags[kFLAGS.SIDONIE_FOLLOWER] >= 1) {
+		outputText("Sitting on a side of the spring that is spacious enough to accommodate his larger frame, Sidonie lies relaxed, among the girls. Most of them give her not-so subtle glances, some of them at her hefty bosom, but the most directed at the thick equine member dangling from the legs. Not caring too much about their looks, she simply lies and enjoy the bath.\n\n");
+	}
 	outputText("The girls are discussing womanly topics giving you a nice display of their assets.\n\n");
 	if (emberScene.followerEmber() && (flags[kFLAGS.EMBER_GENDER] == 2 || flags[kFLAGS.EMBER_GENDER] == 3)) {
 		outputText("Something suddenly grabs you and lifts you by the leg. Turns out it’s Ember and she’s angry.\n\n");
 		outputText("\"<i>Hey! What the hell are you doing [name]! I saw all of it, you were peeping!</i>\"\n\n");
 		outputText("All the girls leap out of the hot spring and rush toward you, calling you a jerk and a voyeur as they glare. One of them craftily suggests you deserve a proper punishment.\n\n");
 		outputText("\"<i>Since [name] wants to see us naked that badly, let’s offer him a show he won’t forget!</i>\"\n\n");
-		outputText("You are shoved to the ground, each of your angry lovers taking turns to rape you. It’s gonna take a full day for your cock to stop burning from the abuse your lovers gave it.\n\n");
+		outputText("You are shoved to the ground, each of your angry lovers taking turns raping you. It’s gonna take a full day for your cock to stop burning from the abuse your lovers gave it.\n\n");
 		player.orgasm();
 		if (player.statusEffectv1(StatusEffects.Dysfunction) < 25) {
 			player.removeStatusEffect(StatusEffects.Dysfunction);
@@ -154,7 +157,7 @@ public function HaveAGirlBath():void {
 	if (amilyScene.amilyFollower() && !amilyScene.amilyCorrupt()) outputText("Amily is sitting in the left corner. Naturally, she’s a little shy about her modest breasts.\n\n");
 	if (flags[kFLAGS.JOJO_BIMBO_STATE] == 3 && flags[kFLAGS.JOY_COCK_SIZE] < 1) outputText("Joy is quite silent for once, you expected her to constantly blabber lewd comments about everyone's nudity.\n\n");
 	if (followerKiha()) outputText("Kiha definitely doesn’t have a size complex, with her huge breasts leaving most of the other girls in the shade.\n\n");
-//	 outputText("Chi Chi, while small, easily sports a bigger cup than Amily.\n\n");//Chi Chi
+	if (flags[kFLAGS.CHI_CHI_FOLLOWER] > 2) outputText("Chi Chi, while small, easily sports a bigger cup than Amily.\n\n");//Chi Chi
 //	 outputText("Alvina does not seem to care about her breast size. Her dark charms and unholy attraction aura does everything for her. Naturally nobody but you can see she’s there as usual.\n\n");//Alvina
 	if (player.hasStatusEffect(StatusEffects.CampMarble) && flags[kFLAGS.FOLLOWER_AT_FARM_MARBLE] == 0) outputText("Marble easily has the largest pair here, beating all of the other girls without contest, They’re probably the milkiest too.\n\n");
 	if (isabellaFollower() && flags[kFLAGS.FOLLOWER_AT_FARM_ISABELLA] == 0) outputText("Isabella sings as she bathes, which is not surprising. You assume they’re folk songs from her home.\n\n");
@@ -173,13 +176,16 @@ public function HaveAGirlBath():void {
 		outputText(".\n\n");
 	}
 //	 outputText("As a naga Samira take a lot of space in the bath. You're glad you made it big enough to hold as many people as necessary.\n\n");//Samira
+	if (flags[kFLAGS.DIANA_FOLLOWER] > 5) outputText("Diana is resting next to a set of medicinal and aromatic oils she regularly spray in the bath. Can’t say this is not welcome.\n\n");
+	//Michiko
+	if (flags[kFLAGS.LUNA_FOLLOWER] >= 4) outputText("Luna is enjoying a break relaxing for once as she is not on duty" + (flags[kFLAGS.LUNA_FOLLOWER] > 6 ? ", though for a few split second you imagined her doing doggy paddle in the water" : "") + ".\n\n");
 	if (flags[kFLAGS.IZMA_FOLLOWER_STATUS] == 1 && flags[kFLAGS.FOLLOWER_AT_FARM_IZMA] == 0) {
 		if (flags[kFLAGS.IZMA_NO_COCK] == 0) outputText("While not entirely a girl, Izma is womanly enough that she was still accepted in the bath, her crotch well hidden behind a cloth.\n\n");
 		else outputText("While she was not always a girl, Izma is womanly enough that she was still accepted in the bath.\n\n");
 	}
 	if (emberScene.followerEmber() && flags[kFLAGS.EMBER_GENDER] == 2) {
 		outputText("While Ember's size is impressive, her breasts are, simply put, intimidating");
-		if (player.hasStatusEffect(StatusEffects.CampMarble) && flags[kFLAGS.FOLLOWER_AT_FARM_MARBLE] == 0) outputText(". You still can’t help but wonder how come Marble can sit right next to her and act like everything is ok");
+		if (player.hasStatusEffect(StatusEffects.CampMarble) && flags[kFLAGS.FOLLOWER_AT_FARM_MARBLE] == 0) outputText(". You still can’t help but wonder how Marble can sit right next to her and act like everything is ok");
 		outputText(".\n\n");
 	}
 	if (amilyScene.amilyFollower() && !amilyScene.amilyCorrupt()) {

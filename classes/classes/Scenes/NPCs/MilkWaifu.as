@@ -1,9 +1,10 @@
 ﻿package classes.Scenes.NPCs {
-	import classes.*;
-	import classes.GlobalFlags.kFLAGS;
-	import classes.GlobalFlags.kGAMECLASS;
+import classes.*;
+import classes.GlobalFlags.kFLAGS;
+import classes.CoC;
+import classes.Scenes.SceneLib;
 
-	public class MilkWaifu extends NPCAwareContent{
+public class MilkWaifu extends NPCAwareContent{
 
 	public function MilkWaifu()
 	{
@@ -39,7 +40,7 @@ public function arriveWithLacticWaifuAtCamp():void {
 
 private function nameZeMilkBath():void 
 {
-	if (kGAMECLASS.testingBlockExiting)
+	if (CoC.instance.testingBlockExiting)
 	{
 		// We're running under the testing script.
 		// Stuff a name in the box and go go go
@@ -99,7 +100,7 @@ private function nameZeMilkBath():void
 		
 		//[Next time Rath's at camp and PC accesses Milky's meny, play the Arrival w/ Rath scene, sans first sentence]
 	}
-	//Set before this function is called:	kGAMECLASS.inDungeon = false;
+	//Set before this function is called:	CoC.instance.inDungeon = false;
 	doNext(camp.returnToCampUseOneHour);
 }
 
@@ -184,7 +185,7 @@ public function milkyMenu():void {
 	if (flags[kFLAGS.FOLLOWER_AT_FARM_BATH_GIRL] == 1 && flags[kFLAGS.MILK_SIZE] > 0) addButton(5, "Go Camp", backToCamp);
 	
 	if (flags[kFLAGS.FOLLOWER_AT_FARM_BATH_GIRL] == 0) addButton(14, "Back", camp.campSlavesMenu);
-	if (flags[kFLAGS.FOLLOWER_AT_FARM_BATH_GIRL] == 1) addButton(14, "Back", kGAMECLASS.farm.farmCorruption.rootScene);
+	if (flags[kFLAGS.FOLLOWER_AT_FARM_BATH_GIRL] == 1) addButton(14, "Back", SceneLib.farm.farmCorruption.rootScene);
 }
 
 private function sendToFarm():void
@@ -216,7 +217,7 @@ private function backToCamp():void
 	
 	flags[kFLAGS.FOLLOWER_AT_FARM_BATH_GIRL] = 0;
 	
-	doNext(kGAMECLASS.farm.farmCorruption.rootScene);
+	doNext(SceneLib.farm.farmCorruption.rootScene);
 }
 
 //Appearance
@@ -237,20 +238,20 @@ private function milkWriteFuAppearance():void {
 	
 	outputText("\n\nBetween her lithe legs and childbearing hips is her cunt, a short stripe of dark, downy hair drawing your attention just above it.  And, hidden between her pert cheeks is her tight little backdoor, right where it belongs.");
 
-	if (kGAMECLASS.farm.farmCorruption.hasTattoo("milky"))
+	if (SceneLib.farm.farmCorruption.hasTattoo("milky"))
 	{
 		outputText("\n\n");
-		if (kGAMECLASS.farm.farmCorruption.milkyFullTribalTats())
+		if (SceneLib.farm.farmCorruption.milkyFullTribalTats())
 		{
 			outputText("She is covered from head to tail in tribal tattoos, erotic lines snaking all over her naked frame, giving her the look of a barely tamed savage.")
 		}
-		else if (kGAMECLASS.farm.farmCorruption.numMilkyButterflyTats() == 4)
+		else if (SceneLib.farm.farmCorruption.numMilkyButterflyTats() == 4)
 		{
 			outputText("She is covered from head to tail in tattooed butterflies, as if the pretty insects are attracted to her chocolate skin. When she moves she does it with an extra bounce and flick of the head, admiring how she looks as she goes.");
 		}
 		else
 		{
-			if (kGAMECLASS.farm.farmCorruption.numTattoos("milky") > 1) outputText("She has the following tattoos emblazoned across her body:\n");
+			if (SceneLib.farm.farmCorruption.numTattoos("milky") > 1) outputText("She has the following tattoos emblazoned across her body:\n");
 			else outputText("She has ");
 
 			if (flags[kFLAGS.MILKY_TATTOO_COLLARBONE] != 0) outputText(flags[kFLAGS.MILKY_TATTOO_COLLARBONE] + "\n");
@@ -376,7 +377,7 @@ private function relaxWithMilkWaifu():void {
 	clearOutput();
 	outputText("You sit in the tub for a while, letting the fragrant fluids soak into your " + player.skinFurScales() + ".  You spend the better part of an hour lounging, letting your cares float away in " + flags[kFLAGS.MILK_NAME] + "'s endless white bounty.  Finally though, you pull out the tub's plug and climb out, finding a towel nearby.  Thankfully, the milk doesn't seem to leave behind any residue, and you feel clean and refreshed, if a bit horny.");
 	//(+Lust, -Fatigue)
-	dynStats("lus", 10+player.sens/10, "resisted", false);
+	dynStats("lus", 10+player.sens/10, "scale", false);
 	fatigue(-34);
 	doNext(camp.returnToCampUseOneHour);
 }
@@ -488,7 +489,7 @@ private function dontFuckTheMilkWaifu():void {
 	clearOutput();
 	outputText("You allow the girl to continue for a long, long while until your entire body feels deeply refreshed, her milk having soaked thoroughly into your body and making you feel fresh and revitalized.  You start to thank the milk girl for the pleasurable company, but when you open your mouth, she slips into your arms and presses her lips to yours.  Chuckling to yourself, you hold the girl as tight against yourself as her udders will allow, turning her to the side to let her nuzzle her cheek into your [chest], kissing the top of her head before the two of you climb from the pool.  You have to help her out, her massive extra weight nearly dragging her back in except for your quick reflexes.  You gather your [armor] and ruffle the milk slave's hair before grabbing a towel and wandering back to the heart of camp.");
 	//[+Lust, +HP, -Fatigue]
-	dynStats("lus", 10+player.sens/10, "resisted", false);
+	dynStats("lus", 10+player.sens/10, "scale", false);
 	HPChange(player.maxHP()*.33,false);
 	fatigue(-20);
 	doNext(camp.returnToCampUseOneHour);
@@ -588,6 +589,7 @@ private function drinkAndFapturbate():void {
 	if(flags[kFLAGS.MILK_SIZE] == 0) outputText("drags her gigantic tits over the puddly, milk-slicked floor");
 	else outputText("stumbles away, tenderly cupping her bright-red teats");
 	outputText(".  Smirking and sexually sated, you pop the drain in the tub and stand there while the sex-scented lactic bathwater runs out the drain.  A quick toweling off later, and you're ready to go, feeling slightly refreshed and fairly sated.  It does take you a little longer to get your [armor] equally dry and back in place, but you manage.");
+	if (player.isGargoyle() && player.hasPerk(PerkLib.GargoyleCorrupted)) player.refillGargoyleHunger(30);
 	player.orgasm();
 	fatigue(-33);
 	doNext(camp.returnToCampUseOneHour);
@@ -629,7 +631,7 @@ private function nyanCatMilkTime():void {
 		//If PC has Sophie or Isabella:
 		else outputText("\n\nThough you didn't intend for this to turn communal, " + flags[kFLAGS.MILK_NAME] + " certainly has more than enough to share.  You relax as the last trickles of milk pour into the pool, her breasts looking positively deflated.  You decide to leave the plug in for your friends as you clamber out, figuring they'll want to stockpile a little for the day before you drain it.  With her tits lightened for the moment, " + flags[kFLAGS.MILK_NAME] + " reaches up and pulls you down to her, just long enough to plant a kiss on your cheek and whisper, \"<i>Thank you, [name].  That felt good.</i>\"");
 		fatigue(-50);
-		dynStats("lus", 10+player.sens/10, "resisted", false);
+		dynStats("lus", 10+player.sens/10, "scale", false);
 		doNext(camp.returnToCampUseOneHour);
 	}
 	//Milk Time!  (DD Boobs Ver.)
@@ -657,7 +659,7 @@ private function finishMilkNormall():void {
 	outputText("\n\nAs soon as the explosive boobgasm subsides, she collapses back against you, chest heaving with pleasured exhaustion.  The milky stream trickles down to naught, her breasts momentarily depleted.  " + flags[kFLAGS.MILK_NAME] + " looks up at you and smiles ever so slightly, caressing your cheek before cupping her obviously-sore teats and staggering to her feet, searching for a towel.");
 	outputText("\n\n\"<i>Thank you, [name],</i>\" she says simply as you dry yourself off.");
 	fatigue(-50);
-	dynStats("lus", 10+player.sens/10, "resisted", false);
+	dynStats("lus", 10+player.sens/10, "scale", false);
 	doNext(camp.returnToCampUseOneHour);
 }
 //[Suckle]
@@ -675,7 +677,7 @@ private function suckleDatMilk():void {
 	player.slimeFeed();
 	player.refillHunger(50);
 	fatigue(-50);
-	dynStats("lus", 10+player.sens/10, "resisted", false);
+	dynStats("lus", 10+player.sens/10, "scale", false);
 	doNext(camp.returnToCampUseOneHour);
 }
 //[Fuck Her] (Needs a dick what fits)
@@ -731,3 +733,4 @@ private function titFuckDatMilkSlut():void {
 }
 	}
 }
+

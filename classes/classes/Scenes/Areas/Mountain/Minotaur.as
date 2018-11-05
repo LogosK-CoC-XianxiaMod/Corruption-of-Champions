@@ -1,11 +1,16 @@
 ﻿package classes.Scenes.Areas.Mountain
 {
 
-	import classes.*;
-	import classes.internals.*;
-	import classes.GlobalFlags.kFLAGS;
+import classes.*;
+import classes.BodyParts.Butt;
+import classes.BodyParts.Face;
+import classes.BodyParts.Hips;
+import classes.BodyParts.LowerBody;
+import classes.BodyParts.Tail;
+import classes.Scenes.SceneLib;
+import classes.internals.*;
 
-	/**
+/**
 	 * ...
 	 * @author Fake-Name
 	 */
@@ -21,9 +26,9 @@
 			if(hasStatusEffect(StatusEffects.PhyllaFight)) {
 				removeStatusEffect(StatusEffects.PhyllaFight);
 				outputText("You defeat a minotaur!  ", true);
-				game.desert.antsScene.phyllaBeatAMino();
+				SceneLib.desert.antsScene.phyllaBeatAMino();
 			} else {
-				game.mountain.minotaurScene.minoVictoryRapeChoices();
+				SceneLib.mountain.minotaurScene.minoVictoryRapeChoices();
 			}
 		}
 
@@ -31,12 +36,12 @@
 		{
 			if(hasStatusEffect(StatusEffects.PhyllaFight)) {
 				removeStatusEffect(StatusEffects.PhyllaFight);
-				game.desert.antsScene.phyllaPCLostToMino();
+				SceneLib.desert.antsScene.phyllaPCLostToMino();
 			} else if (pcCameWorms){
 				outputText("\n\nThe minotaur picks you up and forcibly tosses you from his cave, grunting in displeasure.");
-				game.cleanupAfterCombat();
+				cleanupAfterCombat();
 			} else
-				game.mountain.minotaurScene.getRapedByMinotaur();
+				SceneLib.mountain.minotaurScene.getRapedByMinotaur();
 		}
 
 		override public function get long():String
@@ -65,25 +70,26 @@
 			this.cumMultiplier = 1.5;
 			this.hoursSinceCum = this.ballSize * 10;
 			createBreastRow(0);
-			this.ass.analLooseness = ANAL_LOOSENESS_STRETCHED;
-			this.ass.analWetness = ANAL_WETNESS_NORMAL;
+			this.ass.analLooseness = AssClass.LOOSENESS_STRETCHED;
+			this.ass.analWetness = AssClass.WETNESS_NORMAL;
 			this.createStatusEffect(StatusEffects.BonusACapacity,30,0,0,0);
 			this.tallness = rand(37) + 84;
-			this.hipRating = HIP_RATING_AVERAGE;
-			this.buttRating = BUTT_RATING_AVERAGE;
-			this.lowerBody = LOWER_BODY_TYPE_HOOFED;
+			this.hips.type = Hips.RATING_AVERAGE;
+			this.butt.type = Butt.RATING_AVERAGE;
+			this.lowerBody = LowerBody.HOOFED;
 			this.skin.growFur({color:furColor});
 			this.skinDesc = "shaggy fur";
 			this.hairColor = furColor;
 			this.hairLength = 3;
 			initStrTouSpeInte(hasAxe ? 100 : 75, 70, 35, 20);
-			initLibSensCor(40 + this.ballSize * 2, 15 + this.ballSize * 2, 35);
-			this.faceType = FACE_COW_MINOTAUR;
+			initWisLibSensCor(20, 40 + this.ballSize * 2, 15 + this.ballSize * 2, 35);
+			this.faceType = Face.COW_MINOTAUR;
 			this.weaponName = hasAxe?"axe":"fist";
 			this.weaponVerb = hasAxe?"cleave":"punch";
-			this.weaponAttack = (hasAxe ? (50 + (11 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL])) : (40 + (9 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL])));
+			this.weaponAttack = hasAxe?50:40;
 			this.armorName = "thick fur";
-			this.armorDef = 12 + (2 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.armorDef = 12;
+			this.armorMDef = 1;
 			this.bonusHP = 20 + rand(this.ballSize*2);
 			this.bonusLust = 30 + rand(this.ballSize*3);
 			this.lust = this.ballSize * 3;
@@ -98,15 +104,9 @@
 						.add(consumables.MINOBLO, 1 / 2)
 						.elseDrop(null);
 			}
-			this.special1 = game.mountain.minotaurScene.minoPheromones;
-			this.tailType = TAIL_TYPE_COW;
+			this.special1 = SceneLib.mountain.minotaurScene.minoPheromones;
+			this.tailType = Tail.COW;
 			this.createPerk(PerkLib.EnemyBeastOrAnimalMorphType, 0, 0, 0, 0);
-			this.str += (hasAxe ? 20 : 15) * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.tou += 14 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.spe += 7 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.inte += 4 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];			
-			this.lib += 2 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.newgamebonusHP = (hasAxe ? 940 : 840);
 			checkMonster();
 		}
 

@@ -1,10 +1,13 @@
 ﻿package classes.Scenes.Areas.Forest
 {
-	import classes.*;
-	import classes.internals.WeightedDrop;
-	import classes.GlobalFlags.kFLAGS;
-	
-	public class Akbal extends Monster
+import classes.*;
+import classes.BodyParts.Butt;
+import classes.BodyParts.Hips;
+import classes.BodyParts.Tail;
+import classes.Scenes.SceneLib;
+import classes.internals.WeightedDrop;
+
+public class Akbal extends Monster
 	{
 
 		override public function eAttack():void
@@ -23,19 +26,16 @@
 					outputText("You dodge " + a + short + "'s " + weaponVerb + " with superior quickness!");
 				if (player.spe - spe >= 20)
 					outputText("You deftly avoid " + a + short + "'s slow " + weaponVerb + ".");
-				game.combatRoundOver();
 				return;
 			}
 			//Determine if evaded
 			if (player.findPerk(PerkLib.Evade) >= 0 && rand(100) < 10) {
 				outputText("Using your skills at evading attacks, you anticipate and sidestep " + a + short + "'s attack.");
-				game.combatRoundOver();
 				return;
 			}
 			//Determine if flexibilitied
 			if (player.findPerk(PerkLib.Flexibility) >= 0 && rand(100) < 10) {
 				outputText("Using your cat-like agility, you twist out of the way of " + a + short + "'s attack.");
-				game.combatRoundOver();
 				return;
 			}
 			//Determine damage - str modified by enemy toughness!
@@ -52,7 +52,7 @@
 				}
 				else {
 					outputText("Akbal rushes at you, his claws like lightning as they leave four red-hot lines of pain across your stomach.");
-					player.takeDamage(damage);
+					player.takePhysDamage(damage);
 				}
 			} else { //*Normal Attack B
 				//(high HP damage)
@@ -64,21 +64,20 @@
 				}
 				else {
 					outputText("Akbal snarls as he flies towards you, snapping his ivory teeth on your arm. You scream out in pain as you throw him off.");
-					player.takeDamage(damage);
+					player.takePhysDamage(damage);
 				}
 			}
-			game.combatRoundOver();
 		}
 
 		override public function defeated(hpVictory:Boolean):void
 		{
-			game.forest.akbalScene.akbalDefeated(hpVictory);
+			SceneLib.forest.akbalScene.akbalDefeated(hpVictory);
 		}
 
 		override public function won(hpVictory:Boolean, pcCameWorms:Boolean):void
 		{
-			game.forest.akbalScene.akbalWon(hpVictory,pcCameWorms);
-			game.cleanupAfterCombat();
+			SceneLib.forest.akbalScene.akbalWon(hpVictory,pcCameWorms);
+			SceneLib.combat.cleanupAfterCombatImpl();
 		}
 		
 		public function akbalLustAttack():void
@@ -88,7 +87,7 @@
 			{
 				outputText("You hear whispering in your head. Akbal begins speaking to you as he circles you, telling all the ways he'll dominate you once he beats the fight out of you.");
 				//(Lust increase)
-				game.dynStats("lus", 7 + (100 - player.inte) / 10);
+				player.dynStats("lus", 9 + rand(9));
 				player.createStatusEffect(StatusEffects.Whispered,0,0,0,0);
 			}
 			//Continuous Lust Attack - 
@@ -96,9 +95,8 @@
 			{
 				outputText("The whispering in your head grows, many voices of undetermined sex telling you all the things the demon wishes to do to you. You can only blush.");
 				//(Lust increase)
-				game.dynStats("lus", 12 + (100 - player.inte) / 10);
+				player.dynStats("lus", 12 + rand(12));
 			}
-			game.combatRoundOver();
 		}
 		
 		public function akbalSpecial():void
@@ -106,14 +104,10 @@
 			//*Special Attack A - 
 			if (rand(2) == 0 && player.spe > 20)
 			{
-				var speedChange:Number = player.spe / 5 * -1;
 				outputText("Akbal's eyes fill with light, and a strange sense of fear begins to paralyze your limbs.");
+				
 				//(Speed decrease)
-				game.dynStats("spe", speedChange);
-				if (player.hasStatusEffect(StatusEffects.AkbalSpeed))
-					player.addStatusValue(StatusEffects.AkbalSpeed, 1, speedChange);
-				else
-					player.createStatusEffect(StatusEffects.AkbalSpeed, speedChange, 0, 0, 0);
+				player.addCombatBuff('spe', -player.spe / 5);
 			}
 			//*Special Attack B - 
 			else
@@ -129,43 +123,34 @@
 						outputText("You dodge " + a + short + "'s fire with superior quickness!");
 					if (player.spe - spe >= 20)
 						outputText("You deftly avoid " + a + short + "'s slow fire-breath.");
-					game.combatRoundOver();
 					return;
 				}
 				//Determine if evaded
 				if (player.findPerk(PerkLib.Evade) >= 0 && rand(100) < 20)
 				{
 					outputText("Using your skills at evading attacks, you anticipate and sidestep " + a + short + "'s fire-breath.");
-					game.combatRoundOver();
 					return;
 				}
 				//Determine if flexibilitied
 				if (player.findPerk(PerkLib.Flexibility) >= 0 && rand(100) < 10)
 				{
 					outputText("Using your cat-like agility, you contort your body to avoid " + a + short + "'s fire-breath.");
-					game.combatRoundOver();
 					return;
 				}
 				if (player.hasStatusEffect(StatusEffects.Blizzard)) {
 					player.addStatusValue(StatusEffects.Blizzard, 1, -1);
-					var damage2:int = inte / 5;
-					if (player.findPerk(PerkLib.FromTheFrozenWaste) >= 0 || player.findPerk(PerkLib.ColdAffinity) >= 0) damage2 *= 3;
-					if (player.findPerk(PerkLib.FireAffinity) >= 0) damage2 *= 0.3;
+					var damage2:int = inte / 4;
 					damage2 = Math.round(damage2);
 					outputText("Surrounding your blizzard absorbed huge part of the attack at the price of loosing some of it protective power.\n");
 					outputText("You are burned badly by the flames! ");
-					damage2 = player.takeDamage(damage2, true);
-					game.combatRoundOver();
+					damage2 = player.takeFireDamage(damage2, true);
 					return;
 				}
 				var damage:int = inte;
-				if (player.findPerk(PerkLib.FromTheFrozenWaste) >= 0 || player.findPerk(PerkLib.ColdAffinity) >= 0) damage *= 3;
-				if (player.findPerk(PerkLib.FireAffinity) >= 0) damage *= 0.3;
 				damage = Math.round(damage);
 				outputText("You are burned badly by the flames! ");
-				damage = player.takeDamage(damage, true);
+				damage = player.takeFireDamage(damage, true);
 			}
-			game.combatRoundOver();
 		}
 		
 		//*Support ability - 
@@ -175,9 +160,8 @@
 				outputText("Akbal licks himself, ignoring you for now.");
 			else
 				outputText("Akbal licks one of his wounds, and you scowl as the injury quickly heals itself.");
-			addHP(30);
+			addHP(30 * (1 + rand(4)));
 			lust += 10;
-			game.combatRoundOver();
 		}
 
 		public function Akbal()
@@ -197,27 +181,28 @@
 			createBreastRow();
 			createBreastRow();
 			createBreastRow();
-			this.ass.analLooseness = ANAL_LOOSENESS_TIGHT;
-			this.ass.analWetness = ANAL_WETNESS_NORMAL;
+			this.ass.analLooseness = AssClass.LOOSENESS_TIGHT;
+			this.ass.analWetness = AssClass.WETNESS_NORMAL;
 			this.tallness = 4*12;
-			this.hipRating = HIP_RATING_SLENDER;
-			this.buttRating = BUTT_RATING_TIGHT;
+			this.hips.type = Hips.RATING_SLENDER;
+			this.butt.type = Butt.RATING_TIGHT;
 			this.skin.growFur({color:"spotted"});
 			this.hairColor = "black";
 			this.hairLength = 5;
-			initStrTouSpeInte(61, 76, 70, 86);
-			initLibSensCor(70, 50, 100);
+			initStrTouSpeInte(61, 89, 75, 86);
+			initWisLibSensCor(85, 80, 50, 100);
 			this.weaponName = "claws";
 			this.weaponVerb="claw-slash";
-			this.weaponAttack = 15 + (4 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.weaponAttack = 17;
 			this.armorName = "shimmering pelt";
-			this.armorDef = 8 + (1 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
-			this.bonusHP = 20;
+			this.armorDef = 10;
+			this.armorMDef = 20;
+			this.bonusHP = 100;
 			this.bonusLust = 40;
 			this.lust = 30;
 			this.lustVuln = 0.8;
 			this.temperment = TEMPERMENT_LUSTY_GRAPPLES;
-			this.level = 16;
+			this.level = 20;
 			this.gems = 40;
 			this.drop = new WeightedDrop().
 					add(consumables.INCUBID,4).
@@ -227,15 +212,10 @@
 			this.special1 = akbalLustAttack;
 			this.special2 = akbalSpecial;
 			this.special3 = akbalHeal;
-			this.tailType = TAIL_TYPE_DOG;
+			this.tailType = Tail.DOG;
 			this.createPerk(PerkLib.FireVulnerability, 0, 0, 0, 0);
 			this.createPerk(PerkLib.EnemyBeastOrAnimalMorphType, 0, 0, 0, 0);
-			this.str += 12 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.tou += 15 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.spe += 14 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.inte += 17 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];			
-			this.lib += 14 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.newgamebonusHP = 1440;
+			this.createPerk(PerkLib.EnemyTrueDemon, 0, 0, 0, 0);
 			checkMonster();
 		}
 

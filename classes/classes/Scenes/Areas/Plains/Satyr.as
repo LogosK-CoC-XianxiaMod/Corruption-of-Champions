@@ -1,10 +1,15 @@
 package classes.Scenes.Areas.Plains
 {
-	import classes.*;
-	import classes.internals.*;
-	import classes.GlobalFlags.kFLAGS;
+import classes.*;
+import classes.BodyParts.Butt;
+import classes.BodyParts.Face;
+import classes.BodyParts.Hips;
+import classes.BodyParts.LowerBody;
+import classes.BodyParts.Tail;
+import classes.Scenes.SceneLib;
+import classes.internals.*;
 
-	public class Satyr extends Monster
+public class Satyr extends Monster
 	{
 		//Attacks (Z)
 		private function satyrAttack():void {
@@ -21,19 +26,17 @@ package classes.Scenes.Areas.Plains
 				var damage:Number = int((str + weaponAttack) - rand(player.tou));
 				if(damage > 0) {
 					outputText("It feels like you just got hit with a wooden club! ");
-					damage = player.takeDamage(damage, true);
+					damage = player.takePhysDamage(damage, true);
 				}
 				else outputText("You successfully block it.");
 			}
-			combatRoundOver();
 		}
 				
 		private function satyrBate():void {
 			outputText("He glares at you, panting while his tongue hangs out and begins to masturbate.  You can nearly see his lewd thoughts reflected in his eyes, as beads of pre form on his massive cock and begin sliding down the erect shaft.");
 			//(small Libido based Lust increase, and increase lust)
-			game.dynStats("lus", (player.lib/5)+4);
+			player.dynStats("lus", (player.lib/5)+4);
 			lust += 5;
-			combatRoundOver();
 		}
 		
 		internal function satyrCharge():void {
@@ -68,21 +71,19 @@ package classes.Scenes.Areas.Plains
 							player.createStatusEffect(StatusEffects.Stunned,0,0,0,0);
 						}
 						outputText(" ");
-						damage = player.takeDamage(damage, true);
+						damage = player.takePhysDamage(damage, true);
 						//stun PC + hp damage if hit, hp damage dependent on str if miss
 					}
 					else outputText("He charges at you, but you successfully deflect it at the last second.");
 				}
 			}
-			combatRoundOver();
 		}
 			
 		private function bottleChug():void {
 			outputText("He whips a bottle of wine seemingly from nowhere and begins chugging it down, then lets out a bellowing belch towards you.  The smell is so horrible you cover your nose in disgust, yet you feel hot as you inhale some of the fetid scent.");
 			//(damage PC lust very slightly and raise the satyr's lust.)
-			game.dynStats("lus", (player.lib/5));
+			player.dynStats("lus", (player.lib/5));
 			lust += 5;
-			combatRoundOver();
 		}
 		
 		//5:(Only executed at high lust) 
@@ -98,9 +99,8 @@ package classes.Scenes.Areas.Plains
 				outputText("You fall with a <b>THUD</b> and the Satyr doesn't even bother to undress you before he begins rubbing his massive cock on your body until he comes, soiling your [armor] and " + player.skinFurScales() + " with slimy, hot cum.  As it rubs into your body, you shiver with unwanted arousal.");
 				//large-ish sensitivity based lust increase if hit.)(This also relieves him of some of his lust, though not completely.)
 				lust -= 50;
-				game.dynStats("lus", (player.sens/5+20));
+				player.dynStats("lus", (player.sens/5+20));
 			}
-			combatRoundOver();
 		}
 		
 		override protected function performCombatAction():void
@@ -119,7 +119,7 @@ package classes.Scenes.Areas.Plains
 
 		override public function defeated(hpVictory:Boolean):void
 		{
-			game.plains.satyrScene.defeatASatyr();
+			SceneLib.plains.satyrScene.defeatASatyr();
 		}
 
 
@@ -127,9 +127,9 @@ package classes.Scenes.Areas.Plains
 		{
 			if (pcCameWorms) {
 				outputText("\n\nThe satyr laughs heartily at your eagerness...");
-				doNext(game.endLustLoss);
+				doNext(SceneLib.combat.endLustLoss);
 			} else {
-				game.plains.satyrScene.loseToSatyr();
+				SceneLib.plains.satyrScene.loseToSatyr();
 			}
 		}
 
@@ -146,24 +146,25 @@ package classes.Scenes.Areas.Plains
 			this.cumMultiplier = 1.5;
 			this.hoursSinceCum = this.ballSize * 10;
 			createBreastRow(0);
-			this.ass.analLooseness = ANAL_LOOSENESS_STRETCHED;
-			this.ass.analWetness = ANAL_WETNESS_NORMAL;
+			this.ass.analLooseness = AssClass.LOOSENESS_STRETCHED;
+			this.ass.analWetness = AssClass.WETNESS_NORMAL;
 			this.createStatusEffect(StatusEffects.BonusACapacity,20,0,0,0);
 			this.tallness = rand(37) + 64;
-			this.hipRating = HIP_RATING_AVERAGE;
-			this.buttRating = BUTT_RATING_AVERAGE+1;
-			this.lowerBody = LOWER_BODY_TYPE_HOOFED;
+			this.hips.type = Hips.RATING_AVERAGE;
+			this.butt.type = Butt.RATING_AVERAGE + 1;
+			this.lowerBody = LowerBody.HOOFED;
 			this.skinTone = "tan";
 			this.hairColor = randomChoice("black","brown");
 			this.hairLength = 3+rand(20);
-			this.faceType = FACE_COW_MINOTAUR;
+			this.faceType = Face.COW_MINOTAUR;
 			initStrTouSpeInte(75, 70, 110, 70);
-			initLibSensCor(60, 35, 45);
+			initWisLibSensCor(60, 60, 35, 45);
 			this.weaponName = "fist";
 			this.weaponVerb="punch";
-			this.weaponAttack = 0 + (2 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.weaponAttack = 0;
 			this.armorName = "thick fur";
-			this.armorDef = 2 + (2 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.armorDef = 2;
+			this.armorMDef = 0;
 			this.bonusHP = 300;
 			this.bonusLust = 20;
 			this.lust = 20;
@@ -172,13 +173,7 @@ package classes.Scenes.Areas.Plains
 			this.level = 19;
 			this.gems = rand(30) + 30;
 			this.drop = new ChainedDrop().add(consumables.INCUBID,1/2);
-			this.tailType = TAIL_TYPE_COW;
-			this.str += 15 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.tou += 14 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.spe += 22 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.inte += 14 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];			
-			this.lib += 12 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.newgamebonusHP = 1540;
+			this.tailType = Tail.COW;
 			checkMonster();
 		}
 		

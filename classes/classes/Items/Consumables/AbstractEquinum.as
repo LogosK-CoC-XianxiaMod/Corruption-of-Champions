@@ -3,13 +3,25 @@
  */
 package classes.Items.Consumables {
 import classes.Appearance;
+import classes.BodyParts.Arms;
+import classes.BodyParts.Ears;
+import classes.BodyParts.Eyes;
+import classes.BodyParts.Face;
+import classes.BodyParts.Hair;
+import classes.BodyParts.Horns;
+import classes.BodyParts.LowerBody;
+import classes.BodyParts.Skin;
+import classes.BodyParts.Tail;
+import classes.BodyParts.Wings;
 import classes.CoC_Settings;
 import classes.CockTypesEnum;
+import classes.EngineCore;
+import classes.EventParser;
 import classes.GlobalFlags.kFLAGS;
 import classes.Items.Consumable;
 import classes.PerkLib;
-import classes.Player;
 import classes.StatusEffects;
+import classes.VaginaClass;
 
 public class AbstractEquinum extends Consumable {
 	public function AbstractEquinum(type:Number, id:String, shortName:String, longName:String, value:Number, description:String) {
@@ -46,7 +58,7 @@ public class AbstractEquinum extends Consumable {
 		outputText("You down the potion, grimacing at the strong taste.");
 		//CHANCE OF BAD END - 20% if face/tail/skin/cock are appropriate.
 		//If hooved bad end doesn't appear till centaured
-		if (type == 0 && player.hasFur() && player.faceType == FACE_HORSE && player.tailType == TAIL_TYPE_HORSE && (player.lowerBody != LOWER_BODY_TYPE_HOOFED)) {
+		if (type == 0 && player.hasFur() && player.faceType == Face.HORSE && player.tailType == Tail.HORSE && (player.lowerBody != LowerBody.HOOFED)) {
 			//WARNINGS
 			//Repeat warnings
 			if (player.hasStatusEffect(StatusEffects.HorseWarning) && rand(3) == 0) {
@@ -77,7 +89,7 @@ public class AbstractEquinum extends Consumable {
 							if (player.gender == 2) outputText("She is clearly a female, as you can see her six breasts jiggle as she walks towards you, small stains appearing on her shirt where her nipples are.\n\n");
 							if (player.gender == 3) outputText("You are somewhat confused as you can see a bulge near her thighs but also huge boobs jiggling as she walks, and you can't say if she's a male or female.\n\n");
 							outputText("As soon as you lay eyes on the creature, a wave of nostalgia overtakes you. Somehow, looking at that creature makes you sad, as if you forgot something important.\n\n\"<i>How strange to see a horse here all alone,</i>\" the creature muses, \"<i>In any case, you're still the least bizarre creature I've met here.  Not to mention the only one that hasn't tried to rape me,</i>\" it says with a sigh.\n\nYou answer with an interrogative whinny.\n\n\"<i>Hey, I've got an idea. I'll take you back to the camp. I'll feed you and in return you can help me complete my quest. What do you say?</i>\"\n\nInstinctively, you utter a happy and approving whinny.\n\nYou failed in your quest, losing your focus and more importantly, losing yourself.  But, even so, you found a new meaning to your life, and have a new chance to succeed where you once failed.");
-							getGame().gameOver();
+							EventParser.gameOver();
 							return false;
 						}
 					}
@@ -93,7 +105,7 @@ public class AbstractEquinum extends Consumable {
 						if (player.gender == 2) outputText("She is clearly a female, as you can see her six breasts jiggle as she walks towards you, small stains appearing on her shirt where her nipples are.\n\n");
 						if (player.gender == 3) outputText("You are somewhat confused as you can see a bulge near her thighs but also huge boobs jiggling as she walks, and you can't say if she's a male or female.\n\n");
 						outputText("As soon as you lay eyes on the creature, a wave of nostalgia overtakes you. Somehow, looking at that creature makes you sad, as if you forgot something important.\n\n\"<i>How strange to see a horse here all alone,</i>\" the creature muses, \"<i>In any case, you're still the least bizarre creature I've met here.  Not to mention the only one that hasn't tried to rape me,</i>\" it says with a sigh.\n\nYou answer with an interrogative whinny.\n\n\"<i>Hey, I've got an idea. I'll take you back to the camp. I'll feed you and in return you can help me to complete my quest. What do you say?</i>\"\n\nInstictively, you utter a happy and approving whinny.\n\nYou failed in your quest, losing you focus and more importantly, losing yourself.  But, even so, you found a new meaning to your life, and have a new chance to achieve what you once failed.");
-						getGame().gameOver();
+						EventParser.gameOver();
 						return false;
 					}
 				}
@@ -175,19 +187,21 @@ public class AbstractEquinum extends Consumable {
 			dynStats("int", 1);
 			changes++;
 		}
+		if (player.hasPerk(PerkLib.TransformationImmunity)) changeLimit = 0;
 		//-Remove feather-arms (copy this for goblin ale, mino blood, equinum, centaurinum, canine pepps, demon items)
-		if (changes < changeLimit && !InCollection(player.armType, ARM_TYPE_HUMAN, ARM_TYPE_GARGOYLE) && rand(4) == 0) {
+		if (changes < changeLimit && !InCollection(player.arms.type, Arms.HUMAN, Arms.GARGOYLE) && rand(4) == 0) {
 			mutations.humanizeArms();
 			changes++;
 		}
-		//-Remove feathery hair (copy for equinum, canine peppers, Labova)
-		if (changes < changeLimit && player.hairType == 1 && rand(4) == 0) {
-			//(long):
-			if (player.hairLength >= 6) outputText("\n\nA lock of your downy-soft feather-hair droops over your eye.  Before you can blow the offending down away, you realize the feather is collapsing in on itself.  It continues to curl inward until all that remains is a normal strand of hair.  <b>Your hair is no longer feathery!</b>");
-			//(short)
-			else outputText("\n\nYou run your fingers through your downy-soft feather-hair while you await the effects of the item you just ingested.  While your hand is up there, it detects a change in the texture of your feathers.  They're completely disappearing, merging down into strands of regular hair.  <b>Your hair is no longer feathery!</b>");
+		//-Remove feathery/quill hair (copy for equinum, canine peppers, Labova)
+		if (changes < changeLimit && (player.hairType == Hair.FEATHER || player.hairType == Hair.QUILL) && rand(3) == 0) {
+			var word1:String;
+			if (player.hairType == Hair.FEATHER) word1 = "feather";
+			else word1 = "quill";
+			if (player.hairLength >= 6) outputText("\n\nA lock of your downy-soft " + word1 + "-hair droops over your eye.  Before you can blow the offending down away, you realize the " + word1 + " is collapsing in on itself.  It continues to curl inward until all that remains is a normal strand of hair.  <b>Your hair is no longer " + word1 + "-like!</b>");
+			else outputText("\n\nYou run your fingers through your downy-soft " + word1 + "-hair while you await the effects of the item you just ingested.  While your hand is up there, it detects a change in the texture of your " + word1 + "s.  They're completely disappearing, merging down into strands of regular hair.  <b>Your hair is no longer " + word1 + "-like!</b>");
 			changes++;
-			mutations.setHairType(HAIR_NORMAL);
+			mutations.setHairType(Hair.NORMAL);
 		}
 		//-Remove leaf hair (copy for equinum, canine peppers, Labova)
 		if (changes < changeLimit && player.hairType == 7 && rand(4) == 0) {
@@ -196,7 +210,7 @@ public class AbstractEquinum extends Consumable {
 			//(short)
 			else outputText("\n\nYou run your fingers through your leaf-hair while you await the effects of the item you just ingested.  While your hand is up there, it detects a change in the texture of your leafs.  They're completely disappearing, merging down into strands of regular hair.  <b>Your hair is no longer leaf-like!</b>");
 			changes++;
-			mutations.setHairType(HAIR_NORMAL);
+			mutations.setHairType(Hair.NORMAL);
 		}
 		//
 		//SEXUAL CHARACTERISTICS
@@ -212,7 +226,7 @@ public class AbstractEquinum extends Consumable {
 					//Use temp3 to track whether or not anything is changed.
 					temp3 = 0;
 					if (player.cocks[0].cockType == CockTypesEnum.HUMAN) {
-						outputText("\n\nYour " + game.cockDescript(0) + " begins to feel strange... you pull down your pants to take a look and see it darkening as you feel a tightness near the base where your skin seems to be bunching up.  A sheath begins forming around your cock's base, tightening and pulling your cock inside its depths.  A hot feeling envelops your member as it suddenly grows into a horse penis, dwarfing its old size.  The skin is mottled brown and black and feels more sensitive than normal.  Your hands are irresistibly drawn to it, and you jerk yourself off, splattering cum with intense force.");
+						outputText("\n\nYour " + player.cockDescript(0) + " begins to feel strange... you pull down your pants to take a look and see it darkening as you feel a tightness near the base where your skin seems to be bunching up.  A sheath begins forming around your cock's base, tightening and pulling your cock inside its depths.  A hot feeling envelops your member as it suddenly grows into a horse penis, dwarfing its old size.  The skin is mottled brown and black and feels more sensitive than normal.  Your hands are irresistibly drawn to it, and you jerk yourself off, splattering cum with intense force.");
 						temp  = player.addHorseCock();
 						temp2 = player.increaseCock(temp, rand(4) + 4);
 						temp3 = 1;
@@ -227,13 +241,13 @@ public class AbstractEquinum extends Consumable {
 					}
 					if (player.cocks[0].cockType == CockTypesEnum.TENTACLE) {
 						temp = player.addHorseCock();
-						outputText("\n\nYour " + game.cockDescript(0) + " begins to feel odd... you pull down your clothes to take a look and see it darkening.  You feel a growing tightness in the tip of your " + game.cockDescript(0) + " as it flattens, flaring outwards.  Your skin folds and bunches around the base, forming an animalistic sheath.  The slick inhuman texture you recently had fades, taking on a more leathery texture.  Your hands are drawn to the strange new " + Appearance.cockNoun(CockTypesEnum.HORSE) + ", and you jerk yourself off, splattering thick ropes of cum with intense force.");
+						outputText("\n\nYour " + player.cockDescript(0) + " begins to feel odd... you pull down your clothes to take a look and see it darkening.  You feel a growing tightness in the tip of your " + player.cockDescript(0) + " as it flattens, flaring outwards.  Your skin folds and bunches around the base, forming an animalistic sheath.  The slick inhuman texture you recently had fades, taking on a more leathery texture.  Your hands are drawn to the strange new " + Appearance.cockNoun(CockTypesEnum.HORSE) + ", and you jerk yourself off, splattering thick ropes of cum with intense force.");
 						temp2 = player.increaseCock(temp, rand(4) + 4);
 						temp3 = 1;
 						dynStats("lib", 5, "sen", 4, "lus", 35);
 					}
 					if (player.cocks[0].cockType.Index > 4) {
-						outputText("\n\nYour " + game.cockDescript(0) + " begins to feel odd... you pull down your clothes to take a look and see it darkening.  You feel a growing tightness in the tip of your " + game.cockDescript(0) + " as it flattens, flaring outwards.  Your skin folds and bunches around the base, forming an animalistic sheath.  The slick inhuman texture you recently had fades, taking on a more leathery texture.  Your hands are drawn to the strange new " + Appearance.cockNoun(CockTypesEnum.HORSE) + ", and you jerk yourself off, splattering thick ropes of cum with intense force.");
+						outputText("\n\nYour " + player.cockDescript(0) + " begins to feel odd... you pull down your clothes to take a look and see it darkening.  You feel a growing tightness in the tip of your " + player.cockDescript(0) + " as it flattens, flaring outwards.  Your skin folds and bunches around the base, forming an animalistic sheath.  The slick inhuman texture you recently had fades, taking on a more leathery texture.  Your hands are drawn to the strange new " + Appearance.cockNoun(CockTypesEnum.HORSE) + ", and you jerk yourself off, splattering thick ropes of cum with intense force.");
 						temp  = player.addHorseCock();
 						temp2 = player.increaseCock(temp, rand(4) + 4);
 						temp3 = 1;
@@ -245,7 +259,7 @@ public class AbstractEquinum extends Consumable {
 				else {
 					dynStats("lib", 5, "sen", 4, "lus", 35);
 					temp = player.addHorseCock();
-					outputText("\n\nOne of your penises begins to feel strange.  You pull down your clothes to take a look and see the skin of your " + game.cockDescript(temp) + " darkening to a mottled brown and black pattern.");
+					outputText("\n\nOne of your penises begins to feel strange.  You pull down your clothes to take a look and see the skin of your " + player.cockDescript(temp) + " darkening to a mottled brown and black pattern.");
 					if (temp == -1) {
 						CoC_Settings.error("");
 						clearOutput();
@@ -253,7 +267,7 @@ public class AbstractEquinum extends Consumable {
 					}
 					//Already have a sheath
 					if (player.horseCocks() > 1 || player.dogCocks() > 0) outputText("  Your sheath tingles and begins growing larger as the cock's base shifts to lie inside it.");
-					else outputText("  You feel a tightness near the base where your skin seems to be bunching up.  A sheath begins forming around your " + game.cockDescript(temp) + "'s root, tightening and pulling your " + game.cockDescript(temp) + " inside its depths.");
+					else outputText("  You feel a tightness near the base where your skin seems to be bunching up.  A sheath begins forming around your " + player.cockDescript(temp) + "'s root, tightening and pulling your " + player.cockDescript(temp) + " inside its depths.");
 					temp2 = player.increaseCock(temp, rand(4) + 4);
 					outputText("  The shaft suddenly explodes with movement, growing longer and developing a thick flared head leaking steady stream of animal-cum.");
 					outputText("  <b>You now have a horse-cock.</b>");
@@ -291,9 +305,9 @@ public class AbstractEquinum extends Consumable {
 					dynStats("sen", 1, "lus", 10);
 				}
 				outputText("\n\n");
-				if (temp2 > 2) outputText("Your " + game.cockDescript(temp) + " tightens painfully, inches of taut horse-flesh pouring out from your sheath as it grows longer.  Thick animal-pre forms at the flared tip, drawn out from the pleasure of the change.");
-				if (temp2 > 1 && temp2 <= 2) outputText("Aching pressure builds within your sheath, suddenly releasing as an inch or more of extra dick flesh spills out.  A dollop of pre beads on the head of your enlarged " + game.cockDescript(temp) + " from the pleasure of the growth.");
-				if (temp2 <= 1) outputText("A slight pressure builds and releases as your " + game.cockDescript(temp) + " pushes a bit further out of your sheath.");
+				if (temp2 > 2) outputText("Your " + player.cockDescript(temp) + " tightens painfully, inches of taut horse-flesh pouring out from your sheath as it grows longer.  Thick animal-pre forms at the flared tip, drawn out from the pleasure of the change.");
+				if (temp2 > 1 && temp2 <= 2) outputText("Aching pressure builds within your sheath, suddenly releasing as an inch or more of extra dick flesh spills out.  A dollop of pre beads on the head of your enlarged " + player.cockDescript(temp) + " from the pleasure of the growth.");
+				if (temp2 <= 1) outputText("A slight pressure builds and releases as your " + player.cockDescript(temp) + " pushes a bit further out of your sheath.");
 				changes++;
 			}
 			//Chance of thickness + daydream
@@ -330,8 +344,8 @@ public class AbstractEquinum extends Consumable {
 				}
 				else {
 					player.ballSize++;
-					if (player.ballSize <= 2) outputText("\n\nA flash of warmth passes through you and a sudden weight develops in your groin.  You pause to examine the changes and your roving fingers discover your " + game.simpleBallsDescript() + " have grown larger than a human's.");
-					if (player.ballSize > 2) outputText("\n\nA sudden onset of heat envelops your groin, focusing on your " + game.sackDescript() + ".  Walking becomes difficult as you discover your " + game.simpleBallsDescript() + " have enlarged again.");
+					if (player.ballSize <= 2) outputText("\n\nA flash of warmth passes through you and a sudden weight develops in your groin.  You pause to examine the changes and your roving fingers discover your " + Appearance.ballsDescription(false, true, player) + " have grown larger than a human's.");
+					if (player.ballSize > 2) outputText("\n\nA sudden onset of heat envelops your groin, focusing on your " + Appearance.sackDescript(player) + ".  Walking becomes difficult as you discover your " + Appearance.ballsDescription(false, true, player) + " have enlarged again.");
 					dynStats("lib", 1, "lus", 3);
 				}
 				changes++;
@@ -341,13 +355,13 @@ public class AbstractEquinum extends Consumable {
 		if (player.gender == 2 || player.gender == 3) {
 			//Single vag
 			if (player.vaginas.length == 1) {
-				if (player.vaginas[0].vaginalLooseness <= VAGINA_LOOSENESS_GAPING && changes < changeLimit && rand(2) == 0) {
-					outputText("\n\nYou grip your gut in pain as you feel your organs shift slightly.  When the pressure passes, you realize your " + game.vaginaDescript(0) + " has grown larger, in depth AND size.");
+				if (player.vaginas[0].vaginalLooseness <= VaginaClass.LOOSENESS_GAPING && changes < changeLimit && rand(2) == 0) {
+					outputText("\n\nYou grip your gut in pain as you feel your organs shift slightly.  When the pressure passes, you realize your " + Appearance.vaginaDescript(player,0) + " has grown larger, in depth AND size.");
 					player.vaginas[0].vaginalLooseness++;
 					changes++;
 				}
-				if (player.vaginas[0].vaginalWetness <= VAGINA_WETNESS_NORMAL && changes < changeLimit && rand(2) == 0) {
-					outputText("\n\nYour " + game.vaginaDescript(0) + " moistens perceptably, giving off an animalistic scent.");
+				if (player.vaginas[0].vaginalWetness <= VaginaClass.WETNESS_NORMAL && changes < changeLimit && rand(2) == 0) {
+					outputText("\n\nYour " + Appearance.vaginaDescript(player,0) + " moistens perceptably, giving off an animalistic scent.");
 					player.vaginas[0].vaginalWetness++;
 					changes++;
 				}
@@ -368,8 +382,8 @@ public class AbstractEquinum extends Consumable {
 						temp2 = player.vaginas[temp].vaginalWetness;
 					}
 				}
-				if (player.vaginas[temp].vaginalWetness <= VAGINA_WETNESS_NORMAL && changes < changeLimit && rand(2) == 0) {
-					outputText("\n\nOne of your " + game.vaginaDescript(temp) + " moistens perceptably, giving off an animalistic scent.");
+				if (player.vaginas[temp].vaginalWetness <= VaginaClass.WETNESS_NORMAL && changes < changeLimit && rand(2) == 0) {
+					outputText("\n\nOne of your " + Appearance.vaginaDescript(player,temp) + " moistens perceptably, giving off an animalistic scent.");
 					player.vaginas[temp].vaginalWetness++;
 					changes++;
 				}
@@ -387,8 +401,8 @@ public class AbstractEquinum extends Consumable {
 						temp2 = player.vaginas[temp].vaginalLooseness;
 					}
 				}
-				if (player.vaginas[0].vaginalLooseness <= VAGINA_LOOSENESS_GAPING && changes < changeLimit && rand(2) == 0) {
-					outputText("\n\nYou grip your gut in pain as you feel your organs shift slightly.  When the pressure passes, you realize one of your " + game.vaginaDescript(temp) + " has grown larger, in depth AND size.");
+				if (player.vaginas[0].vaginalLooseness <= VaginaClass.LOOSENESS_GAPING && changes < changeLimit && rand(2) == 0) {
+					outputText("\n\nYou grip your gut in pain as you feel your organs shift slightly.  When the pressure passes, you realize one of your " + Appearance.vaginaDescript(player,temp) + " has grown larger, in depth AND size.");
 					player.vaginas[temp].vaginalLooseness++;
 					changes++;
 				}
@@ -414,7 +428,7 @@ public class AbstractEquinum extends Consumable {
 								player.breastRows[0].breastRating--;
 							}
 							//Talk about shrinkage
-							if (temp == 1) outputText("\n\nYou feel a weight lifted from you, and realize your " + game.breastDescript(0) + " have shrunk to a " + player.breastCup(0) + ".");
+							if (temp == 1) outputText("\n\nYou feel a weight lifted from you, and realize your " + player.breastDescript(0) + " have shrunk to a " + player.breastCup(0) + ".");
 							if (temp == 2) outputText("\n\nYou feel significantly lighter.  Looking down, you realize your breasts are MUCH smaller, down to " + player.breastCup(0) + "s.");
 							changes++;
 						}
@@ -435,7 +449,7 @@ public class AbstractEquinum extends Consumable {
 								outputText("\n");
 								if (temp3 < player.breastRows.length - 1) outputText("...and y");
 								else outputText("Y");
-								outputText("our " + game.breastDescript(temp3) + " shrink, dropping to " + player.breastCup(temp3) + "s.");
+								outputText("our " + player.breastDescript(temp3) + " shrink, dropping to " + player.breastCup(temp3) + "s.");
 							}
 						}
 						if (temp2 == 2) outputText("\nYou feel so much lighter after the change.");
@@ -449,38 +463,39 @@ public class AbstractEquinum extends Consumable {
 		//NON - GENDER SPECIFIC CHANGES
 		//Legs -> Tail -> Ears -> Fur -> Face
 		//Hoofed legs
-		if (player.lowerBody != LOWER_BODY_TYPE_HOOFED && player.lowerBody != LOWER_BODY_TYPE_GARGOYLE) {
+		if (player.lowerBody != LowerBody.HOOFED && player.lowerBody != LowerBody.GARGOYLE) {
 			if (changes < changeLimit && rand(3) == 0) {
-				if (player.lowerBody == LOWER_BODY_TYPE_NAGA) outputText("\n\nYou collapse as your sinuous snake-tail tears in half, shifting into legs.  The pain is immense, particularly in your new feet as they curl inward and transform into hooves!");
-				else if (player.lowerBody == LOWER_BODY_TYPE_DOG) outputText("\n\nYou stagger as your paws change, curling up into painful angry lumps of flesh.  They get tighter and tighter, harder and harder, until at last they solidify into hooves!");
+				if (player.lowerBody == LowerBody.NAGA) outputText("\n\nYou collapse as your sinuous snake-tail tears in half, shifting into legs.  The pain is immense, particularly in your new feet as they curl inward and transform into hooves!");
+				else if (player.lowerBody == LowerBody.DOG) outputText("\n\nYou stagger as your paws change, curling up into painful angry lumps of flesh.  They get tighter and tighter, harder and harder, until at last they solidify into hooves!");
 				else outputText("\n\nA coat of beastial fur springs up below your waist, itching as it fills in.<b>  You now have hooves in place of your feet!</b>");
-				mutations.setLowerBody(LOWER_BODY_TYPE_HOOFED);
+				mutations.setLowerBody(LowerBody.HOOFED);
 				changes++;
 			}
 		}
 		//Remove odd eyes
-		if (changes < changeLimit && rand(5) == 0 && player.eyeType > EYES_HUMAN) {
+		if (changes < changeLimit && rand(4) == 0 && player.eyes.type > Eyes.HUMAN) {
 			mutations.humanizeEyes();
 			changes++;
 		}
-		if ((type == 1 || type == 2) && changes < changeLimit && rand(3) == 0 && player.eyeColor != "blue" && player.eyeColor != "red") {
-			mutations.setEyeTypeAndColor(EYES_HUMAN, "blue");
-			outputText("\n\n<b>You have [eyecolor] eyes!</b>");
+		if ((type == 1 || type == 2) && changes < changeLimit && rand(3) == 0 && player.eyes.colour != "blue" && player.eyes.colour != "red") {
+			if (player.cor >= 50) mutations.setEyeTypeAndColor(Eyes.HUMAN, "red");
+			else mutations.setEyeTypeAndColor(Eyes.HUMAN, "blue");
+			outputText("\n\nSomething weird happens in your eyes when you go to see what is going on you discover your irises turned [eyecolor].");
 			changes++;
 		}
 		//HorseFace - Req's Fur && Ears
-		if (player.faceType != FACE_HORSE && !player.isGargoyle() && player.hasFur() && changes < changeLimit && rand(5) == 0 && player.earType == EARS_HORSE) {
-			if (player.faceType == FACE_DOG) outputText("\n\nMind-numbing pain shatters through you as you feel your facial bones rearranging.  You clutch at your face in agony as your skin crawls and shifts, your visage reshaping to replace your dog-like characteristics with those of a horse.  <b>You now have a horse's face.</b>");
+		if (player.faceType != Face.HORSE && !player.isGargoyle() && player.hasFur() && changes < changeLimit && rand(4) == 0 && player.ears.type == Ears.HORSE) {
+			if (player.faceType == Face.DOG) outputText("\n\nMind-numbing pain shatters through you as you feel your facial bones rearranging.  You clutch at your face in agony as your skin crawls and shifts, your visage reshaping to replace your dog-like characteristics with those of a horse.  <b>You now have a horse's face.</b>");
 			else outputText("\n\nMind-numbing pain shatters through you as you feel your facial bones breaking and shifting.  You clutch at yourself in agony as you feel your skin crawl and elongate under your fingers.  Eventually the pain subsides, leaving you with a face that seamlessly blends human and equine features.  <b>You have a very equine-looking face.</b>");
 			changes++;
-			mutations.setFaceType(FACE_HORSE);
+			mutations.setFaceType(Face.HORSE);
 		}
 		//Fur - if has horsetail && ears and not at changelimit
-		if (!player.hasFur() && !player.isGargoyle() && changes < changeLimit && rand(4) == 0 && player.tailType == TAIL_TYPE_HORSE) {
+		if (!player.hasFur() && !player.isGargoyle() && changes < changeLimit && rand(4) == 0 && player.tailType == Tail.HORSE) {
 			if (!player.hasScales()) {
 				outputText("\n\nAn itchy feeling springs up over every inch of your [skin base].  As you scratch yourself madly, you feel fur grow out of your [skin base] until <b>you have a fine coat of ");
 				if (type == 0) outputText("[haircolor]-colored fur.</b>");
-				else outputText("white-colored fur.</b>");
+				else outputText("[haircolor]-colored fur.</b>");
 			} else {
 				player.skinDesc = "fur";
 				outputText("\n\nYour " + player.skinTone + " scales begin to itch insufferably.  You reflexively scratch yourself, setting off an avalanche of discarded scales.  The itching intensifies as you madly scratch and tear at yourself, revealing a coat of ");
@@ -489,39 +504,42 @@ public class AbstractEquinum extends Consumable {
 				outputText(" [skin.type].  At last the itching stops as <b>you brush a few more loose scales from your new coat of fur.</b>");
 			}
 			changes++;
-			if (type == 0) player.skin.growCoat(SKIN_COAT_FUR, {color: randomChoice(["brown", "chocolate", "auburn", "sandy brown", "caramel", "peach", "black", "midnight black", "dark gray", "gray", "light gray", "silver", "white", "brown and white", "black and white"])});
-			else player.skin.growCoat(SKIN_COAT_FUR, {color: "white"});
+			if (type == 0) player.skin.growCoat(Skin.FUR, {color: randomChoice(["brown", "chocolate", "auburn", "sandy brown", "caramel", "peach", "black", "midnight black", "dark gray", "gray", "light gray", "silver", "white", "brown and white", "black and white"])});
+			else player.skin.growCoat(Skin.FUR, {color: randomChoice(["platinum blonde", "silver", "white"])});
+			if (player.findPerk(PerkLib.GeneticMemory) >= 0 && !player.hasStatusEffect(StatusEffects.UnlockedFur)) {
+				outputText("\n\n<b>Genetic Memory: Fur - Memorized!</b>\n\n");
+				player.createStatusEffect(StatusEffects.UnlockedFur, 0, 0, 0, 0);
+			}
 		}
 		//Ears - requires tail
-		if (player.earType != EARS_HORSE && player.tailType == TAIL_TYPE_HORSE && player.tailType != TAIL_TYPE_GARGOYLE && changes < changeLimit && rand(3) == 0) {
-			if (player.earType == -1) outputText("\n\nTwo painful lumps sprout on the top of your head, forming into tear-drop shaped ears, covered with short fur.  ");
-			if (player.earType == EARS_HUMAN) outputText("\n\nYour ears tug painfully on your face as they begin shifting, moving upwards to the top of your head and transforming into a upright animalistic ears.  ");
-			if (player.earType == EARS_DOG) outputText("\n\nYour ears change shape, morphing into from their doglike shape into equine-like ears!  ");
-			if (player.earType > EARS_DOG) outputText("\n\nYour ears change shape, morphing into teardrop-shaped horse ears!  ");
-			mutations.setEarType(EARS_HORSE);
-			player.earValue = 0;
+		if (player.ears.type != Ears.HORSE && player.tailType == Tail.HORSE && player.tailType != Tail.GARGOYLE && changes < changeLimit && rand(3) == 0) {
+			if (player.ears.type == -1) outputText("\n\nTwo painful lumps sprout on the top of your head, forming into tear-drop shaped ears, covered with short fur.  ");
+			if (player.ears.type == Ears.HUMAN) outputText("\n\nYour ears tug painfully on your face as they begin shifting, moving upwards to the top of your head and transforming into a upright animalistic ears.  ");
+			if (player.ears.type == Ears.DOG) outputText("\n\nYour ears change shape, morphing into from their doglike shape into equine-like ears!  ");
+			if (player.ears.type > Ears.DOG) outputText("\n\nYour ears change shape, morphing into teardrop-shaped horse ears!  ");
+			mutations.setEarType(Ears.HORSE);
 			outputText("<b>You now have horse ears.</b>");
 			changes++;
 		}
 		//Tail - requires legs
-		if (player.tailType != TAIL_TYPE_HORSE && player.tailType != TAIL_TYPE_GARGOYLE && player.lowerBody == LOWER_BODY_TYPE_HOOFED && rand(2) == 0 && changes < changeLimit) {
+		if (player.tailType != Tail.HORSE && player.tailType != Tail.GARGOYLE && player.lowerBody == LowerBody.HOOFED && rand(2) == 0 && changes < changeLimit) {
 			//no tail
 			if (player.tailType == 0) {
 				outputText("\n\nThere is a sudden tickling on your ass, and you notice you have sprouted a long shiny horsetail of the same [haircolor] color as your hair.");
 			}
 			//if other animal tail
-			if (player.tailType > TAIL_TYPE_HORSE && player.tailType <= TAIL_TYPE_COW) {
-				outputText("\n\nPain lances up your " + game.assholeDescript() + " as your tail shifts and morphs disgustingly.  With one last wave of pain, it splits into hundreds of tiny filaments, transforming into a horsetail.");
+			if (player.tailType > Tail.HORSE && player.tailType <= Tail.COW) {
+				outputText("\n\nPain lances up your " + Appearance.assholeDescript(player) + " as your tail shifts and morphs disgustingly.  With one last wave of pain, it splits into hundreds of tiny filaments, transforming into a horsetail.");
 			}
 			//if bee/mantis/scorpion/spider-butt.
-			if ((player.tailType > TAIL_TYPE_COW && player.tailType < TAIL_TYPE_SHARK) || player.tailType == TAIL_TYPE_SCORPION || player.tailType == TAIL_TYPE_MANTIS_ABDOMEN) {
+			if ((player.tailType > Tail.COW && player.tailType < Tail.SHARK) || player.tailType == Tail.SCORPION || player.tailType == Tail.MANTIS_ABDOMEN) {
 				outputText("\n\nYour insect-like abdomen bunches up as it begins shrinking, exoskeleton flaking off like a snake sheds its skin.  It bunches up until it is as small as a tennis ball, then explodes outwards, growing into an animalistic tail shape.  Moments later, it explodes into filaments of pain, dividing into hundreds of strands and turning into a shiny horsetail.");
 			}
-			if (player.tailType >= TAIL_TYPE_SHARK) {
-				outputText("\n\nPain lances up your " + game.assholeDescript() + " as your tail shifts and morphs disgustingly.  With one last wave of pain, it splits into hundreds of tiny filaments, transforming into a horsetail.");
+			if (player.tailType >= Tail.SHARK) {
+				outputText("\n\nPain lances up your " + player.assholeDescript() + " as your tail shifts and morphs disgustingly.  With one last wave of pain, it splits into hundreds of tiny filaments, transforming into a horsetail.");
 			}
 			outputText("  <b>You now have a horse-tail.</b>");
-			mutations.setTailType(TAIL_TYPE_HORSE, 1);
+			mutations.setTailType(Tail.HORSE, 1);
 			player.tailVenom    = 0;
 			player.tailRecharge = 0;
 			changes++;
@@ -529,49 +547,55 @@ public class AbstractEquinum extends Consumable {
 		// Remove gills
 		if (rand(4) == 0 && player.hasGills() && changes < changeLimit) mutations.updateGills();
 
-		if ((type == 1 || type == 2) && changes < changeLimit && rand(3) == 0 && player.earType == EARS_HORSE && player.tailType != TAIL_TYPE_GARGOYLE && player.tailType == TAIL_TYPE_HORSE) {
+		if ((type == 1 || type == 2) && changes < changeLimit && rand(3) == 0 && player.ears.type == Ears.HORSE && player.tailType != Tail.GARGOYLE && player.tailType == Tail.HORSE) {
 			temp = 1;
-			//New horn or expanding unicorn/alicorn horn
-			if (player.hornType == HORNS_UNICORN || player.hornType == HORNS_NONE) {
-				//Get bigger if player has horn
-				if (player.hornType == HORNS_UNICORN) {
+			//New horns or expanding unicorn/alicorn horns
+			if (player.horns.type == Horns.UNICORN || player.horns.type == Horns.NONE) {
+				//Get bigger if player has horns
+				if (player.horns.type == Horns.UNICORN) {
 					{
 						temp = 1 + rand(3);
-						player.horns += temp;
+						player.horns.count += temp;
 						if (temp == 0) changes--;
-						if (temp == 1) outputText("\n\nAn aching pressure builds in your temples as you feel your horn push another inch of length from your skull.  ");
-						if (temp == 2) outputText("\n\nA powerful headache momentarily doubles you over.  With painful slowness, you feel your horn push another two inches of length out from your brow, gradually thickening as it grow.  ");
-						if (temp == 3) outputText("\n\nAgony overwhelms you as a headache of terrifying intensity sweeps through your skull.  You squeeze your eyes shut from the pain, but it does little to help.  The torture intensifies before finally diminishing as you feel an inch or two of new horn force its way out of your forehead.  The headache remains despite this, and desperate for relief, you grab hold of your horn and tug, pulling another inch of new horn free.  At last the pain fades, leaving you with significantly enhanced head-spike.  ");
-						if (player.horns < 3) outputText("It is the size of tiny nub.");
-						if (player.horns >= 3 && player.horns < 6) outputText("It is similar to what you would see on a young unicorn.");
-						if (player.horns >= 6 && player.horns < 12) outputText("It look like the horn on a grown unicorn, big enough and dangerous enough to do some damage.");
-						if (player.horns >= 12 && player.horns < 20) outputText("It is large and wicked looking.");
-						if (player.horns >= 20) outputText("It is large, pointed and spiraling horn.");
+						if (temp == 1) outputText("\n\nAn aching pressure builds in your temples as you feel your horns push another inch of length from your skull.  ");
+						if (temp == 2) outputText("\n\nA powerful headache momentarily doubles you over.  With painful slowness, you feel your horns push another two inches of length out from your brow, gradually thickening as it grow.  ");
+						if (temp == 3) outputText("\n\nAgony overwhelms you as a headache of terrifying intensity sweeps through your skull.  You squeeze your eyes shut from the pain, but it does little to help.  The torture intensifies before finally diminishing as you feel an inch or two of new horns force its way out of your forehead.  The headache remains despite this, and desperate for relief, you grab hold of your horns and tug, pulling another inch of new horns free.  At last the pain fades, leaving you with significantly enhanced head-spike.  ");
+						if (player.horns.count < 3) outputText("It is the size of tiny nub.");
+						if (player.horns.count >= 3 && player.horns.count < 6) outputText("It is similar to what you would see on a young unicorn.");
+						if (player.horns.count >= 6 && player.horns.count < 12) outputText("It look like the horn on a grown unicorn, big enough and dangerous enough to do some damage.");
+						if (player.horns.count >= 12 && player.horns.count < 20) outputText("It is large and wicked looking.");
+						if (player.horns.count >= 20) outputText("It is large, pointed and spiraling horn.");
 						changes++;
 					}
 				}
 				//If no horns yet..
 				else {
 					outputText("\n\nWith painful pressure, the skin on your forehead splits around tiny nub-like horn, a little bit similar to that you would see on the cattle back in your homeland.");
-					mutations.setHornType(HORNS_COW_MINOTAUR, 2);
+					mutations.setHornType(Horns.UNICORN, 2);
 					changes++;
 				}
 			}
-			//Not uni/ali horn, change to uni/ali-horn
-			if (player.hornType != HORNS_UNICORN && player.hornType != HORNS_ORCHID) {
-				outputText("\n\nYour horns vibrate and shift as if made of clay, reforming into horn with a unicorn-like shape.");
-				mutations.setHornType(HORNS_UNICORN);
+			//Not uni/ali horns, change to uni/ali-horns
+			if (player.horns.type != Horns.UNICORN && player.horns.type != Horns.ORCHID) {
+				outputText("\n\nYour horns vibrate and shift as if made of clay, reforming into horns with a unicorn-like shape.");
+				mutations.setHornType(Horns.UNICORN);
 				changes++;
 			}
 		}
 		//Alicorn wings
-		if (type == 2 && player.wingType == WING_TYPE_NONE && changes < changeLimit && player.hornType == HORNS_UNICORN && rand(4) == 0) {
+		if (type == 2 && player.wings.type == Wings.NONE && changes < changeLimit && player.horns.type == Horns.UNICORN && rand(4) == 0) {
 			outputText("\n\nPain lances through your back, the muscles knotting oddly and pressing up to bulge your [skin.type]. It hurts, oh gods does it hurt, but you can't get a good angle to feel at the source of your agony. A loud crack splits the air, and then your body is forcing a pair of narrow limbs through a gap in your [armor]. Blood pumps through the new appendages, easing the pain as they fill out and grow. Tentatively, you find yourself flexing muscles you didn't know you had, and <b>you're able to curve the new growths far enough around to behold your brand new, white wings.</b>");
-			mutations.setWingType(WING_TYPE_FEATHERED_ALICORN, "large white feathered");
+			mutations.setWingType(Wings.FEATHERED_ALICORN, "large white feathered");
+			changes++;
+		}
+		//Nightmare wings
+		if (type == 2 && player.wings.type == Wings.NONE && changes < changeLimit && (player.horns.type == Horns.UNICORN || player.horns.type == Horns.BICORN) && player.cor > 89 && rand(4) == 0) {
+			outputText("\n\nPain lances through your back, the muscles knotting oddly and pressing up to bulge your [skin.type]. It hurts, oh gods does it hurt, but you can't get a good angle to feel at the source of your agony. A loud crack splits the air, and then your body is forcing a pair of narrow limbs through a gap in your [armor]. Blood pumps through the new appendages, easing the pain as they fill out and grow. Tentatively, you find yourself flexing muscles you didn't know you had, and <b>you're able to curve the new growths far enough around to behold your brand new, white wings.</b>");
+			mutations.setWingType(Wings.NIGHTMARE, "large black leathery");
 			changes++;
 		}
 		//Remove old wings
-		if (type == 2 && player.wingType != WING_TYPE_FEATHERED_ALICORN && player.wingType != WING_TYPE_GARGOYLE_LIKE_LARGE && player.wingType > WING_TYPE_NONE && changes < changeLimit && rand(4) == 0) {
+		if (type == 2 && (player.wings.type != Wings.FEATHERED_ALICORN || (player.wings.type != Wings.NIGHTMARE && player.cor > 89)) && player.wings.type != Wings.GARGOYLE_LIKE_LARGE && player.wings.type > Wings.NONE && changes < changeLimit && rand(4) == 0) {
 			mutations.removeWings();
 			changes++;
 		}
@@ -579,9 +603,9 @@ public class AbstractEquinum extends Consumable {
 		//FAILSAFE CHANGE
 		if (changes == 0) {
 			outputText("\n\nInhuman vitality spreads through your body, invigorating you!\n");
-			if (type == 0) game.HPChange(20, true);
-			if (type == 1) game.HPChange(100, true);
-			if (type == 2) game.HPChange(500, true);
+			if (type == 0) EngineCore.HPChange(20, true);
+			if (type == 1) EngineCore.HPChange(100, true);
+			if (type == 2) EngineCore.HPChange(500, true);
 			dynStats("lus", 3);
 		}
 		player.refillHunger(15);

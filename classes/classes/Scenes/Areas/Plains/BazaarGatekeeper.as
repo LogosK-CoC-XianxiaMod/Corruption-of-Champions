@@ -1,9 +1,11 @@
 package classes.Scenes.Areas.Plains 
 {
-	import classes.*;
-	import classes.internals.*;
-	import classes.GlobalFlags.kFLAGS;
-	/**
+import classes.*;
+import classes.GlobalFlags.kFLAGS;
+import classes.Scenes.SceneLib;
+import classes.internals.*;
+
+/**
 	 * ...
 	 * @author Kitteh6660
 	 */
@@ -20,7 +22,6 @@ package classes.Scenes.Areas.Plains
 			outputText("The gatekeeper raises his scimitars ");
 			if (hasStatusEffect(StatusEffects.Blind) && rand(3) > 0) {
 				outputText("and slashes his scimitars blindly, missing you by a great deal!");
-				combatRoundOver();
 				return;
 			}
 			else {
@@ -43,16 +44,13 @@ package classes.Scenes.Areas.Plains
 			{
 				outputText("but you get hit instead! ");
 				var damage:int = int(str + weaponAttack + 100);
-				damage = player.reduceDamage(damage);
-				player.takeDamage(damage, true);
+				player.takePhysDamage(damage, true);
 			}
-			combatRoundOver();
 		}
 		
 		public function scimitarCrossAttack():void {
 			if (!hasStatusEffect(StatusEffects.Uber)) {
 				outputText("The gatekeeper raises his scimitars! Judging from the way he is holding, <b>he is going to cross-slash you!</b>");
-				combatRoundOver();
 				return;
 			}
 			if (flags[kFLAGS.IN_COMBAT_USE_PLAYER_WAITED_FLAG] > 0) {
@@ -64,16 +62,14 @@ package classes.Scenes.Areas.Plains
 			else {
 				outputText("The gatekeeper slashes you brutally! You are in a lot of pain. ");
 				var damage:int = int(str + weaponAttack + 250);
-				damage = player.reduceDamage(damage);
-				player.takeDamage(damage, true);
+				player.takePhysDamage(damage, true);
 			}
 			removeStatusEffect(StatusEffects.Uber);
-			combatRoundOver();
 		}
 		
 		override public function doAI():void
 		{
-			if (hasStatusEffect(StatusEffects.Stunned)) {
+			if (hasStatusEffect(StatusEffects.Stunned) || hasStatusEffect(StatusEffects.FreezingBreathStun) || hasStatusEffect(StatusEffects.StunnedTornado)) {
 				outputText("Your foe is too dazed from your last hit to strike back!");
 				if (hasStatusEffect(StatusEffects.Uber)) {
 					outputText(" You've managed to interrupt his special attack!");
@@ -81,11 +77,11 @@ package classes.Scenes.Areas.Plains
 				}
 				if (statusEffectv1(StatusEffects.Stunned) <= 0) removeStatusEffect(StatusEffects.Stunned);
 				else addStatusValue(StatusEffects.Stunned, 1, -1);
-				combatRoundOver();
 				return;
 			}
 			if (hasStatusEffect(StatusEffects.Fear)) {
-				game.outputText("The gatekeeper appears to be immune to your fear.\n\n");
+				EngineCore.outputText("The gatekeeper appears to be immune to your fear.\n\n");
+				this.spe += statusEffectv2(StatusEffects.Fear);
 				removeStatusEffect(StatusEffects.Fear);
 			}
 			if (hasStatusEffect(StatusEffects.Uber)) {
@@ -101,7 +97,7 @@ package classes.Scenes.Areas.Plains
 		override public function defeated(hpVictory:Boolean):void
 		{
 			outputText("You manage to knock the guard off his feet. With the guard unconscious, you manage to check for loot before you head in.", true);
-			doNext(game.bazaar.winAgainstGuard);
+			doNext(SceneLib.bazaar.winAgainstGuard);
 		}
 		
 		override public function won(hpVictory:Boolean, pcCameWorms:Boolean):void
@@ -120,26 +116,27 @@ package classes.Scenes.Areas.Plains
 			this.a = "the ";
 			this.short = "guard";
 			this.imageName = "bazaarguard";
-			this.long = "This crimson-skinned demon-morph guarding the entrance to Bizarre Bazaar stands ten feet tall. He has red skin and is wearing almost sky-blue turban on his head. He has solid black eyes. He is wearing a simple tunic and loose-fitting pants. He is wielding a pair of scimitars."
+			this.long = "This crimson-skinned demon-morph guarding the entrance to Bizarre Bazaar stands ten feet tall. He has red skin and is wearing almost sky-blue turban on his head. He has solid black eyes. He is wearing a simple tunic and loose-fitting pants. He is wielding a pair of scimitars.";
 			this.createCock(8, 1.5, CockTypesEnum.DEMON);
 			createBreastRow(Appearance.breastCupInverse("flat"));
 			this.ass.analLooseness = 1;
 			this.ass.analWetness = 0;
 			this.tallness = 10*12;
-			this.hipRating = 2;
-			this.buttRating = 0;
+			this.hips.type = 2;
+			this.butt.type = 0;
 			this.skinTone = "crimson";
 			this.hairColor = "black";
 			this.hairLength = 8;
 			initStrTouSpeInte(120, 140, 100, 70);
-			initLibSensCor(15, 10, 55);
+			initWisLibSensCor(70, 15, 10, 55);
 			this.weaponName = "dual scimitars";
 			this.weaponVerb="slash";
-			this.weaponAttack = 28 + (6 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.weaponAttack = 28;
 			this.weaponPerk = "";
 			this.weaponValue = 25;
 			this.armorName = "tunic and pants";
-			this.armorDef = 14 + (2 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.armorDef = 14;
+			this.armorMDef = 2;
 			this.bonusHP = 1750;
 			this.bonusLust = 40;
 			this.lust = 0;
@@ -150,12 +147,6 @@ package classes.Scenes.Areas.Plains
 			this.drop = new WeightedDrop().add(weapons.SCIMITR, 1);
 			this.gems = 300;
 			this.special1 = scimitarSpecial;
-			this.str += 36 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.tou += 42 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.spe += 30 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.inte += 21 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];			
-			this.lib += 4 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.newgamebonusHP = 5320;
 			checkMonster();
 		}
 	}

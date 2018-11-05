@@ -1,14 +1,15 @@
 //Prisoner Mod WIP
 package classes.Scenes.Places 
 {
-	import classes.*;
-	import classes.GlobalFlags.*;
-	import classes.Items.*;
-	import classes.Scenes.Places.Prison.*
-	
-	import coc.view.MainView;
-	
-	public class Prison extends BaseContent implements TimeAwareInterface
+import classes.*;
+import classes.GlobalFlags.*;
+import classes.Items.*;
+import classes.Scenes.Places.Prison.*;
+import classes.Scenes.SceneLib;
+
+import coc.view.MainView;
+
+public class Prison extends BaseContent implements TimeAwareInterface
 	{
 		//Link to class files.
 		public var prisonLetter:PrisonLetters = new PrisonLetters();
@@ -50,7 +51,7 @@ package classes.Scenes.Places
 		public function get inPrison():Boolean { return flags[kFLAGS.IN_PRISON] > 0; }
 		
 		public function Prison() {
-			CoC.timeAwareClassAdd(this);
+			EventParser.timeAwareClassAdd(this);
 		}
 		
 		//Implementation of TimeAwareInterface
@@ -164,7 +165,7 @@ package classes.Scenes.Places
 			}
 			if (player.esteem > oldEsteem) showStatUp("esteem");
 			if (player.esteem < oldEsteem) showStatDown("esteem");
-			dynStats("lus", 0, "resisted", false);
+			dynStats("lus", 0, "scale", false);
 			statScreenRefresh();
 		}
 		/**
@@ -178,7 +179,7 @@ package classes.Scenes.Places
 			if (player.will < 0) player.will = 0;
 			if (player.will > oldWill) showStatUp("will");
 			if (player.will < oldWill) showStatDown("will");
-			dynStats("lus", 0, "resisted", false);
+			dynStats("lus", 0, "scale", false);
 			statScreenRefresh();
 		}
 		/**
@@ -222,7 +223,7 @@ package classes.Scenes.Places
 			}
 			if (player.obey > oldObey) showStatUp("obey");
 			if (player.obey < oldObey) showStatDown("obey");
-			dynStats("lus", 0, "resisted", false);
+			dynStats("lus", 0, "scale", false);
 			statScreenRefresh();
 		}
 		
@@ -455,11 +456,8 @@ package classes.Scenes.Places
 		
 		public function prisonIsRestrained():Boolean
 		{
-			if(player.statusEffectv2(StatusEffects.PrisonRestraints) > 0 || player.statusEffectv3(StatusEffects.PrisonRestraints) > 0 || player.statusEffectv3(StatusEffects.PrisonRestraints) > 0)
-			{
-				return true;
-			}
-			return false;
+			return player.statusEffectv2(StatusEffects.PrisonRestraints) > 0 || player.statusEffectv3(StatusEffects.PrisonRestraints) > 0 || player.statusEffectv3(StatusEffects.PrisonRestraints) > 0;
+
 		}
 		
 		public function prisonCanMasturbate(verbose:Boolean = true):Boolean
@@ -1195,12 +1193,12 @@ package classes.Scenes.Places
 						outputText("<b>extremely filthy</b>.");
 				}
 			}
-			if(kGAMECLASS.timeQ > 0)
+			if(CoC.instance.timeQ > 0)
 			{
-				/*if(!kGAMECLASS.campQ)
+				/*if(!CoC.instance.campQ)
 				{
 					outputText("More time passes...\n", true);
-					goNext(kGAMECLASS.timeQ, false);
+					goNext(CoC.instance.timeQ, false);
 					return;
 				}*/
 				if(model.time.hours < 6 || model.time.hours > 20)
@@ -1292,7 +1290,7 @@ package classes.Scenes.Places
 			mainView.showMenuButton( MainView.MENU_STATS );
 			mainView.showMenuButton( MainView.MENU_PERKS );
 			mainView.showMenuButton( MainView.MENU_APPEARANCE );
-			mainView.setMenuButton( MainView.MENU_NEW_MAIN, "Main Menu", kGAMECLASS.mainMenu.mainMenu );
+			mainView.setMenuButton( MainView.MENU_NEW_MAIN, "Main Menu", CoC.instance.mainMenu.mainMenu );
 			mainView.newGameButton.toolTipText = "Return to main menu.";
 			mainView.newGameButton.toolTipHeader = "Main Menu";
 			//Level up
@@ -1314,9 +1312,9 @@ package classes.Scenes.Places
 					removeButton(0);
 					removeButton(4);
 				}
-				addButton(8, "Masturbate", getGame().masturbation.masturbateMenu);
-				if ((((player.findPerk(PerkLib.HistoryReligious) >= 0 || player.findPerk(PerkLib.PastLifeReligious) >= 0) && player.cor <= 66) || (player.findPerk(PerkLib.Enlightened) >= 0 && player.cor < 10)) && !(player.hasStatusEffect(StatusEffects.Exgartuan) && player.statusEffectv2(StatusEffects.Exgartuan) == 0) || flags[kFLAGS.SFW_MODE] >= 1) addButton(8, "Meditate", getGame().masturbation.masturbateMenu);
-			}
+                addButton(8, "Masturbate", SceneLib.masturbation.masturbateMenu);
+                if ((((player.findPerk(PerkLib.HistoryReligious) >= 0 || player.findPerk(PerkLib.PastLifeReligious) >= 0) && player.cor <= 66) || (player.findPerk(PerkLib.Enlightened) >= 0 && player.cor < 10)) && !(player.hasStatusEffect(StatusEffects.Exgartuan) && player.statusEffectv2(StatusEffects.Exgartuan) == 0) || flags[kFLAGS.SFW_MODE] >= 1) addButton(8, "Meditate", SceneLib.masturbation.masturbateMenu);
+            }
 			//Alter menu depending on punishment.
 			if (flags[kFLAGS.PRISON_PUNISHMENT] == 1) {
 				menu();
@@ -1346,14 +1344,14 @@ package classes.Scenes.Places
 			}
 			//Show wait/rest/sleep depending on conditions.
 			addButton(9, "Wait", camp.doWait);
-			if (player.fatigue > 40 || player.HP / player.maxHP() <= .9) addButton(9, "Rest", getGame().camp.rest);
-			if (model.time.hours >= 21 || model.time.hours < 6) {
+            if (player.fatigue > 40 || player.HP / player.maxHP() <= .9) addButton(9, "Rest", SceneLib.camp.rest);
+            if (model.time.hours >= 21 || model.time.hours < 6) {
 				removeButton(0);
 				removeButton(1);
 				removeButton(2);
 				removeButton(3);
-				addButton(9, "Sleep", getGame().camp.doSleep);
-			}
+                addButton(9, "Sleep", SceneLib.camp.doSleep);
+            }
 		}
 		
 		//------------

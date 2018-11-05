@@ -1,12 +1,16 @@
 ﻿package classes.Scenes.Quests{
-	import classes.*;
-	import classes.GlobalFlags.kFLAGS;
-	import classes.GlobalFlags.kGAMECLASS;
-	import classes.Scenes.Areas.Plains.GnollSpearThrower;
-	import classes.Scenes.NPCs.NPCAwareContent;
-	import classes.Scenes.Quests.UrtaQuest.*;
+import classes.*;
+import classes.BodyParts.Ears;
+import classes.BodyParts.Face;
+import classes.BodyParts.LowerBody;
+import classes.BodyParts.Tail;
+import classes.GlobalFlags.kFLAGS;
+import classes.Scenes.Areas.Plains.GnollSpearThrower;
+import classes.Scenes.NPCs.NPCAwareContent;
+import classes.Scenes.Quests.UrtaQuest.*;
+import classes.Scenes.SceneLib;
 
-	public class UrtaQuest extends NPCAwareContent
+public class UrtaQuest extends NPCAwareContent
 	{
 
 		public function UrtaQuest()
@@ -223,11 +227,11 @@ public function startUrtaQuest():void {
 	player.breastRows[0].breastRating = 7;
 	player.nippleLength = .75;
 	player.skinTone = "black";
-	player.lowerBody = LOWER_BODY_TYPE_FOX;
+	player.lowerBody = LowerBody.FOX;
 	player.legCount = 2;
-	player.earType = EARS_FOX;
-	player.faceType = FACE_FOX;
-	player.tailType = TAIL_TYPE_FOX;
+	player.ears.type = Ears.FOX;
+	player.faceType = Face.FOX;
+	player.tailType = Tail.FOX;
 	player.tailCount = 1;
 	player.createCock();
 	player.cocks[0].cockType = CockTypesEnum.HORSE;
@@ -239,19 +243,19 @@ public function startUrtaQuest():void {
 	player.thickness = 30;
 	player.tone = 50;
 	player.femininity = 90;
-	player.hipRating = 12;
-	player.buttRating = 12;
+	player.hips.type = 12;
+	player.butt.type = 12;
 	player.ass.analLooseness = 2;
 	player.createStatusEffect(StatusEffects.BonusVCapacity,58,0,0,0);
 	player.createVagina();
-	player.vaginas[0].vaginalWetness = VAGINA_WETNESS_DROOLING;
-	player.vaginas[0].vaginalLooseness = VAGINA_LOOSENESS_NORMAL;
+	player.vaginas[0].vaginalWetness = VaginaClass.WETNESS_DROOLING;
+	player.vaginas[0].vaginalLooseness = VaginaClass.LOOSENESS_NORMAL;
 	player.clitLength = 1;
 	player.str = 100;
 	player.tou = 110;
 	player.spe = 120;
 	player.inte = 60;
-	player.wis = 15;
+	player.wis = 50;
 	player.lib = 90;
 	player.sens = 50;
 	player.cor = 30;
@@ -262,12 +266,12 @@ public function startUrtaQuest():void {
 	player.gems = 183;
 	player.level = 26;
 	player.teaseLevel = 5;
-	player.str += (player.newGamePlusMod() * 20);
-	player.tou += (player.newGamePlusMod() * 22);
-	player.spe += (player.newGamePlusMod() * 24);
-	player.inte += (player.newGamePlusMod() * 12);
-	player.wis += (player.newGamePlusMod() * 3);
-	player.lib += (player.newGamePlusMod() * 18);
+	player.str += (player.newGamePlusMod() * 30);
+	player.tou += (player.newGamePlusMod() * 33);
+	player.spe += (player.newGamePlusMod() * 36);
+	player.inte += (player.newGamePlusMod() * 18);
+	player.wis += (player.newGamePlusMod() * 15);
+	player.lib += (player.newGamePlusMod() * 27);
 
 	//PERKS
 	player.createPerk(PerkLib.Agility,0,0,0,0);
@@ -284,7 +288,7 @@ public function startUrtaQuest():void {
 	player.createPerk(PerkLib.Berzerker,0,0,0,0);
 	player.createPerk(PerkLib.HistoryFighter,0,0,0,0);
 	player.createPerk(PerkLib.JobWarrior,0,0,0,0);
-	player.createPerk(PerkLib.JobBarbarian,0,0,0,0);
+	player.createPerk(PerkLib.JobSwordsman,0,0,0,0);
 	player.createPerk(PerkLib.JobAllRounder,0,0,0,0);
 	player.createPerk(PerkLib.HiddenMomentum,0,0,0,0);
 	player.createPerk(PerkLib.HoldWithBothHands,0,0,0,0);
@@ -295,26 +299,31 @@ public function startUrtaQuest():void {
 	if (player.newGamePlusMod() >= 2) player.createPerk(PerkLib.ResistanceIII,0,0,0,0);
 	if (player.newGamePlusMod() >= 3) player.createPerk(PerkLib.ResistanceIV,0,0,0,0);
 	if (player.newGamePlusMod() >= 4) player.createPerk(PerkLib.ResistanceV,0,0,0,0);
+	if (player.newGamePlusMod() >= 5) player.createPerk(PerkLib.ResistanceVI,0,0,0,0);
 	player.createPerk(PerkLib.InhumanDesireI,0,0,0,0);
 	if (player.newGamePlusMod() >= 1) player.createPerk(PerkLib.InhumanDesireII,0,0,0,0);
 	if (player.newGamePlusMod() >= 2) player.createPerk(PerkLib.InhumanDesireIII,0,0,0,0);
 	if (player.newGamePlusMod() >= 3) player.createPerk(PerkLib.InhumanDesireIV,0,0,0,0);
-	if (player.newGamePlusMod() >= 3) player.createPerk(PerkLib.InhumanDesireV,0,0,0,0);
+	if (player.newGamePlusMod() >= 4) player.createPerk(PerkLib.InhumanDesireV,0,0,0,0);
+	if (player.newGamePlusMod() >= 5) player.createPerk(PerkLib.InhumanDesireVI,0,0,0,0);
 	player.createPerk(PerkLib.RefinedBodyI,0,0,0,0);
 	if (player.newGamePlusMod() >= 1) player.createPerk(PerkLib.RefinedBodyII,0,0,0,0);
 	if (player.newGamePlusMod() >= 2) player.createPerk(PerkLib.RefinedBodyIII,0,0,0,0);
 	if (player.newGamePlusMod() >= 3) player.createPerk(PerkLib.RefinedBodyIV,0,0,0,0);
 	if (player.newGamePlusMod() >= 4) player.createPerk(PerkLib.RefinedBodyV,0,0,0,0);
+	if (player.newGamePlusMod() >= 5) player.createPerk(PerkLib.RefinedBodyVI,0,0,0,0);
 	player.createPerk(PerkLib.TankI,0,0,0,0);
 	if (player.newGamePlusMod() >= 1) player.createPerk(PerkLib.TankII,0,0,0,0);
 	if (player.newGamePlusMod() >= 2) player.createPerk(PerkLib.TankIII,0,0,0,0);
 	if (player.newGamePlusMod() >= 3) player.createPerk(PerkLib.TankIV,0,0,0,0);
 	if (player.newGamePlusMod() >= 4) player.createPerk(PerkLib.TankV,0,0,0,0);
+	if (player.newGamePlusMod() >= 5) player.createPerk(PerkLib.TankVI,0,0,0,0);
 	player.createPerk(PerkLib.DancersVitalityI,0,0,0,0);
 	if (player.newGamePlusMod() >= 1) player.createPerk(PerkLib.DancersVitalityII,0,0,0,0);
 	if (player.newGamePlusMod() >= 2) player.createPerk(PerkLib.DancersVitalityIII,0,0,0,0);
 	if (player.newGamePlusMod() >= 3) player.createPerk(PerkLib.DancersVitalityIV,0,0,0,0);
-	if (player.newGamePlusMod() >= 3) player.createPerk(PerkLib.DancersVitalityV,0,0,0,0);
+	if (player.newGamePlusMod() >= 4) player.createPerk(PerkLib.DancersVitalityV,0,0,0,0);
+	if (player.newGamePlusMod() >= 5) player.createPerk(PerkLib.DancersVitalityVI,0,0,0,0);
 
 	//GEAR!
 	player.setWeapon(weapons.URTAHLB);
@@ -413,7 +422,7 @@ private function getHelBangedAsUrta():void {
 	if(flags[kFLAGS.HEL_HARPY_QUEEN_DEFEATED] > 0) outputText(", and even how they worked together to bring down an evil sorceress and save her father. Your heart swells with pride as she recounts " + player2.short + " doing so a noble thing, and for a moment you know you made the right pick in a lover..");
 	outputText(".  You sit and listen for a long few minutes, sipping at the beer until the liquid courage starts to work its wonders, giving you a little tingle... and helping to open you up, too.  Soon, you're drawn into the conversation, joking and teasing with the other girls as if you'd been friends for ages.");
 	outputText("\n\nEventually, though, a particularly lewd joke from the salamander causes your old \"<i>friend</i>\" to remind you of your quest, hitting the underside of the table with an audible THUMP! that shocks the others. They look at you with questioning eyes.... It's time to either hit the road or get some much-needed relief, because this boner isn't going anywhere without your help.");
-	dynStats("lus", 20, "resisted", false);
+	dynStats("lus", 20, "scale", false);
 	flags[kFLAGS.URTA_MET_HEL] = 1;
 	//[Head Out] [Get \"<i>Help</i>\"]
 	menu();
@@ -689,7 +698,7 @@ private function putUrtasWangInPCsCunt(truth:Boolean):void {
 	if(player2.isTaur())
 	{
 		outputText("and climb off the 'taur-" + player2.mf("man","woman") + ".  " + player2.mf("He","She") + " smirks up at you, until you bid " + player2.mf("him","her") + " to rise, telling " + player2.mf("him","her") + " that you plan to mount " + player2.mf("him","her") + " like the fertile filly " + player2.mf("he","her") + " is. Reluctantly, " + player2.short + " clatters up onto " + player2.mf("his","her") + " hooves.");
-		if(player2.tailType > TAIL_TYPE_NONE) outputText("  You stroke " + player2.mf("his","her") + " tail as you shift it aside");
+		if(player2.tailType > Tail.NONE) outputText("  You stroke " + player2.mf("his","her") + " tail as you shift it aside");
 		else outputText("  You stroke " + player2.mf("his","her") + " swollen sex as you admire it");
 		outputText(", making sure you've got the perfect view of " + player2.mf("his","her") + " lube-slimed horse-cunt.  Unbidden, your cock thickens, disgorging a potent trail of animal-pre down its underside in anticipation.");
 		if(player2.wetness() >= 4) outputText("  Fuck, " + player2.mf("he","she") + "'s wetter than Edryn!  Just look at those heavy trails of slick moisture as they run down " + player2.mf("his","her") + " rump and hindlegs.");
@@ -929,8 +938,8 @@ private function loseToGoblinsPartIVAsUrta():void {
 private function urtaGameOver():void {
 	clearOutput();
 	outputText("<b>Urta has been lost to her fate...  Meanwhile, back at camp...</b>");
-	getGame().inCombat = false;
-	flags[kFLAGS.URTA_QUEST_STATUS] = -1;
+    CoC.instance.inCombat = false;
+    flags[kFLAGS.URTA_QUEST_STATUS] = -1;
 	model.time.days++;
 	resetToPC();
 	model.time.hours = 6;
@@ -964,11 +973,11 @@ private function urtaGameOver():void {
 
 public function urtaSpecials():void {
 //Gone	menuLoc = 3;
-	if (getGame().inCombat && player.hasStatusEffect(StatusEffects.Sealed) && player.statusEffectv2(StatusEffects.Sealed) == 5) {
-		clearOutput();
+    if (CoC.instance.inCombat && player.hasStatusEffect(StatusEffects.Sealed) && player.statusEffectv2(StatusEffects.Sealed) == 5) {
+        clearOutput();
 		outputText("You try to ready a special attack, but wind up stumbling dizzily instead.  <b>Your ability to use physical special attacks was sealed, and now you've wasted a chance to attack!</b>\n\n");
-		getGame().enemyAI();
-		return;
+        SceneLib.combat.enemyAIImpl();
+        return;
 	}
 	menu();
 	addButton(0, "Combo", urtaComboAttack).hint("Make a three-hit combo.  Each attack has an extra 33% chance to miss, unless the target is blind. \n\nFatigue cost: 40");
@@ -981,8 +990,8 @@ public function urtaSpecials():void {
 }
 
 public function urtaMSpecials():void {
-	if (getGame().inCombat && player.hasStatusEffect(StatusEffects.Sealed) && player.statusEffectv2(StatusEffects.Sealed) == 6) {
-		clearOutput();
+    if (CoC.instance.inCombat && player.hasStatusEffect(StatusEffects.Sealed) && player.statusEffectv2(StatusEffects.Sealed) == 6) {
+        clearOutput();
 		outputText("You try to ready a special ability, but wind up stumbling dizzily instead.  <b>Your ability to use magical special attacks was sealed, and now you've wasted a chance to attack!</b>\n\n");
 		enemyAI();
 		return;
@@ -1004,15 +1013,15 @@ private function berzerk():void {
 	}
 	outputText("You roar and unleash your savage fury, forgetting about defense in order to destroy your foe!\n\n");
 	player.createStatusEffect(StatusEffects.Berzerking,0,0,0,0);
-	kGAMECLASS.enemyAI();
+    SceneLib.combat.enemyAIImpl();
 }
 
 private function urtaMetabolize():void {
 	clearOutput();
-	var damage:int = player.takeDamage(Math.round(player.maxHP()/10));
+	var damage:int = player.takePhysDamage(Math.round(player.maxHP()/10));
 	outputText("You work your body as hard as you can, restoring your fatigue at the cost of health. (" + damage + ")\nRestored 20 fatigue!\n\n");
 	fatigue(-20);
-	kGAMECLASS.enemyAI();
+    SceneLib.combat.enemyAIImpl();
 }
 
 private function urtaSecondWind():void {
@@ -1030,7 +1039,7 @@ private function urtaSecondWind():void {
 	fatigue(-150);
 	dynStats("lus", -100);
 	outputText("Closing your eyes for a moment, you focus all of your willpower on pushing yourself to your absolute limits, forcing your lusts down and drawing on reserves of energy you didn't know you had!\n\n");
-	kGAMECLASS.enemyAI();
+    SceneLib.combat.enemyAIImpl();
 }
 
 //Combo: 3x attack, higher miss chance, guaranteed hit vs blind
@@ -1074,8 +1083,8 @@ private function urtaComboAttack():void {
 		}
 		else {
 			outputText("\n");
-			kGAMECLASS.enemyAI();
-			return;
+            SceneLib.combat.enemyAIImpl();
+            return;
 		}
 	}
 	//Determine damage
@@ -1137,7 +1146,7 @@ private function urtaComboAttack():void {
 	if(damage > 0) {
 		if(player.findPerk(PerkLib.HistoryFighter) >= 0) damage *= 1.1;
 		if(player.findPerk(PerkLib.JobWarrior) >= 0) damage *= 1.05;
-		damage = kGAMECLASS.doDamage(damage);
+		damage = SceneLib.combat.doDamage(damage);
 	}
 	if(damage <= 0) {
 		damage = 0;
@@ -1162,11 +1171,11 @@ private function urtaComboAttack():void {
 		}
 		trace("DONE ATTACK");
 		outputText("\n");
-		kGAMECLASS.enemyAI();
-	}
+        SceneLib.combat.enemyAIImpl();
+    }
 	else {
-		if(monster.HP <= 0) doNext(kGAMECLASS.endHpVictory);
-		else doNext(kGAMECLASS.endLustVictory);
+		if(monster.HP <= 0) doNext(SceneLib.combat.endHpVictory);
+		else doNext(SceneLib.combat.endLustVictory);
 	}
 }
 
@@ -1190,8 +1199,8 @@ private function urtaDirtKick():void {
 	//Dodged!
 	if(rand(20) + 1 + monster.spe/20 > 15 + player.spe/20) {
 		outputText(monster.mf("He","She") + " manages to shield " + monster.mf("his","her") + " eyes.  Damn!\n\n");
-		kGAMECLASS.enemyAI();
-		return;
+        SceneLib.combat.enemyAIImpl();
+        return;
 	}
 	else if(monster.hasStatusEffect(StatusEffects.Blind)) {
 		outputText(monster.mf("He","She") + "'s already blinded.  What a waste.\n\n");
@@ -1200,7 +1209,7 @@ private function urtaDirtKick():void {
 		outputText(monster.mf("He","She") + "'s blinded!\n\n");
 		monster.createStatusEffect(StatusEffects.Blind, 2 + rand(3),0,0,0);
 	}
-	kGAMECLASS.enemyAI();
+    SceneLib.combat.enemyAIImpl();
 }
 
 //SideWinder: 70% damage + stun chance
@@ -1227,8 +1236,8 @@ private function urtaSidewinder():void {
 		if(monster.spe - player.spe >= 8 && monster.spe-player.spe < 20) outputText(monster.capitalA + monster.short + " dodges your attack with superior quickness!");
 		if(monster.spe - player.spe >= 20) outputText(monster.capitalA + monster.short + " deftly avoids your slow attack.");
 		outputText("\n\n");
-		kGAMECLASS.enemyAI();
-		return;
+        SceneLib.combat.enemyAIImpl();
+        return;
 	}
 	//Determine damage
 	/*Determine damage - str modified by enemy toughness!
@@ -1290,7 +1299,7 @@ private function urtaSidewinder():void {
 	if(damage > 0) {
 		if(player.findPerk(PerkLib.HistoryFighter) >= 0) damage *= 1.1;
 		if(player.findPerk(PerkLib.JobWarrior) >= 0) damage *= 1.05;
-		damage = kGAMECLASS.doDamage(damage);
+		damage = SceneLib.combat.doDamage(damage);
 	}
 	if(damage <= 0) {
 		damage = 0;
@@ -1322,11 +1331,11 @@ private function urtaSidewinder():void {
 			return;
 		}
 		outputText("\n");
-		kGAMECLASS.enemyAI();
-	}
+        SceneLib.combat.enemyAIImpl();
+    }
 	else {
-		if(monster.HP <= 0) doNext(kGAMECLASS.endHpVictory);
-		else doNext(kGAMECLASS.endLustVictory);
+		if(monster.HP <= 0) doNext(SceneLib.combat.endHpVictory);
+		else doNext(SceneLib.combat.endLustVictory);
 	}
 }
 
@@ -1345,8 +1354,8 @@ private function urtaVaultAttack():void {
 	fatigue(20);
 	if(player.hasStatusEffect(StatusEffects.Sealed) && player.statusEffectv2(StatusEffects.Sealed) == 0) {
 		outputText("You attempt to attack, but at the last moment your body wrenches away, preventing you from even coming close to landing a blow!  The seals have made normal attack impossible!  Maybe you could try something else?\n\n");
-		kGAMECLASS.enemyAI();
-		return;
+        SceneLib.combat.enemyAIImpl();
+        return;
 	}
 	//Blind
 	if(player.hasStatusEffect(StatusEffects.Blind)) {
@@ -1428,7 +1437,7 @@ private function urtaVaultAttack():void {
 	if(damage > 0) {
 		if(player.findPerk(PerkLib.HistoryFighter) >= 0) damage *= 1.1;
 		if(player.findPerk(PerkLib.JobWarrior) >= 0) damage *= 1.05;
-		damage = kGAMECLASS.doDamage(damage);
+		damage = SceneLib.combat.doDamage(damage);
 	}
 	if(damage <= 0) {
 		damage = 0;
@@ -1454,8 +1463,8 @@ private function urtaVaultAttack():void {
 		combat.enemyAIImpl();
 	}
 	else {
-		if(monster.HP <= 0) doNext(kGAMECLASS.endHpVictory);
-		else doNext(kGAMECLASS.endLustVictory);
+		if(monster.HP <= 0) doNext(SceneLib.combat.endHpVictory);
+		else doNext(SceneLib.combat.endLustVictory);
 	}
 }
 
@@ -1476,8 +1485,8 @@ public function nagaPleaseNagaStoleMyDick():void {
 	outputText("\n\n\"<i>Sirius.  But I'm already with someone, quite happy with " + player2.mf("him","her") + ", and not looking for anyone else.  Besides, I'm only passing through and I have places to go yet,</i>\" you say, trying to be polite but firm; you'd be less than flattered by the attention even if you didn't have a painful history of guys asking you out, then changing their minds upon seeing your stallion-king-sized manhood.");
 	outputText("\n\n\"<i>You invade my territory... ssstep on my tail... and have the gall to tell me you're not going to make up for it!</i>\"  He hisses ominously.  \"<i>Hey, it was an acci-</i>\"  \"<i>Worthlesss female!  You are mine!</i>\"  He charges at you!");
 	outputText("\n\n<b>It's a fight!</b>");
-	kGAMECLASS.clearStatuses(false);
-	startCombat(new Sirius());
+    CoC.instance.player.clearStatuses(false);
+    startCombat(new Sirius());
 }
 
 //Tease*
@@ -1535,7 +1544,7 @@ private function urtaWinFucksSirius():void {
 	outputText("\n\nSirius gurgles as you flood his throat with your spunk; it's amazing how he hasn't choked on your cock despite the fact that you never quit humping his face... no doubt that's due to his natural elasticity... something you've come to appreciate very much!  You moan and grunt as you finally finish your climax, then slowly pull your cock out of your lover's mouth, splattering the naga's face with one final gobbet of cum.");
 	outputText("\n\nYou shake your head, feeling kind of dizzy, but good... also, still kind of horny.  Wow, he looks really cute with his face splashed with semen... and his belly starting to bulge from the load you shot down his throat...  That's so... hot...  Your cock starts to harden up again, anticipating your intentions.  Funny... you vaguely remember needing to do something... something besides fucking this sexy snake here.  Eh, it can wait; round two, coming up!");
 	outputText("\n\nSirius coughs pathetically, spitting a small gob of seed in the process.  Then he licks his lips and looks up, only to meet your hungry stare.  \"<i>Why are you looking at me like that?  No... oh nononononono... Wa - GH!</i>\"  You cram his mouth full again, already humping his face as if your life depends on it... mmm, his throat feels so good wrapped around your cock...");
-	dynStats("lus=", player.maxLust(), "resisted", false);
+	dynStats("lus=", player.maxLust(), "scale", false);
 	//Next Page button to trigger scene finish
 	menu();
 	addButton(0,"Next",fuckSiriusRadioII);
@@ -1620,8 +1629,8 @@ private function gnollAlphaBitchIntro():void {
 	outputText("\n\nThe terrain gives way to flat dirt with tall grasses, a vast savanna stretching away as far as your eyes can see.  You move through it heedlessly, drunk on the idea that you can find the temple on the same day that you set out!");
 	outputText("\n\nHow wrong you are.  A spear smacks into the ground, the tip exploding into some sticky, restraining substance by your foot.  A high pitched war-cry chases the missile, barely giving you the warning you need to avoid the onrushing gnoll!  This one doesn't quite look like what you'd expect from their race, but she's moving too fast to really dwell on it.");
 	outputText("\n\n<b>It's a fight!</b>");
-	kGAMECLASS.clearStatuses(false);
-	startCombat(new GnollSpearThrower());
+    CoC.instance.player.clearStatuses(false);
+    startCombat(new GnollSpearThrower());
 	monster.str += 20 + (4 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
 	monster.tou += 25 + (5 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
 	monster.spe += 10 + (2 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
@@ -1630,7 +1639,7 @@ private function gnollAlphaBitchIntro():void {
 	monster.bonusHP = 750;
 	monster.level += 11;
 	monster.short = "alpha gnoll";
-	monster.HP = monster.eMaxHP(); // TODO extract to AlphaGnoll class
+	monster.HP   = monster.maxHP(); // TODO extract to AlphaGnoll class
 	monster.long = "The gnoll standing before you is obviously an alpha among her kind; she has to be over seven feet tall and rippling with muscle, not that this stops her from having a curvy form, squeezable ass and full E-cup boobs.  The remnants of what must have once been a gorgeous and expensive silken dress are draped across her figure, torn off at the knees and hanging by only a single shoulder, arms bare and exposed.  A heavy necklace of gold is wrapped around her neck, while bracelets of more of the same adorn her arms, and piercings of gold stud her ears.  She carries a mighty-looking spear in her hands, which she brandishes at you menacingly, and a basket of throwing javelins is strapped to her back.";
 	doNext(playerMenu);
 }
@@ -1930,8 +1939,8 @@ private function introSuccubiAndMinotaur():void {
 	outputText("\n\n\"<i>Sic 'em, boy!</i>\" she screeches, dropping the chain.");
 	outputText("\n\nThe minotaur lord thunders towards you, picking up the loose chain to use a weapon.  It's a fight!");
 	//{start fight}
-	kGAMECLASS.clearStatuses(false);
-	startCombat(new MinotaurLord());
+    CoC.instance.player.clearStatuses(false);
+    startCombat(new MinotaurLord());
 }
 
 
@@ -2021,7 +2030,7 @@ private function submissiveMinoUrtaBadEndPtIII():void {
 public function winRapeAMinoLordAsUrta():void {
 	clearOutput();
 	outputText("Exulting in your victory, you quickly undress, barely paying heed to the ");
-	if(monster.lust >= monster.eMaxLust()) outputText("lusty");
+	if(monster.lust >= monster.maxLust()) outputText("lusty");
 	else outputText("pained");
 	outputText(" moos coming from your defeated foe.  Thankfully, the straps on your armor don't give you much trouble today, and you're able to slip out of your gear in short order.  That's a pleasant blessing given how hard your horse-cock was getting just prior to being granted freedom from your weighty, armored skirt.  There's something to be said for felling your foes and standing over them, naked, victorious, and ready to ravage their anuses.");
 	outputText("\n\nYou give the succubus a warning glare and shout, \"<i>This cow's ass is mine, bitch.  Once I bust a load in him, you're next!</i>\"");
@@ -2118,8 +2127,8 @@ public function beatMinoLordOnToSuccubi():void {
 	}
 	outputText("\n\n\"<i>We'll see how your tune changes when you're licking my heels and begging for a drop of my milk!</i>\"  She snaps her whip angrily.");
 	outputText("\n\n<b>It's a fight!</b>");
-	kGAMECLASS.clearStatuses(false);
-	player.setWeapon(weapons.URTAHLB);
+    CoC.instance.player.clearStatuses(false);
+    player.setWeapon(weapons.URTAHLB);
 	//player.weapon = weapons.URTAHLB;
 	startCombat(new MilkySuccubus(),true);
 }
@@ -2162,7 +2171,7 @@ public function urtaBeatsUpCowcubi():void {
 	}
 	outputText("\n\nYou take a deep breath of relief at taking out both the succubus-cow and her pet minotaur... which proves to be a mistake, since the air is saturated with pheromones from the cow's milk and minotaur's cum.  You can't help but groan as you feel your loins burn with desire.  Demon or not, the woman kneeling before you is extraordinarily attractive; those huge full breasts - you've never seen a woman that busty before - and that gloriously squeezable ass...  If she keeps a minotaur as a fucktoy, then surely she has to be loose enough to take even your king-sized cock; the waterfall of lubricant drooling out of her cunt seems to whisper to you, begging you to fill her full of your cum.");
 	outputText("\n\nIt's risky, but... surely one fuck can't hurt?  You do want to be faithful to " + player2.short + ", you do, but " + player2.mf("he","she") + "'s not here, is " + player2.mf("he","she") + "?  Still, you're sure you can be strong and leave it, you do have the willpower... oh, but the temptation...");
-	dynStats("lus", 40, "resisted", false);
+	dynStats("lus", 40, "scale", false);
 	//[Leave] [Fuck]
 	menu();
 	addButton(0,"Fuck",fuckTheCowCubi);
@@ -2285,7 +2294,7 @@ private function deadGodsDreaming():void {
 	outputText("\n\nThe statue smirks triumphantly at you, and then its eyes suddenly explode in a great wave of many-colored fire that washes over you, forcing you to close your eyes, leaving you reeling as they stab through you...");
 	outputText("\n\nThen you awake with a start, still kneeling before the unmoving statue.  Was it all a dream?  You don't know...  Your head is throbbing like mad, and you can't think clearly.  But even as the pain dims, you become aware of another, more pressing matter.  Lust.  That familiar yearning burns inside your arm-length prick like a raging inferno, the tower of equine fuckmeat thrusting boldly before you and steadily gushing precum onto the ground.  Naked, hungry NEED screams and claws and gibbers behind your eyes... " + player2.short + ", you must have " + player2.short + "!");
 	outputText("\n\nAbsently licking drool from your lips, you stagger upright and, using your halberd for support, start loping home from the shrine.  In your wake you leave a slug-like trail of sexual lubricants, too focused on finding and fucking your lover to care about the glistening slime caking your dick and plastering your inner thighs.");
-	dynStats("lus=", player.maxLust(), "resisted", false);
+	dynStats("lus=", player.maxLust(), "scale", false);
 	//Revert to PC control and change page to Urta Arrives At Camp
 	menu();
 	addButton(0,"Next",urtaArrivesAtCampForFukks);
@@ -2389,8 +2398,8 @@ private function preggedUrtaWithGodChildEpilogue():void {
 	outputText("\n\nThe fox-girl drags you into a huge hug, kissing you passionately.  She whispers, \"<i>Thank you so much for getting me started on this road, " + player2.short + ".  I'm so exhausted now, but come see me at the Wet Bitch later, and maybe... maybe we could see about starting a family.  I mean, maybe there's hope after all?  A dead god was reincarnated!</i>\"");
 	outputText("\n\nYou help her leave the tower, arm in arm, saying goodbye to her only after she's tucked tightly into her bed at home, to rest.  Urta gives you a teary kiss before you leave with a little swagger in your step.  You wonder if Taoth will help the Covenant, or if they've bitten off more than they can chew?  Either way, it seems there's a potent new ally on the field.");
 	flags[kFLAGS.URTA_QUEST_STATUS] = 1;
-	getGame().inCombat = false;
-	doNext(camp.returnToCampUseOneHour);
+    CoC.instance.inCombat = false;
+    doNext(camp.returnToCampUseOneHour);
 }
 
 //Urta Knocks Up PC with God Child
@@ -2477,7 +2486,7 @@ private function getKnockedUpWithGodChild():void {
 	}
 	//{CONTINUE HERE}
 	outputText("\n\nPulling out, Urta swats your [butt], lingering just long enough to give it a familiar squeeze.  She commands, \"<i>Ass up in the air, I'm going to take you like an animal!</i>\"  Holding it one-handed, the furry hermaphrodite slaps her equine phallus against you, encouraging you to roll over.  You're horny as hell, your [vagina] hanging open in the shape of the recently departed animal dong, and you willingly assume the position, [butt] up in the air");
-	if(player.tailType > TAIL_TYPE_NONE) outputText(", though getting your tail angled right to allow her entrance is a bit of a challenge");
+	if(player.tailType > Tail.NONE) outputText(", though getting your tail angled right to allow her entrance is a bit of a challenge");
 	else if(player.isTaur()) outputText(", though getting down on your hands and forelegs is a bit challenging for you");
 	else outputText(", [face] buried in your blankets soaked with Urta's musky fluid");
 	outputText(".");
@@ -2536,8 +2545,8 @@ private function getKnockedUpByUrtaEpilogueII():void {
 	outputText("\n\nThe fox-girl drags you into a huge hug, kissing you passionately.  She whispers, \"<i>Thank you so much for getting me started on this road, [name].  I bet you're exhausted now, but come see me at the Wet Bitch later, and maybe... maybe we could see about starting a family.  I mean, maybe there's hope after all?  A dead god was reincarnated!</i>\"");
 	outputText("\n\nShe helps leave the tower, arm in arm, saying her goodbye only after she's tucked you in to take a rest.  Urta gives you a teary kiss and trots back towards the city with a swagger in her step.  You wonder if Taoth will help the Covenant, or if they've bitten off more than they can chew?  Either way, it seems there's a potent new ally on the field.");
 	flags[kFLAGS.URTA_QUEST_STATUS] = 1;
-	getGame().inCombat = false;
-	doNext(camp.returnToCampUseOneHour);
+    CoC.instance.inCombat = false;
+    doNext(camp.returnToCampUseOneHour);
 }
 
 //Urta Goes to Knock Up Edryn with God Child*
@@ -2548,8 +2557,8 @@ private function urtaAndEdrynGodChild():void {
 	flags[kFLAGS.URTA_FERTILE]        = telAdre.edryn.pregnancy.type;       //Use these two flags to store the pregnancy that Taoth is overriding.
 	flags[kFLAGS.URTA_PREG_EVERYBODY] = telAdre.edryn.pregnancy.incubation; //Since they can't be in use prior to Taoth being born this is fine.
 	telAdre.edryn.pregnancy.knockUpForce(PregnancyStore.PREGNANCY_TAOTH, 24);
-	getGame().inCombat = false;
-	doNext(camp.returnToCampUseOneHour);
+    CoC.instance.inCombat = false;
+    doNext(camp.returnToCampUseOneHour);
 }
 
 
@@ -2571,15 +2580,15 @@ private function urtaAndEdrynGodChildEpilogueII():void {
 	outputText("As the double doors open, you hear a painful moan from the ");
 	//{pre-pregnant }
 	outputText("horse-girl.");
-	if (kGAMECLASS.telAdre.edryn.pregnancy.isPregnant) outputText("  Just how did she get pregnant again when she was already knocked up?  ...Magic, maybe.");
+	if (SceneLib.telAdre.edryn.pregnancy.isPregnant) outputText("  Just how did she get pregnant again when she was already knocked up?  ...Magic, maybe.");
 	outputText("  Urta leads you around a bend, squeezing your hand for comfort.  \"<i>Thank you for everything, [name], most of all being so understanding.</i>\"  The gray-furred fox pushes past the sixth pair of guards you've seen since entering the tower, just inside to see Edryn splayed on the floor, groaning and heaving, her ");
-	if (kGAMECLASS.telAdre.edryn.pregnancy.isPregnant) outputText("massively ");
+	if (SceneLib.telAdre.edryn.pregnancy.isPregnant) outputText("massively ");
 	outputText("pregnant flanks rippling with muscular contractions.   Something is bulging against her nether-lips, stretching the massive horse-cunt wider and wider with each passing moment.");
 	outputText("\n\nSlick with birthing fluids, a ball of fur, skin, and bones rolls out onto a mat placed there a moment before by a nearby centaur.  You squint at it, wondering just what everybody is so excited about - it looks little and messy, like any other newborn.");
 	outputText("\n\nThe ball unfolds itself, one spindly leg at a time, each covered in a short layer of fuzz.  The limbs seem too tiny, too frail, even for a creature new to this world.  A hand disengages itself from the rest of the mass, stringing the clear birthing fluids behind it, revealing an equally frail-looking arm.  You can see its head now, fox-like, with a long vulpine muzzle and large, luminous eyes.  The newborn rises on it's newly revealed limbs and stretches, standing almost five feet tall when fully unfolded.");
 	outputText("\n\n<i>I live.</i>");
 	outputText("\n\nThe voice isn't spoken aloud but inside, inside your head.  A glance to Urta reveals that she heard it too.  The creature - Taoth, you correct yourself, cocks its head toward Urta, giving Edryn's ass a familiar pat.");
-	if (kGAMECLASS.telAdre.edryn.pregnancy.isPregnant) outputText("  The centaur guardswoman is still just as pregnant with your offspring as before.  Your child is unharmed by whatever just transpired.");
+	if (SceneLib.telAdre.edryn.pregnancy.isPregnant) outputText("  The centaur guardswoman is still just as pregnant with your offspring as before.  Your child is unharmed by whatever just transpired.");
 	outputText("  Edryn's eyes immediately close, sinking into a deep, restful sleep.");
 	outputText("\n\n<i>Thank you, Urta-father.</i>  The mental voice speaks again, unmatched by the newborn's vocal cords.  It strides confidently forward, with long, loping steps, seeming... almost unnatural in the way that the limbs seem to sway and dance.  Just a few steps away from Urta, a moment of panic surges through you - what if he hurts her?!  You start to interpose yourself between them, but Urta puts a reassuring hand to your chest, flicking her emerald eyes towards you, begging you not to interfere.  You step back, reluctantly");
 	if(player.cor > 66) outputText(", what do you care, anyway?");
@@ -2591,8 +2600,8 @@ private function urtaAndEdrynGodChildEpilogueII():void {
 	outputText("\n\nYou leave the tower arm in arm, saying your goodbye when Urta stops at her place to rest.  She gives you a teary kiss and sends you on your way with a swagger in your step.  You wonder if Taoth will help the Covenant, or if they've bitten off more than they can chew?  Either way, it seems there's a potent new ally on the field.");
 	//set completed tags!
 	flags[kFLAGS.URTA_QUEST_STATUS] = 1;
-	getGame().inCombat = false;
-	doNext(camp.returnToCampUseOneHour);
+    CoC.instance.inCombat = false;
+    doNext(camp.returnToCampUseOneHour);
 }
 }
 }

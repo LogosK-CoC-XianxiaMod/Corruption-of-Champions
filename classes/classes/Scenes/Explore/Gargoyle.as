@@ -1,9 +1,10 @@
 ﻿package classes.Scenes.Explore{
-	import classes.*;
-	import classes.GlobalFlags.kFLAGS;
-	import classes.GlobalFlags.kGAMECLASS;
+import classes.*;
+import classes.GlobalFlags.kFLAGS;
+import classes.CoC;
+import classes.Scenes.SceneLib;
 
-	public class Gargoyle extends BaseContent{
+public class Gargoyle extends BaseContent{
 
 	public function Gargoyle()
 	{
@@ -114,7 +115,7 @@ private function breakZeChains():void {
 }
 
 private function nameZeGargoyle():void {
-	if (kGAMECLASS.testingBlockExiting)
+	if (CoC.instance.testingBlockExiting)
 	{
 		// We're running under the testing script.
 		// Stuff a name in the box and go go go
@@ -547,7 +548,7 @@ private function bodyRitual():void {
 	
 	outputText("\n\nOver your ragged, pained breathing, you can just hear " + flags[kFLAGS.GAR_NAME] + " chanting: \"<i>With pain comes purity... CRACK!  With agony comes enlightenment... CRACK!  Through torment comes holiness... CRACK!</i>\"  The last crack of the whip leaves you groaning, breathless, sagging in your bonds. Somehow, though, you do feel... cleaner?  Like a weight was just lifted from your heart.  And you know you're going to be thicker-skinned after that!  Quietly, reservedly, " + flags[kFLAGS.GAR_NAME] + " releases you from your bonds, and you stagger into her waiting arms.  She helps you over to the altar and lays you down, letting you rest after your ordeal.  She stands over you, watching you pant and gasp.  You suppose you could get some vengeance for her brutality – or you could be kind.  What do you do?");
 	dynStats("lib", -.5, "sen", -2);
-	player.takeDamage(Math.round(player.maxHP()/2));
+	player.takePhysDamage(Math.round(player.maxHP()/2));
 	//(Display options: [Nothing] [Revenge] and [Cuddle])
 	menu();
 	addButton(0,"Nothing",noReactionToBodyRitual);
@@ -593,7 +594,7 @@ private function mindGargoyleRitual():void {
 	
 	outputText("\n\nYou do so, taking a long draught of the holy water.  By the time you've set the bowl down, you feel light-headed, as if a fog has receded from your mind.  You gasp happily, able to think more clearly than you have in days.  You thank " + flags[kFLAGS.GAR_NAME] + ", give her a pat on the head, and head back to camp with a skip in your step.");
 	dynStats("lus", -10, "cor", -.5);
-	//player.takeDamage(Math.round(player.maxHP()/2));
+	//player.takePhysDamage(Math.round(player.maxHP()/2));
 	fatigue(50);
 	doNext(camp.returnToCampUseOneHour);
 }
@@ -635,7 +636,7 @@ private function banishmentGargoyleRitual():void {
 	outputText("\n\nStill panting and gasping from your ordeal, you notice " + flags[kFLAGS.GAR_NAME] + " looming over you, smiling.  You could be a dick for all that pain she caused you, or thank her for helping you.");
 	if(player.hasStatusEffect(StatusEffects.Exgartuan)) player.removeStatusEffect(StatusEffects.Exgartuan);
 	else player.removeStatusEffect(StatusEffects.Infested);
-	player.takeDamage(Math.round(player.maxHP()/3));
+	player.takePhysDamage(Math.round(player.maxHP()/3));
 	fatigue(10);
 	//(Display options: [Nothing] [Revenge] and [Cuddle])
 	addButton(0,"Nothing",dontFreakOutAfterBanishment);
@@ -723,7 +724,7 @@ private function kinkyBodyRitual():void {
 	outputText("\n\nYou spend a few minutes cuddling with " + flags[kFLAGS.GAR_NAME] + ", but sadly, you know you can't leave your camp unattended for too long.  Giving her a pat on the head and a kiss on the brow, you gather up your clothes and head on back to camp.");
 	dynStats("tou", .5, "lib", -.5, "sen", -2);
 	gargoyleConfidence(2);
-	player.takeDamage(Math.round(player.maxHP()/2));
+	player.takePhysDamage(Math.round(player.maxHP()/2));
 	doNext(camp.returnToCampUseOneHour);
 }
 	
@@ -799,7 +800,7 @@ private function banishPervRitual():void {
 	//(Return PC to camp, advance time 1 hour)
 	if(player.hasStatusEffect(StatusEffects.Exgartuan)) player.removeStatusEffect(StatusEffects.Exgartuan);
 	else player.removeStatusEffect(StatusEffects.Infested);
-	player.takeDamage(Math.round(player.maxHP()/3));
+	player.takePhysDamage(Math.round(player.maxHP()/3));
 	fatigue(10);
 	gargoyleConfidence(2);
 	doNext(camp.returnToCampUseOneHour);
@@ -899,7 +900,7 @@ private function historyOfGargoylesB():void {
 private function gargoyleHistoryC():void {
 	clearOutput();
 	//(PC has both Isabella and Izma as followers)
-	if(kGAMECLASS.izmaScene.izmaFollower() && kGAMECLASS.isabellaFollowerScene.isabellaFollower()) {
+	if(SceneLib.izmaScene.izmaFollower() && SceneLib.isabellaFollowerScene.isabellaFollower()) {
 		outputText("You ask " + flags[kFLAGS.GAR_NAME] + " to tell you a little bit about the world of Mareth.  Giving it a few moments of quiet thought, she answers: \"<i>I do not have any experience outside of the church grounds, Master, but I remember the words of the last Master, and the parishioners before her.  There are... the world has a vast expanse of plains and woodlands, broken up by a mountain range and lake.  Those last two are populated by savage beasts, minotaurs, cow-girls, anemone, and shark-people, both of whom will rend your flesh or rape you half to death.</i>\"");
 		outputText("\n\nWhoa, there. You stop " + flags[kFLAGS.GAR_NAME] + " and explain to her that some of your lovers – mates, even – are just such beasts.  You tell her a little bit about Izma and Isabella, enforcing the fact that they're both not only quite friendly, but sweet as well.  They're just regular people");
 		if(gargoyleConfidence() > 50) outputText(" just like her");
@@ -923,7 +924,7 @@ private function gargoyleHistoryC():void {
 		addButton(1,"Doesn'tCount",gargoyleDoesntCountAsAWaifu);
 	}
 	//(If PC has Izma as a follower)
-	else if(kGAMECLASS.izmaScene.izmaFollower()) {
+	else if(SceneLib.izmaScene.izmaFollower()) {
 		outputText("You ask " + flags[kFLAGS.GAR_NAME] + " to tell you a little bit about the world of Mareth.  Giving it a few moments of quiet thought, she answers: \"<i>I do not have any experience outside of the church grounds, Master, but I remember the words of the last Master, and the parishioners before her.  There are... the world has a vast expanse of plains and woodlands, broken up by a great mountain range.  There is a lake not far from here, if I recall; a race of very dangerous shark-folk live there.</i>\"  With a chuckle, you tell " + flags[kFLAGS.GAR_NAME] + " that you're more than well aware of that; indeed, you consider one such creature to be your mate, your beta.  She makes a slight gasp, and gushes out an apology.  \"<i>I'm so sorry, Master!  I hadn't realized... I thought...</i>\" she falls silent for a moment, then says shyly, \"<i>I wasn't aware Master had a girlfriend.</i>\"  Obviously, knowing that she's not your only lady-friend has upset the poor thing.");
 		
 		outputText("\n\nWell. What do you say to that: that you're not exclusive with Izma, or that she doesn't count, being a statue and all?");

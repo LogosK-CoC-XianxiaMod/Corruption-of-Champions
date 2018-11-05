@@ -1,10 +1,13 @@
 ﻿package classes.Scenes.Areas.Lake
 {
-	import classes.*;
-	import classes.internals.*;
-	import classes.GlobalFlags.*;
+import classes.*;
+import classes.BodyParts.Butt;
+import classes.BodyParts.Hips;
+import classes.GlobalFlags.*;
+import classes.Scenes.SceneLib;
+import classes.internals.*;
 
-	public class FetishCultist extends Monster
+public class FetishCultist extends Monster
 	{
 
 		private static const NAUGHTY_NURSES_UNIFORM:String = "naughty nurse's uniform";
@@ -80,10 +83,10 @@
 			else {
 				outputText("She suddenly starts mauling her shapely breasts, her fingers nearly disappearing briefly in the soft, full flesh, while fingering herself eagerly, emitting a variety of lewd noises.  You are entranced by the scene, the sexual excitement she's experiencing penetrating your body in warm waves coming from your groin.");
 			}
-			game.dynStats("lus", (player.lib/10 + player.cor/20)+4);
+			player.dynStats("lus", (player.lib/10 + player.cor/20)+4);
 			if (player.lust >= player.maxLust())
-				doNext(game.endLustLoss);
-			else doNext(game.combat.combatMenu);
+				doNext(SceneLib.combat.endLustLoss);
+			else doNext(SceneLib.combat.combatMenu);
 		}
 		private function cultistLustTransfer():void {
 			if(lust <= 30 || rand(2) == 0) {
@@ -103,20 +106,20 @@
 				else if(player.cockTotal() > 0) outputText("  A sudden influx of pre-cum blurts out and streams down your [cocks], painfully hardened by a vast amount of blood rushing to your groin.");
 				if(player.gender == 0) outputText("  Your genderless body is suddenly filled by a perverted warmth.");
 				outputText("\n\nYou notice that the young woman seems to have calmed down some.");
-				game.dynStats("lus", (lust/3 * (1 + player.cor/300)));
+				player.dynStats("lus", (lust/3 * (1 + player.cor/300)));
 				lust -= 50;
 				if(lust < 0) lust = 10;
 			}
 			if (player.lust >= player.maxLust())
-				doNext(game.endLustLoss);
-			else doNext(game.combat.combatMenu);
+				doNext(SceneLib.combat.endLustLoss);
+			else doNext(SceneLib.combat.combatMenu);
 		}
 		
 
 		override public function defeated(hpVictory:Boolean):void
 		{
 			var temp2:Function =null;
-			if(player.hasStatusEffect(StatusEffects.Feeder)) temp2 = game.lake.fetishCultistScene.fetishCultistHasAMilkFetish;
+			if(player.hasStatusEffect(StatusEffects.Feeder)) temp2 = SceneLib.lake.fetishCultistScene.fetishCultistHasAMilkFetish;
 			if (hpVictory) {
 				outputText("Hurt too much to continue controlling her powers, the cultist collapses helplessly.", true);
 			} else {
@@ -124,14 +127,14 @@
 			}
 			if(player.lust >= 33 && player.gender > 0 && flags[kFLAGS.SFW_MODE] <= 0) {
 				outputText("  You realize she'd make a perfect receptacle for your lusts.  Do you have your way with her?");
-				game.simpleChoices("Sex", game.lake.fetishCultistScene.playerRapesCultist, "", null, "", null, "B. Feed", temp2, "Leave", game.cleanupAfterCombat);
+				EngineCore.simpleChoices("Sex", SceneLib.lake.fetishCultistScene.playerRapesCultist, "", null, "", null, "B. Feed", temp2, "Leave", SceneLib.combat.cleanupAfterCombatImpl);
 			}
 			else {
 				if(temp2!=null && flags[kFLAGS.SFW_MODE] <= 0) {
 					outputText("  She looks like she might take some of your milk if you offered it to her.  What do you do?");
-					game.simpleChoices("B. Feed", temp2, "", null, "", null, "", null, "Leave", game.cleanupAfterCombat);
+					EngineCore.simpleChoices("B. Feed", temp2, "", null, "", null, "", null, "Leave", SceneLib.combat.cleanupAfterCombatImpl);
 				}
-				else game.cleanupAfterCombat();
+				else SceneLib.combat.cleanupAfterCombatImpl();
 			}
 		}
 
@@ -143,7 +146,7 @@
 				if (pcCameWorms){
 					outputText("\n\nThe cultist giggles as she watches you struggling.\n\n");
 				}
-				game.lake.fetishCultistScene.cultistRapesYou();
+				SceneLib.lake.fetishCultistScene.cultistRapesYou();
 			}
 		}
 
@@ -160,23 +163,24 @@
 			this.imageName = "fetishcultist";
 			this.long = "The woman across from you has her eyes closed, her hands joined, and seems to be chanting under her breath. She is wearing a religious outfit that closely hugs her curvacious shape, with a skirt so short that you can clearly see her pussy's lips.\n\nShe has clealy lost her grasp on sanity, and filled the void with pure perversion.";
 			// this.plural = false;
-			this.createVagina(false, VAGINA_LOOSENESS_GAPING, VAGINA_WETNESS_WET);
+			this.createVagina(false, VaginaClass.LOOSENESS_GAPING, VaginaClass.WETNESS_WET);
 			createBreastRow(Appearance.breastCupInverse("DD"));
-			this.ass.analLooseness = ANAL_LOOSENESS_NORMAL;
-			this.ass.analWetness = ANAL_WETNESS_NORMAL;
+			this.ass.analLooseness = AssClass.LOOSENESS_NORMAL;
+			this.ass.analWetness = AssClass.WETNESS_NORMAL;
 			this.tallness = 5*12+7;
-			this.hipRating = HIP_RATING_AMPLE;
-			this.buttRating = BUTT_RATING_LARGE;
+			this.hips.type = Hips.RATING_AMPLE;
+			this.butt.type = Butt.RATING_LARGE;
 			this.skinTone = "pale";
 			this.hairColor = "black";
 			this.hairLength = 15;
 			initStrTouSpeInte(40, 25, 30, 1);
-			initLibSensCor(75, 80, 90);
+			initWisLibSensCor(1, 75, 80, 90);
 			this.weaponName = "whip";
 			this.weaponVerb = "whip-crack";
-			this.weaponAttack = 1 + (1 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.weaponAttack = 1;
 			this.armorName = FETISHY_OUTFIT;
-			this.armorDef = 1 + (1 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.armorDef = 1;
+			this.armorMDef = 1;
 			this.bonusLust = 20;
 			this.lust = 25;
 			this.temperment = TEMPERMENT_LOVE_GRAPPLES;
@@ -188,12 +192,6 @@
 					.add(consumables.L_DRAFT,6);
 			this.special1 = cultistRaisePlayerLust;
 			this.special2 = cultistLustTransfer;
-			this.str += 8 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.tou += 5 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.spe += 6 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.inte += 1 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];			
-			this.lib += 15 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.newgamebonusHP = 350;
 			checkMonster();
 		}
 

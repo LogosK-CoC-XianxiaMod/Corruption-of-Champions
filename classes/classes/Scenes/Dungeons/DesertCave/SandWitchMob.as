@@ -1,9 +1,12 @@
 package classes.Scenes.Dungeons.DesertCave
 {
-	import classes.*;
-	import classes.GlobalFlags.kFLAGS;
+import classes.*;
+import classes.BodyParts.Butt;
+import classes.BodyParts.Hips;
+import classes.Scenes.SceneLib;
+import classes.internals.Utils;
 
-	public class SandWitchMob extends Monster
+public class SandWitchMob extends Monster
 	{
 		public function sandWitchMobAI():void {
 			if(!hasStatusEffect(StatusEffects.Sandstorm)) sandStormAttack();
@@ -43,9 +46,8 @@ package classes.Scenes.Dungeons.DesertCave
 			//Hit
 			else {
 				outputText("\nShe hits you square in the face, bloodying your face and sending you stumbling back in agony. ");
-				damage = player.takeDamage(damage, true);
+				damage = player.takePhysDamage(damage, true);
 			}
-			combatRoundOver();
 		}
 
 		//Sand Stones
@@ -82,7 +84,7 @@ package classes.Scenes.Dungeons.DesertCave
 						outputText("  A small set of stones settle on your [balls].");
 						bonus++;
 					}
-					outputText("  " + game.num2Text(player.totalNipples()) + " crawl up to your chest and over your top [nipple]s");
+					outputText("  " + Utils.num2Text(player.totalNipples()) + " crawl up to your chest and over your top [nipple]s");
 					if(player.bRows() > 1) {
 						if(player.bRows() == 2) outputText(" and");
 						else outputText(",");
@@ -104,14 +106,13 @@ package classes.Scenes.Dungeons.DesertCave
 					
 				}
 				player.createStatusEffect(StatusEffects.LustStones,bonus,0,0,0);
-				game.dynStats("lus", bonus * 2 + 5 + player.sens/7);
+				player.dynStats("lus", bonus * 2 + 5 + player.sens/7);
 			}
 			//[If attack misses]
 			else {
 				outputText("\nThe stones then make a ninety degree turn into the purple fire, and then nothing.  One sand-witch smacks another upside the head, yelling something about focusing.");
 			}
 			removeStatusEffect(StatusEffects.Sandstorm);
-			combatRoundOver();
 		}
 		
 		//Milk is Good
@@ -119,10 +120,9 @@ package classes.Scenes.Dungeons.DesertCave
 		public function drankSomeMialk():void {
 			outputText("One of the blonde beauties turns to another and asks, \"<i>A drink, sister?  Fighting this intruder has given me a powerful thirst.</i>\"  The other woman wordlessly opens her robe, baring her breasts, exposing four heaving, milk-fueled mounds to the air before the other woman claims a nipple for herself.  Three others crowd in on the exposed teats, their rumps shaking contentedly as they grab a quick snack.");
 			outputText("\n\nAfter wiping the excess from their lips, they close their robes and resume a fighting stance, seeming healthier than before.");
-			game.dynStats("lus", 4 + player.lib/10);
+			player.dynStats("lus", 4 + player.lib/10);
 			//+ 30 HP, +light lust damage to PC and mob
 			addHP(30);
-			combatRoundOver();
 		}
 		
 		//*Sandstorm
@@ -130,7 +130,6 @@ package classes.Scenes.Dungeons.DesertCave
 		public function sandStormAttack():void {
 			outputText("The witches link their hands together and begin to chant together, lifting their voices high as loose sand trickles in from every corner, every doorway, even the ceiling.  \"<i>Enevretni llahs tresed eht!</i>\"  Swirling around the chamber, a cloud of biting, stinging sand clouds your vision and bites into your skin.  It's going to keep blinding you and hurting you every round!");
 			createStatusEffect(StatusEffects.Sandstorm,0,0,0,0);
-			combatRoundOver();
 		}
 		
 		override protected function performCombatAction():void
@@ -140,12 +139,13 @@ package classes.Scenes.Dungeons.DesertCave
 		
 		override public function defeated(hpVictory:Boolean):void
 		{
-			game.dungeons.desertcave.yoYouBeatUpSomeSandWitchesYOUMONSTER();
+			SceneLib.dungeons.desertcave.yoYouBeatUpSomeSandWitchesYOUMONSTER();
 		}
 		
 		override public function won(hpVictory:Boolean,pcCameWorms:Boolean):void
 		{
-			game.dungeons.desertcave.loseToSammitchMob();
+			if (player.isGargoyle()) SceneLib.dungeons.desertcave.gargoyleBadEndSandWitches();
+			else SceneLib.dungeons.desertcave.loseToSammitchMob();
 		}
 		
 		public function SandWitchMob()
@@ -158,26 +158,27 @@ package classes.Scenes.Dungeons.DesertCave
 			this.pronoun1 = "they";
 			this.pronoun2 = "them";
 			this.pronoun3 = "their";
-			this.createVagina(false, VAGINA_WETNESS_WET, VAGINA_LOOSENESS_LOOSE);
+			this.createVagina(false, VaginaClass.WETNESS_WET, VaginaClass.LOOSENESS_LOOSE);
 			this.createBreastRow(Appearance.breastCupInverse("DD"));
 			this.createBreastRow(Appearance.breastCupInverse("DD"));
-			this.ass.analLooseness = ANAL_LOOSENESS_TIGHT;
-			this.ass.analWetness = ANAL_WETNESS_NORMAL;
+			this.ass.analLooseness = AssClass.LOOSENESS_TIGHT;
+			this.ass.analWetness = AssClass.WETNESS_NORMAL;
 			this.tallness = rand(12) + 55;
-			this.hipRating = HIP_RATING_CURVY;
-			this.buttRating = BUTT_RATING_LARGE;
+			this.hips.type = Hips.RATING_CURVY;
+			this.butt.type = Butt.RATING_LARGE;
 			this.skinTone = "bronzed";
 			this.hairColor = "sandy-blonde";
 			this.hairLength = 15;
 			initStrTouSpeInte(30, 45, 35, 45);
-			initLibSensCor(55, 40, 30);
+			initWisLibSensCor(45, 55, 40, 30);
 			this.weaponName = "fists";
 			this.weaponVerb="punches";
-			this.weaponAttack = 1 + (1 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.weaponAttack = 1;
 			this.weaponPerk = "";
 			this.weaponValue = 150;
 			this.armorName = "robes";
-			this.armorDef = 2 + (1 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.armorDef = 2;
+			this.armorMDef = 10;
 			this.armorPerk = "";
 			this.armorValue = 5;
 			this.bonusHP = 100;
@@ -189,12 +190,6 @@ package classes.Scenes.Dungeons.DesertCave
 			this.gems = rand(20) + 15;
 			this.drop = NO_DROP;
 			this.createPerk(PerkLib.EnemyGroupType, 0, 0, 0, 0);
-			this.str += 6 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.tou += 9 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.spe += 7 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.inte += 9 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];			
-			this.lib += 11 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.newgamebonusHP = 420;
 			checkMonster();
 
 		}

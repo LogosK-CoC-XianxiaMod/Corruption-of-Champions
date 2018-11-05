@@ -1,10 +1,13 @@
 package classes.Scenes.Monsters 
 {
-	import classes.*;
-	import classes.internals.*;
-	import classes.GlobalFlags.*;
-	
-	public class GoblinElder extends Goblin
+import classes.*;
+import classes.BodyParts.Butt;
+import classes.BodyParts.Hips;
+import classes.GlobalFlags.*;
+import classes.Scenes.SceneLib;
+import classes.internals.*;
+
+public class GoblinElder extends Goblin
 	{
 		public var spellCostCharge:int = 6;
 		public var spellCostBlind:int = 8;
@@ -56,8 +59,6 @@ package classes.Scenes.Monsters
 			else if (spellChooser == 2 && fatigue <= (100 - spellCostWhitefire)) {
 				outputText("The goblin narrows her eyes and focuses her mind with deadly intent. She snaps her fingers and you are enveloped in a flash of white flames!  ");
 				var damage:int = inte + rand(50) * spellMultiplier();
-				if (player.findPerk(PerkLib.FromTheFrozenWaste) >= 0 || player.findPerk(PerkLib.ColdAffinity) >= 0) damage *= 3;
-				if (player.findPerk(PerkLib.FireAffinity) >= 0) damage *= 0.3;
 				if (player.hasStatusEffect(StatusEffects.Blizzard)) {
 				player.addStatusValue(StatusEffects.Blizzard, 1, -1);
 				outputText("Luckly protective ice maelstorm still surrounding you lessening amount of damage.  ");
@@ -72,15 +73,15 @@ package classes.Scenes.Monsters
 				else if (flags[kFLAGS.GAME_DIFFICULTY] == 3) damage *= 1.5;
 				else if (flags[kFLAGS.GAME_DIFFICULTY] >= 4) damage *= 2;
 				damage = Math.round(damage);
-				player.takeDamage(damage, true);
+				player.takeFireDamage(damage, true);
 				fatigue += spellCostWhitefire;
 			}
 			//Arouse
 			else if (spellChooser == 3 && fatigue <= (100 - spellCostArouse)) {
 				outputText("She makes a series of arcane gestures, drawing on her lust to inflict it upon you! ");
 				var lustDamage:int = (inte / 10) + (player.lib / 10) + rand(10) * spellMultiplier();
-				lustDamage = lustDamage * (game.lustPercent() / 100);
-				game.dynStats("lus", lustDamage, "resisted", false);
+				lustDamage = lustDamage * (EngineCore.lustPercent() / 100);
+				player.dynStats("lus", lustDamage, "scale", false);
 				outputText(" <b>(<font color=\"#ff00ff\">" + (Math.round(lustDamage * 10) / 10) + "</font>)</b>");
 				fatigue += spellCostArouse;
 			}
@@ -101,7 +102,6 @@ package classes.Scenes.Monsters
 				tou += 15 * spellMultiplier();
 				fatigue += spellCostMight;
 			}
-			combatRoundOver();
 		}
 		
 		//Melee specials
@@ -114,11 +114,9 @@ package classes.Scenes.Monsters
 				outputText("Her strike connects with you! ");
 				//Get hit
 				var damage:int = str + weaponAttack + rand(40);
-				damage = player.reduceDamage(damage);
 				if (damage < 10) damage = 10;
-				player.takeDamage(damage, true);
+				player.takePhysDamage(damage, true);
 			}
-			combatRoundOver();
 		}
 		
 		public function shieldBash():void {
@@ -134,11 +132,9 @@ package classes.Scenes.Monsters
 					player.createStatusEffect(StatusEffects.Stunned, 1, 0, 0, 0);
 				}
 				var damage:int = str + rand(10);
-				damage = player.reduceDamage(damage);
 				if (damage < 10) damage = 10;
-				player.takeDamage(damage, true);
+				player.takePhysDamage(damage, true);
 			}
-			combatRoundOver();
 		}
 		
 		private function spellMultiplier():Number {
@@ -157,16 +153,16 @@ package classes.Scenes.Monsters
 		
 		override public function defeated(hpVictory:Boolean):void
 		{
-			game.goblinElderScene.goblinElderRapeIntro();
+			SceneLib.goblinElderScene.goblinElderRapeIntro();
 		}
 		override public function won(hpVictory:Boolean, pcCameWorms:Boolean):void
 		{
 			if (player.gender == 0 || flags[kFLAGS.SFW_MODE] > 0) {
 				outputText("You collapse in front of the goblin, too wounded to fight.  She growls and kicks you in the head, making your vision swim. As your sight fades, you hear her murmur, \"<i>Fucking dicks can't even bother to grow a dick or cunt.</i>\"");
-				game.cleanupAfterCombat();
+				SceneLib.combat.cleanupAfterCombatImpl();
 			} 
 			else {
-				game.goblinElderScene.goblinElderBeatYaUp();
+				SceneLib.goblinElderScene.goblinElderBeatYaUp();
 			}
 		}
 		
@@ -180,25 +176,26 @@ package classes.Scenes.Monsters
 			}
 			this.imageName = "goblinelder";
 			this.long = "The goblin before you stands a little over four feet tall. It's difficult to determine an age of goblin thanks to their corrupt nature but this one looks unusual. Her skin tone is yellowish-green skin and her hair is crimson black. Her body is painted in imp and minotaur blood to scare away anybody who would try to rape her. She's wearing a shark-tooth necklace and her ears are pierced with what appears to be lethicite. Her breasts look to be FF-cups despite her \"age\". Unlike most goblins, she's well armed. She's wielding a crudely fashioned metal sword and a large metal square shield. She's wearing a spider-silk loincloth and the imp skulls hang from the leather strap holding her loincloth together. Her helmet is fashioned out of a minotaur skull and her chestpiece appears to be carved from minotaur ribcage. Her pauldrons are also fashioned from bones. Despite how well-armored she is, her lethicite-pierced nipples are exposed. It's obvious she has travelled quite a lot and slain a lot of minotaurs and imps. She must have lived long thanks to Reducto to keep her breasts at normal size.";
-			this.createVagina(false, VAGINA_WETNESS_DROOLING, VAGINA_LOOSENESS_NORMAL);
+			this.createVagina(false, VaginaClass.WETNESS_DROOLING, VaginaClass.LOOSENESS_NORMAL);
 			this.createStatusEffect(StatusEffects.BonusVCapacity, 40, 0, 0, 0);
 			createBreastRow(Appearance.breastCupInverse("FF"));
-			this.ass.analLooseness = ANAL_LOOSENESS_TIGHT;
-			this.ass.analWetness = ANAL_WETNESS_DRY;
+			this.ass.analLooseness = AssClass.LOOSENESS_TIGHT;
+			this.ass.analWetness = AssClass.WETNESS_DRY;
 			this.createStatusEffect(StatusEffects.BonusACapacity,30,0,0,0);
 			this.tallness = 48;
-			this.hipRating = HIP_RATING_AMPLE+2;
-			this.buttRating = BUTT_RATING_LARGE;
+			this.hips.type = Hips.RATING_AMPLE + 2;
+			this.butt.type = Butt.RATING_LARGE;
 			this.skinTone = "yellowish-green";
 			this.hairColor = "dark green";
 			this.hairLength = 4;
 			initStrTouSpeInte(95, 75, 70, 100);
-			initLibSensCor(55, 35, 45);
+			initWisLibSensCor(100, 55, 35, 45);
 			this.weaponName = "primal sword";
 			this.weaponVerb = "slash";
-			this.weaponAttack = 25 + (6 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.weaponAttack = 25;
 			this.armorName = "bone armor";
-			this.armorDef = 24 + (3 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.armorDef = 24;
+			this.armorMDef = 12;
 			this.fatigue = 0;
 			this.bonusHP = 425;
 			this.bonusLust = 20;
@@ -223,12 +220,6 @@ package classes.Scenes.Monsters
 			this.createPerk(PerkLib.TankI, 0, 0, 0, 0);
 			this.createPerk(PerkLib.RefinedBodyI, 0, 0, 0, 0);
 			this.createPerk(PerkLib.ShieldWielder, 0, 0, 0, 0);
-			this.str += 19 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.tou += 15 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.spe += 14 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.inte += 20 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];			
-			this.lib += 11 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.newgamebonusHP = 2370;
 			checkMonster();
 		}
 		

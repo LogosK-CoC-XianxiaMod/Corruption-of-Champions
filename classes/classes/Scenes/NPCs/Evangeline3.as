@@ -4,12 +4,12 @@
  */
 package classes.Scenes.NPCs 
 {
-	import classes.*;
-	import classes.internals.*;
-	import classes.GlobalFlags.kGAMECLASS;
-	import classes.GlobalFlags.kFLAGS;
-	
-	public class Evangeline3 extends Monster
+import classes.*;
+import classes.BodyParts.Butt;
+import classes.BodyParts.Hips;
+import classes.GlobalFlags.kFLAGS;
+
+public class Evangeline3 extends Monster
 	{
 		
 		public function spellCostBlind():Number {
@@ -102,8 +102,6 @@ package classes.Scenes.NPCs
 			if (inte >= 151 && inte < 201) damage += ((inte * 1.5) + rand(inte * 2));
 			if (inte >= 201) damage += ((inte * 1.75) + rand(inte * 2.25));
 			damage *= SpellMod();
-			if (player.findPerk(PerkLib.FromTheFrozenWaste) >= 0 || player.findPerk(PerkLib.ColdAffinity) >= 0) damage *= 3;
-			if (player.findPerk(PerkLib.FireAffinity) >= 0) damage *= 0.3;
 			damage = Math.round(damage);
 			if (player.hasStatusEffect(StatusEffects.Blizzard)) {
 			player.addStatusValue(StatusEffects.Blizzard, 1, -1);
@@ -118,7 +116,7 @@ package classes.Scenes.NPCs
 				outputText("It's super effective!  ");
 			}
 			damage = Math.round(damage);
-			player.takeDamage(damage, true);
+			player.takeFireDamage(damage, true);
 			fatigue += spellCostWhitefire();
 			flags[kFLAGS.EVANGELINE_SPELLS_CASTED]++;
 		}
@@ -130,7 +128,7 @@ package classes.Scenes.NPCs
 			if(player.lust >= (player.maxLust() * 0.3) && player.lust < (player.maxLust() * 0.6)) outputText("You staggers, suddenly weak and having trouble focusing on staying upright.  ");
 			if(player.lust >= (player.maxLust() * 0.6)) outputText("Your eyes glaze over with desire for a moment.  ");
 			lustDmg = Math.round(lustDmg);
-			game.dynStats("lus", lustDmg, "resisted", false);
+			player.dynStats("lus", lustDmg, "scale", false);
 			outputText(" <b>(<font color=\"#ff00ff\">" + lustDmg + "</font>)</b>");
 			fatigue += spellCostArouse();
 			flags[kFLAGS.EVANGELINE_SPELLS_CASTED]++;
@@ -192,16 +190,15 @@ package classes.Scenes.NPCs
 					var choice1:Number = rand(2);
 					if (choice1 == 0) eAttack();
 					if (choice1 == 1) {
-						if (HPRatio() < .75 && (fatigue < (eMaxFatigue() - spellCostHeal()))) HealSpell();
-						else if ((this.lust < eMaxLust() * 0.75) && rand(2) == 0 && (fatigue < (eMaxFatigue() - spellCostBlind())) && !player.hasStatusEffect(StatusEffects.Blind)) BlindSpell();
-						else if (rand(2) == 0 && (fatigue < (eMaxFatigue() - spellCostArouse()))) ArouseSpell();
-						else if ((this.lust < eMaxLust() * 0.75) && rand(2) == 0 && (fatigue < (eMaxFatigue() - spellCostWhitefire()))) WhiteFireSpell();
+						if (HPRatio() < .75 && (fatigue < (maxFatigue() - spellCostHeal()))) HealSpell();
+						else if ((this.lust < maxLust() * 0.75) && rand(2) == 0 && (fatigue < (maxFatigue() - spellCostBlind())) && !player.hasStatusEffect(StatusEffects.Blind)) BlindSpell();
+						else if (rand(2) == 0 && (fatigue < (maxFatigue() - spellCostArouse()))) ArouseSpell();
+						else if ((this.lust < maxLust() * 0.75) && rand(2) == 0 && (fatigue < (maxFatigue() - spellCostWhitefire()))) WhiteFireSpell();
 						//else if (rand(2) == 0 && (fatigue < (eMaxFatigue() - spellCostWhitefire()))) WhiteFireSpell();miejsce na ice spike spell w AI
 						else eAttack();
 					}
 					//if (choice1 == 3) EvangelineTease();
 				}
-				combatRoundOver();
 			}
 		}//HPRatio() > .5 - to używać jeśli coś ma być użyte powyżej lub poniżej x% max HP Evangeline
 		
@@ -215,27 +212,22 @@ package classes.Scenes.NPCs
 				createBreastRow(Appearance.breastCupInverse("F"));//succubus milk może teoretycznie w nieskończoność zwiekszać rozmiar biustu
 				this.tallness = 96;
 				this.skin.setBaseOnly({});
-				this.hipRating = HIP_RATING_FERTILE+3;//hipRating = 18
-				this.buttRating = BUTT_RATING_EXPANSIVE+1;//buttRating = 14
+				this.hips.type = Hips.RATING_FERTILE + 3;//hips.type = 18
+				this.butt.type = Butt.RATING_EXPANSIVE + 1;//butt.type = 14
 				initStrTouSpeInte(41, 46, 80, 50);
-				initLibSensCor(45, 35, 100);
+				initWisLibSensCor(15, 45, 35, 100);
 				this.weaponName = "inscribed spellblade";
 				this.weaponVerb="slash";
-				this.weaponAttack = 9 + (2 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+				this.weaponAttack = 9;
 				this.armorName = "lusty maiden's armor";
-				this.armorDef = 16 + (2 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+				this.armorDef = 16;
+				this.armorMDef = 15;
 				this.bonusHP = 420;
 				this.bonusLust = 40;
 				this.lust = 70;
 				this.lustVuln = .7;
 				this.additionalXP += 70;
 				this.level = 28;//succubus TF effects
-				this.str += 8 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-				this.tou += 9 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-				this.spe += 16 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-				this.inte += 10 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];			
-				this.lib += 9 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-				this.newgamebonusHP = 1560;//dodane this.str/tou/spe/inte/lib a nastepnie pomnożone przez 30
 				this.createPerk(PerkLib.WizardsFocus, 0, 0, 0, 0);
 			}
 			if (flags[kFLAGS.EVANGELINE_LVL_UP] == 13) {
@@ -243,27 +235,22 @@ package classes.Scenes.NPCs
 				createBreastRow(Appearance.breastCupInverse("F"));
 				this.tallness = 96;
 				this.skin.setBaseOnly({});
-				this.hipRating = HIP_RATING_FERTILE+3;//hipRating = 18
-				this.buttRating = BUTT_RATING_EXPANSIVE+1;//buttRating = 14
+				this.hips.type = Hips.RATING_FERTILE + 3;//hips.type = 18
+				this.butt.type = Butt.RATING_EXPANSIVE + 1;//butt.type = 14
 				initStrTouSpeInte(46, 46, 80, 50);
-				initLibSensCor(50, 35, 100);
+				initWisLibSensCor(15, 50, 35, 100);
 				this.weaponName = "inscribed spellblade";
 				this.weaponVerb="slash";
-				this.weaponAttack = 9 + (2 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+				this.weaponAttack = 9;
 				this.armorName = "lusty maiden's armor";
-				this.armorDef = 16 + (2 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+				this.armorDef = 16;
+				this.armorMDef = 15;
 				this.bonusHP = 450;
 				this.bonusLust = 40;
 				this.lust = 70;
 				this.lustVuln = .7;
 				this.additionalXP += 75;
 				this.level = 30;
-				this.str += 9 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-				this.tou += 9 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-				this.spe += 16 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-				this.inte += 10 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];			
-				this.lib += 10 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-				this.newgamebonusHP = 2160;//dodane this.str/tou/spe/inte/lib a nastepnie pomnożone przez 40
 				this.createPerk(PerkLib.WizardsFocus, 0, 0, 0, 0);
 				//this.createPerk(PerkLib., 0, 0, 0, 0);//pewnie perk dla demonów albo odzyskała jego efekt kiedy użyła succubus milk 2 lvl wcześniej a tu coś innego dać... ^^
 			}
@@ -272,27 +259,22 @@ package classes.Scenes.NPCs
 				createBreastRow(Appearance.breastCupInverse("F"));
 				this.tallness = 96;
 				this.skin.setBaseOnly({});
-				this.hipRating = HIP_RATING_FERTILE+3;//hipRating = 18
-				this.buttRating = BUTT_RATING_EXPANSIVE+1;//buttRating = 14
+				this.hips.type = Hips.RATING_FERTILE + 3;//hips.type = 18
+				this.butt.type = Butt.RATING_EXPANSIVE + 1;//butt.type = 14
 				initStrTouSpeInte(46, 46, 80, 50);
-				initLibSensCor(50, 35, 100);
+				initWisLibSensCor(15, 50, 35, 100);
 				this.weaponName = "inscribed spellblade";
 				this.weaponVerb="slash";
-				this.weaponAttack = 9 + (2 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+				this.weaponAttack = 9;
 				this.armorName = "lusty maiden's armor";
-				this.armorDef = 16 + (2 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+				this.armorDef = 16;
+				this.armorMDef = 30;
 				this.bonusHP = 510;
 				this.bonusLust = 40;
 				this.lust = 70;
 				this.lustVuln = .65;
 				this.additionalXP += 85;
 				this.level = 34;//kitsune TF effects
-				this.str += 9 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-				this.tou += 9 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-				this.spe += 16 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-				this.inte += 10 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];			
-				this.lib += 10 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-				this.newgamebonusHP = 2160;//dodane this.str/tou/spe/inte/lib a nastepnie pomnożone przez 40
 				this.createPerk(PerkLib.WizardsFocus, 0, 0, 0, 0);
 				//this.createPerk(PerkLib., 0, 0, 0, 0);
 				//this.createPerk(PerkLib., 0, 0, 0, 0);
@@ -303,27 +285,22 @@ package classes.Scenes.NPCs
 				createBreastRow(Appearance.breastCupInverse("F"));
 				this.tallness = 96;
 				this.skin.setBaseOnly({});
-				this.hipRating = HIP_RATING_FERTILE+3;//hipRating = 18
-				this.buttRating = BUTT_RATING_EXPANSIVE+1;//buttRating = 14
+				this.hips.type = Hips.RATING_FERTILE + 3;//hips.type = 18
+				this.butt.type = Butt.RATING_EXPANSIVE + 1;//butt.type = 14
 				initStrTouSpeInte(46, 46, 80, 50);
-				initLibSensCor(50, 35, 100);
+				initWisLibSensCor(15, 50, 35, 100);
 				this.weaponName = "inscribed spellblade";
 				this.weaponVerb="slash";
-				this.weaponAttack = 9 + (2 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+				this.weaponAttack = 9;
 				this.armorName = "lusty maiden's armor";
-				this.armorDef = 16 + (2 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+				this.armorDef = 16;
+				this.armorMDef = 30;
 				this.bonusHP = 540;
 				this.bonusLust = 40;
 				this.lust = 70;
 				this.lustVuln = .65;
 				this.additionalXP += 90;
 				this.level = 36;
-				this.str += 9 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-				this.tou += 9 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-				this.spe += 16 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-				this.inte += 10 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];			
-				this.lib += 10 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-				this.newgamebonusHP = 2160;//dodane this.str/tou/spe/inte/lib a nastepnie pomnożone przez 40
 				this.createPerk(PerkLib.WizardsFocus, 0, 0, 0, 0);
 				//this.createPerk(PerkLib., 0, 0, 0, 0);
 				//this.createPerk(PerkLib., 0, 0, 0, 0);
@@ -335,27 +312,22 @@ package classes.Scenes.NPCs
 				createBreastRow(Appearance.breastCupInverse("F"));
 				this.tallness = 96;
 				this.skin.setBaseOnly({});
-				this.hipRating = HIP_RATING_FERTILE+3;//hipRating = 18
-				this.buttRating = BUTT_RATING_EXPANSIVE+1;//buttRating = 14
+				this.hips.type = Hips.RATING_FERTILE + 3;//hips.type = 18
+				this.butt.type = Butt.RATING_EXPANSIVE + 1;//butt.type = 14
 				initStrTouSpeInte(46, 46, 80, 50);
-				initLibSensCor(50, 35, 100);
+				initWisLibSensCor(15, 50, 35, 100);
 				this.weaponName = "inscribed spellblade";
 				this.weaponVerb="slash";
-				this.weaponAttack = 9 + (2 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+				this.weaponAttack = 9;
 				this.armorName = "lusty maiden's armor";
-				this.armorDef = 16 + (2 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+				this.armorDef = 16;
+				this.armorMDef = 75;
 				this.bonusHP = 600;
 				this.bonusLust = 40;
 				this.lust = 70;
 				this.lustVuln = .6;
 				this.additionalXP += 100;
 				this.level = 40;//dragoness TF effects
-				this.str += 9 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-				this.tou += 9 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-				this.spe += 16 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-				this.inte += 10 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];			
-				this.lib += 10 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-				this.newgamebonusHP = 2700;//dodane this.str/tou/spe/inte/lib a nastepnie pomnożone przez 50
 				this.createPerk(PerkLib.WizardsFocus, 0, 0, 0, 0);
 				//this.createPerk(PerkLib., 0, 0, 0, 0);
 				//this.createPerk(PerkLib., 0, 0, 0, 0);
@@ -369,27 +341,22 @@ package classes.Scenes.NPCs
 				createBreastRow(Appearance.breastCupInverse("F"));//succubus milk może teoretycznie w nieskończoność zwiekszać rozmiar biustu
 				this.tallness = 96;
 				this.skin.setBaseOnly({});
-				this.hipRating = HIP_RATING_FERTILE+3;//hipRating = 18
-				this.buttRating = BUTT_RATING_EXPANSIVE+1;//buttRating = 14
+				this.hips.type = Hips.RATING_FERTILE + 3;//hips.type = 18
+				this.butt.type = Butt.RATING_EXPANSIVE + 1;//butt.type = 14
 				initStrTouSpeInte(46, 46, 80, 50);
-				initLibSensCor(50, 35, 100);
+				initWisLibSensCor(15, 50, 35, 100);
 				this.weaponName = "inscribed spellblade";
 				this.weaponVerb="slash";
-				this.weaponAttack = 9 + (2 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+				this.weaponAttack = 9;
 				this.armorName = "lusty maiden's armor";
-				this.armorDef = 16 + (2 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+				this.armorDef = 16;
+				this.armorMDef = 75;
 				this.bonusHP = 630;
 				this.bonusLust = 40;//Jak zyska perk BoosTierEnemy wtedy bonus lust musi wzrosnac do 50 z 40 wiec do tego czasu nie ma bonus lust bedzie na 40 stał
 				this.lust = 70;
 				this.lustVuln = .6;//im bedziej poteżna bedzie tym bliżej 0 powinno być czyli trudniej ją lustem pobijać ^^
 				this.additionalXP += 105;
 				this.level = 42;//nastepny lvl to xx w Evangeline 4 zamieścić etapy zmiany obejmujące inne rasy jak mantis/salamander a w Evangeline 5 awasowanie jako bogini (max do lvl 200) ^^
-				this.str += 9 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-				this.tou += 9 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-				this.spe += 16 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-				this.inte += 10 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];			
-				this.lib += 10 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-				this.newgamebonusHP = 2700;//dodane this.str/tou/spe/inte/lib a nastepnie pomnożone przez 50
 				this.createPerk(PerkLib.WizardsFocus, 0, 0, 0, 0);
 				//this.createPerk(PerkLib., 0, 0, 0, 0);
 				//this.createPerk(PerkLib., 0, 0, 0, 0);
@@ -399,9 +366,9 @@ package classes.Scenes.NPCs
 				//this.createPerk(PerkLib., 0, 0, 0, 0);
 				//this.createPerk(PerkLib., 0, 0, 0, 0);//pewnie perk dla dragon albo odzyskała jego efekt kiedy użyła drake flower 2 lvl wcześniej a tu coś innego dać... ^^
 			}
-			this.createVagina(false, VAGINA_WETNESS_DRY, VAGINA_LOOSENESS_TIGHT);
-			this.ass.analLooseness = ANAL_LOOSENESS_VIRGIN;
-			this.ass.analWetness = ANAL_WETNESS_DRY;
+			this.createVagina(false, VaginaClass.WETNESS_DRY, VaginaClass.LOOSENESS_TIGHT);
+			this.ass.analLooseness = AssClass.LOOSENESS_VIRGIN;
+			this.ass.analWetness = AssClass.WETNESS_DRY;
 			this.skinTone = "olive";
 			this.hairColor = "crimson platinum";
 			this.hairLength = 36;

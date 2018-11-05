@@ -1,10 +1,11 @@
 package classes.Scenes.Monsters 
 {
-	import classes.*;
-	import classes.internals.*;
-	import classes.GlobalFlags.*;
-	
-	public class GoblinQueen extends Goblin
+import classes.*;
+import classes.BodyParts.Butt;
+import classes.BodyParts.Hips;
+import classes.internals.*;
+
+public class GoblinQueen extends Goblin
 	{
 		//użyć ten wzór do zrobienia tej succubigoblinqueen ^^
 		public function GoblinQueen() 
@@ -13,25 +14,26 @@ package classes.Scenes.Monsters
 			this.short = "goblin queen";
 			this.imageName = "goblinqueen";
 			this.long = "The goblin before you stands nearly four feet tall. Her ears appear to be pierced more times than the amount of piercings a typical goblin has. Her hair is dark green and her skin color is a vibrant yellow, a sheer rarity. She’s unlike most of the goblins you’ve seen. She’s wielding a staff in her right hand. In addition to the straps covering her body, she’s wearing a necklace seemingly carved with what looks like shark teeth. She's wielding a glowing sword in her right hand and a shield in her left hand. ";
-			this.createVagina(false, VAGINA_WETNESS_DROOLING, VAGINA_LOOSENESS_NORMAL);
+			this.createVagina(false, VaginaClass.WETNESS_DROOLING, VaginaClass.LOOSENESS_NORMAL);
 			this.createStatusEffect(StatusEffects.BonusVCapacity, 40, 0, 0, 0);
 			createBreastRow(Appearance.breastCupInverse("FF"));
-			this.ass.analLooseness = ANAL_LOOSENESS_TIGHT;
-			this.ass.analWetness = ANAL_WETNESS_DRY;
+			this.ass.analLooseness = AssClass.LOOSENESS_TIGHT;
+			this.ass.analWetness = AssClass.WETNESS_DRY;
 			this.createStatusEffect(StatusEffects.BonusACapacity,30,0,0,0);
 			this.tallness = 47;
-			this.hipRating = HIP_RATING_AMPLE+2;
-			this.buttRating = BUTT_RATING_LARGE;
+			this.hips.type = Hips.RATING_AMPLE + 2;
+			this.butt.type = Butt.RATING_LARGE;
 			this.skinTone = "dark green";
 			this.hairColor = "dark green";
 			this.hairLength = 4;
 			initStrTouSpeInte(85, 64, 70, 100);
-			initLibSensCor(55, 35, 65);
+			initWisLibSensCor(100, 55, 35, 65);
 			this.weaponName = "sword";
 			this.weaponVerb = "slash";
-			this.weaponAttack = 14 + (3 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.weaponAttack = 14;
 			this.armorName = "fur loincloth";
-			this.armorDef = 6 + (1 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.armorDef = 6;
+			this.armorMDef = 6;
 			this.fatigue = 0;
 			this.bonusHP = 275;
 			this.bonusLust = 20;
@@ -43,7 +45,7 @@ package classes.Scenes.Monsters
 			this.drop = new WeightedDrop().
 					add(consumables.GOB_ALE,5).
 					add(weapons.W_STAFF,1).
-					add(armors.FURLOIN,1).
+					//add(armors.FURLOIN,1).
 					add(jewelries.MYSTRNG,1).
 					addMany(1,consumables.L_DRAFT,
 							consumables.PINKDYE,
@@ -53,14 +55,8 @@ package classes.Scenes.Monsters
 							consumables.PURPDYE);
 			this.special1 = goblinDrugAttack;
 			this.special2 = goblinTeaseAttack;
-			this.special3 = castSpell;
+			//this.special3 = castSpell;
 			this.createPerk(PerkLib.ShieldWielder, 0, 0, 0, 0);
-			this.str += 17 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.tou += 12 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.spe += 14 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.inte += 20 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];			
-			this.lib += 11 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.newgamebonusHP = 1480;
 			checkMonster();
 		}
 		

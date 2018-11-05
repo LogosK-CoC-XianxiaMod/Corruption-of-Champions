@@ -3,19 +3,22 @@
  */
 package classes.Scenes.Areas
 {
-	import classes.*;
-	import classes.GlobalFlags.kFLAGS;
-	import classes.GlobalFlags.kGAMECLASS;
-	import classes.Scenes.API.GroupEncounter;
-	import classes.Scenes.API.Encounters;
-	import classes.Scenes.API.FnHelpers;
-	import classes.Scenes.Areas.Forest.*;
-	import classes.Scenes.Monsters.DarkElfScene;
+import classes.*;
+import classes.GlobalFlags.kFLAGS;
+import classes.Scenes.API.Encounters;
+import classes.Scenes.API.FnHelpers;
+import classes.Scenes.API.GroupEncounter;
+import classes.Scenes.Areas.Forest.*;
+import classes.Scenes.Holidays;
+import classes.Scenes.Monsters.DarkElfScene;
+import classes.Scenes.NPCs.CelessScene;
+import classes.Scenes.NPCs.JojoScene;
+import classes.Scenes.SceneLib;
 
-	import coc.xxc.Story;
-	import coc.xxc.stmts.ZoneStmt;
+import coc.xxc.BoundStory;
+import coc.xxc.stmts.ZoneStmt;
 
-	use namespace kGAMECLASS;
+use namespace CoC;
 
 	public class Forest extends BaseContent
 	{
@@ -52,8 +55,7 @@ package classes.Scenes.Areas
 
 		private function deepwoodsWalkFn():void {
 			clearOutput();
-			outputText("You enjoy a peaceful walk in the deepwoods.  It gives you time to think over the recent, disturbing events.");
-			dynStats("tou", .5, "int", 1);
+			deepwoodsStory.display("strings/walk");
 			doNext(camp.returnToCampUseOneHour);
 		}
 		public function tentacleBeastDeepwoodsEncounterFn():void {
@@ -77,31 +79,31 @@ package classes.Scenes.Areas
 		public function get deepwoodsEncounter():GroupEncounter {
 			return _deepwoodsEncounter
 		}
-		private var forestStory:Story;
-		private var deepwoodsStory:Story;
+		private var forestStory:BoundStory;
+		private var deepwoodsStory:BoundStory;
 		private function init():void {
-			const game:CoC     = getGame();
-			const fn:FnHelpers = Encounters.fn;
+            const game:CoC = CoC.instance;
+            const fn:FnHelpers = Encounters.fn;
 			_forestEncounter = Encounters.group("forest", {
 						//General Golems, Goblin and Imp Encounters
 						name: "common",
-						call: game.exploration.genericGolGobImpEncounters
+						call: SceneLib.exploration.genericGolGobImpEncounters
 					}, {
 						//Helia monogamy fucks
 						name  : "helcommon",
-						call  : game.helScene.helSexualAmbush,
+						call  : SceneLib.helScene.helSexualAmbush,
 						chance: 0.2,
-						when  : game.helScene.helSexualAmbushCondition
+						when  : SceneLib.helScene.helSexualAmbushCondition
 					}, {
 						name  : "deepwoods",
 						call  : discoverDeepwoods,
 						when  : function ():Boolean {
-							return (player.exploredForest >= 20) && !player.hasStatusEffect(StatusEffects.ExploredDeepwoods);
+							return (player.level >= 7) && !deepwoodsDiscovered();
 						},
 						chance: Encounters.ALWAYS
 					},  {
 						name  : "Tamani",
-						chance: 0.1,
+						chance: 0.6,
 						call  : function ():void {
 							if (flags[kFLAGS.TAMANI_DAUGHTER_PREGGO_COUNTDOWN] == 0
 								&& flags[kFLAGS.TAMANI_NUMBER_OF_DAUGHTERS] >= 24) {
@@ -113,7 +115,7 @@ package classes.Scenes.Areas
 						when  : function ():Boolean {
 							return flags[kFLAGS.TAMANI_TIME_OUT] == 0
 								   && player.gender > 0
-								   && (player.totalCocks() > 0 || player.hasKeyItem("Deluxe Dildo") < 0)
+								   && (player.cockTotal() > 0 || player.hasKeyItem("Deluxe Dildo") < 0)
 								   && flags[kFLAGS.SOUL_SENSE_TAMANI] < 3;
 						}
 					}, {
@@ -122,14 +124,14 @@ package classes.Scenes.Areas
 							return !player.hasStatusEffect(StatusEffects.PureCampJojo)
 								   && !camp.campCorruptJojo()
 								   && flags[kFLAGS.JOJO_DEAD_OR_GONE] <= 0
-								   && (kGAMECLASS.monk < 2 || rand(2) == 0);
+								   && (JojoScene.monk < 2 || rand(2) == 0);
 						},
 						mods  : [fn.ifLevelMin(4)],
 						chance: function ():Number {
 							//Extra chance of Jojo encounter.
 							return (player.findPerk(PerkLib.PiercedFurrite) >= 0
 									&& rand(5) == 0
-									&& (player.cor > 25 || kGAMECLASS.monk > 0)) ? 1.2 : 1;
+									&& (player.cor > 25 || JojoScene.monk > 0)) ? 1.2 : 1;
 						},
 						call  : jojoEncounter
 					}, {
@@ -151,7 +153,7 @@ package classes.Scenes.Areas
 					},{
 						name  : "beegirl",
 						call  : beeGirlScene.beeEncounter,
-						chance: 0.50
+						chance: 0.40
 					}, {
 						name  : "truffle",
 						call  : findTruffle,
@@ -182,6 +184,13 @@ package classes.Scenes.Areas
 						},
 						chance: 0.05
 					}, {
+						name: "diana",
+						when: function():Boolean {
+							return flags[kFLAGS.DIANA_FOLLOWER] == 5 && flags[kFLAGS.DIANA_AFFECTION] == 100;
+						},
+						chance: 0.5,
+						call: SceneLib.dianaScene.postNameForestEnc
+					}, {
 						name: "walk",
 						call: forestWalkFn
 					}, {
@@ -197,19 +206,33 @@ package classes.Scenes.Areas
 						name  : "bigjunk",
 						call  : bigJunkForestScene,
 						chance: bigJunkChance
-					}/*,{
+					},/* {
 						name: "celess-unicorn",
-						call: celessUnicornIntro,
-						when: function():Boolean{
-							return (player.hasVirginVagina() || ((player.isMale()||player.isGenderless()) && player.ass.analLooseness == 0)) && (player.level > 20) && !player.isPregnant() && !game.celessScene.armorFound;
-						}
+						call: CelessScene.instance.celessUnicornIntro,
+						when: CelessScene.canMeetUnicorn
+					}, {
+						name: "celess-nightmare",
+						call: CelessScene.instance.celessUnicornIntro,
+						when: CelessScene.canMeetNightmare
 					}, {
 						name: "celess-armor",
-						call: celessArmor,
-						when: function():Boolean{
-							return game.celessScene.isFollower && !game.celessScene.armorFound;
-						}
-					}*/);
+						call: CelessScene.instance.celessArmor,
+						when: CelessScene.canGetArmour
+					},*/ {
+						name  : "patchouli",
+						call  : SceneLib.patchouliScene.meetThePatchouli,
+						when  : function():Boolean {
+							return (flags[kFLAGS.PATCHOULI_FOLLOWER] < 3 || flags[kFLAGS.PATCHOULI_FOLLOWER] == 4);
+						},
+						chance: 0.7
+					}, {
+						name  : "konstantin",
+						call  : SceneLib.konstantin.meetKonstantinAtForest,
+						when  : function():Boolean {
+							return (flags[kFLAGS.KONSTANTIN_FOLLOWER] < 2);
+						},
+						chance: 0.8
+					});
 					/*
 					{
 						name  : "mimic",
@@ -227,7 +250,7 @@ package classes.Scenes.Areas
 						chance: 0.10
 					}
 					*/
-			_deepwoodsEncounter = Encounters.group("deepwoods", /*kGAMECLASS.commonEncounters,*/ {
+			_deepwoodsEncounter = Encounters.group("deepwoods", /*CoC.instance.commonEncounters,*/ {
 				name: "shrine",
 				when: function():Boolean {
 					return flags[kFLAGS.KITSUNE_SHRINE_UNLOCKED] < 1;
@@ -236,16 +259,24 @@ package classes.Scenes.Areas
 			}, {
 				//Helia monogamy fucks
 				name  : "helcommon",
-				call  : game.helScene.helSexualAmbush,
+				call  : SceneLib.helScene.helSexualAmbush,
 				chance: 0.2,
-				when  : game.helScene.helSexualAmbushCondition
+				when  : SceneLib.helScene.helSexualAmbushCondition
 			}, {
 				name  : "etna",
 				when  : function():Boolean {
 					return flags[kFLAGS.ETNA_FOLLOWER] < 1
 						   && flags[kFLAGS.ETNA_TALKED_ABOUT_HER] == 2;
 				},
-				call  : kGAMECLASS.etnaScene.repeatYandereEnc
+				call  : SceneLib.etnaScene.repeatYandereEnc
+			}, {
+				name  : "electra",
+				when  : function():Boolean {
+					return flags[kFLAGS.ELECTRA_FOLLOWER] < 1
+						   && flags[kFLAGS.ELECTRA_AFFECTION] >= 2;
+				},
+				chance: 0.5,
+				call  : SceneLib.electraScene.repeatDeepwoodsEnc
 			}, {
 				name: "kitsune",
 				when: function():Boolean {
@@ -260,7 +291,7 @@ package classes.Scenes.Areas
 				call: akbalScene.supahAkabalEdition
 			}, {
 				name  : "Tamani",
-				chance: 0.1,
+				chance: 0.6,
 				call  : function ():void {
 					if (flags[kFLAGS.TAMANI_DAUGHTER_PREGGO_COUNTDOWN] == 0
 						&& flags[kFLAGS.TAMANI_NUMBER_OF_DAUGHTERS] >= 24) {
@@ -272,7 +303,7 @@ package classes.Scenes.Areas
 				when  : function ():Boolean {
 					return flags[kFLAGS.TAMANI_TIME_OUT] == 0
 						   && player.gender > 0
-						   && (player.totalCocks() > 0 || player.hasKeyItem("Deluxe Dildo") < 0)
+						   && (player.cockTotal() > 0 || player.hasKeyItem("Deluxe Dildo") < 0)
 						   && flags[kFLAGS.SOUL_SENSE_TAMANI] < 3;
 				}
 			}, {
@@ -293,7 +324,7 @@ package classes.Scenes.Areas
 						   && player.findPerk(PerkLib.FerasBoonAlpha) < 0
 						   && date.fullYear > flags[kFLAGS.PUMPKIN_FUCK_YEAR_DONE];
 				},
-				call: game.pumpkinFuckEncounter
+				call: Holidays.pumpkinFuckEncounter
 			}, {
 				name: "fera_2",
 				when: function():Boolean {
@@ -301,7 +332,7 @@ package classes.Scenes.Areas
 						   && flags[kFLAGS.FERAS_TRAP_SPRUNG_YEAR] == 0
 						   && date.fullYear > flags[kFLAGS.FERAS_GLADE_EXPLORED_YEAR];
 				},
-				call: game.feraSceneTwoIntroduction
+				call: Holidays.feraSceneTwoIntroduction
 			},{
 				name  : "woods",
 				call  : camp.cabinProgress.gatherWoods,
@@ -330,8 +361,8 @@ package classes.Scenes.Areas
 				chance: 0.8
 			}, {
 				name: "dungeon",
-				call: getGame().dungeons.enterDeepCave,
-				when: getGame().dungeons.canFindDeepCave
+				call: SceneLib.dungeons.enterDeepCave,
+				when: SceneLib.dungeons.canFindDeepCave
 			}, {
 				name  : "walk",
 				call  : deepwoodsWalkFn,
@@ -339,93 +370,50 @@ package classes.Scenes.Areas
 			});
 			// what we do here: create a Story (ZoneStmt) and register it in game.rootStory
 			// so it will be accessible from external files
-			forestStory = ZoneStmt.wrap(_forestEncounter,game.rootStory);
-			deepwoodsStory = ZoneStmt.wrap(_deepwoodsEncounter,game.rootStory);
+			forestStory = ZoneStmt.wrap(_forestEncounter,game.rootStory).bind(game.context);
+			deepwoodsStory = ZoneStmt.wrap(_deepwoodsEncounter,game.rootStory).bind(game.context);
 		}
 		public function exploreDeepwoods():void {
-			deepwoodsEncounter.execEncounter();
+			deepwoodsStory.execute();
 		}
-		public function celessUnicornIntro(stage:int = 0, wasMale:Boolean = false ):void{
-			clearOutput();
-			doNext(camp.returnToCampUseOneHour);
-			switch(stage){
-				case 0:
-					forestStory.display(context, "strings/celess-unicorn/intro");
-					addButton(0, "Okay", celessUnicornIntro, (player.isMale() || player.isGenderless())?2:3);
-					if(player.hasCock()){addButton(1, "Fuck Her", celessUnicornIntro, 4);}
-					addButton(5, "NoWay", celessUnicornIntro, 1);
-					break;
-				case 1:
-					forestStory.display(context, "strings/celess-unicorn/noway");
-					doNext(camp.returnToCampUseOneHour);
-					break;
-				case 2:
-					if (player.bRows() == 0){
-						player.createBreastRow();
-					}
-					player.growTits(3, 1, false, 1);
-					forestStory.display(context, "strings/celess-unicorn/okay-male");
-					while (player.hasCock()){
-						player.removeCock(0, 1);
-					}
-					player.createVagina();
-					addButton(0, "Next", celessUnicornIntro, 3,true);
-					break;
-				case 3:
-					forestStory.display(context, "strings/celess-unicorn/okay-female", {$wasMale:wasMale, $isTaur:player.isTaur()});
-					player.knockUpForce(PregnancyStore.PREGNANCY_CELESS, PregnancyStore.INCUBATION_CELESS);
-					inventory.takeItem(shields.SANCTYN, camp.returnToCampUseOneHour);
-					break;
-				case 4:
-					forestStory.display(context, "strings/celess-unicorn/fuck-her");
-					kGAMECLASS.celessScene.findArmor();
-					inventory.takeItem(shields.SANCTYN, camp.returnToCampUseOneHour);
-					break;
-			}
-			flushOutputTextToGUI();
-		}
-		public function celessArmor():void{
-			forestStory.display(context, "strings/celess-unicorn/armorScene");
-			kGAMECLASS.celessScene.findArmor();
-			inventory.takeItem(armors.CTPALAD, camp.returnToCampUseOneHour);
-		}
+
 		public function tripOnARoot():void {
-			forestStory.display(context, "strings/trip");
-			player.takeDamage(10);
+			forestStory.display("strings/trip");
+			player.takePhysDamage(10);
 			doNext(camp.returnToCampUseOneHour);
 		}
 		public function findTruffle():void {
-			forestStory.display(context, "strings/truffle");
+			forestStory.display("strings/truffle");
 			inventory.takeItem(consumables.PIGTRUF, camp.returnToCampUseOneHour);
 		}
 		public function findHPill():void {
-			forestStory.display(context, "strings/hpill");
+			forestStory.display("strings/hpill");
 			inventory.takeItem(consumables.H_PILL, camp.returnToCampUseOneHour);
 		}
 		public function findChitin():void {
 			clearOutput();
-			forestStory.display(context, "strings/chitin");
+			forestStory.display("strings/chitin");
 			inventory.takeItem(useables.B_CHITN, camp.returnToCampUseOneHour);
 		}
 		public function forestWalkFn():void {
-			forestStory.display(context, "strings/walk");
+			forestStory.display("strings/walk");
 			doNext(camp.returnToCampUseOneHour);
 		}
 		public function marbleVsImp():void {
 			clearOutput();
-			forestStory.display(context, "string/marble");
+			forestStory.display("string/marble");
 			//end event
 			doNext(camp.returnToCampUseOneHour);
 		}
 		public function exploreForest():void
 		{
 			clearOutput();
+			doNext(camp.returnToCampUseOneHour);
 			//Increment forest exploration counter.
 			player.exploredForest++;
-			doNext(camp.returnToCampUseOneHour);
-			forestStory.execute(context);
+			forestStory.execute();
+//			forestEncounter.execEncounter();
 			flushOutputTextToGUI();
-			//forestEncounter.execEncounter();
 		}
 		//[FOREST]
 //[RANDOM SCENE IF CHARACTER HAS AT LEAST ONE COCK LARGER THAN THEIR HEIGHT, AND THE TOTAL COMBINED WIDTH OF ALL THEIR COCKS IS TWELVE INCHES OR GREATER]
@@ -470,7 +458,7 @@ package classes.Scenes.Areas
 				if (player.vaginas.length >= 1) {
 					outputText("  Your " + vaginaDescript() + " and " + clitDescript() + " are thoroughly squashed between the bulky flesh where your male genitals protrude from between your hips and the " + buttDescript() + " above.");
 					//IF CHARACTER HAS A DROOLING PUSSY ADD SENTENCE
-					if (player.vaginas[0].vaginalWetness >= VAGINA_WETNESS_DROOLING) {
+					if (player.vaginas[0].vaginalWetness >= VaginaClass.WETNESS_DROOLING) {
 						outputText("  Juices stream from your womanhood and begin pooling on the dirt and twigs beneath you.  ");
 						if (lake) outputText("The drooling fem-spunk only makes the ground more muddy.");
 						else outputText("The sticky fem-spunk immediately soaks down into the rich soil.");
@@ -495,7 +483,7 @@ package classes.Scenes.Areas
 				if (player.vaginas.length >= 1) {
 					outputText("  Your " + vaginaDescript() + " and " + clitDescript() + " are thoroughly squashed between the bulky flesh where your male genitals protrude from between your hips and the " + buttDescript() + " above.");
 					//IF CHARACTER HAS A DROOLING PUSSY ADD SENTENCE
-					if (player.vaginas[0].vaginalWetness >= VAGINA_WETNESS_DROOLING) {
+					if (player.vaginas[0].vaginalWetness >= VaginaClass.WETNESS_DROOLING) {
 						if (lake) outputText("  A leaf falls from a tree and lands on the wet lips of your cunt, its light touch teasing your sensitive skin.  Like a mare or cow in heat, your juices stream from your womanhood and pool in the mud beneath you.  The sloppy fem-spunk only makes the ground more muddy.");
 						else outputText("  A leaf falls from a tree and lands on the wet lips of your cunt, its light touch teasing your sensitive skin.  Like a mare or cow in heat, your juices stream from your womanhood and pool in the dirt and twigs beneath you.");
 					}
@@ -526,7 +514,7 @@ package classes.Scenes.Areas
 				//SCENE END = FOR ALL OTHER CHARACTERS
 				else outputText("  You struggle and push with your [legs] as hard as you can, but it's no use.  You do the only thing you can and begin stroking your [cocks] with as much vigor as you can muster.  Eventually, your body tenses and a light load of jizz erupts from your loins, but the orgasm is truly mild compared to what you need.  You're far too weary from struggling to give yourself the masturbation you truly need, but you continue to try.  Nearly an hour later, " + sMultiCockDesc() + " has softened enough to allow you to stand again, and you make your way back to camp, still dragging your genitals across the forest floor.");
 			}
-			dynStats("lus", 25 + rand(player.cor / 5), "resisted", false);
+			dynStats("lus", 25 + rand(player.cor / 5), "scale", false);
 			fatigue(5);
 			doNext(camp.returnToCampUseOneHour);
 		}
@@ -536,20 +524,20 @@ package classes.Scenes.Areas
 		private function trappedSatyr():void {
 			clearOutput();
 			spriteSelect(99);
-			forestStory.display(context, "strings/glade-satyr/0-intro");
+			forestStory.display("strings/glade-satyr/0-intro");
 			if (flags[kFLAGS.CODEX_ENTRY_SATYRS] <= 0) {
 				flags[kFLAGS.CODEX_ENTRY_SATYRS] = 1;
 				outputText("<b>New codex entry unlocked: Satyrs!</b>\n\n")
 			}
 			//(Player lacks a penis:
 			if(!player.hasCock()) {
-				forestStory.display(context, "strings/glade-satyr/1-nocock");
+				forestStory.display("strings/glade-satyr/1-nocock");
 				doNext(camp.returnToCampUseOneHour);
 			}
 			//Player returns to camp)
 			//(Player has penis:
 			else {
-				forestStory.display(context, "strings/glade-satyr/1-prompt");
+				forestStory.display("strings/glade-satyr/1-prompt");
 				//[Yes] [No]
 				simpleChoices("Ravage", rapeSatyr, "", null, "", null, "", null, "Leave", ignoreSatyr);
 			}
@@ -559,7 +547,7 @@ package classes.Scenes.Areas
 		private function ignoreSatyr():void {
 			clearOutput();
 			spriteSelect(99);
-			forestStory.display(context, "strings/glade-satyr/2-leave");
+			forestStory.display("strings/glade-satyr/2-leave");
 			dynStats("lus", 5+player.lib/20);
 			doNext(camp.returnToCampUseOneHour);
 		}
@@ -568,7 +556,7 @@ package classes.Scenes.Areas
 			clearOutput();
 			spriteSelect(99);
 			var x:Number = player.biggestCockIndex();
-			forestStory.display(context, "strings/glade-satyr/2-ravage",{$x:x});
+			forestStory.display("strings/glade-satyr/2-ravage",{$x:x});
 			player.orgasm();
 			//[Again][Leave]
 			simpleChoices("Again", secondSatyrFuck, "", null, "", null, "", null, "Leave", dontRepeatFuckSatyr);
@@ -578,7 +566,7 @@ package classes.Scenes.Areas
 		private function dontRepeatFuckSatyr():void {
 			clearOutput();
 			spriteSelect(99);
-			forestStory.display(context, "strings/glade-satyr/3-leave");
+			forestStory.display("strings/glade-satyr/3-leave");
 			doNext(camp.returnToCampUseOneHour);
 		}
 		//[=Again=]
@@ -586,23 +574,23 @@ package classes.Scenes.Areas
 			var x:int = player.cockThatFits(monster.analCapacity());
 			if(x < 0) x = player.smallestCockIndex();
 			clearOutput();
-			forestStory.display(context, "strings/glade-satyr/3-again",{$x:x});
+			forestStory.display("strings/glade-satyr/3-again",{$x:x});
 			player.orgasm();
 			dynStats("lib", 1, "sen", -5);
 			doNext(camp.returnToCampUseOneHour);
 		}
 		private function jojoEncounter():void {
 			clearOutput();
-			if (kGAMECLASS.monk == 0 && !player.hasStatusEffect(StatusEffects.PureCampJojo)) {
+			if (JojoScene.monk == 0 && !player.hasStatusEffect(StatusEffects.PureCampJojo)) {
 				if (player.cor < 25) {
-					kGAMECLASS.monk = 1;
-					kGAMECLASS.jojoScene.lowCorruptionJojoEncounter();
+					JojoScene.monk = 1;
+					SceneLib.jojoScene.lowCorruptionJojoEncounter();
 				}
-				else kGAMECLASS.jojoScene.highCorruptionJojoEncounter();
-			} else if (kGAMECLASS.monk == 1 || kGAMECLASS.monk < 0) { //Negative monk value indicates rape is disabled.
-				kGAMECLASS.jojoScene.repeatJojoEncounter();
-			} else if (kGAMECLASS.monk >= 2) { //Angry/Horny Jojo
-				kGAMECLASS.jojoScene.corruptJojoEncounter();
+				else SceneLib.jojoScene.highCorruptionJojoEncounter();
+			} else if (JojoScene.monk == 1 || JojoScene.monk < 0) { //Negative monk value indicates rape is disabled.
+				SceneLib.jojoScene.repeatJojoEncounter();
+			} else if (JojoScene.monk >= 2) { //Angry/Horny Jojo
+				SceneLib.jojoScene.corruptJojoEncounter();
 			}
 		}
 		private function tentacleBeastEncounterFn():void {
@@ -635,7 +623,7 @@ package classes.Scenes.Areas
 		public function discoverDeepwoods():void {
 			player.createStatusEffect(StatusEffects.ExploredDeepwoods, 0, 0, 0, 0);
 			clearOutput();
-			outputText("After exploring the forest so many times, you decide to really push it, and plunge deeper and deeper into the woods.  The further you go the darker it gets, but you courageously press on.  The plant-life changes too, and you spot more and more lichens and fungi, many of which are luminescent.  Finally, a wall of tree-trunks as wide as houses blocks your progress.  There is a knot-hole like opening in the center, and a small sign marking it as the entrance to the 'Deepwoods'.  You don't press on for now, but you could easily find your way back to explore the Deepwoods.\n\n<b>Deepwoods exploration unlocked!</b>");
+			forestStory.display("strings/deepwoods");
 			doNext(camp.returnToCampUseOneHour);
 		}
 		public function bigJunkChance():Number {

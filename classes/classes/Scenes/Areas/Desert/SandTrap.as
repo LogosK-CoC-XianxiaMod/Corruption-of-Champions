@@ -1,13 +1,16 @@
 ﻿package classes.Scenes.Areas.Desert
 {
-	import classes.*;
-	import classes.internals.*;
-	import classes.GlobalFlags.kFLAGS;
+import classes.*;
+import classes.BodyParts.Butt;
+import classes.BodyParts.Hips;
+import classes.BodyParts.Tail;
+import classes.Scenes.SceneLib;
+import classes.internals.*;
 
-	public class SandTrap extends Monster
+public class SandTrap extends Monster
 	{
 		//Wait:
-		public function sandTrapWait():void {
+		public function sandTrapClimb():void {
 			clearOutput();
 			game.spriteSelect(97);
 			if(!hasStatusEffect(StatusEffects.Climbed)) createStatusEffect(StatusEffects.Climbed,0,0,0,0);
@@ -28,8 +31,6 @@
 				}
 			}
 			outputText("\n\n");
-			doAI();
-			//combatRoundOver();
 		}
 
 		public function trapLevel(adjustment:Number = 0):Number {
@@ -54,8 +55,8 @@
 			else {
 				var damage:Number = (10 + player.lib/10);
 				outputText("  Despite ducking away from the jet of fluid as best you can, you cannot avoid some of the stuff splashing upon your arms and face.  The substance feels oddly warm and oily, and though you quickly try to wipe it off it sticks resolutely to your skin and the smell hits your nose.  Your heart begins to beat faster as warmth radiates out from it; you feel languid, light-headed and sensual, eager to be touched and led by the hand to a sandy bed...  Shaking your head, you try to stifle what the foreign pheromones are making you feel.");
-				game.dynStats("lus", damage);
-				damage = Math.round(damage * game.lustPercent()/10)/10;
+				player.dynStats("lus", damage);
+				damage = Math.round(damage * EngineCore.lustPercent()/10)/10;
 				outputText(" <b>(<font color=\"#ff00ff\">" + damage +" lust</font>)</b>");
 			}
 		}
@@ -88,22 +89,21 @@
 					trapLevel(-1);
 				}
 				else removeStatusEffect(StatusEffects.Climbed);
-				combatRoundOver();
 			} else super.performCombatAction();
 		}
 
 		override public function defeated(hpVictory:Boolean):void
 		{
-			game.desert.sandTrapScene.pcBeatsATrap();
+			SceneLib.desert.sandTrapScene.pcBeatsATrap();
 		}
 
 		override public function won(hpVictory:Boolean,pcCameWorms:Boolean):void
 		{
 			if (pcCameWorms) {
 				outputText("\n\nThe sand trap seems bemused by the insects your body houses...");
-				doNext(game.endLustLoss);
+				doNext(SceneLib.combat.endLustLoss);
 			} else {
-				game.desert.sandTrapScene.sandtrapmentLoss(true);
+				SceneLib.desert.sandTrapScene.sandtrapmentLoss(true);
 			}
 		}
 
@@ -112,7 +112,7 @@
 			//1/3 have fertilized eggs!
 			if(rand(3) == 0) this.createStatusEffect(StatusEffects.Fertilized,0,0,0,0);
 			this.a = "the ";
-			if (game.silly())
+			if (EngineCore.silly())
 				this.short = "sand tarp";
 			else
 				this.short = "sandtrap";
@@ -125,21 +125,22 @@
 			this.cumMultiplier = 3;
 			// this.hoursSinceCum = 0;
 			this.createBreastRow(0,0);
-			this.ass.analLooseness = ANAL_LOOSENESS_NORMAL;
-			this.ass.analWetness = ANAL_WETNESS_DRY;
+			this.ass.analLooseness = AssClass.LOOSENESS_NORMAL;
+			this.ass.analWetness = AssClass.WETNESS_DRY;
 			this.tallness = rand(8) + 150;
-			this.hipRating = HIP_RATING_AMPLE+2;
-			this.buttRating = BUTT_RATING_LARGE;
+			this.hips.type = Hips.RATING_AMPLE + 2;
+			this.butt.type = Butt.RATING_LARGE;
 			this.skinTone = "fair";
 			this.hairColor = "black";
 			this.hairLength = 15;
 			initStrTouSpeInte(55, 15, 45, 55);
-			initLibSensCor(60, 45, 50);
+			initWisLibSensCor(50, 60, 45, 50);
 			this.weaponName = "claws";
 			this.weaponVerb="claw";
-			this.weaponAttack = 10 + (3 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.weaponAttack = 10;
 			this.armorName = "chitin";
-			this.armorDef = 20 + (3 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.armorDef = 20;
+			this.armorMDef = 2;
 			this.bonusHP = 100;
 			this.bonusLust = 20;
 			this.lust = 20;
@@ -148,14 +149,8 @@
 			this.level = 5;
 			this.gems = 5 + rand(5);
 			this.drop = new ChainedDrop(consumables.TRAPOIL).add(consumables.OVIELIX,1/3);
-			this.tailType = TAIL_TYPE_DEMONIC;
+			this.tailType = Tail.DEMONIC;
 			createStatusEffect(StatusEffects.Level,4,0,0,0);
-			this.str += 11 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.tou += 3 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.spe += 9 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.inte += 11 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];			
-			this.lib += 12 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.newgamebonusHP = 460;
 			checkMonster();
 		}
 		

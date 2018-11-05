@@ -3,13 +3,14 @@
  */
 package classes.Scenes.Areas.Swamp
 {
-	import classes.*;
-	import classes.GlobalFlags.kFLAGS;
-	import classes.GlobalFlags.kGAMECLASS;
-	import classes.Items.Armors.LustyMaidensArmor;
-	import classes.Scenes.UniqueSexScenes;
+import classes.*;
+import classes.BodyParts.LowerBody;
+import classes.BodyParts.Tail;
+import classes.GlobalFlags.kFLAGS;
+import classes.Items.Armors.LustyMaidensArmor;
+import classes.Scenes.UniqueSexScenes;
 
-	public class MaleSpiderMorphScene extends BaseContent
+public class MaleSpiderMorphScene extends BaseContent
 	{
 		public var uniquuuesexscene:UniqueSexScenes = new UniqueSexScenes();
 		
@@ -77,7 +78,7 @@ package classes.Scenes.Areas.Swamp
 		*/	var bikiniTits:Function = null;
 			if (player.hasVagina() && player.biggestTitSize() >= 4 && player.armorName == "lusty maiden's armor") bikiniTits = createCallBackFunction2((player.armor as LustyMaidensArmor).lustyMaidenPaizuri,player,monster);
 			outputText("The male spider-morph collapses onto his hands and knees, ");
-			if (monster.lust >= monster.eMaxLust()) outputText("masturbating with furious abandon, working his ebon dick with such vigor that the spider's pre-cum-slicked dick-skin noisily slides itself back and forth over his fattened glans; it becomes apparent just how much foreskin he truly has at this point, as even with his frenzied rubbing his glans remains shrouded in the thick excess skin while his fist slaps lewdly against his groin.  Dribbles of pre-cum leak from between his fingers to spill on the ground.");
+			if (monster.lust >= monster.maxLust()) outputText("masturbating with furious abandon, working his ebon dick with such vigor that the spider's pre-cum-slicked dick-skin noisily slides itself back and forth over his fattened glans; it becomes apparent just how much foreskin he truly has at this point, as even with his frenzied rubbing his glans remains shrouded in the thick excess skin while his fist slaps lewdly against his groin.  Dribbles of pre-cum leak from between his fingers to spill on the ground.");
 			else outputText("wobbling back and forth as he tries to stay up and fight.  There's no way he can oppose you, as beaten as he is now.");
 			if (player.gender > 0 && player.lust >= 33 && flags[kFLAGS.SFW_MODE] <= 0) {
 				outputText("\n\nWhat do you do?");
@@ -91,8 +92,8 @@ package classes.Scenes.Areas.Swamp
 				if (player.biggestCockArea() > monster.analCapacity()) addButton(2, "Frot", victoryFrotTheSpoidah);
 			}
 			addButton(3, "B.Titfuck", bikiniTits);
-			if (player.tailType == TAIL_TYPE_MANTICORE_PUSSYTAIL) addButton(5, "Tail Rape", uniquuuesexscene.manticoreTailRapeScene);
-			if (player.lowerBody == LOWER_BODY_TYPE_PLANT_FLOWER) addButton(6, "Get Pollinated", uniquuuesexscene.alrauneGetPollinatedScene);
+			if (player.tailType == Tail.MANTICORE_PUSSYTAIL) addButton(5, "Tail Rape", uniquuuesexscene.manticoreTailRapeScene);
+			if (player.lowerBody == LowerBody.PLANT_FLOWER) addButton(6, "Get Pollinated", uniquuuesexscene.alrauneGetPollinatedScene);
 			addButton(9, "Leave", cleanupAfterCombat);
 		}
 
@@ -124,7 +125,7 @@ package classes.Scenes.Areas.Swamp
 			spriteSelect(74);
 			//*Summary:  Reaming some anus.
 			outputText("You approach and turn the spider-boy around, pushing the spider's bulbous abdomen aside to give yourself a better view of the his tight, heart-shaped ass.  ");
-			if (monster.lust >= monster.eMaxLust()) outputText("He's too distracted by his foreskin fondling to pay much attention to your anal-focused attentions.");
+			if (monster.lust >= monster.maxLust()) outputText("He's too distracted by his foreskin fondling to pay much attention to your anal-focused attentions.");
 			else outputText("He's too busy trying to stay upright to fight off your anal-focused attentions.");
 			outputText("  With a wide smile on your face, you grab a handful of his pale butt-cheek and squeeze your fingers into the soft flesh.  It spreads his dainty derriere just wide enough for you to see the puckered star of his rectum.  " + SMultiCockDesc() + " ");
 			if (player.lust < (player.maxLust() * 0.7)) outputText("hardens to full size");
@@ -137,7 +138,7 @@ package classes.Scenes.Areas.Swamp
 			outputText("</i>\"\n\n");
 
 			outputText("You grab his balls and caress them in one hand while you take off your equipment with the other.  The hapless victim starts to relax from the attentions, and pre-cum begins to leak from inside his foreskin ");
-			if (monster.lust < monster.eMaxLust()) outputText("after he starts touching himself.");
+			if (monster.lust < monster.maxLust()) outputText("after he starts touching himself.");
 			else outputText("while he fondles and caresses the sensitive flesh.");
 			outputText("  Meanwhile, you grab " + oMultiCockDesc() + " and line it up with the spider-boy's twitching rectum, rubbing the " + player.cockHead(x) + " over the tight little hole while you wait for it to slowly loosen.  A fresh dollop of pre-cream bubbles out of his cum-frothing foreskin in response, letting you know that in spite of his protests, your reluctant lover's body loves the anal stimulation.\n\n");
 
@@ -183,13 +184,13 @@ package classes.Scenes.Areas.Swamp
 			clearOutput();
 			spriteSelect(74);
 			outputText("You push the ");
-			if (monster.lust >= monster.eMaxLust()) outputText("masturbating");
+			if (monster.lust >= monster.maxLust()) outputText("masturbating");
 			else outputText("injured");
 			outputText(" spider-morph over onto his back and laugh at his relatively tiny dick.  It's no wonder he jumped you wanting sex - the girls probably took one look at the unimpressive member and took off running.  You take off your [armor] and let " + sMultiCockDesc() + " flop free.  ");
 			if (player.cockTotal() == 1) outputText("Dropping it squarely ");
 			else outputText("Dropping the largest ");
 			outputText("atop his miniature cock, you virtually bury it in a superior male's heavy penile flesh.  ");
-			if (monster.lust >= monster.eMaxLust()) outputText("He pants in surprise and pleasure, clearly enjoying the weighty shaft rubbing against his drooping dick-skin");
+			if (monster.lust >= monster.maxLust()) outputText("He pants in surprise and pleasure, clearly enjoying the weighty shaft rubbing against his drooping dick-skin");
 			else outputText("He gasps in surprise and slowly growing pleasure, clearly enjoying the weighty shaft rubbing against his drooping dick-skin");
 			outputText(".  You sway your " + hipDescript() + " to drag your [cock] all over his body, and the defeated boy's pale white skin slowly colors pink with a full-body blush.\n\n");
 
@@ -425,7 +426,7 @@ package classes.Scenes.Areas.Swamp
 			else outputText("spraying your juices all over the ground and mixing in with the green slime, soaking your legs, each egg you squeeze out only prolonging the intense feeling.\n\n");
 
 			outputText("After what seems like hours, you have lost count of the eggs pushed out, and you collapse from sexual exhaustion.\n\n");
-			kGAMECLASS.timeQ += 2;
+			CoC.instance.timeQ += 2;
 			outputText("You awaken later on, a sticky feeling between your legs to go with your wet pussy");
 			if (player.hasCock()) outputText(" and raging hard on");
 			outputText(". Looking around, you notice the slimy pool appears to have dried up, but the broken eggshells show that you weren't just dreaming. Tiny dots in the dirt form a trail leading to the swamp, and you can only guess where your offspring went.\n");

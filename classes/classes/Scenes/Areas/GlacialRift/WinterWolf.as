@@ -4,20 +4,22 @@
  */
 package classes.Scenes.Areas.GlacialRift 
 {
-	import classes.*;
-	import classes.internals.WeightedDrop;
-	import classes.GlobalFlags.kFLAGS;
-	
-	public class WinterWolf extends Monster 
+import classes.*;
+import classes.BodyParts.Butt;
+import classes.BodyParts.Hips;
+import classes.Scenes.SceneLib;
+import classes.internals.WeightedDrop;
+
+public class WinterWolf extends Monster
 	{
 		override public function defeated(hpVictory:Boolean):void
 		{
-			game.glacialRift.winterwolfScene.winAgainstWinterWolf();
+			SceneLib.glacialRift.winterwolfScene.winAgainstWinterWolf();
 		}
 		
 		override public function won(hpVictory:Boolean, pcCameWorms:Boolean):void
 		{
-			game.glacialRift.winterwolfScene.loseToWinterWolf();
+			SceneLib.glacialRift.winterwolfScene.loseToWinterWolf();
 		}
 		
 		override protected function performCombatAction():void
@@ -53,11 +55,11 @@ package classes.Scenes.Areas.GlacialRift
 				else {
 					player.createStatusEffect(StatusEffects.Frostbite,0,0,0,0);
 					damage += 20 + Math.round(rand(str / 4));
-					player.takeDamage(damage);
+					player.takeIceDamage(damage);
 					dmgtaken += damage;
 				}
 				damage += 20 + Math.round(rand(str / 4));
-				player.takeDamage(damage);
+				player.takeIceDamage(damage);
 				dmgtaken += damage;
 				outputText(" (<b><font color=\"#800000\">" + damage + "</font></b>)");
 			}
@@ -70,33 +72,30 @@ package classes.Scenes.Areas.GlacialRift
 				}
 				else {
 					damage += 20 + Math.round(rand(str / 4));
-					player.takeDamage(damage);
+					player.takeIceDamage(damage);
 					dmgtaken += damage;
 				}
 				damage += 20 + Math.round(rand(str / 4));
-				player.takeDamage(damage);
+				player.takeIceDamage(damage);
 				dmgtaken += damage;
 				outputText(" (<b><font color=\"#800000\">" + damage + "</font></b>)");
 			}
-			combatRoundOver();
 		}
 		
 		protected function wolfHold():void {
 			outputText("The wolf suddenly grab you crushing you under its paw as it start tearing you apart with its maw.");
 			player.createStatusEffect(StatusEffects.WolfHold,0,0,0,0); 
 			if (player.findPerk(PerkLib.Juggernaut) < 0 && armorPerk != "Heavy") {
-				player.takeDamage(8+rand(10));
+				player.takePhysDamage(8+rand(10));
 			}
-			combatRoundOver();
 		}
 		
 		public function paw():void {
 			outputText("The wolf smash you with its enormous paw you rail at the impact as it sends you flying across the field.");
-			player.takeDamage(str);
+			player.takePhysDamage(str);
 			player.createStatusEffect(StatusEffects.Stunned, 1, 0, 0, 0);
 			createStatusEffect(StatusEffects.AbilityCooldown1, 3, 0, 0, 0);
 			if (player.hasStatusEffect(StatusEffects.WolfHold)) player.removeStatusEffect(StatusEffects.WolfHold);
-			combatRoundOver();
 		}
 		
 		public function WinterWolf() 
@@ -111,21 +110,22 @@ package classes.Scenes.Areas.GlacialRift
 			this.ballSize = 2;
 			this.cumMultiplier = 2;
 			createBreastRow(Appearance.breastCupInverse("flat"));
-			this.ass.analLooseness = ANAL_LOOSENESS_TIGHT;
-			this.ass.analWetness = ANAL_WETNESS_NORMAL;
+			this.ass.analLooseness = AssClass.LOOSENESS_TIGHT;
+			this.ass.analWetness = AssClass.WETNESS_NORMAL;
 			this.tallness = 10*12;
-			this.hipRating = HIP_RATING_BOYISH;
-			this.buttRating = BUTT_RATING_TIGHT;
+			this.hips.type = Hips.RATING_BOYISH;
+			this.butt.type = Butt.RATING_TIGHT;
 			this.skin.growFur({color:"glacial white"});
 			this.hairColor = "glacial white";
 			this.hairLength = 8;
 			initStrTouSpeInte(130, 160, 80, 90);
-			initLibSensCor(20, 15, 75);
+			initWisLibSensCor(80, 20, 15, 75);
 			this.weaponName = "paws";
 			this.weaponVerb="paw-slash";
-			this.weaponAttack = 37 + (8 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.weaponAttack = 37;
 			this.armorName = "fur";
-			this.armorDef = 27 + (3 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			this.armorDef = 27;
+			this.armorMDef = 18;
 			this.bonusHP = 800;
 			this.bonusLust = 10;
 			this.lust = 10;
@@ -141,12 +141,6 @@ package classes.Scenes.Areas.GlacialRift
 			this.createPerk(PerkLib.RefinedBodyI, 0, 0, 0, 0);
 			this.createPerk(PerkLib.IceNature, 0, 0, 0, 0);
 			this.createPerk(PerkLib.EnemyBeastOrAnimalMorphType, 0, 0, 0, 0);
-			this.str += 39 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.tou += 48 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.spe += 24 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.inte += 27 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];			
-			this.lib += 6 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL];
-			this.newgamebonusHP = 5760;
 			checkMonster();
 		}
 		

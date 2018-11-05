@@ -1,16 +1,20 @@
 ﻿package classes.Scenes.NPCs{
-	import classes.GlobalFlags.*;
-	import classes.*;
+import classes.*;
+import classes.BodyParts.LowerBody;
+import classes.GlobalFlags.*;
+import classes.Scenes.SceneLib;
 
-	public class JojoScene extends NPCAwareContent implements TimeAwareInterface {
+public class JojoScene extends NPCAwareContent implements TimeAwareInterface {
 
 		public var pregnancy:PregnancyStore;
 
-		public function JojoScene()
+    public static var monk:Number = 0;
+
+    public function JojoScene()
 		{
 			pregnancy = new PregnancyStore(kFLAGS.JOY_PREGNANCY_TYPE, kFLAGS.JOY_PREGNANCY_INCUBATION, kFLAGS.JOJO_BUTT_PREGNANCY_TYPE, kFLAGS.JOJO_EGGCUBATE_COUNT);
 			pregnancy.addPregnancyEventSet(PregnancyStore.PREGNANCY_PLAYER, 150, 120, 96, 72, 48);
-			CoC.timeAwareClassAdd(this);
+			EventParser.timeAwareClassAdd(this);
 		}
 
 		//Implementation of TimeAwareInterface
@@ -42,10 +46,6 @@
 			return false;
 		}
 		//End of Interface Implementation
-
-	protected function set monk(value:Number):void{
-		kGAMECLASS.monk = value;
-	}
 
 //const TIMES_AMILY_AND_JOJO_PLAYED_TIMES:int = 434;
 //const AMILY_X_JOJO_COOLDOWN:int = 435;
@@ -143,16 +143,16 @@ public function corruptCampJojo():void {
 		outputText("\n\nJojo is an anthropomorphic mouse with immaculate white fur. His brown eyes stare at you with a mixture of despair and unrequited need. Though he stands only four feet tall, he is covered in lean muscle and moves with incredible speed. He’s naked, with a large tainted throbbing member bouncing at attention. A fuzzy sack with painfully large looking balls dangles between his legs.");
 		if (tentacleJojo()) outputText(" A number of tentacles vaugley resembling cocks have sprouted from his back and groin. They sway restlessly around him, oozing thick, fragrant pre from their tips.");
 		
-		if (kGAMECLASS.farm.farmCorruption.hasTattoo("jojo"))
+		if (SceneLib.farm.farmCorruption.hasTattoo("jojo"))
 		{
 			outputText("\n\n");
-			if (kGAMECLASS.farm.farmCorruption.jojoFullTribalTats())
+			if (SceneLib.farm.farmCorruption.jojoFullTribalTats())
 			{
 				outputText("He is covered from head to tail in tribal tattoos, erotic lines snaking all over his naked frame, giving him the look of a barely tamed savage.")
 			}
 			else
 			{
-				if (kGAMECLASS.farm.farmCorruption.numTattoos("jojo") > 1) outputText("He has the following tattoos emblazoned across his body:\n");
+				if (SceneLib.farm.farmCorruption.numTattoos("jojo") > 1) outputText("He has the following tattoos emblazoned across his body:\n");
 				else outputText("He has ");
 
 				if (flags[kFLAGS.JOJO_TATTOO_COLLARBONE] != 0) outputText(flags[kFLAGS.JOJO_TATTOO_COLLARBONE] + "\n");
@@ -206,7 +206,7 @@ public function corruptCampJojo():void {
 	if (flags[kFLAGS.FOLLOWER_AT_FARM_JOJO] == 1 && flags[kFLAGS.FOLLOWER_PRODUCTION_JOJO] == 0) addButton(7, "Harvest Draft", harvestJojoDraft);
 	if (flags[kFLAGS.FOLLOWER_AT_FARM_JOJO] == 1 && flags[kFLAGS.FOLLOWER_PRODUCTION_JOJO] == 1) addButton(7, "Stop Harvest", stopHarvestJojoDraft);
 	
-	if (flags[kFLAGS.FOLLOWER_AT_FARM_JOJO] == 1) addButton(14, "Back", kGAMECLASS.farm.farmCorruption.rootScene);
+	if (flags[kFLAGS.FOLLOWER_AT_FARM_JOJO] == 1) addButton(14, "Back", SceneLib.farm.farmCorruption.rootScene);
 }
 
 private function harvestJojoDraft():void
@@ -223,7 +223,7 @@ private function harvestJojoDraft():void
 	
 	if (flags[kFLAGS.FARM_UPGRADES_REFINERY] == 1) flags[kFLAGS.FOLLOWER_PRODUCTION_JOJO] = 1;
 	
-	doNext(kGAMECLASS.farm.farmCorruption.rootScene);
+	doNext(SceneLib.farm.farmCorruption.rootScene);
 }
 
 private function stopHarvestJojoDraft():void
@@ -239,7 +239,7 @@ private function stopHarvestJojoDraft():void
 
 	flags[kFLAGS.FOLLOWER_PRODUCTION_JOJO] = 0;
 	
-	doNext(kGAMECLASS.farm.farmCorruption.rootScene);
+	doNext(SceneLib.farm.farmCorruption.rootScene);
 }
 
 private function sendToFarm():void
@@ -271,7 +271,7 @@ private function backToCamp():void
 	
 	flags[kFLAGS.FOLLOWER_AT_FARM_JOJO] = 0;
 	
-	doNext(kGAMECLASS.farm.farmCorruption.rootScene);
+	doNext(SceneLib.farm.farmCorruption.rootScene);
 }
 
 private function jojoMutationOfferYes():void {
@@ -372,7 +372,7 @@ public function useTentacleJojo():void {
 	if(player.hasVagina()) outputText(" and " + vaginaDescript(0));
 	outputText(".\n\n");
 	//REAL SECKS STARTS HERE
-	if(player.totalCocks() > 0) {
+	if(player.cockTotal() > 0) {
 		outputText("Upside down, you're forced to watch as his tail-tentacles curl out from between his legs, and extend towards your vulnerable [cocks].  All three of them pause a few inches away for what seems an eternity, revealing circular dripping orifices filled with slimy wriggling cilia.\n\n");
 		if(player.cockTotal() == 1) {
 			//(1dick+balls = 
@@ -439,7 +439,7 @@ public function useTentacleJojo():void {
 		}
 	}
 	//(0 dicks but clit)
-	if(player.totalCocks() == 0 && player.hasVagina()) {
+	if(player.cockTotal() == 0 && player.hasVagina()) {
 		outputText("One of Jojo's tail-tentacles slides underneath his body, shooting forwards to seek out your " + clitDescript() + ".  It pauses an inch or two away and opens up a horrific orifice full of wriggling tentacles and slick fluids.  The next moment it lunges forwards and sucks it inside.");
 		//(If big clit – 
 		if(player.clitLength >= 4) outputText("  You nearly cum on the spot from the clitoral stimulation; it's like you have a super-sensitive cock being licked by a thousand tongues.");
@@ -464,9 +464,9 @@ public function useTentacleJojo():void {
 	else {
 		//With cunt
 		if(player.hasVagina()) {
-			if(player.vaginas[0].vaginalLooseness >= VAGINA_LOOSENESS_GAPING_WIDE) outputText(" practically falling into your oversized cum-receptacles");
+			if(player.vaginas[0].vaginalLooseness >= VaginaClass.LOOSENESS_GAPING_WIDE) outputText(" practically falling into your oversized cum-receptacles");
 			else {
-				if(player.vaginas[0].vaginalWetness >= VAGINA_WETNESS_SLICK) outputText(" sliding inside easily thanks to your copious lubrication");
+				if(player.vaginas[0].vaginalWetness >= VaginaClass.WETNESS_SLICK) outputText(" sliding inside easily thanks to your copious lubrication");
 				else outputText("forcing their way inside your " + vaginaDescript(0) + " and " + assholeDescript());
 			}
 		}
@@ -486,7 +486,7 @@ public function useTentacleJojo():void {
 	if(player.hasVagina()) outputText("s begin");
 	else outputText(" begins");
 	outputText(" thoroughly violating you, pistoning in and out relentlessly.");
-	if(player.totalCocks() > 0) {
+	if(player.cockTotal() > 0) {
 		outputText("  You feel a strange pleasure every time it plunges deep into your ass, smacking into your prostate.  ");
 		if(player.cockTotal() == 1) outputText("  The tentacle on your [cocks] seems appreciative, and begins sucking to swallow down all your pre.");
 		if(player.cockTotal() > 1) outputText("  The tentacles on your [cocks] seem appreciative, and begin sucking to swallow down all your pre.");
@@ -534,8 +534,8 @@ public function useTentacleJojo():void {
 		if(player.pregnancyIncubation == 0) outputText("mildly pregnant");
 		else outputText("even more pregnant");
 		outputText(".  Your body spasms around them, locked in the throes of orgasm");
-		if(player.vaginas[0].vaginalWetness == VAGINA_WETNESS_SLAVERING) outputText(", and soaks him with a wave of puss juice.  ");
-		else if(player.vaginas[0].vaginalWetness >= VAGINA_WETNESS_SLICK) outputText(", as your drooling cunt forms a slick puddle.  ");
+		if(player.vaginas[0].vaginalWetness == VaginaClass.WETNESS_SLAVERING) outputText(", and soaks him with a wave of puss juice.  ");
+		else if(player.vaginas[0].vaginalWetness >= VaginaClass.WETNESS_SLICK) outputText(", as your drooling cunt forms a slick puddle.  ");
 		else outputText(".  ");
 		//(If big clit being sucked – 
 		if(player.cockTotal() <= 2 && player.balls == 0) {
@@ -903,7 +903,7 @@ private function jojoPaysForPerms():void {
 	else if(jojoCumQ() >= 4000) 
 		outputText(" with a dazed, crazy-looking smile");
 	outputText(", \"<i>What'll it be today?</i>\"\n\n");
-	kGAMECLASS.mountain.salon.salonPurchaseMenu();
+	SceneLib.mountain.salon.salonPurchaseMenu();
 }
 
 //Scene 1: Amily Teaches Jojo How To Give Blowjobs. (Z)
@@ -1089,8 +1089,8 @@ public function jojoFollowerMeditate(doClear:Boolean = true):void {
 			if (player.lust > 33 && player.gender > 0) {
 				clearOutput();
 				outputText("You smile in satisfaction as Jojo" + (hpVictory ? " collapses, unable to continue fighting" :" collapses and begins masturbating feverishly") + ".  Sadly you realize your own needs have not been met.  Of course, you could always rape the poor thing...\n\nDo you rape him?");
-				doYesNo(postCombatRape, getGame().cleanupAfterCombat);
-			}
+                doYesNo(postCombatRape, SceneLib.combat.cleanupAfterCombatImpl);
+            }
 			else {
 				combat.finishCombat();
 			}
@@ -1132,8 +1132,8 @@ public function jojoFollowerMeditate(doClear:Boolean = true):void {
 					jojosFifthRape();
 			}
 			doNext(camp.returnToCampUseOneHour);
-			if (postCombat) getGame().cleanupAfterCombat();
-		}
+            if (postCombat) SceneLib.combat.cleanupAfterCombatImpl();
+        }
 		
 		private function jojosFirstRape():void {
 			clearOutput();
@@ -1196,7 +1196,7 @@ public function jojoFollowerMeditate(doClear:Boolean = true):void {
 				}
 				
 				outputText("\n\nYou stand on wobbly legs, happy to have so thoroughly fucked such a chaste and good-natured creature.  You vow to do it again soon, realizing you feel more clearheaded, if a bit more evil.");
-				
+				if (player.isGargoyle() && player.hasPerk(PerkLib.GargoyleCorrupted)) player.refillGargoyleHunger(30);
 				player.orgasm();
 				dynStats("lib", -10, "cor", 4);
 				monk+=1;
@@ -1284,6 +1284,7 @@ public function jojoFollowerMeditate(doClear:Boolean = true):void {
 				if(player.cockTotal() == 3) outputText("A multitude of thick cum-streams splatter over Jojo from head to waist as your [cocks] hose him down.  ");
 				outputText("\n\nSatisfied at last, you pull yourself away from the dazed mouse.  His shaft is still swollen with need, his hands irresistibly stroking it, eyes vacant.  You're going to corrupt him so much more next time.\n\n");
 				//Preggers chance!
+				if (player.isGargoyle() && player.hasPerk(PerkLib.GargoyleCorrupted)) player.refillGargoyleHunger(30);
 				player.knockUp(PregnancyStore.PREGNANCY_JOJO, PregnancyStore.INCUBATION_MOUSE + 82); //Jojo's kids take longer for some reason
 			}
 		}
@@ -1331,8 +1332,8 @@ public function jojoFollowerMeditate(doClear:Boolean = true):void {
 				}
 				if(player.biggestLactation() >= 1.5 && player.biggestTitSize() > 2 && player.mostBreastsPerRow() >= 2 && player.breastRows.length >= 1) outputText("Every sensual peak within you is mirrored with small spurts of milk from your nipples.  It eventually trickles down to Jojo's tongue, spurring his efforts on.  ");
 				outputText("The mousey gets more and more in to eating your box, making it harder and harder to stave off an orgasm.  You wrap ");
-				if(player.lowerBody == LOWER_BODY_TYPE_NAGA) outputText("your coils ");
-				else if(player.lowerBody == LOWER_BODY_TYPE_GOO) outputText("your jiggling goo ");
+				if(player.lowerBody == LowerBody.NAGA) outputText("your coils ");
+				else if(player.lowerBody == LowerBody.GOO) outputText("your jiggling goo ");
 				else outputText("your thighs ");
 				outputText("around his head and quiver with passion, ");
 				if(player.averageVaginalWetness() <= 1) outputText("squeezing him tightly into your " + vaginaDescript(0) + ".");
@@ -1361,6 +1362,7 @@ public function jojoFollowerMeditate(doClear:Boolean = true):void {
 					dynStats("lib", 2, "cor", 1);
 				}
 				//Preggers chance!
+				if (player.isGargoyle() && player.hasPerk(PerkLib.GargoyleCorrupted)) player.refillGargoyleHunger(30);
 				player.knockUp(PregnancyStore.PREGNANCY_JOJO, PregnancyStore.INCUBATION_MOUSE + 82); //Jojo's kids take longer for some reason
 			}
 			if(player.gender == 3) {
@@ -1402,6 +1404,7 @@ public function jojoFollowerMeditate(doClear:Boolean = true):void {
 					dynStats("lib", 2, "cor", 1);
 				}
 				//Preggers chance!
+				if (player.isGargoyle() && player.hasPerk(PerkLib.GargoyleCorrupted)) player.refillGargoyleHunger(30);
 				player.knockUp(PregnancyStore.PREGNANCY_JOJO, PregnancyStore.INCUBATION_MOUSE + 82); //Jojo's kids take longer for some reason
 			}
 		}
@@ -1449,7 +1452,7 @@ public function jojoFollowerMeditate(doClear:Boolean = true):void {
 				if (player.isBiped()) outputText(" brushes against your calf");
 				else outputText(" brushes against your [leg]");
 				outputText(".  You get a devilish idea, ");
-				if(player.lowerBody == LOWER_BODY_TYPE_GOO) outputText("and push his " + monster.cockDescriptShort(0) + " in between folds of slime, sandwiching it in a mass of slippery, gooey tightness.  Holding his shoulder for balance, you slowly squeeze him, gently milking out small dribbles of pre.  He redoubles his efforts, burying his nose into your " + vaginaDescript(0) + ", tongue swirling over your folds and around your " + clitDescript() + ".  For every effort on his part you step up your own, squeezing and stroking him with your goo, doing your best to impart a fetish for being masturbated with someone's lower body on his slowly warping mind.  You feel a hot wetness in your slime, and it grows slicker and wetter every second. Jojo's cum drips out of you, glazing your jello-like form white.  ");
+				if(player.lowerBody == LowerBody.GOO) outputText("and push his " + monster.cockDescriptShort(0) + " in between folds of slime, sandwiching it in a mass of slippery, gooey tightness.  Holding his shoulder for balance, you slowly squeeze him, gently milking out small dribbles of pre.  He redoubles his efforts, burying his nose into your " + vaginaDescript(0) + ", tongue swirling over your folds and around your " + clitDescript() + ".  For every effort on his part you step up your own, squeezing and stroking him with your goo, doing your best to impart a fetish for being masturbated with someone's lower body on his slowly warping mind.  You feel a hot wetness in your slime, and it grows slicker and wetter every second. Jojo's cum drips out of you, glazing your jello-like form white.  ");
 				else outputText("and push his " + monster.cockDescriptShort(0) + " with your [foot], sandwiching it under one [foot] and on top of the other.  Holding his shoulder for balance, you slowly squeeze him, gently milking out small dribbles of pre.  He redoubles his efforts, burying his nose into your " + vaginaDescript(0) + ", tongue swirling over your folds and around your " + clitDescript() + ".  For every effort on his part you step up your own, squeezing and stroking him with your [feet], doing your best to impart a [foot] fetish on his slowly warping mind.  You feel a hot wetness on your [feet], and they grow slicker and wetter every second. Jojo's cum drips out from between them, glazing them white.  ");
 				if(player.averageVaginalWetness() <= 1) outputText("You clamp down on his muzzle as you writhe in orgasm.  ");
 				if(player.averageVaginalWetness() > 1 && player.averageVaginalWetness() <= 3) outputText("Your legs trap his muzzle in your " + vaginaDescript(0) + " as orgasm wracks your body.  ");
@@ -1508,6 +1511,7 @@ public function jojoFollowerMeditate(doClear:Boolean = true):void {
 				}
 				player.cuntChange(3, true);
 				//Preggers chance!
+				if (player.isGargoyle() && player.hasPerk(PerkLib.GargoyleCorrupted)) player.refillGargoyleHunger(30);
 				player.knockUp(PregnancyStore.PREGNANCY_JOJO, PregnancyStore.INCUBATION_MOUSE + 82); //Jojo's kids take longer for some reason
 				//The end
 				if(player.lib > 50 && player.cor > 80) {
@@ -1698,6 +1702,7 @@ public function jojoFollowerMeditate(doClear:Boolean = true):void {
 			outputText("You cry out in pleasure as your orgasm floods through your body, causing your juices to splash out around your mouse slut's cock" + (player.hasCock() ? ", and your own [cocks] to explode with thick splashes of your hot cum across his chest and belly" : "") + ". You stay seated on his hips until your orgasm fades, then with a sigh of pleasure you stand off of him and dismiss him with a wave of your hand.  ");
 			//Preggers chance!
 			player.knockUp(PregnancyStore.PREGNANCY_JOJO, PregnancyStore.INCUBATION_MOUSE + 82); //Jojo's kids take longer for some reason
+			if (player.isGargoyle() && player.hasPerk(PerkLib.GargoyleCorrupted)) player.refillGargoyleHunger(30);
 			player.orgasm();
 			dynStats("cor", 0.5);
 			doNext(camp.returnToCampUseOneHour);
@@ -2311,50 +2316,50 @@ public function lowCorruptionIntro():void
 }
 
 public function highCorruptionJojoEncounter():void {
-	kGAMECLASS.monk = 1;
-	kGAMECLASS.jojoScene.jojoSprite();
+	monk = 1;
+	SceneLib.jojoScene.jojoSprite();
 	outputText("While marvelling at the strange trees and vegetation of the forest, the bushes ruffle ominously.  A bush seems to explode into a flurry of swirling leaves and movement.  Before you can react you feel your [feet] being swept out from under you, and land hard on your back.\n\n");
 	outputText("The angry visage of a lithe white mouse gazes down on your prone form with a look of confusion.");
 	outputText("\n\n\"<i>I'm sorry, I sensed a great deal of corruption, and thought a demon or monster had come to my woods,</i>\" says the mouse, \"<i>Oh, where are my manners!</i>\"\n\nHe helps you to your feet and introduces himself as Jojo.  Now that you have a good look at him, it is obvious this mouse is some kind of monk, dressed in robes, holy symbols, and draped with prayer beads.\n\nHe smiles knowingly, \"<i>Yes I am a monk, and yes this is a strange place for one such as I... this world was not always this way.  Long ago this world was home to many villages, including my own.  But then the demons came.  I'm not sure if they were summoned, created, or simply a perversion of magic or breeding, but they came swarming out of the mountains to destroy everything in their path.</i>\"");
 	outputText("\n\nJojo sighs sadly, \"<i>Enough of my woes.  You are very corrupted.  If you cannot be sufficiently purified you WILL become one of them in time.  Will you let me help you?</i>\"");
 	//Choices time!
 	menu();
-	addButton(0, "Accept", getGame().jojoScene.meditateInForest);
-	addButton(1, "Decline", camp.returnToCampUseOneHour);
-	if (player.cor > 10 && player.lust >= 33 && player.gender > 0 && flags[kFLAGS.DISABLED_JOJO_RAPE] <= 0 && monk >= 0) addButton(2, "Rape", getGame().jojoScene.jojoRape).hint("Rape the poor monk mouse-morph." + (player.cor < 50 ? "  Why would you do that?": ""));
+    addButton(0, "Accept", SceneLib.jojoScene.meditateInForest);
+    addButton(1, "Decline", camp.returnToCampUseOneHour);
+    if (player.cor > 10 && player.lust >= 33 && player.gender > 0 && flags[kFLAGS.DISABLED_JOJO_RAPE] <= 0 && monk >= 0) addButton(2, "Rape", SceneLib.jojoScene.jojoRape).hint("Rape the poor monk mouse-morph." + (player.cor < 50 ? "  Why would you do that?" : ""));
 }
 
 //Repeat encounter
 public function repeatJojoEncounter():void {
 	if (player.hasStatusEffect(StatusEffects.Infested)) {
-		kGAMECLASS.jojoScene.jojoSprite();
+		SceneLib.jojoScene.jojoSprite();
 		clearOutput();
 		outputText("As you approach the serene monk, you see his nose twitch, disturbing his meditation.\n\n");
 		outputText("\"<i>It seems that the agents of corruption have taken residence within the temple that is your body.</i>\", Jojo says flatly. \"<i>This is a most unfortunate development. There is no reason to despair as there are always ways to fight the corruption. However, great effort will be needed to combat this form of corruption and may leave lasting impressions upon you. If you are ready, we can purge your being of the rogue creatures of lust.</i>\"\n\n");
 		//Choices time!
 		menu();
-		addButton(0, "Meditate", getGame().jojoScene.meditateInForest);
-		addButton(1, "Purge", getGame().jojoScene.wormRemoval).hint("Request him to purge the worms from your body.");
-		if (player.gender > 0 && flags[kFLAGS.DISABLED_JOJO_RAPE] == 0 && player.lust >= 33) addButton(2, "Rape", getGame().jojoScene.jojoRape).hint("Rape the poor monk mouse-morph." + (player.cor < 25 ? "  Why would you do that?": ""));
-		addButton(4, "Leave", camp.returnToCampUseOneHour);
+        addButton(0, "Meditate", SceneLib.jojoScene.meditateInForest);
+        addButton(1, "Purge", SceneLib.jojoScene.wormRemoval).hint("Request him to purge the worms from your body.");
+        if (player.gender > 0 && flags[kFLAGS.DISABLED_JOJO_RAPE] == 0 && player.lust >= 33) addButton(2, "Rape", SceneLib.jojoScene.jojoRape).hint("Rape the poor monk mouse-morph." + (player.cor < 25 ? "  Why would you do that?" : ""));
+        addButton(4, "Leave", camp.returnToCampUseOneHour);
 		return;
 	}
-	kGAMECLASS.jojoScene.jojoSprite();
+	SceneLib.jojoScene.jojoSprite();
 	outputText("Jojo the monk appears before you, robes and soft white fur fluttering in the breeze.  He asks, \"<i>Are you ready for a meditation session?</i>\"");
 	//Choices time!
 	menu();
-	doYesNo(getGame().jojoScene.meditateInForest, camp.returnToCampUseOneHour);
-	if (player.gender > 0 && player.lust >= 33 && flags[kFLAGS.DISABLED_JOJO_RAPE] == 0) addButton(2, "Rape", getGame().jojoScene.jojoRape).hint("Rape the poor monk mouse-morph." + (player.cor < 25 ? "  Why would you do that?": ""));
+    doYesNo(SceneLib.jojoScene.meditateInForest, camp.returnToCampUseOneHour);
+    if (player.gender > 0 && player.lust >= 33 && flags[kFLAGS.DISABLED_JOJO_RAPE] == 0) addButton(2, "Rape", SceneLib.jojoScene.jojoRape).hint("Rape the poor monk mouse-morph." + (player.cor < 25 ? "  Why would you do that?" : ""));
 }
 
 public function corruptJojoEncounter():void {
-	kGAMECLASS.jojoScene.jojoSprite();
+	SceneLib.jojoScene.jojoSprite();
 	clearOutput();
 	outputText("You are enjoying a peaceful walk through the woods when Jojo drops out of the trees ahead, ");
-	if (kGAMECLASS.monk == 2) outputText("his mousey visage twisted into a ferocious snarl.  \"YOU!\" he screams, launching himself towards you, claws extended.");
-	if (kGAMECLASS.monk == 3) outputText("unsteady on his feet, but looking for a fight!");
-	if (kGAMECLASS.monk == 4) outputText("visibly tenting his robes, but intent on fighting you.");
-	if (kGAMECLASS.monk == 5) outputText("panting and nude, his fur rustling in the breeze, a twitching behemoth of a cock pulsing between his legs.");
+	if (monk == 2) outputText("his mousey visage twisted into a ferocious snarl.  \"YOU!\" he screams, launching himself towards you, claws extended.");
+	if (monk == 3) outputText("unsteady on his feet, but looking for a fight!");
+	if (monk == 4) outputText("visibly tenting his robes, but intent on fighting you.");
+	if (monk == 5) outputText("panting and nude, his fur rustling in the breeze, a twitching behemoth of a cock pulsing between his legs.");
 	startCombat(new Jojo());
 }
 
@@ -2440,16 +2445,21 @@ public function refuseOfferOfHelp():void
 	jojoCampMenu();
 }
 
+public function jojoCamp2():void {
+	if ((flags[kFLAGS.LUNA_JEALOUSY] > 100 && rand(10) < 4) || (flags[kFLAGS.LUNA_JEALOUSY] > 150 && rand(10) < 8)) mishapsLunaJojo();
+	else jojoCamp();
+}
+
 public function jojoCamp():void {
 	clearOutput();
 	jojoSprite();
 	if (flags[kFLAGS.AMILY_MET_PURE_JOJO] == 0 && flags[kFLAGS.AMILY_FOLLOWER] == 1 && amilyScene.amilyFollower()) {
-		getGame().followerInteractions.amilyMeetsPureJojo();
-		return;
+        SceneLib.followerInteractions.amilyMeetsPureJojo();
+        return;
 	}
 	if (flags[kFLAGS.JOJO_RATHAZUL_INTERACTION_COUNTER] == 1 && rand(2) == 0) {
-		getGame().followerInteractions.catchRathazulNapping();
-		return;
+        SceneLib.followerInteractions.catchRathazulNapping();
+        return;
 	}
 	if (player.hasStatusEffect(StatusEffects.Infested)) { // Worms overrides everything else
 		outputText("As you approach the serene monk, you see his nose twitch.\n\n");
@@ -2534,7 +2544,7 @@ public function talkMenu():void
 	if (flags[kFLAGS.FACTORY_SHUTDOWN] > 0) addButton(5, "Factory", jojoTalkFactory).hint("Tell him about how you've shut down the factory.");
 	if (flags[kFLAGS.SAND_WITCHES_COWED] == 1 || flags[kFLAGS.SAND_WITCHES_FRIENDLY] == 1 || flags[kFLAGS.SAND_MOTHER_DEFEATED] == 1) addButton(6, "SandCave", jojoTalkSandCave).hint("Tell him about your encounter in the Sand Cave in the desert.");
 	if (flags[kFLAGS.UNLOCKED_JOJO_TRAINING] == 0 && flags[kFLAGS.TIMES_TALKED_WITH_JOJO] >= 4) addButton(7, "Training", apparantlyJojoDOESlift).hint("Ask him if he's willing to train you.");
-	if (flags[kFLAGS.MINERVA_PURIFICATION_JOJO_TALKED] == 1 && flags[kFLAGS.MINERVA_PURIFICATION_PROGRESS] < 10) addButton(8, "Purification", kGAMECLASS.highMountains.minervaScene.minervaPurification.purificationByJojoPart1).hint("Ask him if he can exorcise the demonic parasite infesting Minerva.");
+	if (flags[kFLAGS.MINERVA_PURIFICATION_JOJO_TALKED] == 1 && flags[kFLAGS.MINERVA_PURIFICATION_PROGRESS] < 10) addButton(8, "Purification", SceneLib.highMountains.minervaScene.minervaPurification.purificationByJojoPart1).hint("Ask him if he can exorcise the demonic parasite infesting Minerva.");
 	//Sex button
 	if (player.cor <= 10 && player.lust >= 33) {
 		addButton(9, "Sex?", offerSexFirstTime).hint("Ask him if he's willing to have sex with you.");
@@ -2698,7 +2708,7 @@ public function jojoTalkYourOrigin():void // Prob tack on some interaction count
 	else if (player.findPerk(PerkLib.HistoryScholar) >= 0)
 	{
 		outputText("You tell Jojo about your insatiable thirst for knowledge and how you spent a lot of time in school. You tell him the story about how you ‘convinced’ Mr. ");
-		if (kGAMECLASS.silly()) outputText("Savin");
+		if (EngineCore.silly()) outputText("Savin");
 		else outputText("Sellet");
 		outputText(" to let you read some of the rare books in his collection, skipping over how much begging and pleading was actually involved.\n\n");
 	}
@@ -2970,7 +2980,7 @@ public function apparantlyJojoDOESlift():void
 			outputText("The repeated movements are slowly starting to sink in, your muscles becoming accustomed to Jojo’s training.\n\n");
 			outputText("By the end of the training session with the mouse, you think that you may have picked up something that might help against the denizens of this world.\n\n");
 
-			outputText("<b>(Ability Gained: Cleansing Palm -</b> A ranged fighting technique of Jojo’s order, allows you to blast your enemies with waves of pure spiritual energy, weakening them and hurting the corrupt.<b>)</b>")
+			outputText("<b>(Ability Gained: Cleansing Palm -</b> A ranged fighting technique of Jojo’s order, allows you to blast your enemies with waves of pure spiritual energy, weakening them and hurting the corrupt.<b>)</b>");
 			player.createPerk(PerkLib.CleansingPalm, 0, 0, 0, 0);
 		}
 	}
@@ -3007,16 +3017,16 @@ public function apparantlyJojoDOESlift():void
 		//{each scene only shows if the follower is there}
 		var enlightenedBlurbs:Array = new Array();
 
-		enlightenedBlurbs.push("You can hear Jojo’s feet move through the campsite as he heads toward his rock, seeking rest after your training session.")
+		enlightenedBlurbs.push("You can hear Jojo’s feet move through the campsite as he heads toward his rock, seeking rest after your training session.");
 
 		// Lookit all these different ways followers are tracked! fml.
 		if (player.hasStatusEffect(StatusEffects.CampMarble)) enlightenedBlurbs.push("You can hear Marble humming a song to herself you can’t place.");
 		if (flags[kFLAGS.AMILY_FOLLOWER] > 0) enlightenedBlurbs.push("You can hear Amily changing the bedding to her nest.");
-		if (kGAMECLASS.emberScene.followerEmber()) enlightenedBlurbs.push("You can hear Ember cleaning" + emberScene.emberMF("his", "her") + "scales.");
+		if (SceneLib.emberScene.followerEmber()) enlightenedBlurbs.push("You can hear Ember cleaning" + emberScene.emberMF("his", "her") + "scales.");
 		if (player.hasStatusEffect(StatusEffects.CampRathazul)) enlightenedBlurbs.push("You can hear Rathazul experimenting with surprisingly nimble fingers.");
 		if (sophieFollower()) enlightenedBlurbs.push("You can hear Sophie breathing as she sleeps.");
 		if (flags[kFLAGS.IZMA_FOLLOWER_STATUS] > 0) enlightenedBlurbs.push("You can hear Izma flipping through the pages of a book."); // TODO: (if Izmael gets put in) you can hear Izmael doing push ups to stay fit.
-		if (kGAMECLASS.helScene.followerHel()) enlightenedBlurbs.push("You can hear Helia throwing her fists at nothing.");
+		if (SceneLib.helScene.followerHel()) enlightenedBlurbs.push("You can hear Helia throwing her fists at nothing.");
 
 		outputText(enlightenedBlurbs[rand(enlightenedBlurbs.length)] + "\n\n");
 	}
@@ -3111,7 +3121,7 @@ private function pureJojoSexMenu():void {
 	else capacity += 30; //Caps at 70.
 	//Call for the purpose of cock size.
 	startCombat(new Jojo());
-	kGAMECLASS.inCombat = false;
+	CoC.instance.inCombat = false;
 	//Begin
 	jojoSprite();
 	clearOutput();
@@ -3307,6 +3317,13 @@ private function suckJojosCock():void {
 	doNext(camp.returnToCampUseOneHour);
 }
 
+public function mishapsLunaJojo():void {
+	clearOutput();
+	outputText("Jojo is looking at the ground in front of his training area in annoyance. Seems someone has drawn an ugly imp in the dirt using red paint and the imp happens to be jerking a 10 foot long cock. You spot Luna in the distance, cleaning the area with a smile. Surely it couldn’t have been her.\n\n");
+	if (player.hasStatusEffect(StatusEffects.CampLunaMishaps1)) player.addStatusValue(StatusEffects.CampLunaMishaps1, 2, 1);
+	else player.createStatusEffect(StatusEffects.CampLunaMishaps1, 0, 1, 0, 0);
+	doNext(playerMenu);
+}
 
 }
 }
