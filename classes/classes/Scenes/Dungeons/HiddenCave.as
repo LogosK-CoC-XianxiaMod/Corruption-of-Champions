@@ -43,12 +43,14 @@ public class HiddenCave extends DungeonAbstractContent
 		public function HiddenCave() {}
 		
 		public function enterDungeon():void {
-			inDungeon = true;
+			super.inDungeon = true;
 			dungeonLoc = 39;
+			doNext(roomEntrance)
 			playerMenu();
 		}
 		public function exitDungeon():void {
-			inDungeon = false;
+			super.inDungeon = false;
+			dungeonLoc = 0;
 			clearOutput();
 			outputText("You leave the cave behind and take off through the hills back towards camp.");
 			doNext(camp.returnToCampUseOneHour);

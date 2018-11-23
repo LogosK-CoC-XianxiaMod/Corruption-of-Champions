@@ -3006,7 +3006,7 @@ public final class Mutations extends MutationsHelper
 				changes++;
 			}
 			//enhanced get shitty fur
-			if (enhanced && (player.skinDesc != "fur" || player.coatColor != "black and white spotted") && player.horns.type != Horns.COW_MINOTAUR && player.lowerBody != LowerBody.GARGOYLE) {
+			if (enhanced && (player.skinDesc != "fur" || player.coatColor != "black and white spotted") && player.horns.type == Horns.COW_MINOTAUR && player.lowerBody != LowerBody.GARGOYLE) {
 				if (player.skinDesc != "fur") outputText("\n\nYour [skin.type] itches intensely.  You scratch and scratch, but it doesn't bring any relief.  Fur erupts between your fingers, and you watch open-mouthed as it fills in over your whole body.  The fur is patterned in black and white, like that of a cow.  The color of it even spreads to your hair!  <b>You have cow fur!</b>");
 				else outputText("\n\nA ripple spreads through your fur as some patches darken and others lighten.  After a few moments you're left with a black and white spotted pattern that goes the whole way up to the hair on your head!  <b>You've got cow fur!</b>");
 				player.hairColor = "black";

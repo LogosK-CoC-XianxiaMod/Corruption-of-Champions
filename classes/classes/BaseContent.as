@@ -127,12 +127,13 @@ import coc.xxc.StoryContext;
 		{
 			return DungeonAbstractContent.inDungeon;
 		}
-/* inDungeon is now read only
+ //inDungeon is now read clearOutputTextOnly//doing that breaks everything
 		protected function set inDungeon(v:Boolean):void
 		{
-			CoC.instance.inDungeon = v;
+			//CoC.instance.inDungeon = v;
+			DungeonAbstractContent.inDungeon = v
 		}
-*/
+
 		
 		protected function get inRoomedDungeon():Boolean
 		{

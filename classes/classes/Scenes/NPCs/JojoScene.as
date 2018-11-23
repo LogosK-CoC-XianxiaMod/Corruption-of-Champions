@@ -6,7 +6,7 @@ import classes.Scenes.SceneLib;
 
 public class JojoScene extends NPCAwareContent implements TimeAwareInterface {
 
-		public var pregnancy:PregnancyStore;
+	public var pregnancy:PregnancyStore;
 
     public static var monk:Number = 0;
 
@@ -1559,7 +1559,7 @@ public function jojoFollowerMeditate(doClear:Boolean = true):void {
 				if (player.horseCocks() > 0) player.lib += 3;
 				if (player.dogCocks() > 0) player.lib += 2;
 				if (player.biggestLactation() >= 1) player.lib += 2;
-				monk = 0;
+				JojoScene.monk = 0;
 			}
 			else {
 				outputText("Jojo grins wickedly as he senses your defeat, " + monster.cockDescriptShort(0) + " throbbing hard.  ");
@@ -2316,7 +2316,7 @@ public function lowCorruptionIntro():void
 }
 
 public function highCorruptionJojoEncounter():void {
-	monk = 1;
+	JojoScene.monk = 1;
 	SceneLib.jojoScene.jojoSprite();
 	outputText("While marvelling at the strange trees and vegetation of the forest, the bushes ruffle ominously.  A bush seems to explode into a flurry of swirling leaves and movement.  Before you can react you feel your [feet] being swept out from under you, and land hard on your back.\n\n");
 	outputText("The angry visage of a lithe white mouse gazes down on your prone form with a look of confusion.");
@@ -3070,7 +3070,7 @@ public function offerSexFirstTime():void {
 	outputText("\n\nBut...? You press. After all, isn't it better for the both of you to turn to each other to slake your lusts then to bottle things up or go to the monsters who roam this land?");
 	outputText("\n\n\"<i>I-I can't... I made a vow of chastity... I can't simply break my vows... please understand, [name]...</i>\" he says gazing at you apologetically, though you detect just the slightest hint of desire in his eyes before he averts his gaze and shakes his head of whatever thoughts could be plaguing it.");
 	outputText("\n\nYou acknowledge his position and excuse yourself, but before you can leave he calls out to you. \"<i>Wait, [name]!</i>\" he says getting up and moving towards you. \"<i>While I can't really have sex with you, that doesn't mean I can't help you. If you want we could meditate to help you... umm... restrain your needs?</i>\" he suggests.");
-	monk = -1;
+	JojoScene.monk = -1;
 	doYesNo(agreeToMeditate, noThanksToMeditate);
 }
 private function agreeToMeditate():void {
@@ -3093,7 +3093,7 @@ public function offerSexFirstTimeHighAffection():void {
 	outputText("You've been spending great time with Jojo. You've meditated with him, you've discussed with him and you've even trained with him! Now's the time to ask him out.");
 	outputText("\n\nYou approach Jojo. \"Yes, [name]? What is it you need?\" Jojo asks. You ask him if he would like to have sex.");
 	outputText("\n\n\"<i>I'm sorry. I still can't break my vows of chastity,</i>\" he says apologetically.");
-	monk = -2;
+	JojoScene.monk = -2;
 	menu();
 	addButton(0, "Meditate", jojoFollowerMeditate);
 	addButton(1, "Drop It", noThanksToMeditate);
@@ -3110,7 +3110,7 @@ public function confrontChastity():void {
 	outputText("\n\n<b>You have unlocked Jojo sex menu!</b>");
 	if (silly()) outputText("<b> Jojo can only learn four moves. Delete a move to learn a new one? Yes. 1... 2... 3... Poof! Jojo has forgot Chastity and learned Sex!</b>");
 	flags[kFLAGS.DISABLED_JOJO_RAPE] = 1;
-	monk = -3;
+	JojoScene.monk = -3;
 	doNext(pureJojoSexMenu);
 }
 

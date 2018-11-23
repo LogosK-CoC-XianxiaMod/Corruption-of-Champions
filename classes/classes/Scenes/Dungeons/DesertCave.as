@@ -59,6 +59,7 @@ public class DesertCave extends DungeonAbstractContent
 			inDungeon = true;
 			dungeonLoc = 23;
 			playerMenu();
+
 		}
 		public function fightCumWitch():void {
 			clearOutput();
@@ -83,6 +84,7 @@ public class DesertCave extends DungeonAbstractContent
 
 		public function exitDungeon():void {
 			inDungeon = false;
+			dungeonLoc = 0;
 			clearOutput();
 			outputText("You leave the door behind and take off through the desert back towards camp.");
 			doNext(camp.returnToCampUseOneHour);

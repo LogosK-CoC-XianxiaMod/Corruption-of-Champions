@@ -122,6 +122,7 @@ public class BeeGirlScene extends BaseContent
 							simpleChoices("Fight", fightTheBeeGirl, "Talk", beeTalk, "Seduce", null, "", null, "Leave", camp.returnToCampUseOneHour);
 						}
 						else beeEncounterClassic(false);
+						//else doNext(beeEncounterClassic(false));
 				}
 			}
 		}

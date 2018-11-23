@@ -277,7 +277,7 @@ public function meetSophieRepeat():void {
 			outputText("  Sophie releases her talons and you drop smartly onto the far side.  She pants, \"<i>It's breeding time.  " + player.mf("Boy","Girl") + ", fertilize me; NOW.</i>\"\n\n");
 			
 			//(low lust?)
-			if(player.lust < 60 || rand(3) <= 1) {
+			if(player.lust < 0.6*player.maxLust() || rand(3) <= 1) {
 				outputText("Her need amplifies the compulsion, making it difficult to resist.  It looks like if you turned her down now she'd probably try to force herself on you anyway.  Do you give in to her demand?");
 				//[Yes-Consentual sex] [No - fight]
 				simpleChoices("Yes", consensualSexSelector, "No", fightSophie, "", null, "", null, "", null);
