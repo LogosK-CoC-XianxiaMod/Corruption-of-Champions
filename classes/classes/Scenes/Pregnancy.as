@@ -5,6 +5,7 @@ import classes.CockTypesEnum;
 import classes.EngineCore;
 import classes.GlobalFlags.kFLAGS;
 import classes.PerkLib;
+import classes.StatusEffectClass;
 import classes.PregnancyStore;
 import classes.Scenes.NPCs.CelessScene;
 import classes.Scenes.NPCs.NPCAwareContent;
@@ -24,12 +25,14 @@ public class Pregnancy extends NPCAwareContent {
     public function updatePregnancy():Boolean {
         var displayedUpdate:Boolean = false;
         var pregText:String = "";
+        var gavebirth:Boolean = false
         if((player.pregnancyIncubation <= 0 && player.buttPregnancyIncubation <= 0) ||
                 (player.pregnancyType == 0 && player.buttPregnancyType == 0)) {
             return false;
         }
+        if (player.pregnancyIncubation > 0 && player.pregnancyIncubation < 2) player.knockUpForce(player.pregnancyType, 1); gavebirth = true;
         //Cancel Heat
-        if(player.inHeat) {
+        if(player.inHeat && player.pregnancyType != PregnancyStore.PREGNANCY_UNFERTILIZED_MONOTREME_EGG) {
             EngineCore.outputText("\nYou calm down a bit and realize you no longer fantasize about getting fucked constantly.  It seems your heat has ended.\n");
             //Remove bonus libido from heat
             player.dynStats("lib", -player.statusEffectv2(StatusEffects.Heat));
@@ -38,20 +41,7 @@ public class Pregnancy extends NPCAwareContent {
             player.removeStatusEffect(StatusEffects.Heat);
             displayedUpdate = true;
         }
-        if(player.pregnancyIncubation == 1) {
-            if(player.fertility < 15) player.fertility++;
-            if(player.fertility < 25) player.fertility++;
-            if(player.fertility < 40) player.fertility++;
-            if(!player.hasStatusEffect(StatusEffects.Birthed)) player.createStatusEffect(StatusEffects.Birthed,1,0,0,0);
-            else {
-                player.addStatusValue(StatusEffects.Birthed,1,1);
-                if(player.findPerk(PerkLib.BroodMother) < 0 && player.statusEffectv1(StatusEffects.Birthed) >= 10) {
-                    EngineCore.outputText("\n<b>You have gained the Brood Mother perk</b> (Pregnancies progress twice as fast as a normal woman's).\n");
-                    player.createPerk(PerkLib.BroodMother,0,0,0,0);
-                }
-            }
-        }
-        if (player.pregnancyIncubation > 0 && player.pregnancyIncubation < 2) player.knockUpForce(player.pregnancyType, 1);
+
         //IF INCUBATION IS VAGINAL
         if (player.pregnancyIncubation > 1) {
             if (player.pregnancyType == PregnancyStore.PREGNANCY_FAERIE) {
@@ -2130,6 +2120,70 @@ public class Pregnancy extends NPCAwareContent {
                 player.createStatusEffect(StatusEffects.LootEgg,0,0,0,0);
                 displayedUpdate = true;
                 player.knockUpForce(); //Clear Pregnancy
+            }
+        }
+        if(player.pregnancyType == PregnancyStore.PREGNANCY_UNFERTILIZED_MONOTREME_EGG && player.pregnancyIncubation > 0) {
+            //Birth scenes
+            if(player.pregnancyIncubation == 1) {
+                EngineCore.outputText("\n");
+                if(player.vaginas.length == 0) {
+                    EngineCore.outputText("You feel a terrible pressure in your groin... then an incredible pain accompanied by the rending of flesh.  <b>You look down and behold a new vagina</b>.\n\n");
+                    player.createVagina();
+                }
+                //      UNIMPLEMENTED TODO: egg number handling
+                //Small egg scenes
+//                if(player.statusEffectv2(StatusEffects.Eggs) == 0) {
+                    //light quantity
+  //                  if(player.statusEffectv3(StatusEffects.Eggs) < 10) {
+
+                //      TODO: bonus effects if still in heat at birth?
+
+                EngineCore.outputText("A sudden shift in the weight of your pregnant belly staggers you, dropping you to your knees.  You realize something is about to be birthed, and you shed your [armor] before it can be ruined by what's coming.  A contraction pushes violently through your midsection, ");
+                if(player.vaginas[0].vaginalLooseness < VaginaClass.LOOSENESS_LOOSE) EngineCore.outputText("stretching your tight cunt painfully, the lips opening wide ");
+                if(player.vaginas[0].vaginalLooseness >= VaginaClass.LOOSENESS_LOOSE && player.vaginas[0].vaginalLooseness <= VaginaClass.LOOSENESS_GAPING_WIDE) EngineCore.outputText("temporarily stretching your cunt-lips wide-open ");
+                if(player.vaginas[0].vaginalLooseness > VaginaClass.LOOSENESS_GAPING_WIDE) EngineCore.outputText("parting your already gaping lips wide ");
+                EngineCore.outputText("as something begins sliding down your passage.  A burst of green slime soaks the ground below as the birthing begins in earnest, and the rounded surface of a unmarked white colored egg peaks between your lips.  You push hard and the large egg pops free at last, making you sigh with relief as it drops into the pool of slime.  The experience definitely turns you on, and you feel your clit growing free of its hood as another big egg starts working its way down your birth canal, rubbing your sensitive vaginal walls pleasurably.   You pant and moan as the contractions stretch you tightly around the next, slowly forcing it out between your nether-lips.  The sound of a gasp startles you as it pops free, until you realize it was your own voice responding to the sudden pressure and pleasure.  Aroused beyond reasonable measure, you begin to masturbate ");
+                if(player.clitLength > 5) EngineCore.outputText("your massive cock-like clit, jacking it off with the slimy birthing fluids as lube.   It pulses and twitches in time with your heartbeats, its sensitive surface overloading your fragile mind with pleasure.  ");
+                if(player.clitLength > 2 && player.clitLength <= 5) EngineCore.outputText("your large clit like a tiny cock, stroking it up and down between your slime-lubed thumb and fore-finger.  It twitches and pulses with your heartbeats, the incredible sensitivity of it overloading your fragile mind with waves of pleasure.  ");
+                if(player.clitLength <= 2) EngineCore.outputText("your " + vaginaDescript(0) + " by pulling your folds wide and playing with your clit.  Another egg pops free from your diminishing belly, accompanied by an audible burst of relief.  You make wet 'schlick'ing sounds as you spread the slime around, vigorously frigging yourself.  ");
+                EngineCore.outputText("You cum hard, the big eggs each making your cunt gape wide just before popping free.  You slump down, exhausted and barely conscious from the force of the orgasm.  ");
+                if(true) EngineCore.outputText("Your swollen belly doesn't seem to be done with you, as yet another egg pushes its way to freedom.   The stimulation so soon after orgasm pushes you into a pleasure-stupor.  If anyone or anything discovered you now, they would see you collapsed next to a pile of eggs, your fingers tracing the outline of your " + vaginaDescript(0) + " as more and more eggs pop free.  In time your wits return, leaving you with the realization that you are no longer pregnant.  ");
+                //player.statusEffectv3(StatusEffects.Eggs) >= 11
+                player.orgasm();
+                player.dynStats("scale", false);
+
+                //EngineCore.outputText("\n\n<b>You feel compelled to leave the eggs behind, ");
+                //EngineCore.outputText("but your body's intuition reminds you they shouldn't be fertile, and your belly rumbles with barely contained hunger.\n</b>");
+
+                player.cuntChange(20, true);
+                //player.createStatusEffect(StatusEffects.LootEgg,0,0,0,0);
+                displayedUpdate = true;
+                player.knockUpForce(); //Clear Pregnancy
+
+                if(player.inHeat) {
+                    outputText("\n\nYou feel a shifting in your gut, and you realize that because you are still in heat, <b>your monotreme womb has begun producing an unfertilized egg!</b>\nIt seems you will keep producing eggs until you are no longer in heat!");
+                    var sac:StatusEffectClass = player.statusEffectByType(StatusEffects.Heat);
+                    player.knockUpForce(PregnancyStore.PREGNANCY_UNFERTILIZED_MONOTREME_EGG, int(0.48 * (100 + sac.value1)));
+                    //player.addStatusEffect(StatusEffects.Eggs); ??? num = (100 + sac.value1) / 100, size=large
+
+                }
+            }
+        }
+        if(gavebirth) {
+            if(player.fertility < 15) player.fertility++;
+            if(player.fertility < 25) player.fertility++;
+            if(player.fertility < 40) player.fertility++;
+            if(!player.hasStatusEffect(StatusEffects.Birthed)) player.createStatusEffect(StatusEffects.Birthed,1,0,0,0);
+            else {
+                player.addStatusValue(StatusEffects.Birthed,1,1);
+                if(player.findPerk(PerkLib.BroodMother) < 0 && player.statusEffectv1(StatusEffects.Birthed) >= 10) {
+                    EngineCore.outputText("\n<b>You have gained the Brood Mother perk</b> (Pregnancies progress twice as fast as a normal woman's).\n");
+                    player.createPerk(PerkLib.BroodMother,0,0,0,0);
+                }
+            }
+            if(player.findPerk(PerkLib.AlchemicalFertility) && player.perkv3(PerkLib.AlchemicalFertility) >= 10) {
+                player.goIntoHeat(true, 1);
+                EngineCore.outputText("\n\nUh oh! It seems the concoctions Tamami's been pumping you full of have altered your womb to make you <b>automatically enter heat when you cease to be pregnant</b>!");
             }
         }
         return displayedUpdate;

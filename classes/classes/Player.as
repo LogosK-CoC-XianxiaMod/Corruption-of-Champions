@@ -8244,10 +8244,15 @@ use namespace CoC;
 		// Second parameter: intensity, an integer multiplier that can increase the 
 		// duration and intensity. Defaults to 1.
 		public function goIntoHeat(output:Boolean, intensity:int = 1):Boolean {
-			if(!hasVagina() || pregnancyIncubation != 0) {
+			if(!hasVagina() || (pregnancyIncubation != 0 && pregnancyType != PregnancyStore.PREGNANCY_UNFERTILIZED_MONOTREME_EGG)) {
 				// No vagina or already pregnant, can't go into heat.
 				return false;
 			}
+
+			if (findPerk(PerkLib.AlchemicalFertility)) {
+				intensity *= (1 + perkv3(PerkLib.AlchemicalFertility));
+			}
+
 			
 			//Already in heat, intensify further.
 			if (inHeat) {
@@ -8267,6 +8272,10 @@ use namespace CoC;
 				}
 				createStatusEffect(StatusEffects.Heat, 10 * intensity, 15 * intensity, 48 * intensity, 0);
 				dynStats("lib", 15 * intensity, "scale", false);
+				if(hasPerk(PerkLib.MonotremeWomb)) {
+					outputText("\n\nYou feel a shifting in your gut, and you realize that <b>your monotreme womb has begun producing an unfertilized egg!</b>");
+					knockUpForce(PregnancyStore.PREGNANCY_UNFERTILIZED_MONOTREME_EGG, 48);
+				}
 			}
 			return true;
 		}

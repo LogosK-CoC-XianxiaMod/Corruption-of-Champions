@@ -14,14 +14,15 @@ public class Tamani extends Goblin
 		override protected function goblinTeaseAttack():void
 		{
 			if(flags[kFLAGS.TAMANI_TIMES_HYPNOTISED] > 0) {
-				tamaniHypnoTease();
+				if(flags[kFLAGS.TAMANI_GENDER] == 2) {tamaniHypnoTeaseHerm();}
+				else {tamaniHypnoTeaseFem();}
 				return;
 			}
 			super.goblinTeaseAttack();
 		}
 
 //New Tease option:
-		public function tamaniHypnoTease():void {
+		public function tamaniHypnoTeaseFem():void {
 			var selector:Number = rand(3);
 			//Choose 1 of 3 variations
 			if(selector == 0) outputText("Tamani smiles and shifts her leather straps, pulling one into the puffy gash that is her vagina.  She groans out loud, sliding the studded leather band into her outer lips and sawing it along her clit.  Her whole body blushes as she pulls it free, running a fingertip up the now wet strip of leather, \"<i>Mmm, can't you see how much my pussy needs a man inside it?  Be a good husband and fuck Tamani full!  You know you want to.</i>\"\n\n");
@@ -79,6 +80,66 @@ public class Tamani extends Goblin
 			player.dynStats("lus", (rand(player.lib/5)+3+(flags[kFLAGS.TAMANI_TIMES_HYPNOTISED])));
 		}
 
+		//TODO: incomplete conversion. Also need to make children possible to make hypnosis possible
+		public function tamaniHypnoTeaseHerm():void {
+			var selector:Number = rand(2);
+			//Choose 1 of 3 variations
+			if(selector == 0) outputText("Tamani smiles and shifts her leather straps, adjusting the thin straps that hold her balls.  She groans out loud, massaging the hefty orbs as her dick bucks and a drop of precum beads from the end.  Her whole body blushes as she wipes it on a hand, spreading the moisture over the tip of her cock, \"<i>Mmm, can't you see how much my balls need to be emptied?  Be a good breeder and accept all my seed!  You know you want to.</i>\"\n\n");
+			if(selector == 1) outputText("Tamani saunters up to you, sliding her fingers down each side of her thick girl-cock, lifting it to point at your face as the hole on the end winks at you.  Your eyes are drawn to her massive rod, unable to look away she gets closer.  She whispers, \"<i>Your cunt knows what it needs.  Just be a good breeder and obey your pussy, it KNOWS how badly you need mistress's cock.</i>\"\n\n");
+			
+			//if(selector == 2) outputText("Tamani turns around and bends down, pressing her hands into the dirt as she kicks her legs apart.  Your stare open-mouthed at her bouncy ass-cheeks and the tantalizingly wet entrance of her slit.  She smirks and offers, \"<i>You've cum so many times inside me, why resist when you can give in and feel that pleasure again today?  Come on husband, don't make Tamani beg...</i>\"\n\n");
+
+			//REACTIONS
+			//LOW HYPNO VALUE://TODO: here down
+			if(flags[kFLAGS.TAMANI_TIMES_HYPNOTISED] < 5) {
+				selector = rand(3);
+				if(selector == 0) outputText("You reluctantly pull your stare away from the heavenly entrance between her legs.  There's an urge to walk over to her and plunge yourself inside her over and over, but you dismiss it.");
+				if(selector == 1) outputText("You find it hard to pull your gaze from her inviting twat, but you manage.  You shake your head, clearing away thoughts of fertilizing your wife.  Her rhetoric must be getting to you.");
+				if(selector == 2) outputText("No matter the case, her actions shifted a fair bit of your blood-flow to your groin.");
+			}
+			//MEDIUM HYPNO VALUE:
+			else if(flags[kFLAGS.TAMANI_TIMES_HYPNOTISED] < 10) {
+				selector = rand(2);
+				if(selector == 0) {
+					outputText("With effort you manage to wrench your eyes away from the inviting folds of Tamani's vagina.  ");
+					if(player.cockTotal() > 1) outputText("Each of y");
+					else outputText("Y");
+					outputText("our " + multiCockDescriptLight());
+					if(player.lust > 80) outputText(" drips pre-cum");
+					else if(player.lust > 40) outputText(" grows harder");
+					else outputText(" hardens");
+					outputText(" from the sexual sight, and you feel a compulsion to rush to your wife and take her on the spot.  Obviously she's not really your wife, but after so many fuckings it kind of makes sense to think of her that way.");
+					if(player.lust < 70) outputText("  Still, you don't want to fuck her right now!");
+				}
+				else {
+					outputText("Struggling, you pull your eyes back into your head and away from Tamani's gorgeous slit.  You shudder, feeling ");
+					if(player.cockTotal () > 1) outputText("each of ");
+					outputText("your " + player.multiCockDescriptLight());
+					if(player.lust <= 41) outputText(" thicken perceptibly");
+					else if(player.lust <= 81) outputText(" twitch eagerly");
+					else outputText("drip pre-cum");
+					outputText(", responding to the overly sensual goblin's body.  You start to approach her, but stop yourself, realizing you were about to pick up your wife and fuck her on the spot.  You know she's not really your wife, but you have a hard time thinking of her as anything else, save for maybe your mistress.");
+					if(player.lust < 70) outputText("  Regardless, you're resolute in your desire not to fuck her right now!");
+				}
+			}
+			//HIGH HYPNO VALUE
+			else {
+				selector = rand(2);
+				if(selector == 0) {
+					outputText("You barely manage to step yourself from lunging forward to bury your mouth between your mistress's legs.  Hard and trembling between your legs, ");
+					if(player.cockTotal() > 1) outputText("each of ");
+					outputText("your [cocks] aches with need.  You battle with the compulsion to kneel before your short, stacked mistress and perform your duties as her breeder husband.");
+				}
+				else {
+					outputText("You wrench your gaze from the juicy mound before you with great difficulty.  The desire to submit to your wife and fuck her on the spot rages through your body, melting your resistance into liquid lust and pooling it in your groin.  ");
+					if(player.cockTotal() > 1) outputText("Each of y");
+					else outputText("Y");
+					outputText("our [cocks] pulses and dribbles pre-cum, aching to do its duty and fire load after load into Tamani's perfect pussy.");
+				}
+			}
+			player.dynStats("lus", (rand(player.lib/5)+3+(flags[kFLAGS.TAMANI_TIMES_HYPNOTISED])));
+		}
+
 		override public function defeated(hpVictory:Boolean):void
 		{
 			if (hpVictory) {
@@ -86,6 +147,9 @@ public class Tamani extends Goblin
 			} else {
 				outputText("Tamani gives up on defeating you and starts masturbating!", true);
 			}
+			SceneLib.forest.tamaniScene.tamaniVictoryMenu();
+		}
+			/*
 			if(player.lust >= 33 && player.cockTotal() > 0 && flags[kFLAGS.SFW_MODE] <= 0) {
 				outputText("  You could fuck her, but if that's the case why did you bother fighting her?\n\nWhat do you do to her?");
 				var temp:Function = null;
@@ -98,11 +162,15 @@ public class Tamani extends Goblin
 				EngineCore.simpleChoices("Fuck", SceneLib.forest.tamaniScene.tamaniSexWon, "Buttfuck", temp, "", null, "Lay Eggs", temp2, "Leave", SceneLib.combat.cleanupAfterCombatImpl);
 			}
 			else SceneLib.combat.cleanupAfterCombatImpl();
-		}
+		}*/
+
 
 		override public function won(hpVictory:Boolean, pcCameWorms:Boolean):void
 		{
-			if (hpVictory){
+			clearOutput();
+			if (flags[kFLAGS.TAMANI_GENDER] == 2) {
+				SceneLib.forest.tamaniScene.tamaniBreedsThatSluttyCuntYouWhore(); return;
+			} else if (hpVictory){
 				if(player.cockTotal() > 0) {
 					if(rand(2) == 0) SceneLib.forest.tamaniScene.tamaniSexLost();
 					else SceneLib.forest.tamaniScene.tamaniSexLetHer();
@@ -136,6 +204,17 @@ public class Tamani extends Goblin
 			this.createVagina(false, VaginaClass.WETNESS_DROOLING, VaginaClass.LOOSENESS_NORMAL);
 			this.createStatusEffect(StatusEffects.BonusVCapacity, 55, 0, 0, 0);
 			createBreastRow(Appearance.breastCupInverse("E"));
+
+			if (flags[kFLAGS.TAMANI_GENDER] == 2) {
+				this.createCock(18, 4, CockTypesEnum.DOG);
+				this.cocks[0].knotMultiplier = 2;
+				this.balls = 2;
+				this.ballSize = 2 + flags[kFLAGS.TIMES_TAMANI_IMPREGNATED_YOU];
+				this.cumMultiplier = 5;
+				this.hoursSinceCum = ballSize * 10;
+				this.long += " She has a massive, constantly drooling cock sprouting from just above her vagina, with "+String(this.ballsDescriptLight())+" hanging underneath, blocking her lady parts from sight.. With her small stature, her dick looks comical, but you know how vicious she is with it.";
+			}
+
 			this.ass.analLooseness = AssClass.LOOSENESS_TIGHT;
 			this.ass.analWetness = AssClass.WETNESS_DRY;
 			this.createStatusEffect(StatusEffects.BonusACapacity,40,0,0,0);

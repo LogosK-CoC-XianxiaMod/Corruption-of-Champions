@@ -1511,10 +1511,10 @@ public static const UNKNOWN_FLAG_NUMBER_01502:int                               
 public static const UNKNOWN_FLAG_NUMBER_01503:int                                   = 1503;
 public static const UNKNOWN_FLAG_NUMBER_01504:int                                   = 1504;
 public static const UNKNOWN_FLAG_NUMBER_01505:int                                   = 1505;
-public static const UNKNOWN_FLAG_NUMBER_01506:int                                   = 1506;
-public static const UNKNOWN_FLAG_NUMBER_01507:int                                   = 1507;
-public static const UNKNOWN_FLAG_NUMBER_01508:int                                   = 1508;
-public static const UNKNOWN_FLAG_NUMBER_01509:int                                   = 1509;
+public static const TIMES_DRIDER_OVIPOSITED_NPC:int                                 = 1506;
+public static const TIMES_TAMANI_IMPREGNATED_YOU:int                                = 1507;
+public static const TAMANI_GENDER:int                                               = 1508;
+public static const FUTA_CONVERSION:int                                             = 1509;
 public static const UNKNOWN_FLAG_NUMBER_01510:int                                   = 1510;
 public static const UNKNOWN_FLAG_NUMBER_01511:int                                   = 1511;
 public static const UNKNOWN_FLAG_NUMBER_01512:int                                   = 1512;

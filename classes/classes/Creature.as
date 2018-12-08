@@ -2160,6 +2160,8 @@ public class Creature extends Utils
 				percent += 0.10;
 			if (perkv1(PerkLib.ElvenBounty) > 0)
 				percent += 0.05;
+
+
 			if (findPerk(PerkLib.FertilityPlus) >= 0)
 				percent += 0.03;
 			if (findPerk(PerkLib.FertilityMinus) >= 0 && lib < 25) //Reduces virility by 3%.
@@ -3033,6 +3035,7 @@ public class Creature extends Utils
 			if (findPerk(PerkLib.MagicalFertility) >= 0)
 				counter += 10 + (perkv1(PerkLib.MagicalFertility) * 5);
 			counter += perkv2(PerkLib.ElvenBounty);
+			counter += perkv2(PerkLib.AlchemicalFertility);
 			counter += perkv1(PerkLib.PiercedFertite);
 			if (jewelryEffectId == JewelryLib.MODIFIER_FERTILITY)
 				counter += jewelryEffectMagnitude;

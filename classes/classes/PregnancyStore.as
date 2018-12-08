@@ -46,6 +46,8 @@ package classes
 		public static const PREGNANCY_ANDY:int                  =  37; //This is functionally the same as Satyr but less corrupt. 10% chance of fauns, if ever implemented.
 		public static const PREGNANCY_ALRAUNE:int				=  38;
 		public static const PREGNANCY_CELESS:int				=  39;
+
+		public static const PREGNANCY_UNFERTILIZED_MONOTREME_EGG:int = 919;
 		
 		public static const PREG_NOT_PREGANT:int                =   0; //The PREG_* consts are returned by the size function
 		public static const PREG_NO_SIGNS_UNKNOWN:int           =   1; //NPC has conceived but doesn’t know she’s pregnant, no visible signs
@@ -191,11 +193,11 @@ package classes
 		{
 			if (incubation != 0) {
 				CoC.instance.flags[_pregnancyIncubationFlag]--;
-				if (CoC.instance.flags[_pregnancyIncubationFlag] < 0) CoC.instance.flags[_pregnancyIncubationFlag] = 0;
+				if (CoC.instance.flags[_pregnancyIncubationFlag] <= 0) CoC.instance.flags[_pregnancyIncubationFlag] = 1;
 			}
 			if (buttIncubation != 0) {
 				CoC.instance.flags[_buttPregnancyIncubationFlag]--;
-				if (CoC.instance.flags[_buttPregnancyIncubationFlag] < 0) CoC.instance.flags[_buttPregnancyIncubationFlag] = 0;
+				if (CoC.instance.flags[_buttPregnancyIncubationFlag] <= 0) CoC.instance.flags[_buttPregnancyIncubationFlag] = 1;
 			}
 		}
 

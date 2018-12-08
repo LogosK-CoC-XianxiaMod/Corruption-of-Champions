@@ -298,6 +298,7 @@ public class PlayerInfo extends BaseContent {
 			if (player.findPerk(PerkLib.MaraesGiftFertility) >= 0) preg++;
 			if (player.findPerk(PerkLib.BroodMother) >= 0) preg++;
 			if (player.findPerk(PerkLib.FerasBoonBreedingBitch) >= 0) preg++;
+			if (player.findPerk(PerkLib.AlchemicalFertility) >= 0) preg+=player.perkv1(PerkLib.AlchemicalFertility);
 			if (player.findPerk(PerkLib.MagicalFertility) >= 0) preg++;
 			if (player.findPerk(PerkLib.FerasBoonWideOpen) >= 0 || player.findPerk(PerkLib.FerasBoonMilkingTwat) >= 0) preg++;
 			bodyStats += preg + "\n";
@@ -737,6 +738,9 @@ if (SceneLib.valeria.valeriaFluidsEnabled()) {
 
 		if (player.statusEffectv1(StatusEffects.Dysfunction) > 0)
 			statEffects += "Dysfunction - " + player.statusEffectv1(StatusEffects.Dysfunction) + " hours remaining. (Disables masturbation)\n";
+
+		if (player.isPregnant())
+			statEffects += "Pregnant: Type " + player.pregnancyType + ", hours remaining: " + player.pregnancyIncubation + "\n";
 
 		if (statEffects != "")
 			outputText("\n<b><u>Ongoing Status Effects</u></b>\n" + statEffects);

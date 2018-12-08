@@ -92,6 +92,48 @@ internal function tamaniChest():String {
 	return descript + "breasts";
 }
 
+public function tamaniVictoryMenu():void {
+	flags[kFLAGS.TAMANI_DEFEAT_COUNTER]++;
+	
+	if (flags[kFLAGS.SFW_MODE] > 0) {
+		outputText("You smile in satisfaction as Tamani collapses, unable to continue fighting.");
+		
+		combat.cleanupAfterCombat();
+		return;
+	}
+	
+	menu();
+	
+	/*if (flags[kFLAGS.TAMANI_DEFEAT_COUNTER] >= 4) {
+		outputText(" If you're tired of Tamani trying to force herself upon you, you could resolve to not see her again.");
+		addButton(10, "NO MORE!", killTamaniChoice);
+	}*/
+	addButton(14, "Leave", combat.cleanupAfterCombatImpl());
+	
+	
+	if (flags[kFLAGS.SFW_MODE] <= 0) {
+		//addDisabledButton(0, "Fuck", "This scene requires you to have cock and sufficient arousal.");
+		//addDisabledButton(1, "Buttfuck", "This scene requires you to have fitting cock and sufficient arousal.");
+		//addDisabledButton(2, "Lay Eggs", "This scene requires you to have spider ovipositor and enough eggs. She should not be pregnant.");
+		
+		if (player.lust >= 33 && player.hasCock()) {
+			outputText(" You could fuck her, but if that's the case why did you bother fighting her?");
+			addButton(0, "Fuck", tamaniSexWon);
+			if (player.cockThatFits(monster.analCapacity()) >= 0)
+				addButton(1, "Buttfuck", tamaniAnalShits);
+		}
+		if (!pregnancy.isPregnant && player.canOvipositSpider())
+			addButton(2, "Lay Eggs", tamaniBeaten); //NOT PREGGERS
+		
+		if (player.hasKeyItem("Deluxe Dildo") < 0) {
+			addButton(3, "Take Dildo", tamaniStealDildo, undefined, undefined, undefined, "This bad girl doesn't deserve a good toy.");
+		}
+		if (flags[kFLAGS.TAMANI_GENDER] == 2) {
+			addButton(5, "Get Fucked", tamaniFucksYouYouSluttyWhore);
+		}
+	}
+}
+		
 //[Encounter Tamani – female]
 private function tamaniFemaleEncounter():void {
 	spriteSelect(56);
@@ -99,8 +141,130 @@ private function tamaniFemaleEncounter():void {
 	outputText("A goblin leaps out from behind a rock outcropping.  She keeps her arms folded across her " + tamaniChest() + " and glares at you.  The little thing is only about four feet tall, with pink and black dyed hair cut into a cute little 'do.  The greenish-gray skin of her breasts bulges out around her arms, supported by a few leather straps, amplifying her cleavage.  Her cunt lips are pierced multiple times, inflamed, and slightly parted.  There really isn't any clothing on her to hide them, just more of the ever-present straps wrapping around her thighs.\n\n");
 	outputText("She says, \"<i>There's only so much cock around, and I got dibs on ALL of it, O.K. skank?</i>\"\n\n");
 	//[Umm OK?] [No]
-	simpleChoices("Umm OK?", tamaniFemaleYes, "No", tamaniFemaleNo, "PreferGirls", preferTamaniFemdom, "", null, "", null);
+	simpleChoices("Umm OK?", tamaniFemaleYes, "No", tamaniFemaleNo, "PreferGirls", preferTamaniFemdom, "HerOwn", suggestTamaniHerm, "", null);
 }
+
+
+
+private function suggestTamaniHerm():void {
+	spriteSelect(56);
+	clearOutput();
+	outputText("You ask her, if she likes cock so much, why doesn't she get her own? You suspect that kind of thing isn't that hard to do around here.");
+	outputText("She rolls her eyes. \"<i>You clearly don't know anything about Goblins, idiot,</i>\" she sneers, \"<i>Giving birth is the best orgasm ever for goblins, and our wombs always make more goblins, instead of whatever fucked up thing you'd produce..</i>\"\n\n");
+	if (flags[kFLAGS.LUMI_MET]/* && flags[kFLAGS.TAMANI_DEFEAT_COUNTER] >= 4*/) {
+		menu();
+		addButton(0, "Goad Her", goadTamaniHerm);
+		addButton(1, "Nevermind", nevermindTamani);
+	} else {
+		nevermindTamani();	
+	}
+}
+
+private function goadTamaniHerm():void {
+	outputText("You mention that you heard that Goblins were supposed to be competent alchemists- and that you'd met Lumi, who certainly seemed capable.");	
+	outputText("You'd think that making a goblin dick with great orgasms that only knocked people up with goblins would be easy for a competent alchemist, but you're not surprised that Tamani's incompetent- it's obvious her only talents are acting like an unattractive skank. ");
+	outputText("\n\nTamani screams in rage and attacks you, pulling out her vials of liquid and throwing them at you. She's too angry to aim effectively though, and you keep dodging them, pointing out that all of her concoctions are incredibly generic- you suspect she bought them herself, and that you've bought better ones from Lumi. ");	
+	outputText("\n\nEventually, you pick up a rock and throw it at her, managing to hit her sachel while her hand is inside it. You hear breaking glass, and a cloud of multicolored smoke poofs out of it, and Tamani doesn't manage to get away in time, and falls to the ground shaking. You suspect the open wounds on her hand from broken glass worsened her exposure.");	
+	outputText("You laugh at her, suggesting that she go become some minotaur's toy or something, because she's clearly going to killherself through incompetence if she keeps pretending she's capable of making it alone in this world.");	
+	outputText("You head back to camp, leaving the shaking, coughing form of Tamani lying on the ground behind you.");	
+	flags[kFLAGS.TAMANI_GENDER] = 2;
+	doNext(camp.returnToCampUseOneHour);
+}
+
+private function nevermindTamani():void {
+	outputText("You realize she's not going to be convinced, so you turn around and leave. Behind you, you hear Tamani mutter \"<i>Dumb bitch.</i>\"\n\n");
+	doNext(camp.returnToCampUseOneHour);
+}
+
+private function tamaniHermBimboAttack():void {
+	outputText("A massive flask full of red liquid comes flying out from behind some rocks and smashes in front of you. You jump away, but the liquid from the flask turned into a massive cloud when the glass broke, somehow instantly aeresolizing. It spreads incredibly fast, and before you can get away you're lost in a sea of red mist.");
+	outputText("\n\nYou try to hold your breath, but the gas seems to be condensing on your skin unnaturally fast, and quickly sinks into your body, and you rapidly become unbearably aroused, and fall to the ground and start groping yourself.");
+	outputText("\n\nYou hear high-pitched maniacal laughter echoing through the mist around you, and Tamani's form fades in through the mist. She's panting and has a massive smile on her face, but your eyes are immediately drawn to the massive cock and balls crowning her pussy. The cock is easily a foot and a half long and thicker than your arm, with a massive knot at the base.");
+	outputText("\n\nTamani's laughter dies down, and she kneels on your lust-stricken body, rubbing her new cock's head across your face. \"<i>Now you've done it, you stupid slut. You made me angry enough to spend all my savings figuring out this dick and this ambush, and now I'm going to make sure I get my money's worth out of you.</i>\"");
+	outputText("\n\nTamani opens your mouth, and positions her cock with the head above your lips. As precum drips into your mouth, you happily swallow it down, lost in a haze of lust. \"<i>Alright, slut, I'm going to make sure you're always ready to give me a place to stick this dick you convinced me to get.</i>\" Tamani pulls out a small, thick-walled vial containing a clear liquid. She unscrews the top, and pours it into your mouth, where you instinctively swallow it.");
+	//NOT CURRENTLY HANDLING CASES WHERE CURRENT GENDER IS NOT FEMALE
+	outputText("\nAlmost immediately, you feel a light tingling spread through your body before concentrating in your vagina, butt, and breasts.");
+	if (player.breastRows[0].breastRating < 5) { //Tits!
+		player.breastRows[0].breastRating = 5;
+		outputText("\nYour breasts grow until they reach a large DD-cup.");
+	}
+	if (player.hips.type < 12 || player.butt.type < 12) {
+		outputText("\nFlesh expands around your butt and hips until both are sizable");
+		player.hips.type = Math.max(12, player.hips.type);
+		player.butt.type = Math.max(12, player.butt.type);
+	}
+	outputText("\nYour vagina is ");
+	if (player.vaginas[0].vaginalWetness < Appearance.VAGINA_WETNESS_SLAVERING) {
+		outputText("now ");
+		player.vaginas[0].vaginalWetness = Appearance.VAGINA_WETNESS_SLAVERING;
+	}
+	outputText("so wet you can feel rivulets of your juices running down your thighs. \nYour body could not look any more feminine.");
+	player.modFem(100, 100);
+	player.createPerk(PerkLib.BimboBody,0,0,0,0);
+	dynStats("sen", 25);
+	dynStats("lib", 15);
+	outputText("\n\n\"<i>There we go, slut,</i>\" Tamani says, dragging her dick down between your breasts as she shuffles backwards, bringing a hand to your pussy and pumping in a few fingers, quickly transitioning to fisting you when her small size and your incredible wetness make it clear that you can take it.");
+	outputText("\n\n\"<i>It would really piss me off me if you got rid of that cunt I've gone to so much effort to make sure I can breed, so I've made sure you'll have it forever.</i>\" Tamani pulls her dripping arm out of your slavering pussy, and lines up her massive knotted cock with your entrance.");
+	outputText("\n\nThe sensation of her removing her arm reaches your mind under the red haze of lust, making you clench your pussy and try to move forwrd in a vain attempt to keep her arm inside. Suddenly your cunt is feeling like it <b>needs</b> to be filled, and you whine in discomfort at the empty sensation.");
+	doNext(tamaniBreedsThatSluttyCuntYouWhore);
+}
+
+public function tamaniBreedsThatSluttyCuntYouWhore():void {
+	spriteSelect(56);
+	clearOutput();
+	outputText("Tamani doesn't seem interested in foreplay at this point- she rams her massive cock into your slutty hole, and starts up a fast rhythm of slamming in and out. It only takes perhaps ten seconds for her to cum the first time, and she immediately sprays her femgoblin spunk into your womb. ");
+	outputText("Her lust doesn't seem at all diminished by the orgasm, and once her dick has stopped pumping cum into you she starts moving again, at least as fast as before. This time though, there's something different- when she rams her dick in and out of you, it doesn't move very far, locked in place by the massive ");
+	outputText("swelling at the base that is her knot. Before long, she cums again, this time not even slowing down for it. As more and more cum fills your womb, you feel yourself grow more and more horny, and you find yourself rolling your hips into Tamami's cock, panting and moaning happily as she breeds you. ");
+	outputText("You're not sure what kind of drugs are now included in her cum, but they're extremely effective at turning you into a submissive bitch begging to be bred.\n\nTamani cums into you well over a dozen times before finally collapsing on your swolen stomach, panting.\"<i>Ahhh, that was amazing,</i>\" she signs happily. ");
+	player.goIntoHeat(true, 1);
+	//GOBLIN PREGNANCY UNIMPLEMENTED (should make futa goblin daughters, giving birth should cause orgasm and start heat)
+	outputText("\nShe pulls out, and you can see that her balls have deflated from their previous size to something that might fit in on a normal human. She pats your stomach a few times, and it jiggles, the cum filling your womb to bursting sloshing around. \"Once you've given me a few daughters, I'll have to come back and breed you again. Look forward to it!\". ");
+	outputText("\n\nIn your drugged and horny state, you honestly do. After she grabs her things and leaves, you lay there for close to another hour unable and unwanting to move, before struggling to your feet, collecting your things, and heading back to camp.");
+	player.orgasm();
+
+	
+	// the perk gives (bonus pregnancy speed fraction), (bonus fertility percent), (bonus heat effect fraction).
+	if (player.findPerk(PerkLib.AlchemicalFertility) < 0) {
+		player.createPerk(PerkLib.AlchemicalFertility, 0.3, 30, 0.3,0);
+	} else {
+		player.addPerkValue(PerkLib.AlchemicalFertility,1,0.15);
+		player.addPerkValue(PerkLib.AlchemicalFertility,2,15);
+		player.addPerkValue(PerkLib.AlchemicalFertility,3,0.15);
+	}
+    if (CoC.instance.inCombat) cleanupAfterCombat();
+	doNext(camp.returnToCampUseTwoHours);
+}
+
+private function tamaniHermEncounter():void {
+	outputText("While exploring, you're surprised by a goblin jumping out from behind a rock. From her massive cock, it's obvious that this is Tamani- and she's come to breed you, because you didn't have the courtesy to be be able to breed her."+(player.hasCock()?" You could now, but that ship has sailed- to her, you're a slut, not a stud.":""));
+	outputText("\n\n\"\<i>So, are you ready to be my breeding slut, or do I have to beat the resistance out of you first?</i>\" Tamani asks, leering at you while stroking her large errect cock.");
+	
+	dynStats("lus", player.sens / 10);
+	if (player.findPerk(PerkLib.SoulSense) >= 0 && flags[kFLAGS.SOUL_SENSE_TAMANI] < 2) flags[kFLAGS.SOUL_SENSE_TAMANI]++;
+	if (flags[kFLAGS.SOUL_SENSE_TAMANI] == 2) {
+		flags[kFLAGS.SOUL_SENSE_TAMANI]++;
+		outputText("\n\n<b>You have meet her enough times to be able to find her in the future when using soul sense. (Removes Tamani from forest explore encounters pool!)</b>\n\n");
+	}
+	//menu();
+	//addButton(0, "Get Fucked", tamaniFucksYouYouSluttyWhore);
+	//addButton(1, "Fight", tamaniStartFight);
+	simpleChoices("Get Fucked", tamaniFucksYouYouSluttyWhore, "Fight", tamaniStartFight, "", null, "", null, "", null);
+
+}
+
+private function tamaniFucksYouYouSluttyWhore():void {
+	//this really needs at least a short intro scene
+
+	outputText("\"I don't know why I even asked,\" says Tamani with a smirk.");
+
+
+	
+	doNext(tamaniBreedsThatSluttyCuntYouWhore);
+}
+
+
+
+
 
 //(Umm OK?)
 private function tamaniFemaleYes():void {
@@ -694,9 +858,14 @@ internal function tamaniKnockUp():void {
 }
 
 public function encounterTamani():void {
+	//herm tamani wants her cocksleeve
+	if (flags[kFLAGS.TAMANI_GENDER] == 2 && player.findPerk(PerkLib.BimboBody) < 0 && player.findPerk(PerkLib.FutaForm) < 0) {
+		tamaniHermBimboAttack();
+	}
 	//Fems:
-	if (player.cockTotal() <= 0) {
-		tamaniFemaleEncounter();
+	else if (!player.hasCock()) {
+		if (flags[kFLAGS.TAMANI_GENDER] != 2) tamaniFemaleEncounter();
+		else {tamaniHermEncounter();}
 	}
 	//Dudezillaz:
 	else if (flags[kFLAGS.TAMANI_MET] == 0) {
@@ -866,6 +1035,16 @@ internal function tamaniAnalShits():void {
 	player.orgasm();
 	cleanupAfterCombat();
 }
+
+private function tamaniStealDildo():void {
+	outputText(images.showImage("item-dDildo"));
+	outputText("And to the victor go the spoils. You open her satchel and take a look inside. ");
+	outputText("\n\n<b>(You find a well-crafted pink dildo inside! There are also some other stuff.)</b>");
+	player.createKeyItem("Deluxe Dildo", 0, 0, 0, 0);
+	combat.cleanupAfterCombat();
+}
+
+
 
 internal function tamaniBeaten():void {
 	clearOutput();

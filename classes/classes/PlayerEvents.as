@@ -1184,6 +1184,7 @@ if (CoC.instance.model.time.hours > 23) { //Once per day
 				needNext = true;
 			}
 			if (player.pregnancyIncubation <= 0 && player.pregnancyType == PregnancyStore.PREGNANCY_OVIELIXIR_EGGS) { //Fixing Egg Preg Preglocked Glitch
+				trace("========================EGGS RESET???===============================");
 				player.knockUpForce(); //Clear Pregnancy
 			}
 			if (player.hasStatusEffect(StatusEffects.Uniball) && player.ballSize > 1 && player.balls > 0) { //Testicles Normalise:

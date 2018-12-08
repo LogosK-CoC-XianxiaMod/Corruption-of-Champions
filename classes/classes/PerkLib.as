@@ -870,7 +870,7 @@ public class PerkLib
 				"+2 extra HP per point of strength.",
 				"You choose the 'Goliath VI' perk, granting +2 extra maximum HP for each point of strength.");
 		public static const GorgonsEyes:PerkType = mk("Gorgon's Eyes", "Gorgon's Eyes",
-				"Your eyes mutated and now even with any type of eyes you can use petrifying gaze. Additionaly it makes you more immune to all types of attack that are related to sight.",
+				"Your eyes mutated and now even with any type of eyes you can use petrifying gaze. Additionally it makes you more immune to all types of attack that are related to sight.",
 				"You choose the 'Gorgon's Eyes' perk. Prolonged using petrifying caused your eyes to change even more like those of gorgons.");
 		public static const GorgonsEyesEvolved:PerkType = mk("Gorgon's Eyes (Evolved)", "Gorgon's Eyes (Evolved)",
 				"Another mutation of your eyes allows you to move a bit faster, a bit longer Petrify effect and change negative effect of resistance to basilisks and similar effects into positive effect (-5 to Spe change into +5 to Spe (scalable)).",
@@ -1432,6 +1432,9 @@ public class PerkLib
 		public static const MinotaurTesticlesFinalForm:PerkType = mk("Minotaur Testicles (Final Form)", "Minotaur Testicles (Final Form)",
 				"+5 to max tou an +10 to max str/lib, increase cum production by ~100%, +90 to max lust and Cum Cannon cost rise to 200 lust but can be used more than once per fight.",
 				"You choose the 'Minotaur Testicles (Final Form)' perk. Granting boost to max speed/libido/lust, increase cum output and allowing using Cum Cannon more than once per fight.");
+		public static const MonotremeWomb:PerkType = mk("Monotreme Womb", "Monotreme Womb",
+				"Your womb automatically begins producing unfertilized eggs when you enter heat.",
+				"You choose the 'Monotreme Womb' perk, having your womb take on the properties of egg-laying mammals. When you enter heat, you will begin producing unfertilized eggs to eventually lay.");
 		public static const MultiClawAttack:PerkType = mk("Multi Claw Attack", "Multi Claw Attack",
 				"When attacking with your claws, add an additional attack striking up to 4 times.",
 				"You choose the 'Multi Claw Attack' perk, gaining an additional attack with your claws!");
@@ -2204,6 +2207,8 @@ public class PerkLib
 		public static const Cultivation:PerkType = mk("Cultivation", "Cultivation",
 				"Allow to cultivate powers of the soul.",
 				"You choose the 'Cultivation' perk, starting journey of the soul cultivation path!");//potem przerobić na coć innego - moze jak perki do czarów i łuku bedzie dawać jakieś korzyści do soul skills po odpowiednio dużej ilości ich użycia czy cos xD
+
+		public static const AlchemicalFertility:PerkType = new AlchemicalFertilityPerk();
 
 		// Mutation perks
 		public static const Androgyny:PerkType = mk("Androgyny", "Androgyny",
@@ -4264,6 +4269,9 @@ public class PerkLib
 				.requireCustomFunction(function (player:Player):Boolean {
                 return player.spiderScore() >= 4 || player.nagaScore() >= 4 || player.gorgonScore() >= 4 || player.vouivreScore() >= 4 || player.couatlScore() >= 4;
             }, "Spider or any snake-like race");
+            //MonotremeWomb.requirePerk(Oviposition).requireCor(20);
+            MonotremeWomb.requireCor(20);
+
             /*
 			if (player.() >=  && ) {
 			_add(new PerkClass(PerkLib.));
