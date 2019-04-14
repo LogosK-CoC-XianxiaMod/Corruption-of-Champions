@@ -246,6 +246,7 @@ public class Creature extends Utils
 		}
 		protected function maxHP_base():Number {
 			var max:Number = 0;
+			var multimax:Number = 1;
 			max += int(tou * 2 + 50);
 			if (tou >= 21) max += Math.round(tou);
 			if (tou >= 41) max += Math.round(tou);
@@ -314,16 +315,16 @@ public class Creature extends Utils
 			if (findPerk(PerkLib.CheetahV) >= 0) max += Math.round(spe);
 			if (findPerk(PerkLib.CheetahVI) >= 0) max += Math.round(spe);
 			if (findPerk(PerkLib.ElementalBondFlesh) >= 0) {
-				if (hasStatusEffect(StatusEffects.SummonedElementalsAir)) max += 25 * statusEffectv2(StatusEffects.SummonedElementalsAir);
-				if (hasStatusEffect(StatusEffects.SummonedElementalsEarth)) max += 25 * statusEffectv2(StatusEffects.SummonedElementalsEarth);
-				if (hasStatusEffect(StatusEffects.SummonedElementalsFire)) max += 25 * statusEffectv2(StatusEffects.SummonedElementalsFire);
-				if (hasStatusEffect(StatusEffects.SummonedElementalsWater)) max += 25 * statusEffectv2(StatusEffects.SummonedElementalsWater);
-				if (hasStatusEffect(StatusEffects.SummonedElementalsEther)) max += 25 * statusEffectv2(StatusEffects.SummonedElementalsEther);
-				if (hasStatusEffect(StatusEffects.SummonedElementalsWood)) max += 25 * statusEffectv2(StatusEffects.SummonedElementalsWood);
-				if (hasStatusEffect(StatusEffects.SummonedElementalsMetal)) max += 25 * statusEffectv2(StatusEffects.SummonedElementalsMetal);
-				if (hasStatusEffect(StatusEffects.SummonedElementalsIce)) max += 25 * statusEffectv2(StatusEffects.SummonedElementalsIce);
-				if (hasStatusEffect(StatusEffects.SummonedElementalsLightning)) max += 25 * statusEffectv2(StatusEffects.SummonedElementalsLightning);
-				if (hasStatusEffect(StatusEffects.SummonedElementalsDarkness)) max += 25 * statusEffectv2(StatusEffects.SummonedElementalsDarkness);
+				if (hasStatusEffect(StatusEffects.SummonedElementalsAir)) max += maxLust_ElementalBondFleshMulti() * statusEffectv2(StatusEffects.SummonedElementalsAir);
+				if (hasStatusEffect(StatusEffects.SummonedElementalsEarth)) max += maxLust_ElementalBondFleshMulti() * statusEffectv2(StatusEffects.SummonedElementalsEarth);
+				if (hasStatusEffect(StatusEffects.SummonedElementalsFire)) max += maxLust_ElementalBondFleshMulti() * statusEffectv2(StatusEffects.SummonedElementalsFire);
+				if (hasStatusEffect(StatusEffects.SummonedElementalsWater)) max += maxLust_ElementalBondFleshMulti() * statusEffectv2(StatusEffects.SummonedElementalsWater);
+				if (hasStatusEffect(StatusEffects.SummonedElementalsEther)) max += maxLust_ElementalBondFleshMulti() * statusEffectv2(StatusEffects.SummonedElementalsEther);
+				if (hasStatusEffect(StatusEffects.SummonedElementalsWood)) max += maxLust_ElementalBondFleshMulti() * statusEffectv2(StatusEffects.SummonedElementalsWood);
+				if (hasStatusEffect(StatusEffects.SummonedElementalsMetal)) max += maxLust_ElementalBondFleshMulti() * statusEffectv2(StatusEffects.SummonedElementalsMetal);
+				if (hasStatusEffect(StatusEffects.SummonedElementalsIce)) max += maxLust_ElementalBondFleshMulti() * statusEffectv2(StatusEffects.SummonedElementalsIce);
+				if (hasStatusEffect(StatusEffects.SummonedElementalsLightning)) max += maxLust_ElementalBondFleshMulti() * statusEffectv2(StatusEffects.SummonedElementalsLightning);
+				if (hasStatusEffect(StatusEffects.SummonedElementalsDarkness)) max += maxLust_ElementalBondFleshMulti() * statusEffectv2(StatusEffects.SummonedElementalsDarkness);
 			}
 			if (findPerk(PerkLib.JobGuardian) >= 0) max += 30;
 			if (findPerk(PerkLib.DeityJobMunchkin) >= 0) max += 150;
@@ -360,10 +361,15 @@ public class Creature extends Utils
 			if (findPerk(PerkLib.UnlockBody4thStage) >= 0) max += level * 15;
 			if (findPerk(PerkLib.AscensionUnlockedPotential) >= 0) max += level * 20;
 			if (jewelryEffectId == JewelryLib.MODIFIER_HP) max += jewelryEffectMagnitude;
+			if (findPerk(PerkLib.LimitBreakerBody1stStage) >= 0) multimax += 0.05;
+			if (findPerk(PerkLib.LimitBreakerBody2ndStage) >= 0) multimax += 0.1;
+			max *= multimax;
+			max = Math.round(max);
 			return max;
 		}
 		protected function maxLust_base():Number {
 			var max:Number = 100;
+			var multimax:Number = 1;
 			if (findPerk(PerkLib.InhumanDesireI) >= 0) max += 20;
 			if (findPerk(PerkLib.InhumanDesireII) >= 0) max += 20;
 			if (findPerk(PerkLib.InhumanDesireIII) >= 0) max += 20;
@@ -393,22 +399,31 @@ public class Creature extends Utils
 			if (findPerk(PerkLib.LegendarySelfControl) >= 0) max += 5000;
 			if (findPerk(PerkLib.HalfStepToMythicalSelfControl) >= 0) max += 7500;
 			if (findPerk(PerkLib.MythicalSelfControl) >= 0) max += 10000;
+			if (findPerk(PerkLib.Mage) >= 0) max += 5;
+			if (findPerk(PerkLib.GrandMage) >= 0) max += 10;
+			if (findPerk(PerkLib.Archmage) >= 0) max += 15
+			if (findPerk(PerkLib.GrandArchmage) >= 0) max += 20;
+			if (findPerk(PerkLib.GrandArchmage2ndCircle) >= 0) max += 25;
+			if (findPerk(PerkLib.GrandArchmage3rdCircle) >= 0) max += 30;
+			if (findPerk(PerkLib.GreyMage) >= 0) max += 40;
+			if (findPerk(PerkLib.GreyArchmage) >= 0) max += 50;
 			if (findPerk(PerkLib.ElementalBondUrges) >= 0) {
-				if (hasStatusEffect(StatusEffects.SummonedElementalsAir)) max += 5 * statusEffectv2(StatusEffects.SummonedElementalsAir);
-				if (hasStatusEffect(StatusEffects.SummonedElementalsEarth)) max += 5 * statusEffectv2(StatusEffects.SummonedElementalsEarth);
-				if (hasStatusEffect(StatusEffects.SummonedElementalsFire)) max += 5 * statusEffectv2(StatusEffects.SummonedElementalsFire);
-				if (hasStatusEffect(StatusEffects.SummonedElementalsWater)) max += 5 * statusEffectv2(StatusEffects.SummonedElementalsWater);
-				if (hasStatusEffect(StatusEffects.SummonedElementalsEther)) max += 5 * statusEffectv2(StatusEffects.SummonedElementalsEther);
-				if (hasStatusEffect(StatusEffects.SummonedElementalsWood)) max += 5 * statusEffectv2(StatusEffects.SummonedElementalsWood);
-				if (hasStatusEffect(StatusEffects.SummonedElementalsMetal)) max += 5 * statusEffectv2(StatusEffects.SummonedElementalsMetal);
-				if (hasStatusEffect(StatusEffects.SummonedElementalsIce)) max += 5 * statusEffectv2(StatusEffects.SummonedElementalsIce);
-				if (hasStatusEffect(StatusEffects.SummonedElementalsLightning)) max += 5 * statusEffectv2(StatusEffects.SummonedElementalsLightning);
-				if (hasStatusEffect(StatusEffects.SummonedElementalsDarkness)) max += 5 * statusEffectv2(StatusEffects.SummonedElementalsDarkness);
+				if (hasStatusEffect(StatusEffects.SummonedElementalsAir)) max += maxLust_ElementalBondUrgesMulti() * statusEffectv2(StatusEffects.SummonedElementalsAir);
+				if (hasStatusEffect(StatusEffects.SummonedElementalsEarth)) max += maxLust_ElementalBondUrgesMulti() * statusEffectv2(StatusEffects.SummonedElementalsEarth);
+				if (hasStatusEffect(StatusEffects.SummonedElementalsFire)) max += maxLust_ElementalBondUrgesMulti() * statusEffectv2(StatusEffects.SummonedElementalsFire);
+				if (hasStatusEffect(StatusEffects.SummonedElementalsWater)) max += maxLust_ElementalBondUrgesMulti() * statusEffectv2(StatusEffects.SummonedElementalsWater);
+				if (hasStatusEffect(StatusEffects.SummonedElementalsEther)) max += maxLust_ElementalBondUrgesMulti() * statusEffectv2(StatusEffects.SummonedElementalsEther);
+				if (hasStatusEffect(StatusEffects.SummonedElementalsWood)) max += maxLust_ElementalBondUrgesMulti() * statusEffectv2(StatusEffects.SummonedElementalsWood);
+				if (hasStatusEffect(StatusEffects.SummonedElementalsMetal)) max += maxLust_ElementalBondUrgesMulti() * statusEffectv2(StatusEffects.SummonedElementalsMetal);
+				if (hasStatusEffect(StatusEffects.SummonedElementalsIce)) max += maxLust_ElementalBondUrgesMulti() * statusEffectv2(StatusEffects.SummonedElementalsIce);
+				if (hasStatusEffect(StatusEffects.SummonedElementalsLightning)) max += maxLust_ElementalBondUrgesMulti() * statusEffectv2(StatusEffects.SummonedElementalsLightning);
+				if (hasStatusEffect(StatusEffects.SummonedElementalsDarkness)) max += maxLust_ElementalBondUrgesMulti() * statusEffectv2(StatusEffects.SummonedElementalsDarkness);
 			}
 			if (findPerk(PerkLib.BroBody) >= 0 || findPerk(PerkLib.BimboBody) >= 0 || findPerk(PerkLib.FutaForm) >= 0) max += 20;
 			if (findPerk(PerkLib.OmnibusGift) >= 0) max += 15;
 			if (findPerk(PerkLib.JobCourtesan) >= 0) max += 20;
 			if (findPerk(PerkLib.JobSeducer) >= 0) max += 10;
+			if (findPerk(PerkLib.PrestigeJobGreySage) >= 0) max += 100;
 			if (findPerk(PerkLib.DeityJobMunchkin) >= 0) max += 50;
 			if (findPerk(PerkLib.HclassHeavenTribulationSurvivor) >= 0) max += (50 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));
 			if (findPerk(PerkLib.GclassHeavenTribulationSurvivor) >= 0) max += (75 * (1 + flags[kFLAGS.NEW_GAME_PLUS_LEVEL]));
@@ -419,24 +434,43 @@ public class Creature extends Utils
 			if (findPerk(PerkLib.UnlockArdor3rdStage) >= 0) max += level;
 			if (findPerk(PerkLib.UnlockArdor4thStage) >= 0) max += level;
 			if (findPerk(PerkLib.AscensionUnlockedPotential) >= 0) max += level * 2;
+			if (findPerk(PerkLib.LimitBreakerHeart1stStage) >= 0) multimax += 0.05;
+			if (findPerk(PerkLib.LimitBreakerHeart2ndStage) >= 0) multimax += 0.1;
+			max *= multimax;
+			max = Math.round(max);
 			return max;
 		}
 		protected function maxHP_mult():Number {
 			return 1 + (countCockSocks("green") * 0.02);
 		}
-		protected function maxLust_mult():Number {
+		protected function maxLust_ElementalBondFleshMulti():Number {
+			var multiValue1a:Number = 1;
+			multiValue1a += (0.2 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			multiValue1a *= 25;
+			return multiValue1a;
+		}
+		protected function maxLust_ElementalBondUrgesMulti():Number {
+			var multiValue1b:Number = 1;
+			multiValue1b += (0.2 * flags[kFLAGS.NEW_GAME_PLUS_LEVEL]);
+			multiValue1b *= 5;
+			return multiValue1b;
+		}
+		public function maxLust_mult():Number {
 			return 1;
 		}
 		public function maxHP():Number {
 			var max:Number = Math.round(maxHP_base()*maxHP_mult());
-			return Math.min(999999,max);
+			return Math.min(3299999,max);
+		}
+		public function minHP():Number {
+			return 0;
 		}
 		public function maxLust():Number {
 			var max:Number = Math.round(maxLust_base()*maxLust_mult());
-			return Math.min(59999,max);
+			return Math.min(119999,max);
 		}
 		public function maxFatigue():Number {
-			return 100;
+			return 150;
 		}
 		public function maxWrath():Number {
 			return 0;
@@ -2567,6 +2601,7 @@ public class Creature extends Utils
 
 		public static const canPounceArms:Array = [
 			Arms.CAT,
+			Arms.DISPLACER,
 			Arms.LION,
 			Arms.SPHINX,
 			Arms.WOLF,
@@ -2581,7 +2616,7 @@ public class Creature extends Utils
 		//PC can swim underwater?
 		public function canSwimUnderwater():Boolean
 		{
-			if (gills.type != Gills.NONE)
+			if (gills.type != Gills.NONE || lowerBody == LowerBody.SCYLLA)
 				return true;	//dodać jeszcze trzeba bedzie tu efekt of itemów i inne opcje dające oddych. pod wodą
 			return false;
 		}
@@ -3761,6 +3796,7 @@ public class Creature extends Utils
 			var flychance:Number = 20;
 			if (findPerk(PerkLib.AdvancedAerialCombat) >= 0) flychance += 5;
 			if (findPerk(PerkLib.GreaterAerialCombat) >= 0) flychance += 15;
+			if (hasStatusEffect(StatusEffects.Flying)) chance += flychance;
 			if (findPerk(PerkLib.Evade) >= 0) {
 				chance += 5;
 				flychance += 5;
@@ -3781,16 +3817,28 @@ public class Creature extends Utils
 					flychance += 10;
 				}
 			}
+			if (findPerk(PerkLib.ElvenSense) >= 0) {
+				chance += 5;
+				flychance += 5;
+				if (findPerk(PerkLib.ElvishPeripheralNervSysEvolved) >= 0) {
+					chance += 10;
+					flychance += 10;
+				}
+				if (findPerk(PerkLib.ElvishPeripheralNervSysFinalForm) >= 0) {
+					chance += 15;
+					flychance += 15;
+				}
+			}
 			if (findPerk(PerkLib.Flexibility) >= 0) chance += 6;
 			if (findPerk(PerkLib.Misdirection) >= 0 && armorName == "red, high-society bodysuit") chance += 10;
 			//if (findPerk(PerkLib.Unhindered) >= 0 && meetUnhinderedReq()) chance += 10;
 			if (findPerk(PerkLib.Unhindered) >= 0 && (game.player.armorName == "arcane bangles" || game.player.armorName == "practically indecent steel armor" || game.player.armorName == "revealing chainmail bikini" || game.player.armorName == "slutty swimwear" || game.player.armorName == "barely-decent bondage straps" || game.player.armorName == "nothing")) chance += 10;
+			if (game.player.armor == game.armors.R_CHANG || game.player.armor == game.armors.R_QIPAO || game.player.armor == game.armors.G_CHANG || game.player.armor == game.armors.G_QIPAO || game.player.armor == game.armors.B_CHANG || game.player.armor == game.armors.B_QIPAO || game.player.armor == game.armors.P_CHANG || game.player.armor == game.armors.P_QIPAO) chance += 5;
 			if (findPerk(PerkLib.JunglesWanderer) >= 0) chance += 35;
 			if (hasStatusEffect(StatusEffects.Illusion)) {
 				if (findPerk(PerkLib.KitsuneThyroidGlandFinalForm) >= 0) chance += 20;
 				else chance += 10;
 			}
-			if (hasStatusEffect(StatusEffects.Flying)) chance += flychance;
 			if (hasStatusEffect(StatusEffects.HurricaneDance)) chance += 25;
 			if (hasStatusEffect(StatusEffects.BladeDance)) chance += 30;
 			if (game.player.cheshireScore() >= 11) {
@@ -3831,11 +3879,14 @@ public class Creature extends Utils
 			if (findPerk(PerkLib.GreaterEvade) >= 0) generalevasion += 15;
 			if (findPerk(PerkLib.JobRogue) >= 0) generalevasion += 5;
 			if (findPerk(PerkLib.Spectre) >= 0 && findPerk(PerkLib.Incorporeality) >= 0) generalevasion += 10;
+			if (findPerk(PerkLib.ElvenSense) >= 0) generalevasion += 5;
+			if (findPerk(PerkLib.ElvishPeripheralNervSysEvolved) >= 0) generalevasion += 10;
+			if (findPerk(PerkLib.ElvishPeripheralNervSysFinalForm) >= 0) generalevasion += 15;
 			if (generalevasion > 0) flyeavsion += generalevasion;
 			if (findPerk(PerkLib.AdvancedAerialCombat) >= 0) flyeavsion += 5;
 			if (findPerk(PerkLib.GreaterAerialCombat) >= 0) flyeavsion += 15;
 			// perks
-			if (findPerk(PerkLib.Evade) >= 0 && (roll < generalevasion)) return "Evade";
+			if ((findPerk(PerkLib.Evade) >= 0 || findPerk(PerkLib.ElvenSense) >= 0) && (roll < generalevasion)) return "Evade";
 			if (findPerk(PerkLib.Flexibility) >= 0 && (roll < 6)) return "Flexibility";
 			if (findPerk(PerkLib.Misdirection) >= 0 && armorName == "red, high-society bodysuit" && (roll < 10)) return "Misdirection";
 			//if (findPerk(PerkLib.Unhindered) >= 0 && meetUnhinderedReq() && (roll < 10)) return "Unhindered";
@@ -3983,4 +4034,4 @@ public class Creature extends Utils
 		}
 	}
 }
-
+

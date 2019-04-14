@@ -1,5 +1,5 @@
 /**
- * Created by Kitteh6660. Glacial Rift is a new area with level 30-40 encounters
+ * Created by Kitteh6660. Glacial Rift is a area with level 30-40 encounters	(outer lvl 60-80, inner lvl 85-110)
  * Currently a Work in Progress.
  * 
  * Please see this project. (This is not mine.) http://forum.fenoxo.com/thread-10719.html
@@ -46,7 +46,7 @@ use namespace CoC;
 			choice[choice.length] = 5; //Snow Lily
 			if ((flags[kFLAGS.HARPY_QUEEN_EXECUTED] != 0 || flags[kFLAGS.HEL_REDUCED_ENCOUNTER_RATE] > 0) && flags[kFLAGS.VALARIA_AT_CAMP] == 0 && flags[kFLAGS.TOOK_GOO_ARMOR] == 0 && player.armor != armors.GOOARMR) choice[choice.length] = 6; //Valeria
 			if (rand(3) == 0) choice[choice.length] = 7; //Freebie items!
-			if (rand(15) == 0 && player.hasKeyItem("Camp - Ornate Chest") < 0) choice[choice.length] = 8; //Ornate Chest
+			if (rand(15) == 0) choice[choice.length] = 8; //Ornate Chest or cache of gems/pile of stones
 			if (player.faceType == 24 && player.ears.type == 18 && player.arms.type == 10 && player.lowerBody == 33 && player.tailType == 29 && player.hasFur() && player.hairColor == "glacial white" && player.coatColor == "glacial white" && player.hasKeyItem("Fenrir Collar") < 0) choice[choice.length] = 9; //Fenrir ruined shrine
 			choice[choice.length] = 10; //Find nothing!
 			
@@ -61,13 +61,18 @@ use namespace CoC;
 				return;
 			}
 			//Etna
-			if (flags[kFLAGS.ETNA_FOLLOWER] < 1 && flags[kFLAGS.ETNA_TALKED_ABOUT_HER] == 2 && rand(5) == 0) {
+			if (flags[kFLAGS.ETNA_FOLLOWER] < 1 && flags[kFLAGS.ETNA_TALKED_ABOUT_HER] == 2 && !player.hasStatusEffect(StatusEffects.EtnaOff) && rand(5) == 0) {
 				SceneLib.etnaScene.repeatYandereEnc();
 				return;
 			}
 			//Anzu
 			if (flags[kFLAGS.ANZU_PALACE_UNLOCKED] < 1 && rand(5) == 0) {
 				SceneLib.anzu.initialPalaceEncounter();
+				return;
+			}
+			//Yu shop
+			if (flags[kFLAGS.YU_SHOP] < 2 && rand(5) == 0) {
+				SceneLib.glacialYuShop.YuIntro();
 				return;
 			}
 			select = choice[rand(choice.length)];
@@ -87,7 +92,7 @@ use namespace CoC;
 							outputText("You notice the bodies of a number of strange, bipedal horse-like creatures, all covered in thick white fur hanging from the nearby wall; laying beneath one is a strange metallic cylinder, not unlike a sword hilt, that gives off a strange, soft heat. ")
 						}
 						outputText("You brush off the snow and get to your feet, turning your head as you notice a passageway.\n\n");
-						flags[kFLAGS.MET_YETI_FIRST_TIME] = 1
+						flags[kFLAGS.MET_YETI_FIRST_TIME] = 1;
 					}
 					else {
 						outputText("Taking in the familiar surroundings, you realize you must have fallen through one of those chutes again. You begin to wonder if they are for the Yeti’s use, or if they are meant to bring in unsuspecting travelers. A meal delivery service set up with their limited ice magic? You shake off the snow on you and get to your feet. Looking to the passage, sure enough shadows dance along the walls as the thumps reach your ears.\n\n")
@@ -132,28 +137,61 @@ use namespace CoC;
 					addButton(0, "Fight", fightValeria);
 					addButton(1, "Submit", SceneLib.valeria.pcWinsValeriaSparDefeat, true);
 					break;
-				case 7: //Find item!
+				case 7: //Find Aria of item!
 					clearOutput();
-					var itemChooser:Number = rand(2);
-					if (itemChooser == 0) {
-						outputText("As you cross one of the floating ice sheets that make up the bulk of the rift, your eyes are drawn to a bright glint amidst the white backdrop.  As you eagerly approach the gleam, you discover a single tiny spire of ice, jutting from the surrounding snow.  You pluck it gently from the ground, give it a quick glance over and, satisfied that it won’t try and kill you, drop it in your bag. ");
-						inventory.takeItem(consumables.ICICLE_, camp.returnToCampUseOneHour);
+					if (rand(2) == 0) {
+						SceneLib.ariaScene.MelkieEncounter();
 					}
-					else if (itemChooser == 1) {
-						outputText("As you make your way across the icy wastes, you notice a small corked ivory horns half-buried under the snow, filled with a thick sweet-looking liquor. You stop and dig it up, sniffing curiously at the liquid. The scent reminds you of the honey secreted by the bee-girls of Mareth, though with hints of alcohol and... something else. You place the horns of mead in your bag and continue on your way. ");
-						inventory.takeItem(consumables.GODMEAD, camp.returnToCampUseOneHour);					
+					else {
+						var itemChooser:Number = rand(2);
+						if (itemChooser == 0) {
+							outputText("As you cross one of the floating ice sheets that make up the bulk of the rift, your eyes are drawn to a bright glint amidst the white backdrop.  As you eagerly approach the gleam, you discover a single tiny spire of ice, jutting from the surrounding snow.  You pluck it gently from the ground, give it a quick glance over and, satisfied that it won’t try and kill you, drop it in your bag. ");
+							inventory.takeItem(consumables.ICICLE_, camp.returnToCampUseOneHour);
+						}
+						else if (itemChooser == 1) {
+							outputText("As you make your way across the icy wastes, you notice a small corked ivory horns half-buried under the snow, filled with a thick sweet-looking liquor. You stop and dig it up, sniffing curiously at the liquid. The scent reminds you of the honey secreted by the bee-girls of Mareth, though with hints of alcohol and... something else. You place the horns of mead in your bag and continue on your way. ");
+							inventory.takeItem(consumables.GODMEAD, camp.returnToCampUseOneHour);					
+						}
 					}
 					break;
 				case 8: //Find ornate chest!
-					var gemsFound:int = 400 + rand(400);
-					outputText("While you're minding your own business, you spot an ornately-decorated chest somewhat buried in the snow. You walk on the snowy grounds you finally reach the chest. As you open the chest, you find " + String(gemsFound) + " gems inside the chest! You pocket the gems and haul the chest home. It looks nice and would make a good storage.");
-					player.createKeyItem("Camp - Ornate Chest", 0, 0, 0, 0);
-					for (var i:int = 0; i < 4; i++) {
-						inventory.createStorage();
+					if (player.hasKeyItem("Camp - Ornate Chest") < 0) {
+						var gemsFound:int = 400 + rand(400);
+						outputText("While you're minding your own business, you spot an ornately-decorated chest somewhat buried in the snow. You walk on the snowy grounds you finally reach the chest. As you open the chest, you find " + String(gemsFound) + " gems inside the chest! You pocket the gems and haul the chest home. It looks nice and would make a good storage.");
+						player.createKeyItem("Camp - Ornate Chest", 0, 0, 0, 0);
+						for (var i:int = 0; i < 4; i++) {
+							inventory.createStorage();
+						}
+						player.gems += gemsFound;
+						statScreenRefresh();
+						outputText("\n\n<b>You now have " + num2Text(inventory.itemStorageDirectGet().length) + " storage item slots at camp.</b>");
 					}
-					player.gems += gemsFound;
-					statScreenRefresh();
-					outputText("\n\n<b>You now have " + num2Text(inventory.itemStorageDirectGet().length) + " storage item slots at camp.</b>");
+					else {
+						if (rand(2) == 0) {
+							var stonesHarvested:Number = 10;
+							var stonesCapacity:Number = 301;
+							if (flags[kFLAGS.MATERIALS_STORAGE_UPGRADES] >= 4) stonesCapacity += 600;
+							outputText("You find a big amount of stone rubble in the rift and begin to harvest them for your constructions. ");
+							if (SceneLib.emberScene.followerEmber() || SceneLib.kihaFollower.followerKiha()) {
+								stonesHarvested += 10;
+								if (SceneLib.emberScene.followerEmber() && SceneLib.kihaFollower.followerKiha()) {
+									outputText("Kiha and Ember");
+									stonesHarvested += 10;
+								}
+								else if (SceneLib.emberScene.followerEmber()) outputText("Ember");
+								else outputText("Kiha");
+								outputText(" assist you into bringing as many as possible back to camp. ");
+							}
+							if (flags[kFLAGS.CAMP_CABIN_STONE_RESOURCES] + stonesHarvested < stonesCapacity) flags[kFLAGS.CAMP_CABIN_STONE_RESOURCES] += stonesHarvested;
+							else flags[kFLAGS.CAMP_CABIN_STONE_RESOURCES] = stonesCapacity;
+						}
+						else {
+							var gemsFound2:int = 40 + rand(160);
+							outputText("As you wander the rift your foot hits something burrowed under the snow. It is a treasure chest and it looks packed to the brim.\n\nInside was " + String(gemsFound) + " gems! ");
+							player.gems += gemsFound2;
+							statScreenRefresh();
+						}
+					}
 					doNext(camp.returnToCampUseOneHour);
 					break;
 				case 9: //Fenrir ruined shrine!

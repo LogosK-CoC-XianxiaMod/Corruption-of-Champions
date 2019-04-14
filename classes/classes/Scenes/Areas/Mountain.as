@@ -51,7 +51,8 @@ public class Mountain extends BaseContent
 						name  : "etna",
 						when  : function():Boolean {
 							return flags[kFLAGS.ETNA_FOLLOWER] < 1
-								   && flags[kFLAGS.ETNA_TALKED_ABOUT_HER] == 2;
+								   && flags[kFLAGS.ETNA_TALKED_ABOUT_HER] == 2
+								   && !player.hasStatusEffect(StatusEffects.EtnaOff);
 						},
 						chance: 0.5,
 						call  : SceneLib.etnaScene.repeatYandereEnc
@@ -117,9 +118,8 @@ public class Mountain extends BaseContent
 						},
 						when: function ():Boolean {
 							return player.hasStatusEffect(StatusEffects.WormsOn)
-								   && (!player.hasStatusEffect(StatusEffects.Infested) ||
-									   !player.hasStatusEffect(StatusEffects.MetWorms) ||
-									   !player.isGargoyle())
+								&& !player.hasStatusEffect(StatusEffects.Infested)
+								&& !player.isGargoyle();
 						},
 						call: wormsScene.wormEncounter
 					},{
@@ -167,7 +167,7 @@ public class Mountain extends BaseContent
 					}, {
 						name: "electra",
 						when: function ():Boolean {
-							return flags[kFLAGS.ELECTRA_FOLLOWER] < 1;
+							return flags[kFLAGS.ELECTRA_FOLLOWER] < 1 && !player.hasStatusEffect(StatusEffects.ElectraOff);
 						},
 						chance:0.5,
 						call: function ():void {
@@ -177,12 +177,18 @@ public class Mountain extends BaseContent
 					}, {
 						name: "diva",
 						when: function():Boolean {
-							return flags[kFLAGS.FACTORY_SHUTDOWN] > 0 && DivaScene.instance.status >= 0;
+							return flags[kFLAGS.FACTORY_SHUTDOWN] > 0 && DivaScene.instance.status >= 0 && !player.hasStatusEffect(StatusEffects.DivaOff);
 						},
 						call: DivaScene.encounter
 					},{
-						name:"darkelf",
-						call:darkelfScene.introDarkELfScout
+						name: "darkelf",
+						call: darkelfScene.introDarkELfScout
+					},{
+						name: "ted",
+						when: function():Boolean {
+							return flags[kFLAGS.TED_LVL_UP] >= 1 && flags[kFLAGS.TED_LVL_UP] < 4 && player.statusEffectv1(StatusEffects.CampSparingNpcsTimers4) < 1;
+						},
+						call: SceneLib.tedScene.introPostHiddenCave
 					},{
 						name:"hike",
 						chance:0.2,

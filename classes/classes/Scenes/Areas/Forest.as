@@ -11,6 +11,7 @@ import classes.Scenes.API.GroupEncounter;
 import classes.Scenes.Areas.Forest.*;
 import classes.Scenes.Holidays;
 import classes.Scenes.Monsters.DarkElfScene;
+import classes.Scenes.NPCs.AikoScene;
 import classes.Scenes.NPCs.CelessScene;
 import classes.Scenes.NPCs.JojoScene;
 import classes.Scenes.SceneLib;
@@ -34,6 +35,8 @@ use namespace CoC;
 		public var erlkingScene:ErlKingScene = new ErlKingScene();
 		public var alrauneScene:AlrauneScene = new AlrauneScene();
 		public var darkelfScene:DarkElfScene = new DarkElfScene();
+		public var aikoScene:AikoScene = new AikoScene();
+		public var nightmareScene:NightmareScene = new NightmareScene();
 		// public var dullahanScene:DullahanScene = new DullahanScene(); // [INTERMOD:8chan]
 
 		public function Forest() {
@@ -106,7 +109,7 @@ use namespace CoC;
 						chance: 0.6,
 						call  : function ():void {
 							if (flags[kFLAGS.TAMANI_DAUGHTER_PREGGO_COUNTDOWN] == 0
-								&& flags[kFLAGS.TAMANI_NUMBER_OF_DAUGHTERS] >= 24) {
+								&& flags[kFLAGS.TAMANI_NUMBER_OF_DAUGHTERS] >= 16) {
 								tamaniDaughtersScene.encounterTamanisDaughters();
 							} else {
 								tamaniScene.encounterTamani();
@@ -117,6 +120,15 @@ use namespace CoC;
 								   && player.gender > 0
 								   //&& (player.cockTotal() > 0 || player.hasKeyItem("Deluxe Dildo") < 0)
 								   && flags[kFLAGS.SOUL_SENSE_TAMANI] < 3;
+						}
+					}, {
+						name  : "Tamani_Daughters",
+						call  : encounterTamanisDaughtersFn,
+						when  : function ():Boolean {
+							return player.gender > 0
+								&& player.cockTotal() > 0
+								&& flags[kFLAGS.TAMANI_NUMBER_OF_DAUGHTERS] >= 16
+								&& flags[kFLAGS.SOUL_SENSE_TAMANI_DAUGHTERS] < 3;
 						}
 					}, {
 						name  : "Jojo",
@@ -186,7 +198,7 @@ use namespace CoC;
 					}, {
 						name: "diana",
 						when: function():Boolean {
-							return flags[kFLAGS.DIANA_FOLLOWER] == 5 && flags[kFLAGS.DIANA_AFFECTION] == 100;
+							return flags[kFLAGS.DIANA_FOLLOWER] == 5 && flags[kFLAGS.DIANA_AFFECTION] == 100 && !player.hasStatusEffect(StatusEffects.DianaOff);
 						},
 						chance: 0.5,
 						call: SceneLib.dianaScene.postNameForestEnc
@@ -201,24 +213,20 @@ use namespace CoC;
 								   && (flags[kFLAGS.ESSY_MET_IN_DUNGEON] == 0
 									   || flags[kFLAGS.TOLD_MOTHER_TO_RELEASE_ESSY] == 1)
 						},
-						chance: 0.1
+						chance: 0.25
 					}, {
 						name  : "bigjunk",
 						call  : bigJunkForestScene,
 						chance: bigJunkChance
-					},/* {
+					}, {
 						name: "celess-unicorn",
-						call: CelessScene.instance.celessUnicornIntro,
+						call: function():*{return CelessScene.instance.celessUnicornIntro();},
 						when: CelessScene.canMeetUnicorn
 					}, {
-						name: "celess-nightmare",
-						call: CelessScene.instance.celessUnicornIntro,
-						when: CelessScene.canMeetNightmare
-					}, {
 						name: "celess-armor",
-						call: CelessScene.instance.celessArmor,
+						call: function():*{return CelessScene.instance.celessArmor();},
 						when: CelessScene.canGetArmour
-					},*/ {
+					}, {
 						name  : "patchouli",
 						call  : SceneLib.patchouliScene.meetThePatchouli,
 						when  : function():Boolean {
@@ -266,14 +274,16 @@ use namespace CoC;
 				name  : "etna",
 				when  : function():Boolean {
 					return flags[kFLAGS.ETNA_FOLLOWER] < 1
-						   && flags[kFLAGS.ETNA_TALKED_ABOUT_HER] == 2;
+						   && flags[kFLAGS.ETNA_TALKED_ABOUT_HER] == 2
+						   && !player.hasStatusEffect(StatusEffects.EtnaOff);
 				},
 				call  : SceneLib.etnaScene.repeatYandereEnc
 			}, {
 				name  : "electra",
 				when  : function():Boolean {
 					return flags[kFLAGS.ELECTRA_FOLLOWER] < 1
-						   && flags[kFLAGS.ELECTRA_AFFECTION] >= 2;
+						   && flags[kFLAGS.ELECTRA_AFFECTION] >= 2
+						   && !player.hasStatusEffect(StatusEffects.ElectraOff);
 				},
 				chance: 0.5,
 				call  : SceneLib.electraScene.repeatDeepwoodsEnc
@@ -283,6 +293,12 @@ use namespace CoC;
 					return flags[kFLAGS.SOUL_SENSE_KITSUNE_MANSION] < 3;
 				},
 				call: kitsuneScene.enterTheTrickster
+			}, {
+				name: "celess-nightmare",
+				call: nightmareScene.nightmareIntro,
+				when: function():Boolean {
+					return player.hasStatusEffect(StatusEffects.CanMeetNightmare) && player.statusEffectv1(StatusEffects.CanMeetNightmare) < 1;
+				}
 			},/*{ // [INTERMOD:8chan]
 			 name: "dullahan",
 			 call: dullahanScene
@@ -294,7 +310,7 @@ use namespace CoC;
 				chance: 0.6,
 				call  : function ():void {
 					if (flags[kFLAGS.TAMANI_DAUGHTER_PREGGO_COUNTDOWN] == 0
-						&& flags[kFLAGS.TAMANI_NUMBER_OF_DAUGHTERS] >= 24) {
+						&& flags[kFLAGS.TAMANI_NUMBER_OF_DAUGHTERS] >= 16) {
 						tamaniDaughtersScene.encounterTamanisDaughters();
 					} else {
 						tamaniScene.encounterTamani();
@@ -305,6 +321,15 @@ use namespace CoC;
 						   && player.gender > 0
 						   //&& (player.cockTotal() > 0 || player.hasKeyItem("Deluxe Dildo") < 0)
 						   && flags[kFLAGS.SOUL_SENSE_TAMANI] < 3;
+				}
+			}, {
+				name  : "Tamani_Daughters",
+				call  : encounterTamanisDaughtersFn,
+				when  : function ():Boolean {
+					return player.gender > 0
+						   && player.cockTotal() > 0
+						   && flags[kFLAGS.TAMANI_NUMBER_OF_DAUGHTERS] >= 16
+						   && flags[kFLAGS.SOUL_SENSE_TAMANI_DAUGHTERS] < 3;
 				}
 			}, {
 				name: "faerie",
@@ -360,6 +385,20 @@ use namespace CoC;
 				call  : darkelfScene.introDarkELfScout,
 				chance: 0.8
 			}, {
+				name: "aiko",
+				call: aikoScene.encounterAiko,
+				when: function ():Boolean {
+					return (player.level > 35 
+						&& flags[kFLAGS.AIKO_TIMES_MET] < 4 
+						&& flags[kFLAGS.AIKO_BALL_RETURNED] != 2);
+				}
+			}, {
+				name: "ted",
+				when: function():Boolean {
+					return flags[kFLAGS.TED_LVL_UP] >= 1 && flags[kFLAGS.TED_LVL_UP] < 4 && player.statusEffectv1(StatusEffects.CampSparingNpcsTimers4) < 1;
+				},
+				call: SceneLib.tedScene.introPostHiddenCave
+			},{
 				name: "dungeon",
 				call: SceneLib.dungeons.enterDeepCave,
 				when: SceneLib.dungeons.canFindDeepCave
@@ -592,6 +631,10 @@ use namespace CoC;
 			} else if (JojoScene.monk >= 2) { //Angry/Horny Jojo
 				SceneLib.jojoScene.corruptJojoEncounter();
 			}
+		}
+		private function encounterTamanisDaughtersFn():void {
+			clearOutput();
+			tamaniDaughtersScene.encounterTamanisDaughters();
 		}
 		private function tentacleBeastEncounterFn():void {
 			clearOutput();

@@ -4,9 +4,13 @@
  */
 package classes.Scenes.Areas.DefiledRavine 
 {
-	import classes.*;
-	import classes.internals.WeightedDrop;
-	import classes.GlobalFlags.kFLAGS;
+import classes.*;
+import classes.BodyParts.Butt;
+import classes.BodyParts.Hips;
+import classes.BodyParts.Horns;
+import classes.BodyParts.Tail;
+import classes.Scenes.SceneLib;
+import classes.internals.WeightedDrop;
 	
 	public class DemonPackDefiledRavine extends Monster
 	{
@@ -33,7 +37,7 @@ package classes.Scenes.Areas.DefiledRavine
 			this.a = "the ";
 			this.short = "large demons pack";
 			this.imageName = "largedemonmob";
-			this.long= "The group is composed of roughly thirty tan-skinned demons, mostly humanoid in shape with many and varied corruptions across the mob. You see demonic high heels, twisting horns and swinging cocks of all shapes and sizes. You also make out plenty of breasts ranging from tiny ones to a pair that requires a second person to carry them, and with those breasts a wide range of pussies, dripping and dry, sometimes nestled below some form of demonic dick.  The small group carries no weapons and what little clothing they wear is well-shredded, except for one hefty male wearing mage cloak and what appears to be snakeskin across his broad shoulders.  You spot an odd patch that reads, \"<i>44rd East Mage Company: Vaginal Clearance</i>\" on his shoulder.";
+			this.long= "The group is composed of roughly thirty tan-skinned demons, mostly humanoid in shape with many and varied corruptions across the mob. You see demonic high heels, twisting horns and swinging cocks of all shapes and sizes. You also make out plenty of breasts ranging from tiny ones to a pair that requires a second person to carry them, and with those breasts a wide range of pussies, dripping and dry, sometimes nestled below some form of demonic dick.  The small group carries no weapons and what little clothing they wear is well-shredded, except for one hefty male wearing mage cloak and what appears to be snakeskin across his broad shoulders.  You spot an odd patch that reads, \"<i>44th East Mage Company: Vaginal Clearance</i>\" on his shoulder.";
 			this.plural = true;
 			this.pronoun1 = "they";
 			this.pronoun2 = "them";
@@ -73,8 +77,8 @@ package classes.Scenes.Areas.DefiledRavine
 							consumables.INCUBID,
 							consumables.OVIELIX,
 							consumables.B__BOOK);
-			this.special1 = game.combat.packAttack;
-			this.special2 = game.combat.lustAttack;
+			this.special1 = SceneLib.combat.packAttack;
+			this.special2 = SceneLib.combat.lustAttack;
 			this.tailType = TAIL_TYPE_DEMONIC;
 			this.horns.type = HORNS_DEMON;
 			this.horns.count = 2;

@@ -814,6 +814,7 @@ public class DebugMenu extends BaseContent
 			[Skin.PATTERN_ORCA_UNDERBODY, "2 ORCA_UNDERBODY"],
 			[Skin.PATTERN_BATTLE_TATTOO, "5 BATTLE_TATTOO"],
 			[Skin.PATTERN_LIGHTNING_SHAPED_TATTOO, "7 LIGHTNING_SHAPED_TATTOO"],
+			[Skin.PATTERN_SCAR_SHAPED_TATTOO, "9 SCAR_SHAPED_TATTOO"],
 		];
 		private static const PATTERN_COAT_TYPES:Array = [
 			[Skin.PATTERN_NONE, "0 NONE"],
@@ -1022,6 +1023,8 @@ public class DebugMenu extends BaseContent
 			[Face.CHESHIRE_SMILE, "40 CHESHIRE_SMILE"],
 			[Face.AVIAN, "41 AVIAN"],
 			[Face.WOLF_FANGS, "42 WOLF_FANGS"],
+			[Face.ORC_FANGS, "43 ORC_FANGS"],
+			[Face.ANIMAL_TOOTHS, "44 ANIMAL_TOOTHS"],
 		];
 		private static const TONGUE_TYPE_CONSTANTS:Array = [
 			[Tongue.HUMAN, "0 HUMAN"],
@@ -1032,6 +1035,7 @@ public class DebugMenu extends BaseContent
 			[Tongue.CAT, "5 CAT"],
 			[Tongue.ELF, "6 ELF"],
 			[Tongue.DOG, "7 DOG"],
+			[Tongue.CAVE_WYRM, "8 CAVE_WYRM"],
 		];
 		private static const EYE_TYPE_CONSTANTS:Array = [
 			[Eyes.HUMAN, "0 HUMAN"],
@@ -1054,6 +1058,8 @@ public class DebugMenu extends BaseContent
 			[Eyes.FERAL, "17 FERAL"],
 			[Eyes.GRYPHON, "18 GRYPHON"],
 			[Eyes.INFERNAL, "19 INFERNAL"],
+			[Eyes.ORC, "20 ORC"],
+			[Eyes.CAVE_WYRM, "21 CAVE_WYRM"],
 		];
 		private static const EAR_TYPE_CONSTANTS:Array    = [
 			[Ears.HUMAN, "0 HUMAN"],
@@ -1088,6 +1094,7 @@ public class DebugMenu extends BaseContent
 			[Ears.RED_PANDA, "29 RED_PANDA"],
 			[Ears.AVIAN, "30 AVIAN"],
 			[Ears.GRYPHON, "31 GRYPHON"],
+			[Ears.CAVE_WYRM, "32 CAVE_WYRM"],
 		];
 		private static const HORN_TYPE_CONSTANTS:Array    = [
 			[Horns.NONE, "0 NONE"],
@@ -1246,6 +1253,11 @@ public class DebugMenu extends BaseContent
 			[Arms.AVIAN, "26 AVIAN"],
 			[Arms.GRYPHON, "27 GRYPHON"],
 			[Arms.SPHINX, "28 SPHINX"],
+			[Arms.PIG, "29 PIG"],
+			[Arms.BOAR, "30 BOAR"],
+			[Arms.ORC, "31 ORC"],
+			[Arms.DISPLACER, "32 DISPLACER"],
+			[Arms.CAVE_WYRM, "33 CAVE_WYRM"],
 		];
 		private static const CLAW_TYPE_CONSTANTS:Array = [
 			[Claws.NORMAL, "0 NORMAL"],
@@ -1301,6 +1313,9 @@ public class DebugMenu extends BaseContent
 			[Tail.GRIFFIN, "37 GRIFFIN"],
 			[Tail.LION, "38 LION"],
 			[Tail.BURNING, "39 BURNING"],
+			[Tail.NEKOMATA_FORKED_1_3, "40 NEKOMATA FORKED 1/3"],
+			[Tail.NEKOMATA_FORKED_2_3, "41 NEKOMATA FORKED 2/3"],
+			[Tail.CAVE_WYRM, "42 CAVE WYRM"],
 		];
 		private static const TAIL_COUNT_CONSTANTS:Array = [
 			[0,"0"],1,2,3,4,
@@ -1391,6 +1406,8 @@ public class DebugMenu extends BaseContent
 			[LowerBody.GARGOYLE_2, "43 GARGOYLE_2"],
 			[LowerBody.AVIAN, "44 AVIAN"],
 			[LowerBody.GRYPHON, "45 GRYPHON"],
+			[LowerBody.ORC, "46 ORC"],
+			[LowerBody.CAVE_WYRM, "47 CAVE_WYRM"],
 		];
 		private static const LEG_COUNT_CONSTANTS:Array = [
 			1,2,4,6,8,
@@ -1408,6 +1425,7 @@ public class DebugMenu extends BaseContent
 			[RearBody.RAIJU_MANE, "8 RAIJU_MANE"],
 			[RearBody.BAT_COLLAR, "9 BAT_COLLAR"],
 			[RearBody.WOLF_COLLAR, "10 WOLF_COLLAR"],
+			[RearBody.DISPLACER_TENTACLES, "11 DISPLACER_TENTACLES"],
 		];
 		private function changeArmType(page:int=0,setIdx:int=-1):void {
 			if (setIdx>=0) player.arms.type = setIdx;

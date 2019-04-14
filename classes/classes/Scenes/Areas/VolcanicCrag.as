@@ -1,5 +1,5 @@
 /**
- * Created by Kitteh6660. Volcanic Crag is a new endgame area with level 30 encounters.
+ * Created by Kitteh6660. Volcanic Crag is a area with level 30 encounters.	(outer lvl 60-80, inner lvl 85-110)
  * Currently a Work in Progress.
  * 
  * This zone was mentioned in Glacial Rift doc.
@@ -52,7 +52,7 @@ public class VolcanicCrag extends BaseContent
 				return;
 			}
 			//Etna
-			if (flags[kFLAGS.ETNA_FOLLOWER] < 1 && flags[kFLAGS.ETNA_TALKED_ABOUT_HER] == 2 && rand(5) == 0) {
+			if (flags[kFLAGS.ETNA_FOLLOWER] < 1 && flags[kFLAGS.ETNA_TALKED_ABOUT_HER] == 2 && !player.hasStatusEffect(StatusEffects.EtnaOff) && rand(5) == 0) {
 				SceneLib.etnaScene.repeatYandereEnc();
 				return;
 			}

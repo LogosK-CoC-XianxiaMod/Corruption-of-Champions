@@ -37,7 +37,6 @@ public class Alraune extends Monster
 		}
 		
 		public function alraunePollenCloud():void {
-			clearOutput();
 			if (Holidays.isHalloween()) outputText("Jack-O-Raune");
 			else outputText("The alraune");
 			outputText(" giggles as she unleashes a thick cloud of pollen in your general direction.\n\n");
@@ -47,7 +46,6 @@ public class Alraune extends Monster
 		}
 		
 		public function alrauneStrangulate():void {
-			clearOutput();
 			if (Holidays.isHalloween()) outputText("Jack-O-Raune");
 			else outputText("The alraune");
 			outputText("’s vines suddenly wrap tight around your neck and strangle you, preventing you from pronouncing any incantations. The ");
@@ -60,7 +58,6 @@ public class Alraune extends Monster
 		}
 		
 		public function alrauneTeaseAttack():void {
-			clearOutput();
 			if (rand(2) == 1) {
 				if (Holidays.isHalloween()) outputText("Jack-O-Raune");
 				else outputText("The alraune");
@@ -80,7 +77,6 @@ public class Alraune extends Monster
 		}
 		
 		public function alrauneHaloweenSpecial():void {
-			clearOutput();
 			outputText("The Jack-O-Raune suddenly starts laughing and throwing small pumpkins at you. They explode upon contact splashing you with what seems to be aphrodisiac.\n\n");
 			alrauneHaloweenSpecial1();
 			alrauneHaloweenSpecial1();
@@ -192,7 +188,7 @@ public class Alraune extends Monster
 			this.createPerk(PerkLib.FireVulnerability, 0, 0, 0, 0);
 			this.createPerk(PerkLib.EnemyPlantType, 0, 0, 0, 0);
 			this.createStatusEffect(StatusEffects.GenericRunDisabled, 0, 0, 0, 0);
-			createStatusEffect(StatusEffects.Level,4,0,0,0);
+			createStatusEffect(StatusEffects.Level,6,0,0,0);
 			checkMonster();
 		}
 		

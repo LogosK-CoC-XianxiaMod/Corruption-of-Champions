@@ -25,6 +25,13 @@ public class ManticoreVenom extends Consumable {
 		var changeLimit:Number = 1;
 		if (rand(3) == 0) changeLimit++;
 		if (player.findPerk(PerkLib.HistoryAlchemist) >= 0 || player.findPerk(PerkLib.PastLifeAlchemist) >= 0) changeLimit++;
+		if (player.findPerk(PerkLib.Enhancement) >= 0) changeLimit++;
+		if (player.findPerk(PerkLib.Fusion) >= 0) changeLimit++;
+		if (player.findPerk(PerkLib.Enchantment) >= 0) changeLimit++;
+		if (player.findPerk(PerkLib.Refinement) >= 0) changeLimit++;
+		if (player.findPerk(PerkLib.Saturation) >= 0) changeLimit++;
+		if (player.findPerk(PerkLib.Perfection) >= 0) changeLimit++;
+		if (player.findPerk(PerkLib.Creationism) >= 0) changeLimit++;
 		if (player.findPerk(PerkLib.EzekielBlessing) >= 0) changeLimit++;
 		if (player.findPerk(PerkLib.TransformationResistance) >= 0) changeLimit--;
 		player.slimeFeed();
@@ -94,7 +101,8 @@ public class ManticoreVenom extends Consumable {
 		}
 		//PussyTail (only females)
 		if ((player.gender == 2 || (player.gender == 3 && player.mf("m", "f") == "f")) && player.tailType == Tail.SCORPION && changes < changeLimit && player.tailType != Tail.MANTICORE_PUSSYTAIL && rand(2) == 0) {
-			outputText("\n\nYour scorpion tail starts shifting as your stinger falls to the ground, leaving you with a wide hole at the tip of your tail. You have a feeling of emptiness in your tail, like if it was hollowed from the inside. The end of your tail where the stinger used to be suddenly explodes into a flower-like bulb of flesh. The petals open into what looks like the inside of a pussy, its folds moist and well lubricated. Right after the previous transformation’s finished, spikes starts to grow out of the bulbous tip giving your tail tip the appearance of a spiked bulb. Flinging your tail randomly to test your new appendage you shoot one of them straight into a nearby tree. You idly wonder what it will feels like to milk men with this.  <b>It seems you've grown the tail of a manticore.</b>");
+			outputText("\n\nYour scorpion tail starts shifting as your stinger falls to the ground, leaving you with a wide hole at the tip of your tail. You have a feeling of emptiness in your tail, like if it was hollowed from the inside. The end of your tail where the stinger used to be suddenly explodes into a flower-like bulb of flesh. The petals open into what looks like the inside of a pussy, its folds moist and well lubricated. Right after the previous transformation’s finished, spikes starts to grow out of the bulbous tip giving your tail tip the appearance of a spiked bulb. ");
+			outputText("Flinging your tail randomly to test your new appendage you shoot one of them straight into a nearby tree. You idly wonder what it will feels like to milk men with this.  <b>It seems you've grown the tail of a manticore.</b>");
 			mutations.setTailType(Tail.MANTICORE_PUSSYTAIL);
 			changes++;
 		}
@@ -107,7 +115,7 @@ public class ManticoreVenom extends Consumable {
 			}
 			//Grow small manticore wings if player has none.
 			else if (player.wings.type == Wings.NONE) {
-				outputText("\n\nYou scream something akin to a roar from the tremendous amount of pain you're suddenly experiencing as something starts to push out from your back. Your claws start digging large marks into the ground as the things stretch out and burst through your skin. Large bones covered in a thin, yet sturdy layer of skin, forming a pair of small bat-like wings slowly push out before finally staying in place. They are too small right now to allow you to take flight but they sure look good on you.  <b>You now have small manticore wings.</b>.");
+				outputText("\n\nYou scream something akin to a roar from the tremendous amount of pain you're suddenly experiencing as something starts to push out from your back. Your claws start digging large marks into the ground as the things stretch out and burst through your skin. Large bones covered in a thin, yet sturdy layer of skin, forming a pair of small bat-like wings slowly push out before finally staying in place. They are too small right now to allow you to take flight but they sure look good on you.  <b>You now have small manticore wings.</b>");
 				mutations.setWingType(Wings.MANTICORE_LIKE_SMALL, "small manticore-like");
 			}
 			//Remove old wings

@@ -41,6 +41,10 @@ import coc.xxc.StoryContext;
 		{
 			EventParser.cheatTime(time, needNext);
 		}
+		protected function cheatTime2(time:Number, needNext:Boolean = false):void
+		{
+			EventParser.cheatTime2(time, needNext);
+		}
 		/*protected function incrementDay(time:Number):void
 		{
 			CoC.instance.incrementDay(time);
@@ -79,6 +83,11 @@ import coc.xxc.StoryContext;
 		protected function awardAchievement(title:String, achievement:*, display:Boolean = true, nl:Boolean = false, nl2:Boolean = true):void
 		{
 			return EngineCore.awardAchievement(title, achievement, display, nl, nl2);
+		}
+
+		protected function isLunarNewYear():Boolean
+		{
+			return Holidays.isLunarNewYear();
 		}
 		
 		protected function isHalloween():Boolean

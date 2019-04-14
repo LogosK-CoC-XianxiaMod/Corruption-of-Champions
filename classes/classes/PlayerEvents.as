@@ -15,6 +15,7 @@ import classes.GlobalFlags.*;
 import classes.Items.*;
 import classes.Scenes.Dreams;
 import classes.Scenes.Holidays;
+import classes.Scenes.NPCs.CelessScene;
 import classes.Scenes.NPCs.DivaScene;
 import classes.Scenes.SceneLib;
 import classes.Scenes.Camp.UniqueCampScenes;
@@ -151,12 +152,21 @@ public class PlayerEvents extends BaseContent implements TimeAwareInterface {
 					player.removeStatusEffect(StatusEffects.CampSparingNpcsTimers3);
 				}
 			}
+			if (player.hasStatusEffect(StatusEffects.CampSparingNpcsTimers4)) {
+				if (player.statusEffectv1(StatusEffects.CampSparingNpcsTimers4) > 0) player.addStatusValue(StatusEffects.CampSparingNpcsTimers4, 1, -1);
+				if (player.statusEffectv2(StatusEffects.CampSparingNpcsTimers4) > 0) player.addStatusValue(StatusEffects.CampSparingNpcsTimers4, 2, -1);
+				if (player.statusEffectv3(StatusEffects.CampSparingNpcsTimers4) > 0) player.addStatusValue(StatusEffects.CampSparingNpcsTimers4, 3, -1);
+				if (player.statusEffectv4(StatusEffects.CampSparingNpcsTimers4) > 0) player.addStatusValue(StatusEffects.CampSparingNpcsTimers4, 4, -1);
+				if (player.statusEffectv1(StatusEffects.CampSparingNpcsTimers4) <= 0 && player.statusEffectv2(StatusEffects.CampSparingNpcsTimers4) <= 0 && player.statusEffectv3(StatusEffects.CampSparingNpcsTimers4) <= 0 && player.statusEffectv4(StatusEffects.CampSparingNpcsTimers4) <= 0) {
+					player.removeStatusEffect(StatusEffects.CampSparingNpcsTimers4);
+				}
+			}
 			//Sidonie checks
 			if (flags[kFLAGS.SIDONIE_RECOLLECTION] > 0) flags[kFLAGS.SIDONIE_RECOLLECTION]--;
-			if (flags[kFLAGS.LUNA_FOLLOWER] >= 4) {
-				if (flags[kFLAGS.LUNA_JEALOUSY] < 200) flags[kFLAGS.LUNA_JEALOUSY]++;
-				if ((flags[kFLAGS.LUNA_FOLLOWER] == 6 || flags[kFLAGS.LUNA_FOLLOWER] == 8 || flags[kFLAGS.LUNA_FOLLOWER] == 10 || flags[kFLAGS.LUNA_FOLLOWER] == 12 || flags[kFLAGS.LUNA_FOLLOWER] == 14 || flags[kFLAGS.LUNA_FOLLOWER] == 16) && flags[kFLAGS.LUNA_JEALOUSY] < 50) flags[kFLAGS.LUNA_FOLLOWER]--;
-				if ((flags[kFLAGS.LUNA_FOLLOWER] == 5 || flags[kFLAGS.LUNA_FOLLOWER] == 7 || flags[kFLAGS.LUNA_FOLLOWER] == 9 || flags[kFLAGS.LUNA_FOLLOWER] == 11 || flags[kFLAGS.LUNA_FOLLOWER] == 13 || flags[kFLAGS.LUNA_FOLLOWER] == 15) && flags[kFLAGS.LUNA_JEALOUSY] >= 50 && (CoC.instance.model.time.hours > 6 && CoC.instance.model.time.hours < 23)) SceneLib.lunaFollower.warrningAboutJelously();
+			if (flags[kFLAGS.LUNA_FOLLOWER] >= 4 && !player.hasStatusEffect(StatusEffects.LunaOff)) {
+				if (flags[kFLAGS.LUNA_JEALOUSY] < 400) flags[kFLAGS.LUNA_JEALOUSY]++;
+				if ((flags[kFLAGS.LUNA_FOLLOWER] == 6 || flags[kFLAGS.LUNA_FOLLOWER] == 8 || flags[kFLAGS.LUNA_FOLLOWER] == 10 || flags[kFLAGS.LUNA_FOLLOWER] == 12 || flags[kFLAGS.LUNA_FOLLOWER] == 14 || flags[kFLAGS.LUNA_FOLLOWER] == 16) && flags[kFLAGS.LUNA_JEALOUSY] < 100) flags[kFLAGS.LUNA_FOLLOWER]--;
+				if ((flags[kFLAGS.LUNA_FOLLOWER] == 5 || flags[kFLAGS.LUNA_FOLLOWER] == 7 || flags[kFLAGS.LUNA_FOLLOWER] == 9 || flags[kFLAGS.LUNA_FOLLOWER] == 11 || flags[kFLAGS.LUNA_FOLLOWER] == 13 || flags[kFLAGS.LUNA_FOLLOWER] == 15) && flags[kFLAGS.LUNA_JEALOUSY] >= 100 && (CoC.instance.model.time.hours > 6 && CoC.instance.model.time.hours < 23)) SceneLib.lunaFollower.warrningAboutJelously();
 			}
 			Begin("PlayerEvents","hourlyCheckRacialPerks");
 			needNext = hourlyCheckRacialPerks();
@@ -462,7 +472,6 @@ public class PlayerEvents extends BaseContent implements TimeAwareInterface {
 				player.removePerk(PerkLib.Lycanthropy);
 				needNext = true;
 			}
-			
 			//No better place for these since the code for the event is part of CoC.as or one of its included files
 			if (flags[kFLAGS.TIME_SINCE_VALA_ATTEMPTED_RAPE_PC] > 0) flags[kFLAGS.TIME_SINCE_VALA_ATTEMPTED_RAPE_PC]--; //Vala post-rape countdown
 			if (flags[kFLAGS.GATS_ANGEL_TIME_TO_FIND_KEY] > 0 && flags[kFLAGS.GATS_ANGEL_TIME_TO_FIND_KEY] < 500) flags[kFLAGS.GATS_ANGEL_TIME_TO_FIND_KEY]++;
@@ -585,7 +594,10 @@ if (CoC.instance.model.time.hours > 23) { //Once per day
 				if (player.hasStatusEffect(StatusEffects.CooldownSideWinder)) player.removeStatusEffect(StatusEffects.CooldownSideWinder);
 				//Daily Fishery production
 				if (flags[kFLAGS.CAMP_UPGRADES_FISHERY] > 0) {
-					if (flags[kFLAGS.IZMA_FOLLOWER_STATUS] == 1) flags[kFLAGS.FISHES_STORED_AT_FISHERY] += 5;
+					if (flags[kFLAGS.IZMA_FOLLOWER_STATUS] == 1) {
+						flags[kFLAGS.FISHES_STORED_AT_FISHERY] += 5;
+						if (flags[kFLAGS.CAMP_UPGRADES_FISHERY] >= 2) flags[kFLAGS.FISHES_STORED_AT_FISHERY] += 2;
+					}
 					if (flags[kFLAGS.CEANI_FOLLOWER] > 0) flags[kFLAGS.FISHES_STORED_AT_FISHERY] -= 5;
 				}
 				//Daily regeneration of soulforce for non soul cultivators && Metamorph bonus SF gain till cap
@@ -609,59 +621,58 @@ if (CoC.instance.model.time.hours > 23) { //Once per day
 				if (player.hasStatusEffect(StatusEffects.CampLunaMishaps2)) player.removeStatusEffect(StatusEffects.CampLunaMishaps2);
 				if (player.hasStatusEffect(StatusEffects.CampLunaMishaps3)) player.removeStatusEffect(StatusEffects.CampLunaMishaps3);
 				//Full moon
-				if (flags[kFLAGS.LUNA_FOLLOWER] >= 4) {
-					flags[kFLAGS.LUNA_MOON_CYCLE]++;
-					if (flags[kFLAGS.LUNA_MOON_CYCLE] > 8) flags[kFLAGS.LUNA_MOON_CYCLE] = 1;
-					if (player.hasPerk(PerkLib.Lycanthropy)) {
-						var changeV:Number = 10 * (player.newGamePlusMod() + 1);
-						if (flags[kFLAGS.LUNA_MOON_CYCLE] == 5) {
-							outputText("<b>\nYou can’t help but notice the moon is almost full as it rises up.  It seems transfixing like it is calling to you.");
-							outputText("\n\nYou feel your might increasing as the moon draws closer to fullness.</b>\n");
-							dynStats("str", changeV, "tou", changeV, "spe", changeV);
-							player.setPerkValue(PerkLib.Lycanthropy,1,10);
-						}
-						if (flags[kFLAGS.LUNA_MOON_CYCLE] == 6) {
-							outputText("<b>\nWhen the almost-full moon appears it causes your heart to race with excitement.  You hearing seems better than ever.  Every breath brings a rush of smells through your nose that seem much more pronounced than they should.");
-							outputText("\n\nYou feel your might increasing as the moon draws closer to fullness.</b>\n");
-							dynStats("str", changeV, "tou", changeV, "spe", changeV);
-							player.setPerkValue(PerkLib.Lycanthropy,1,20);
-						}
-						if (flags[kFLAGS.LUNA_MOON_CYCLE] == 7) {
-							outputText("<b>\nYou gaze at the moon and it seems to gaze back into you.   Something is coming and it won’t be long now.   You feel like you are crawling in your skin.  It feels like tear out of your body and be born anew.");
-							outputText("\n\nYou feel your might increasing as the moon draws closer to fullness. It's almost time.</b>\n");
-							dynStats("str", changeV, "tou", changeV, "spe", changeV);
-							player.setPerkValue(PerkLib.Lycanthropy,1,30);
-						}
-						if (flags[kFLAGS.LUNA_MOON_CYCLE] == 8) {
-							outputText("<b>\nYou are at the peak of your strength, it's a full moon tonight and you feel yourself burning with maddening desire as you go into " + player.mf("rut","heat") + ".</b>\n");
-							dynStats("str", changeV, "tou", changeV, "spe", changeV);
-							player.setPerkValue(PerkLib.Lycanthropy,1,40);
-							if (player.hasCock() || (player.gender == 3 && rand(2) == 0)) player.goIntoRut(false);
-							else if (player.hasVagina()) player.goIntoHeat(false);
-						}
-						if (flags[kFLAGS.LUNA_MOON_CYCLE] == 1) {
-							outputText("<b>\nThe moon is waning, you are feeling less powerful.</b>\n");
-							dynStats("str", -changeV, "tou", -changeV, "spe", -changeV);
-							player.setPerkValue(PerkLib.Lycanthropy,1,30);
-						}
-						if (flags[kFLAGS.LUNA_MOON_CYCLE] == 2) {
-							outputText("<b>\nThe moon is waning, you are feeling less powerful.</b>\n");
-							dynStats("str", -changeV, "tou", -changeV, "spe", -changeV);
-							player.setPerkValue(PerkLib.Lycanthropy,1,20);
-						}
-						if (flags[kFLAGS.LUNA_MOON_CYCLE] == 3) {
-							outputText("<b>\nThe moon is waning, you are feeling less powerful.</b>\n");
-							dynStats("str", -changeV, "tou", -changeV, "spe", -changeV);
-							player.setPerkValue(PerkLib.Lycanthropy,1,10);
-						}
-						if (flags[kFLAGS.LUNA_MOON_CYCLE] == 4) {
-							outputText("<b>\nIt's a new moon tonight, you feel somewhat weak.</b>\n");
-							dynStats("str", -changeV, "tou", -changeV, "spe", -changeV);
-							player.setPerkValue(PerkLib.Lycanthropy,1,0);
-						}
-						needNext = true;
+				flags[kFLAGS.LUNA_MOON_CYCLE]++;
+				if (flags[kFLAGS.LUNA_MOON_CYCLE] > 8) flags[kFLAGS.LUNA_MOON_CYCLE] = 1;
+				if (player.hasPerk(PerkLib.Lycanthropy)) {
+					var changeV:Number = 10 * (player.newGamePlusMod() + 1);
+					if (flags[kFLAGS.LUNA_MOON_CYCLE] == 5) {
+						outputText("<b>\nYou can’t help but notice the moon is almost full as it rises up.  It seems transfixing like it is calling to you.");
+						outputText("\n\nYou feel your might increasing as the moon draws closer to fullness.</b>\n");
+						dynStats("str", changeV, "tou", changeV, "spe", changeV);
+						player.setPerkValue(PerkLib.Lycanthropy,1,10);
 					}
+					if (flags[kFLAGS.LUNA_MOON_CYCLE] == 6) {
+						outputText("<b>\nWhen the almost-full moon appears it causes your heart to race with excitement.  You hearing seems better than ever.  Every breath brings a rush of smells through your nose that seem much more pronounced than they should.");
+						outputText("\n\nYou feel your might increasing as the moon draws closer to fullness.</b>\n");
+						dynStats("str", changeV, "tou", changeV, "spe", changeV);
+						player.setPerkValue(PerkLib.Lycanthropy,1,20);
+					}
+					if (flags[kFLAGS.LUNA_MOON_CYCLE] == 7) {
+						outputText("<b>\nYou gaze at the moon and it seems to gaze back into you.   Something is coming and it won’t be long now.   You feel like you are crawling in your skin.  It feels like tear out of your body and be born anew.");
+						outputText("\n\nYou feel your might increasing as the moon draws closer to fullness. It's almost time.</b>\n");
+						dynStats("str", changeV, "tou", changeV, "spe", changeV);
+						player.setPerkValue(PerkLib.Lycanthropy,1,30);
+					}
+					if (flags[kFLAGS.LUNA_MOON_CYCLE] == 8) {
+						outputText("<b>\nYou are at the peak of your strength, it's a full moon tonight and you feel yourself burning with maddening desire as you go into " + player.mf("rut","heat") + ".</b>\n");
+						dynStats("str", changeV, "tou", changeV, "spe", changeV);
+						player.setPerkValue(PerkLib.Lycanthropy,1,40);
+						if (player.hasCock() || (player.gender == 3 && rand(2) == 0)) player.goIntoRut(false);
+						else if (player.hasVagina()) player.goIntoHeat(false);
+					}
+					if (flags[kFLAGS.LUNA_MOON_CYCLE] == 1) {
+						outputText("<b>\nThe moon is waning, you are feeling less powerful.</b>\n");
+						dynStats("str", -changeV, "tou", -changeV, "spe", -changeV);
+						player.setPerkValue(PerkLib.Lycanthropy,1,30);
+					}
+					if (flags[kFLAGS.LUNA_MOON_CYCLE] == 2) {
+						outputText("<b>\nThe moon is waning, you are feeling less powerful.</b>\n");
+						dynStats("str", -changeV, "tou", -changeV, "spe", -changeV);
+						player.setPerkValue(PerkLib.Lycanthropy,1,20);
+					}
+					if (flags[kFLAGS.LUNA_MOON_CYCLE] == 3) {
+						outputText("<b>\nThe moon is waning, you are feeling less powerful.</b>\n");
+						dynStats("str", -changeV, "tou", -changeV, "spe", -changeV);
+						player.setPerkValue(PerkLib.Lycanthropy,1,10);
+					}
+					if (flags[kFLAGS.LUNA_MOON_CYCLE] == 4) {
+						outputText("<b>\nIt's a new moon tonight, you feel somewhat weak.</b>\n");
+						dynStats("str", -changeV, "tou", -changeV, "spe", -changeV);
+						player.setPerkValue(PerkLib.Lycanthropy,1,0);
+					}
+					needNext = true;
 				}
+				if (flags[kFLAGS.SAMIRAH_HYPNOSIS] == 4 || flags[kFLAGS.SAMIRAH_HYPNOSIS] == 2) flags[kFLAGS.SAMIRAH_HYPNOSIS]++;
 				//Soul Arena Gaunlet reset
 				if (player.hasStatusEffect(StatusEffects.SoulArenaGaunlets1)) {
 					if (player.statusEffectv1(StatusEffects.SoulArenaGaunlets1) > 1) player.addStatusValue(StatusEffects.SoulArenaGaunlets1, 1, -1);
@@ -680,6 +691,10 @@ if (CoC.instance.model.time.hours > 23) { //Once per day
 				if (player.hasStatusEffect(StatusEffects.AdventureGuildQuests3)) {
 					if (player.statusEffectv1(StatusEffects.AdventureGuildQuests3) > 6) player.addStatusValue(StatusEffects.AdventureGuildQuests3, 1, -3);
 					if (player.statusEffectv2(StatusEffects.AdventureGuildQuests3) > 6) player.addStatusValue(StatusEffects.AdventureGuildQuests3, 2, -3);
+				}
+				if (player.hasStatusEffect(StatusEffects.AdventureGuildQuests4)) {
+					if (player.statusEffectv1(StatusEffects.AdventureGuildQuests4) > 4) player.addStatusValue(StatusEffects.AdventureGuildQuests3, 1, -3);
+					if (player.statusEffectv2(StatusEffects.AdventureGuildQuests4) > 6) player.addStatusValue(StatusEffects.AdventureGuildQuests3, 2, -3);
 				}
 			}
 			if (CoC.instance.model.time.hours == 6) {
@@ -797,7 +812,7 @@ if (CoC.instance.model.time.hours > 23) { //Once per day
 				player.createPerk(PerkLib.ImprovedVenomGland, 0, 0, 0, 0);
 			}
 			//Flexibility perk
-			if ((player.tailType == Tail.CAT || player.tailType == Tail.MANTICORE_PUSSYTAIL || player.tailType == Tail.BURNING) && player.lowerBody == LowerBody.CAT && (player.ears.type == Ears.CAT || player.ears.type == Ears.LION)) { //Check for gain of cat agility - requires legs, tail, and ears
+			if ((player.tailType == Tail.CAT || player.tailType == Tail.MANTICORE_PUSSYTAIL || player.tailType == Tail.BURNING) && player.lowerBody == LowerBody.CAT && (player.arms.type == Arms.CAT || player.arms.type == Arms.LION || player.arms.type == Arms.DISPLACER)) { //Check for gain of cat agility - requires legs, tail, and arms
 				if (player.findPerk(PerkLib.Flexibility) < 0) {
 					outputText("\nWhile stretching, you notice that you're much more flexible than you were before.  Perhaps this will make it a bit easier to dodge attacks in battle?\n\n(<b>Gained Perk: Flexibility</b>)\n");
 					player.createPerk(PerkLib.Flexibility, 0, 0, 0, 0);
@@ -823,7 +838,7 @@ if (CoC.instance.model.time.hours > 23) { //Once per day
 				needNext = true;
 			}
 			//Lizan Regeneration perk
-			if ((player.tailType == Tail.LIZARD && player.lowerBody == LowerBody.LIZARD && player.ears.type == Ears.LIZARD) || (player.findPerk(PerkLib.LizanRegeneration) < 0 && player.findPerk(PerkLib.LizanMarrow) >= 0)) { //Check for gain of lustzerker - requires legs, arms and tail
+			if ((player.tailType == Tail.LIZARD && player.lowerBody == LowerBody.LIZARD && player.arms.type == Arms.LIZARD) || (player.findPerk(PerkLib.LizanRegeneration) < 0 && player.findPerk(PerkLib.LizanMarrow) >= 0)) { //Check for gain of lizan regeneration - requires legs, arms and tail
 				if (player.findPerk(PerkLib.LizanRegeneration) < 0) {
 					outputText("\nAfter drinking the last drop of reptilium you starts to feel unusual feeling somewhere inside your body.  Like many tiny waves moving inside your veins making you feel so much more refreshed than moment ago.  Remembering about fact that lizans are so much similar to lizards and those usualy posses natural talent to regenerate from even sever injuries you quessing it's could be that.\n\n(<b>Gained Perk: Lizan Regeneration</b>)");
 					player.createPerk(PerkLib.LizanRegeneration, 0, 0, 0, 0);
@@ -954,6 +969,42 @@ if (CoC.instance.model.time.hours > 23) { //Once per day
 				player.removePerk(PerkLib.ElectrifiedDesire);
 				needNext = true;
 			}
+			//Necromancy perk
+			if (((player.tailType == Tail.CAT && player.tailCount == 2) || player.tailType == Tail.NEKOMATA_FORKED_2_3 || player.tailType == Tail.NEKOMATA_FORKED_1_3) && player.findPerk(PerkLib.Necromancy) < 0) {
+				outputText("\nYou feel tremendous fell powers investing your being. You blink and almost jump as you realise you can literally can see the souls of the dead as well as those of the living now. Your powers over life and death have grown as <b>you seem to have acquired a natural talents for the darker arts.</b>\n\n(<b>Gained Perk: Necromancy</b>)\n");
+				player.createPerk(PerkLib.Necromancy, 0, 0, 0, 0);
+				needNext = true;
+			}
+			else if (player.findPerk(PerkLib.Necromancy) >= 0 && player.perkv4(PerkLib.Necromancy) == 0 && player.tailCount != 2 && player.tailType != Tail.CAT && player.tailType != Tail.NEKOMATA_FORKED_2_3 && player.tailType != Tail.NEKOMATA_FORKED_1_3) { //Remove Necromancy perk if not meeting requirements
+				outputText("\nHaving lost the source of your nekomata powers the fell energy in your body seems to recede and vanish completely.\n\n(<b>Lost Perk: Necromancy</b>)\n");
+				player.removePerk(PerkLib.Necromancy);
+				needNext = true;
+			}
+			//Elven Sense
+			if ((player.eyes.type != Eyes.ELF || player.ears.type != Ears.ELVEN) && player.findPerk(PerkLib.ElvenSense) >= 0 && player.findPerk(PerkLib.ElvishPeripheralNervSys) < 0) {
+				outputText("\nYou feels yourself less aware of your surrounding. Heck your vision seems less keen then it used to be. Likely it's because you no longer possess the senses of an elf.\n\n<b>(Lost the Elven Sense perk!)</b>\n");
+				player.removePerk(PerkLib.ElvenSense);
+				needNext = true;
+			}
+			//Flawless Body
+			if ((player.lowerBody != LowerBody.ELF || player.arms.type != Arms.ELF || !player.hasPlainSkinOnly() || player.skinAdj != "flawless") && player.findPerk(PerkLib.FlawlessBody) >= 0) {
+				outputText("\nYour body has becomes less alluring and graceful as part of reverting to a more mundane appearance.\n\n<b>(Lost the Flawless Body perk!)</b>\n");
+				player.removePerk(PerkLib.FlawlessBody);
+				needNext = true;
+			}
+			//Ferocity
+			if (player.orcScore() < 11 && player.findPerk(PerkLib.Ferocity) >= 0 && player.findPerk(PerkLib.OrcAdrenalGlandsFinalForm) < 0) {
+				outputText("\nYour natural ferocity start vanishing at a dramatic rate until finally there is no more. You realise you likely aren’t orc enough anymore, considering you felt so invincible with it, might not be a good thing.\n\n<b>(Lost the Ferocity perk!)</b>\n");
+				player.removePerk(PerkLib.Ferocity);
+				needNext = true;
+			}
+			//Acid Spit and Azureflame Breath
+			if (player.cavewyrmScore() < 7 && player.findPerk(PerkLib.AcidSpit) >= 0 && player.findPerk(PerkLib.AzureflameBreath) >= 0) {// && player.findPerk(PerkLib.) < 0
+				outputText("\nAs you become less of a cave wyrm your spit and fluids begins to lose their acidic propriety until its back to being ordinary drool and fluids. With no acid to ignite it seems you also lost the ability to breath fire.\n\n<b>(Lost the Acid Spit and Azureflame Breath perks!)</b>\n");
+				player.removePerk(PerkLib.AcidSpit);
+				player.removePerk(PerkLib.AzureflameBreath);
+				needNext = true;
+			}
 			//Soul Sense
 			if (player.maxSoulforce() >= 200 && player.findPerk(PerkLib.SoulApprentice) >= 0 && player.findPerk(PerkLib.SoulSense) < 0) {
 				outputText("\nDuring a casual walk around your camp you suddenly notice, or rather feel, something unexpected. Your surrounding blurs for a moment, to be replaced with a forest. You notice a goblin strolling nearby. Suddenly, she stops and slowly looks around, staring directly at you. A moment later, your vision of the forest becomes blurry, eventually fading away to be replaced by your camp and its surroundings. ");
@@ -1031,11 +1082,11 @@ if (CoC.instance.model.time.hours > 23) { //Once per day
 					flags[kFLAGS.FOX_BAD_END_WARNING] = 0;
 				}
 			}
-			/*if (flags[kFLAGS.PIG_BAD_END_WARNING] == 1) {
-			 if (player.faceType != PIG || player.tailType != PIG || player.earType != PIG || player.lowerBody != CLOVEN_HOOFED) {
-			 flags[kFLAGS.PIG_BAD_END_WARNING] = 0;
-			 }
-			 }*/
+			if (flags[kFLAGS.PIG_BAD_END_WARNING] == 1) {
+				if (player.faceType != Face.PIG || player.tailType != Tail.PIG || player.ears.type != Ears.PIG || player.lowerBody != LowerBody.CLOVEN_HOOFED) {
+					flags[kFLAGS.PIG_BAD_END_WARNING] = 0;
+				}
+			}
 			if (flags[kFLAGS.BASILISK_RESISTANCE_TRACKER] >= 100 && player.findPerk(PerkLib.BasiliskResistance) < 0) {
 				if (player.findPerk(PerkLib.GorgonsEyes) >= 0) outputText("\nYou notice that you feel a bit stiff and your skin is a bit harder.  Something clicks in your mind as you finally unlock the potential to protect yourself from the goddamn basilisks! \n\n(<b>Gained Perk: Basilisk Resistance - You are now immune to the basilisk's gaze!</b>)\n");
 				else outputText("\nYou notice that you feel a bit stiff and your skin is a bit harder.  Something clicks in your mind as you finally unlock the potential to protect yourself from the goddamn basilisks! \n\n(<b>Gained Perk: Basilisk Resistance - Your maximum speed is permanently decreased but you are now immune to the basilisk's gaze!</b>)\n");
@@ -1073,6 +1124,10 @@ if (CoC.instance.model.time.hours > 23) { //Once per day
 				if (player.horns.type == Horns.UNICORN) {
 					outputText(" as your horn begins to split in two");
 					player.horns.type = Horns.BICORN;
+					if (player.findPerk(PerkLib.GeneticMemory) >= 0 && !player.hasStatusEffect(StatusEffects.UnlockedBicornHorns)) {
+						outputText("\n\n<b>Genetic Memory: Bicorn Horns - Memorized!</b>\n\n");
+						player.createStatusEffect(StatusEffects.UnlockedBicornHorns, 0, 0, 0, 0);
+					}
 				}
 				outputText(".");
 				if (player.hairColor != "black") {
@@ -1086,6 +1141,10 @@ if (CoC.instance.model.time.hours > 23) { //Once per day
 				if (player.wings.type == Wings.FEATHERED_ALICORN) {
 					outputText(" Your wings aren’t spared either all the feather falling off to reveal a membranous demonic pair of bat wings.");
 					player.wings.type = Wings.NIGHTMARE;
+					if (player.findPerk(PerkLib.GeneticMemory) >= 0 && !player.hasStatusEffect(StatusEffects.UnlockedNightmareWings)) {
+						outputText("\n\n<b>Genetic Memory: Nightmare Wings - Memorized!</b>\n\n");
+						player.createStatusEffect(StatusEffects.UnlockedNightmareWings, 0, 0, 0, 0);
+					}
 				}
 				outputText(" <b>You giggle in delight of your own corruption as you fall from grace into a ");
 				if (player.wings.type == Wings.NIGHTMARE) outputText("nightmare");
@@ -1099,6 +1158,10 @@ if (CoC.instance.model.time.hours > 23) { //Once per day
 			if (player.horns.type == Horns.BICORN && player.wings.type == Wings.FEATHERED_ALICORN) {
 				outputText("\nYour wings changes as all the feather falling off to reveal a membranous demonic pair of bat wings.\n");
 				player.wings.type = Wings.NIGHTMARE;
+				if (player.findPerk(PerkLib.GeneticMemory) >= 0 && !player.hasStatusEffect(StatusEffects.UnlockedNightmareWings)) {
+					outputText("\n\n<b>Genetic Memory: Nightmare Wings - Memorized!</b>\n\n");
+					player.createStatusEffect(StatusEffects.UnlockedNightmareWings, 0, 0, 0, 0);
+				}
 				needNext = true;
 			}
 			if (player.findPerk(PerkLib.AvatorOfCorruption) >= 0 && player.cor > 10 && player.horns.type != Horns.BICORN) {
@@ -1111,9 +1174,13 @@ if (CoC.instance.model.time.hours > 23) { //Once per day
 				if (player.horns.type == Horns.BICORN) {
 					outputText(" Your two horns merges into a single one and you can feel the pure unity of your horn restored.");
 					player.horns.type = Horns.UNICORN;
+					if (player.findPerk(PerkLib.GeneticMemory) >= 0 && !player.hasStatusEffect(StatusEffects.UnlockedUnicornHorn)) {
+						outputText("\n\n<b>Genetic Memory: Unicorn Horn - Memorized!</b>\n\n");
+						player.createStatusEffect(StatusEffects.UnlockedUnicornHorn, 0, 0, 0, 0);
+					}
 				}
 				if (player.hairColor != "white") {
-					outputText(" You sigh in relief as fur turns immaculate white.");
+					outputText(" You sigh in relief as your fur turns immaculate white.");
 					player.hairColor = "white";
 				}
 				if (player.eyes.colour != "blue") {
@@ -1123,8 +1190,12 @@ if (CoC.instance.model.time.hours > 23) { //Once per day
 				if (player.wings.type == Wings.NIGHTMARE) {
 					outputText(" Your wings also redeem themselves changing into a pair of angelic wings covered with white feathers.");
 					player.wings.type = Wings.FEATHERED_ALICORN;
+					if (player.findPerk(PerkLib.GeneticMemory) >= 0 && !player.hasStatusEffect(StatusEffects.UnlockedAlicornWings)) {
+						outputText("\n\n<b>Genetic Memory: Alicorn Wings - Memorized!</b>\n\n");
+						player.createStatusEffect(StatusEffects.UnlockedAlicornWings, 0, 0, 0, 0);
+					}
 				}
-				outputText(" <b>You laugh heartily at your unblemish pure form as you realise are an ");
+				outputText(" <b>You laugh heartily at your unblemish pure form as you realise you are an ");
 				if (player.wings.type == Wings.FEATHERED_ALICORN) outputText("alicorn");
 				else outputText("unicorn");
 				outputText(" now. Mighty magical power start to swell in the horn on your forehead, cleansing whats left of any corruption you may have, and you will gladly use them to fight off the corruption that plagues mareth.</b>\n");
@@ -1136,6 +1207,10 @@ if (CoC.instance.model.time.hours > 23) { //Once per day
 			if (player.horns.type == Horns.UNICORN && player.wings.type == Wings.NIGHTMARE) {
 				outputText("\nYour wings redeem themselves changing into a pair of angelic wings covered with white feathers.\n");
 				player.wings.type = Wings.FEATHERED_ALICORN;
+				if (player.findPerk(PerkLib.GeneticMemory) >= 0 && !player.hasStatusEffect(StatusEffects.UnlockedAlicornWings)) {
+					outputText("\n\n<b>Genetic Memory: Alicorn Wings - Memorized!</b>\n\n");
+					player.createStatusEffect(StatusEffects.UnlockedAlicornWings, 0, 0, 0, 0);
+				}
 				needNext = true;
 			}
 			if (player.findPerk(PerkLib.AvatorOfPurity) >= 0 && player.cor < 90 && player.horns.type != Horns.UNICORN) {
@@ -1440,6 +1515,42 @@ if (CoC.instance.model.time.hours > 23) { //Once per day
 					needNext = true;
 				}
 			}
+			if (player.hasStatusEffect(StatusEffects.Bammed1)) {
+				if (player.statusEffectv3(StatusEffects.Bammed1) > 0 && (player.statusEffectv1(StatusEffects.Bammed1) == 1 || player.statusEffectv1(StatusEffects.Bammed1) == 2)) {
+					player.addStatusValue(StatusEffects.Bammed1, 3, -1);
+					if (player.statusEffectv3(StatusEffects.Bammed1) <= 0) {
+						if (player.statusEffectv4(StatusEffects.Bammed1) <= 0 && player.statusEffectv2(StatusEffects.Bammed1) < 3) player.removeStatusEffect(StatusEffects.Bammed1);
+						outputText("\n<b>Your ability to use melee attacks was restored after Bam effect on it expired!</b>\n");
+						needNext = true;
+					}
+				}
+				if (player.statusEffectv4(StatusEffects.Bammed1) > 0 && (player.statusEffectv2(StatusEffects.Bammed1) == 1 || player.statusEffectv2(StatusEffects.Bammed1) == 2)) {
+					player.addStatusValue(StatusEffects.Bammed1, 4, -1);
+					if (player.statusEffectv4(StatusEffects.Bammed1) <= 0) {
+						if (player.statusEffectv3(StatusEffects.Bammed1) <= 0 && player.statusEffectv1(StatusEffects.Bammed1) < 3) player.removeStatusEffect(StatusEffects.Bammed1);
+						outputText("\n<b>Your ability to use range attacks was restored after Bam effect on it expired!</b>\n");
+						needNext = true;
+					}
+				}
+			}
+			if (player.hasStatusEffect(StatusEffects.Bammed2)) {
+				if (player.statusEffectv3(StatusEffects.Bammed2) > 0 && (player.statusEffectv1(StatusEffects.Bammed2) == 1 || player.statusEffectv1(StatusEffects.Bammed2) == 2)) {
+					player.addStatusValue(StatusEffects.Bammed2, 3, -1);
+					if (player.statusEffectv3(StatusEffects.Bammed2) <= 0) {
+						if (player.statusEffectv4(StatusEffects.Bammed2) <= 0 && player.statusEffectv2(StatusEffects.Bammed2) < 3) player.removeStatusEffect(StatusEffects.Bammed2);
+						outputText("\n<b>Your ability to use physical specials was restored after Bam effect on it expired!</b>\n");
+						needNext = true;
+					}
+				}
+				if (player.statusEffectv4(StatusEffects.Bammed2) > 0 && (player.statusEffectv2(StatusEffects.Bammed2) == 1 || player.statusEffectv2(StatusEffects.Bammed2) == 2)) {
+					player.addStatusValue(StatusEffects.Bammed2, 4, -1);
+					if (player.statusEffectv4(StatusEffects.Bammed2) <= 0) {
+						if (player.statusEffectv3(StatusEffects.Bammed2) <= 0 && player.statusEffectv1(StatusEffects.Bammed2) < 3) player.removeStatusEffect(StatusEffects.Bammed2);
+						outputText("\n<b>Your ability to use magical specials was restored after Bam effect on it expired!</b>\n");
+						needNext = true;
+					}
+				}
+			}
 			if (player.statusEffectv2(StatusEffects.Kelt) > 0) player.addStatusValue(StatusEffects.Kelt, 2, -0.15); //Reduce kelt submissiveness by 1 every 5 hours
 			//Mino cum update.
             if (SceneLib.mountain.minotaurScene.minoCumUpdate()) {
@@ -1686,6 +1797,15 @@ if (CoC.instance.model.time.hours > 23) { //Once per day
 					EngineCore.doNext(playerMenu);
 					return true;
 				}
+				if (player.hasKeyItem("Jade Talisman") >= 0 && flags[kFLAGS.AURORA_LVL] < 0.1) {
+					outputText("\nYou have weird dream tonight. In that dream you’re back in the Hidden Cave, exploring it room after room, smashing to pieces any of the golems or small bat golems you find and looting the treasures. Then you face the dragon-boy in short, but intensive fight, ending with him running away like coward, while still having enough courage to leave some witty remarks.");
+					outputText("\n\nMaking sure you not overlooked any valuable items you walk slowly toward stairway leading to first floor when... your gaze stops on one of walls in the room with the stairway. Compared to other nearby walls which are all without any damage or otherwise imperfections you spot on this particular wall something. Something like a crack or...keyhole? Intrigued you start to walk toward it...");
+					outputText("\n\nAnd you suddenly wake up. That was really weird. But even weirder is the fact that your holding in your hand that same Jade Talisman you got from your last fight with the weird dragon-boy. Coincidence?");
+					if (silly()) outputText(" I think not!");
+					flags[kFLAGS.AURORA_LVL] = 0.1;
+					EngineCore.doNext(playerMenu);
+					return true;
+				}
 				if (player.lib > 50 || player.lust > 40) { //Randomly generated dreams here
 					if (dreams.dreamSelect()) return true;
 				}
@@ -1710,4 +1830,4 @@ if (CoC.instance.model.time.hours > 23) { //Once per day
 		//End of Interface Implementation
 	}
 }
-
+

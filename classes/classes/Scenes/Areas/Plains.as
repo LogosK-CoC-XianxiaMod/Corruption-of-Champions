@@ -56,14 +56,15 @@ use namespace CoC;
 				name: "etna",
 				when: function ():Boolean {
 					return flags[kFLAGS.ETNA_FOLLOWER] < 1
-						   && flags[kFLAGS.ETNA_TALKED_ABOUT_HER] == 2;
+						   && flags[kFLAGS.ETNA_TALKED_ABOUT_HER] == 2
+						   && !player.hasStatusEffect(StatusEffects.EtnaOff);
 				},
 				chance: 0.5,
 				call: SceneLib.etnaScene.repeatYandereEnc
 			}, {
 				name: "electra",
 				when: function():Boolean {
-					return flags[kFLAGS.ELECTRA_FOLLOWER] < 1 && flags[kFLAGS.ELECTRA_AFFECTION] >= 2;
+					return flags[kFLAGS.ELECTRA_FOLLOWER] < 1 && flags[kFLAGS.ELECTRA_AFFECTION] >= 2 && !player.hasStatusEffect(StatusEffects.ElectraOff);
 				},
 				chance: 0.5,
 				call: SceneLib.electraScene.repeatPlainsEnc
@@ -77,7 +78,7 @@ use namespace CoC;
 			}, {
 				name: "diana",
 				when: function():Boolean {
-					return flags[kFLAGS.DIANA_FOLLOWER] < 6 && player.statusEffectv4(StatusEffects.CampSparingNpcsTimers2) < 1;
+					return flags[kFLAGS.DIANA_FOLLOWER] < 6 && !player.hasStatusEffect(StatusEffects.DianaOff) && player.statusEffectv4(StatusEffects.CampSparingNpcsTimers2) < 1;
 				},
 				call: SceneLib.dianaScene.repeatPlainsEnc
 			}, {
@@ -173,6 +174,12 @@ use namespace CoC;
 				},
 				call  : SceneLib.helScene.encounterAJerkInThePlains
 			}, {
+				name: "ted",
+				when: function():Boolean {
+					return flags[kFLAGS.TED_LVL_UP] >= 1 && flags[kFLAGS.TED_LVL_UP] < 4 && player.statusEffectv1(StatusEffects.CampSparingNpcsTimers4) < 1;
+				},
+				call: SceneLib.tedScene.introPostHiddenCave
+			},{
 				name: "satyr",
 				chance: 0.7,
 				call: satyrScene.satyrEncounter

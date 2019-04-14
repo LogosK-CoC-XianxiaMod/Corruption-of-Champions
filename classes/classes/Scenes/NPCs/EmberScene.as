@@ -210,7 +210,7 @@ public class EmberScene extends NPCAwareContent implements TimeAwareInterface
 
 //Approaching Ember (Z)
 		public function emberCampMenu2():void {
-			if ((flags[kFLAGS.LUNA_JEALOUSY] > 100 && rand(10) < 4) || (flags[kFLAGS.LUNA_JEALOUSY] > 150 && rand(10) < 8)) mishapsLunaEmber();
+			if ((flags[kFLAGS.LUNA_JEALOUSY] > 200 && rand(10) < 4) || (flags[kFLAGS.LUNA_JEALOUSY] > 300 && rand(10) < 8)) mishapsLunaEmber();
 			else emberCampMenu();
 		}
 
@@ -2126,6 +2126,18 @@ public class EmberScene extends NPCAwareContent implements TimeAwareInterface
 					else player.createStatusEffect(StatusEffects.CampSparingNpcsTimers1, 60, 0, 0, 0);
 					flags[kFLAGS.EMBER_DEFEATS_COUNTER] = 0;
 					flags[kFLAGS.EMBER_LVL_UP] = 7;
+				}
+				if (flags[kFLAGS.EMBER_DEFEATS_COUNTER] == 11 && flags[kFLAGS.EMBER_LVL_UP] == 7) {
+					if (player.hasStatusEffect(StatusEffects.CampSparingNpcsTimers1)) player.addStatusValue(StatusEffects.CampSparingNpcsTimers1, 1, 66);
+					else player.createStatusEffect(StatusEffects.CampSparingNpcsTimers1, 66, 0, 0, 0);
+					flags[kFLAGS.EMBER_DEFEATS_COUNTER] = 0;
+					flags[kFLAGS.EMBER_LVL_UP] = 8;
+				}
+				if (flags[kFLAGS.EMBER_DEFEATS_COUNTER] == 12 && flags[kFLAGS.EMBER_LVL_UP] == 8) {
+					if (player.hasStatusEffect(StatusEffects.CampSparingNpcsTimers1)) player.addStatusValue(StatusEffects.CampSparingNpcsTimers1, 1, 72);
+					else player.createStatusEffect(StatusEffects.CampSparingNpcsTimers1, 72, 0, 0, 0);
+					flags[kFLAGS.EMBER_DEFEATS_COUNTER] = 0;
+					flags[kFLAGS.EMBER_LVL_UP] = 9;
 				}
 			}
 			cleanupAfterCombat();

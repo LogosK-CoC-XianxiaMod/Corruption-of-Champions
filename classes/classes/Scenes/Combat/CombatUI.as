@@ -13,6 +13,7 @@ import classes.Scenes.Dungeons.D3.DriderIncubus;
 import classes.Scenes.Dungeons.D3.Lethice;
 import classes.Scenes.Dungeons.D3.SuccubusGardener;
 import classes.Scenes.NPCs.Ceraph;
+import classes.Scenes.NPCs.Yamata;
 import classes.Scenes.SceneLib;
 import classes.StatusEffectClass;
 import classes.StatusEffects;
@@ -87,12 +88,12 @@ public class CombatUI extends BaseCombatContent {
 				break;
 			case "Throwing":
                 btnRanged.show("Throw", combat.fireBow, "Attempt to throw " + player.weaponRangeName + " at enemy.  Damage done is determined by your strength and weapon.");
-                if ( player.ammo <= 0 && player.weaponRange != weaponsrange.SHUNHAR) btnRanged.disable("You have used all your throwing weapons in this fight.");
+                if (player.ammo <= 0 && player.weaponRange != weaponsrange.SHUNHAR) btnRanged.disable("You have used all your throwing weapons in this fight.");
 				break;
 			case "Pistol":
 			case "Rifle":
                 if (player.ammo <= 0)
-                    btnRanged.show("Reload", combat.reloadWeapon, "Your " + player.weaponRangeName + " is out of ammo.  You'll have to reload it before attack.");
+                    btnRanged.show("Reload", combat.reloadWeapon1, "Your " + player.weaponRangeName + " is out of ammo.  You'll have to reload it before attack.");
                 else btnRanged.show("Shoot", combat.fireBow, "Fire a round at your opponent with your " + player.weaponRangeName + "!  Damage done is determined only by your weapon.");
 				break;
 			default:
@@ -152,7 +153,30 @@ public class CombatUI extends BaseCombatContent {
 			} else {
 				btnMelee.show("Approach", combat.approachAfterKnockback3, "Close some distance between you and your opponent.");
 			}
-		} else if (monster.hasStatusEffect(StatusEffects.Constricted)) {
+		} else if (monster.hasStatusEffect(StatusEffects.HypnosisNaga) && !monster.hasStatusEffect(StatusEffects.Constricted)) {
+			menu();
+			addButton(0, "Heal", combat.HypnosisHeal);
+			addButton(1, "Attack", combat.HypnosisAttack);
+			addButton(2, "Coil", combat.HypnosisCoil);
+			if (player.hasPerk(PerkLib.HollowFangsEvolved)) {
+				addButton(3, "Bite", combat.VampiricBite).hint("Suck on the blood of an opponent. \n\nFatigue Cost: " + physicalCost(20) + "");
+				if (player.fatigueLeft() <= combat.physicalCost(20)) {
+					button(3).disable("You are too tired to bite " + monster.a + " " + monster.short + ".");
+				}
+			}
+			addButton(4, "Maintain", combat.HypnosisMaintain);
+		} else if (monster.hasStatusEffect(StatusEffects.HypnosisNaga) && monster.hasStatusEffect(StatusEffects.Constricted)) {
+			menu();
+			addButton(0, "Squeeze", SceneLib.desert.nagaScene.naggaSqueeze).hint("Squeeze some HP out of your opponent! Break hypnosis! \n\nFatigue Cost: " + physicalCost(20) + "");
+			addButton(1, "Tease", SceneLib.desert.nagaScene.naggaTease).hint("Deals lesser lust damage. Does not break hypnosis.");
+			if (player.hasPerk(PerkLib.HollowFangsEvolved)) {
+				addButton(3, "Bite", combat.VampiricBite).hint("Suck on the blood of an opponent. Break hypnosis! \n\nFatigue Cost: " + physicalCost(20) + "");
+				if (player.fatigueLeft() <= combat.physicalCost(20)) {
+					button(3).disable("You are too tired to bite " + monster.a + " " + monster.short + ".");
+				}
+			}
+			addButton(4, "Maintain", combat.HypnosisMaintain);
+		} else if (monster.hasStatusEffect(StatusEffects.Constricted) && !monster.hasStatusEffect(StatusEffects.HypnosisNaga)) {
 			menu();
 			addButton(0, "Squeeze", SceneLib.desert.nagaScene.naggaSqueeze).hint("Squeeze some HP out of your opponent! \n\nFatigue Cost: " + physicalCost(20) + "");
 			addButton(1, "Tease", SceneLib.desert.nagaScene.naggaTease);
@@ -237,6 +261,12 @@ public class CombatUI extends BaseCombatContent {
 					else addButtonDisabled(2, "Send P.Gol/5", "Not enough mana.");
 				}
 			}
+		} else if (flags[kFLAGS.PLAYER_COMPANION_1] != "" && flags[kFLAGS.IN_COMBAT_PLAYER_COMPANION_1_ACTION] != 1) {
+			if (flags[kFLAGS.PLAYER_COMPANION_1] == "Etna") combat.comfoll.neisaCombatActions();
+			if (flags[kFLAGS.PLAYER_COMPANION_1] == "Neisa") combat.comfoll.neisaCombatActions();
+		} else if (flags[kFLAGS.PLAYER_COMPANION_2] != "" && flags[kFLAGS.IN_COMBAT_PLAYER_COMPANION_2_ACTION] != 1) {
+			if (flags[kFLAGS.PLAYER_COMPANION_2] == "Etna") combat.comfoll.neisaCombatActions();
+			if (flags[kFLAGS.PLAYER_COMPANION_2] == "Neisa") combat.comfoll.neisaCombatActions();
 		}
 		
 		// Modifications - monster-special actions
@@ -287,6 +317,10 @@ public class CombatUI extends BaseCombatContent {
 		if (player.hasStatusEffect(StatusEffects.Tentagrappled)) {
 			btnStruggle.call((monster as SuccubusGardener).grappleStruggle);
 			btnBoundWait.call((monster as SuccubusGardener).grappleWait);
+		}
+		if (player.hasStatusEffect(StatusEffects.YamataEntwine)) {
+			btnStruggle.call((monster as Yamata).entwineStruggle);
+			btnBoundWait.call((monster as Yamata).entwineWait);
 		}
 		if (player.hasStatusEffect(StatusEffects.LethicesRapeTentacles) && player.statusEffectv3(StatusEffects.LethicesRapeTentacles) == 1) {
 			outputText("\n<b>Lethice's tentacles have a firm grip of your limbs!</b>");

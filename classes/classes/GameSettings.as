@@ -123,6 +123,22 @@ public class GameSettings extends BaseContent {
 
 		outputText("\n\n");
 
+		if (flags[kFLAGS.NO_GORE_MODE] >= 1) {
+			outputText("No Blood Mode: <font color=\"#008000\"><b>ON</b></font>\n Excesive Bloody or Gore scenes variants are disabled.");
+		}
+		else
+			outputText("No Blood Mode: <font color=\"#800000\"><b>OFF</b></font>\n Excesive Bloody or Gore scenes variants are enabled.");
+
+		outputText("\n\n");
+
+		if (flags[kFLAGS.ITS_EVERY_DAY]) {
+			outputText("Eternal Holiday Mode: <font color=\"#008000\"><b>ON</b></font>\n All holiday events like Eastern/X-mas and etc. would happen at any day of the year.");
+		}
+		else
+			outputText("Eternal Holiday Mode: <font color=\"#800000\"><b>OFF</b></font>\n All holiday events happen only when it's respective holiday time.");
+
+		outputText("\n\n");
+
 		if (flags[kFLAGS.WATERSPORTS_ENABLED] >= 1 && flags[kFLAGS.SFW_MODE] <= 0) {
 			outputText("Watersports: <font color=\"#008000\"><b>Enabled</b></font>\n Watersports scenes are enabled. (You kinky person)");
 		}
@@ -151,8 +167,9 @@ public class GameSettings extends BaseContent {
 		if (player) addButton(8, "Enable Surv", enableSurvivalPrompt).hint("Enable Survival mode. This will enable hunger. \n\n<font color=\"#080000\">Note: This is permanent and cannot be turned off!</font>");
 		if (player) addButton(9, "Enable Real", enableRealisticPrompt).hint("Enable Realistic mode. This will make the game a bit realistic. \n\n<font color=\"#080000\">Note: This is permanent and cannot be turned off! Do not turn this on if you have hyper endowments.</font>");
 		
-		addButton(10, "Eternal Holiday", toggleEternalHoliday).hint("Toggles etenral holiday mode. All holiday events like Eastern/X-mas and etc. would happen at any day of the year.");
+		addButton(10, "Eternal Holiday", toggleEternalHoliday).hint("Toggles eternal holiday mode. All holiday events like Eastern/X-mas and etc. would happen at any day of the year.");
 		addButton(11, "Fetishes", fetishSubMenu).hint("Toggle some of the weird fetishes such as watersports and worms.");
+		addButton(12, "No Blood Toggle", toggleNOGORE).hint("Toggles No Blood Mode. If enabled, scenes could have more grungesome/bloody variants showed. Not for weak of hearts players.");
 
 		if (flags[kFLAGS.HUNGER_ENABLED] >= 0.5) {
 			removeButton(8);
@@ -268,6 +285,12 @@ public class GameSettings extends BaseContent {
 	public function toggleSFW():void {
 		if (flags[kFLAGS.SFW_MODE] < 1) flags[kFLAGS.SFW_MODE] = 1;
 		else flags[kFLAGS.SFW_MODE] = 0;
+		settingsScreenGameSettings();
+	}
+
+	public function toggleNOGORE():void {
+		if (flags[kFLAGS.NO_GORE_MODE] < 1) flags[kFLAGS.NO_GORE_MODE] = 1;
+		else flags[kFLAGS.NO_GORE_MODE] = 0;
 		settingsScreenGameSettings();
 	}
 
